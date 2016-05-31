@@ -1,41 +1,45 @@
 /*
- * Copyright (C) 2015 Go Karumi S.L.
+ * Copyright (C) 2016 Go Karumi S.L.
  */
 
 package com.karumi.kiru;
 
-import android.content.Context;
-import com.codahale.metrics.Gauge;
+import android.app.Application;
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.graphite.Graphite;
 import com.codahale.metrics.graphite.GraphiteReporter;
-import com.karumi.kiru.metricnames.MetricNamesFactory;
+import com.karumi.kiru.collectors.Collector;
+import com.karumi.kiru.collectors.CollectorsFactory;
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 
 public class Kiru {
 
-  private final Context context;
+  private final Application application;
   private static MetricRegistry registry;
 
-  static Kiru with(Context context) {
-    return new Kiru(context);
+  static Kiru with(Application application) {
+    return new Kiru(application);
   }
 
-  Kiru(Context context) {
-    this.context = context.getApplicationContext();
+  Kiru(Application application) {
+    if (application == null) {
+      throw new IllegalArgumentException(
+          "The application instance used to initialize Kiru can not be null.");
+    }
+    this.application = application;
   }
 
   void start() {
-    if (kiruHasBeenInitialized()) {
+    if (hasBeenInitialized()) {
       return;
     }
     initializeMetrics();
-    configureFPSGauge();
+    configureFPSCollector();
   }
 
-  private boolean kiruHasBeenInitialized() {
+  private boolean hasBeenInitialized() {
     return registry != null;
   }
 
@@ -51,12 +55,8 @@ public class Kiru {
     reporter.start(1, TimeUnit.MINUTES);
   }
 
-  private void configureFPSGauge() {
-    String fpsMetricName = MetricNamesFactory.getFPSMetricName();
-    registry.register(fpsMetricName, new Gauge<Integer>() {
-      @Override public Integer getValue() {
-        return null;
-      }
-    });
+  private void configureFPSCollector() {
+    Collector fpsCollector = CollectorsFactory.getFPSCollector(application);
+    fpsCollector.initialize(registry);
   }
 }

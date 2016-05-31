@@ -1,13 +1,14 @@
 /*
- * Copyright (C) 2015 Go Karumi S.L.
+ * Copyright (C) 2016 Go Karumi S.L.
  */
 
 package com.karumi.kiru.metricnames;
 
+import android.app.Application;
+
 public class MetricNamesFactory {
 
-  public static String getFPSMetricName() {
+  public static String getFPSMetricName(Application application) {
     return "fps";
   }
-
 }
