@@ -6,6 +6,7 @@ package com.karumi.kiru.collectors;
 
 import android.app.Activity;
 import android.app.Application;
+import android.util.Log;
 import android.view.Choreographer;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.MetricRegistry;
@@ -43,6 +44,7 @@ class FpsCollector extends EmptyActivityLifecycleCallback implements Collector {
     String fpsMetricName = MetricNamesFactory.getFPSMetricName(application);
     registry.register(fpsMetricName, new Gauge<Integer>() {
       @Override public Integer getValue() {
+        Log.d("KIRU", "Collecting FPS metric-> " + fpsFrameCallback.getFPS());
         return fpsFrameCallback.getFPS();
       }
     });

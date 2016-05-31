@@ -19,7 +19,7 @@ public class Kiru {
   private final Application application;
   private static MetricRegistry registry;
 
-  static Kiru with(Application application) {
+  public static Kiru with(Application application) {
     return new Kiru(application);
   }
 
@@ -31,7 +31,7 @@ public class Kiru {
     this.application = application;
   }
 
-  void start() {
+  public void start() {
     if (hasBeenInitialized()) {
       return;
     }
@@ -52,7 +52,7 @@ public class Kiru {
         .convertDurationsTo(TimeUnit.MILLISECONDS)
         .filter(MetricFilter.ALL)
         .build(graphite);
-    reporter.start(1, TimeUnit.MINUTES);
+    reporter.start(10, TimeUnit.SECONDS);
   }
 
   private void configureFPSCollector() {

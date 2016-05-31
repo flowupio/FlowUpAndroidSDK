@@ -6,6 +6,7 @@ package com.karumi.kiru.collectors;
 
 import android.app.Activity;
 import android.app.Application;
+import android.util.Log;
 import android.view.Choreographer;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.MetricRegistry;
@@ -43,6 +44,7 @@ class FrameTimeCollector extends EmptyActivityLifecycleCallback implements Colle
     String fpsMetricName = MetricNamesFactory.getFrameTimeMetricName(application);
     registry.register(fpsMetricName, new Gauge<Long>() {
       @Override public Long getValue() {
+        Log.d("KIRU", "Collecting frame time metric-> " + frameTimeCallback.getFrameTimeNanos());
         return frameTimeCallback.getFrameTimeNanos();
       }
     });

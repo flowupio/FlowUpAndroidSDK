@@ -12,7 +12,7 @@ public class FpsFrameCallback implements Choreographer.FrameCallback {
 
 
   @Override public void doFrame(long frameTimeNanos) {
-    Log.d("KIRU", "Frame metric -> " + frameTimeNanos);
+
   }
 
   public int getFPS() {

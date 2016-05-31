@@ -11,7 +11,7 @@ public class FrameTimeCallback implements Choreographer.FrameCallback {
   private long frameTimeNanos = 0;
 
   @Override public void doFrame(long frameTimeNanos) {
-    frameTimeNanos = frameTimeNanos;
+    this.frameTimeNanos = frameTimeNanos;
   }
 
   public long getFrameTimeNanos() {
