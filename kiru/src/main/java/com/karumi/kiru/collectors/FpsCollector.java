@@ -23,7 +23,7 @@ class FpsCollector extends EmptyActivityLifecycleCallback implements Collector {
   FpsCollector(Application application) {
     this.application = application;
     this.choreographer = Choreographer.getInstance();
-    this.fpsFrameCallback = new FpsFrameCallback();
+    this.fpsFrameCallback = new FpsFrameCallback(choreographer);
   }
 
   @Override public void initialize(MetricRegistry registry) {

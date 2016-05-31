@@ -23,7 +23,7 @@ class FrameTimeCollector extends EmptyActivityLifecycleCallback implements Colle
   FrameTimeCollector(Application application) {
     this.application = application;
     this.choreographer = Choreographer.getInstance();
-    this.frameTimeCallback = new FrameTimeCallback();
+    this.frameTimeCallback = new FrameTimeCallback(choreographer);
   }
 
   @Override public void initialize(MetricRegistry registry) {

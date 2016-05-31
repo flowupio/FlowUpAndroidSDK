@@ -9,8 +9,14 @@ import android.view.Choreographer;
 //TODO: Implement this
 public class FpsFrameCallback implements Choreographer.FrameCallback {
 
-  @Override public void doFrame(long frameTimeNanos) {
+  private final Choreographer choreographer;
 
+  public FpsFrameCallback(Choreographer choreographer) {
+    this.choreographer = choreographer;
+  }
+
+  @Override public void doFrame(long frameTimeNanos) {
+    choreographer.postFrameCallback(this);
   }
 
   public int getFPS() {
