@@ -10,19 +10,19 @@ import android.view.Choreographer;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.MetricRegistry;
 import com.karumi.kiru.android.EmptyActivityLifecycleCallback;
-import com.karumi.kiru.android.FpsFrameCallback;
+import com.karumi.kiru.android.FrameTimeCallback;
 import com.karumi.kiru.metricnames.MetricNamesFactory;
 
-class FpsCollector extends EmptyActivityLifecycleCallback implements Collector {
+class FrameTimeCollector extends EmptyActivityLifecycleCallback implements Collector {
 
   private final Application application;
   private final Choreographer choreographer;
-  private final FpsFrameCallback fpsFrameCallback;
+  private final FrameTimeCallback frameTimeCallback;
 
-  FpsCollector(Application application) {
+  FrameTimeCollector(Application application) {
     this.application = application;
     this.choreographer = Choreographer.getInstance();
-    this.fpsFrameCallback = new FpsFrameCallback();
+    this.frameTimeCallback = new FrameTimeCallback();
   }
 
   @Override public void initialize(MetricRegistry registry) {
@@ -31,19 +31,19 @@ class FpsCollector extends EmptyActivityLifecycleCallback implements Collector {
   }
 
   @Override public void onActivityResumed(Activity activity) {
-    choreographer.postFrameCallback(fpsFrameCallback);
+    choreographer.postFrameCallback(frameTimeCallback);
   }
 
   @Override public void onActivityPaused(Activity activity) {
-    choreographer.removeFrameCallback(fpsFrameCallback);
-    fpsFrameCallback.reset();
+    choreographer.removeFrameCallback(frameTimeCallback);
+    frameTimeCallback.reset();
   }
 
   private void initializeGauge(MetricRegistry registry) {
-    String fpsMetricName = MetricNamesFactory.getFPSMetricName(application);
-    registry.register(fpsMetricName, new Gauge<Integer>() {
-      @Override public Integer getValue() {
-        return fpsFrameCallback.getFPS();
+    String fpsMetricName = MetricNamesFactory.getFrameTimeMetricName(application);
+    registry.register(fpsMetricName, new Gauge<Long>() {
+      @Override public Long getValue() {
+        return frameTimeCallback.getFrameTimeNanos();
       }
     });
   }

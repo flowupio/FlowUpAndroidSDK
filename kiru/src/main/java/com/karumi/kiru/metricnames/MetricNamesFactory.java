@@ -11,4 +11,8 @@ public class MetricNamesFactory {
   public static String getFPSMetricName(Application application) {
     return "fps";
   }
+
+  public static String getFrameTimeMetricName(Application application) {
+    return "frame-time";
+  }
 }

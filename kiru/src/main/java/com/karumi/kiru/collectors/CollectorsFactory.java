@@ -11,4 +11,8 @@ public class CollectorsFactory {
   public static Collector getFPSCollector(Application application) {
     return new FpsCollector(application);
   }
+
+  public static Collector getFrameTimeCollector(Application application) {
+    return new FrameTimeCollector(application);
+  }
 }

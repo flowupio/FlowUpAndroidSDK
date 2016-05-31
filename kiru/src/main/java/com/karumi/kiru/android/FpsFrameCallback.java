@@ -1,0 +1,25 @@
+/*
+ * Copyright (C) 2016 Go Karumi S.L.
+ */
+
+package com.karumi.kiru.android;
+
+import android.util.Log;
+import android.view.Choreographer;
+
+//TODO: Implement this
+public class FpsFrameCallback implements Choreographer.FrameCallback {
+
+
+  @Override public void doFrame(long frameTimeNanos) {
+    Log.d("KIRU", "Frame metric -> " + frameTimeNanos);
+  }
+
+  public int getFPS() {
+    return 0;
+  }
+
+  public void reset() {
+
+  }
+}
