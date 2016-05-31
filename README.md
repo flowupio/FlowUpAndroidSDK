@@ -1,5 +1,5 @@
-![Karumi logo][karumilogo]Kiru [![Build Status](https://travis-ci.com/Karumi/Kiru.svg?token=Kb2RqPaWxFZ8XPxpqvqz&branch=master)](https://travis-ci.com/Karumi/Kiru)
-===============================
+![Karumi logo][karumilogo]Kiru [![Build Status](https://travis-ci.com/Karumi/KiruAndroidSDK.svg?token=Kb2RqPaWxFZ8XPxpqvqz&branch=master)](https://travis-ci.com/Karumi/KiruAndroidSDK)
+==============================
 
 Android library to collect performance metrics easily.
 
