@@ -29,6 +29,7 @@ class FpsCollector extends EmptyActivityLifecycleCallback implements Collector {
   @Override public void initialize(MetricRegistry registry) {
     application.registerActivityLifecycleCallbacks(this);
     initializeGauge(registry);
+    choreographer.postFrameCallback(fpsFrameCallback);
   }
 
   @Override public void onActivityResumed(Activity activity) {

@@ -29,6 +29,7 @@ class FrameTimeCollector extends EmptyActivityLifecycleCallback implements Colle
   @Override public void initialize(MetricRegistry registry) {
     application.registerActivityLifecycleCallbacks(this);
     initializeGauge(registry);
+    choreographer.postFrameCallback(frameTimeCallback);
   }
 
   @Override public void onActivityResumed(Activity activity) {

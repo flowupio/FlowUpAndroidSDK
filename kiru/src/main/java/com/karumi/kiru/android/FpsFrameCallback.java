@@ -4,12 +4,10 @@
 
 package com.karumi.kiru.android;
 
-import android.util.Log;
 import android.view.Choreographer;
 
 //TODO: Implement this
 public class FpsFrameCallback implements Choreographer.FrameCallback {
-
 
   @Override public void doFrame(long frameTimeNanos) {
 

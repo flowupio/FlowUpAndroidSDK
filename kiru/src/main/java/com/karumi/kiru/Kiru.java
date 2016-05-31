@@ -5,6 +5,8 @@
 package com.karumi.kiru;
 
 import android.app.Application;
+import android.os.Handler;
+import android.os.Looper;
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.graphite.Graphite;
@@ -35,8 +37,17 @@ public class Kiru {
     if (hasBeenInitialized()) {
       return;
     }
-    initializeMetrics();
-    configureFPSCollector();
+    new Thread(new Runnable() {
+      @Override public void run() {
+        initializeMetrics();
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+          @Override public void run() {
+            initializeFPSCollector();
+            initializeFrameTimeCollector();
+          }
+        });
+      }
+    }).start();
   }
 
   private boolean hasBeenInitialized() {
@@ -55,8 +66,13 @@ public class Kiru {
     reporter.start(10, TimeUnit.SECONDS);
   }
 
-  private void configureFPSCollector() {
+  private void initializeFPSCollector() {
     Collector fpsCollector = CollectorsFactory.getFPSCollector(application);
     fpsCollector.initialize(registry);
+  }
+
+  private void initializeFrameTimeCollector() {
+    Collector frameTimeCollector = CollectorsFactory.getFrameTimeCollector(application);
+    frameTimeCollector.initialize(registry);
   }
 }
