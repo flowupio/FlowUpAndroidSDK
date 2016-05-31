@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2016 Go Karumi S.L.
+  -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.karumi.kiru.example">
 
