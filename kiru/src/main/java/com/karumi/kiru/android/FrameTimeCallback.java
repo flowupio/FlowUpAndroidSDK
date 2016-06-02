@@ -10,6 +10,7 @@ public class FrameTimeCallback implements Choreographer.FrameCallback {
 
   private final Choreographer choreographer;
 
+  private long numberOfFrames = 0;
   private long frameTimeNanos = 0;
 
   public FrameTimeCallback(Choreographer choreographer) {
@@ -17,15 +18,17 @@ public class FrameTimeCallback implements Choreographer.FrameCallback {
   }
 
   @Override public void doFrame(long frameTimeNanos) {
-    this.frameTimeNanos = frameTimeNanos;
+    this.numberOfFrames++;
+    this.frameTimeNanos += frameTimeNanos;
     choreographer.postFrameCallback(this);
   }
 
   public long getFrameTimeNanos() {
-    return frameTimeNanos;
+    return frameTimeNanos / numberOfFrames;
   }
 
   public void reset() {
+    numberOfFrames = 0;
     frameTimeNanos = 0;
   }
 }
