@@ -27,7 +27,7 @@ import static org.mockito.Mockito.verify;
 
   @Test public void shouldCalculateTheNumberOfFramesPerSecondBasedOnTheAverageFrameTime() {
     for (int i = 0; i < 60; i++) {
-      fpsFrameCallback.doFrame(16000000 * (i+1));
+      fpsFrameCallback.doFrame(16000000 * (i + 1));
     }
 
     double framesPerSecond = fpsFrameCallback.getFPS();
