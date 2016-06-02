@@ -12,15 +12,17 @@ import com.codahale.metrics.Gauge;
 import com.codahale.metrics.MetricRegistry;
 import com.karumi.kiru.android.EmptyActivityLifecycleCallback;
 import com.karumi.kiru.android.FpsFrameCallback;
-import com.karumi.kiru.metricnames.MetricNamesFactory;
+import com.karumi.kiru.metricnames.MetricNamesGenerator;
 
 class FpsCollector extends EmptyActivityLifecycleCallback implements Collector {
 
+  private final MetricNamesGenerator metricNamesGenerator;
   private final Application application;
   private final Choreographer choreographer;
   private final FpsFrameCallback fpsFrameCallback;
 
-  FpsCollector(Application application) {
+  FpsCollector(MetricNamesGenerator metricNamesGenerator, Application application) {
+    this.metricNamesGenerator = metricNamesGenerator;
     this.application = application;
     this.choreographer = Choreographer.getInstance();
     this.fpsFrameCallback = new FpsFrameCallback(choreographer);
@@ -42,7 +44,7 @@ class FpsCollector extends EmptyActivityLifecycleCallback implements Collector {
   }
 
   private void initializeGauge(MetricRegistry registry) {
-    String fpsMetricName = MetricNamesFactory.getFPSMetricName(application);
+    String fpsMetricName = metricNamesGenerator.getFPSMetricName();
     registry.register(fpsMetricName, new Gauge<Integer>() {
       @Override public Integer getValue() {
         Log.d("KIRU", "Collecting FPS metric-> " + fpsFrameCallback.getFPS());

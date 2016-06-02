@@ -4,5 +4,22 @@
 
 package com.karumi.kiru.metricnames;
 
+import android.content.Context;
+
 class App {
+
+  private final Context context;
+
+  App(Context context) {
+    this.context = context;
+  }
+
+  String getApplicationName() {
+    return "";
+  }
+
+  String getApplicationVersion() {
+    return "";
+  }
+
 }
