@@ -17,11 +17,11 @@ class Device {
   }
 
   String getOSVersion() {
-    return String.valueOf(Build.VERSION.SDK_INT);
+    return "API-" + String.valueOf(Build.VERSION.SDK_INT);
   }
 
   String getModel() {
-    return Build.MODEL;
+    return Build.MODEL.replace('.', '-');
   }
 
   String getScreenDensity() {

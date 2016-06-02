@@ -27,11 +27,17 @@ public class MetricNamesGenerator {
 
   private String appendCrossMetricInfo(String metricName) {
     return app.getApplicationName()
+        + "."
         + app.getApplicationVersion()
+        + "."
         + device.getOSVersion()
+        + "."
         + device.getModel()
+        + "."
         + device.getScreenDensity()
+        + "."
         + device.getScreenSize()
+        + "."
         + metricName;
   }
 }
