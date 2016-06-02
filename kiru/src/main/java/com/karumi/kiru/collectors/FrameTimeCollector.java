@@ -20,6 +20,8 @@ class FrameTimeCollector extends EmptyActivityLifecycleCallback implements Colle
   private final Choreographer choreographer;
   private final FrameTimeCallback frameTimeCallback;
 
+  private MetricRegistry registry;
+
   FrameTimeCollector(MetricNamesGenerator metricNamesGenerator, Application application) {
     this.metricNamesGenerator = metricNamesGenerator;
     this.application = application;
@@ -34,15 +36,18 @@ class FrameTimeCollector extends EmptyActivityLifecycleCallback implements Colle
   }
 
   @Override public void onActivityResumed(Activity activity) {
+    initializeGauge(registry);
     choreographer.postFrameCallback(frameTimeCallback);
   }
 
   @Override public void onActivityPaused(Activity activity) {
     choreographer.removeFrameCallback(frameTimeCallback);
     frameTimeCallback.reset();
+    removeGauge();
   }
 
   private void initializeGauge(MetricRegistry registry) {
+    this.registry = registry;
     String fpsMetricName = metricNamesGenerator.getFrameTimeMetricName();
     registry.register(fpsMetricName, new Gauge<Long>() {
       @Override public Long getValue() {
@@ -50,5 +55,9 @@ class FrameTimeCollector extends EmptyActivityLifecycleCallback implements Colle
         return frameTimeCallback.getFrameTimeNanos();
       }
     });
+  }
+
+  private void removeGauge() {
+    registry.remove(metricNamesGenerator.getFrameTimeMetricName());
   }
 }

@@ -20,6 +20,8 @@ class FpsCollector extends EmptyActivityLifecycleCallback implements Collector {
   private final Choreographer choreographer;
   private final FpsFrameCallback fpsFrameCallback;
 
+  private MetricRegistry registry;
+
   FpsCollector(MetricNamesGenerator metricNamesGenerator, Application application) {
     this.metricNamesGenerator = metricNamesGenerator;
     this.application = application;
@@ -34,15 +36,18 @@ class FpsCollector extends EmptyActivityLifecycleCallback implements Collector {
   }
 
   @Override public void onActivityResumed(Activity activity) {
+    initializeGauge(registry);
     choreographer.postFrameCallback(fpsFrameCallback);
   }
 
   @Override public void onActivityPaused(Activity activity) {
     choreographer.removeFrameCallback(fpsFrameCallback);
     fpsFrameCallback.reset();
+    removeGauge();
   }
 
   private void initializeGauge(MetricRegistry registry) {
+    this.registry = registry;
     String fpsMetricName = metricNamesGenerator.getFPSMetricName();
     registry.register(fpsMetricName, new Gauge<Double>() {
       @Override public Double getValue() {
@@ -50,5 +55,9 @@ class FpsCollector extends EmptyActivityLifecycleCallback implements Collector {
         return fpsFrameCallback.getFPS();
       }
     });
+  }
+
+  private void removeGauge() {
+    registry.remove(metricNamesGenerator.getFPSMetricName());
   }
 }

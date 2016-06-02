@@ -42,12 +42,16 @@ public class Kiru {
         initializeMetrics();
         new Handler(Looper.getMainLooper()).post(new Runnable() {
           @Override public void run() {
-            initializeFPSCollector();
-            initializeFrameTimeCollector();
+            initializeForegroundCollectors();
           }
         });
       }
     }).start();
+  }
+
+  private void initializeForegroundCollectors() {
+    initializeFPSCollector();
+    initializeFrameTimeCollector();
   }
 
   private boolean hasBeenInitialized() {
