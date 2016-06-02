@@ -5,6 +5,7 @@
 package com.karumi.kiru.metricnames;
 
 import android.content.Context;
+import android.support.graphics.drawable.BuildConfig;
 
 class App {
 
@@ -15,11 +16,11 @@ class App {
   }
 
   String getApplicationName() {
-    return "";
+    return context.getPackageName();
   }
 
   String getApplicationVersion() {
-    return "";
+    return String.valueOf(BuildConfig.VERSION_CODE);
   }
 
 }
