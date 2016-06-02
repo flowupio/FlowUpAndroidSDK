@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class) public class FpsFrameCallbackTests {
@@ -22,6 +23,32 @@ import static org.mockito.Mockito.verify;
 
   @Before public void setUp() {
     fpsFrameCallback = new FpsFrameCallback(choreographer);
+  }
+
+  @Test public void shouldCalculateTheNumberOfFramesPerSecondBasedOnTheAverageFrameTime() {
+    for (int i = 0; i < 60; i++) {
+      fpsFrameCallback.doFrame(160000000);
+    }
+
+    double framesPerSecond = fpsFrameCallback.getFPS();
+
+    assertEquals(62.5, framesPerSecond, 0.1);
+  }
+
+  @Test public void shouldCalculateTheNumberOfFramesPerSecondBasedOnJustOneFrameTime() {
+    fpsFrameCallback.doFrame(160000000);
+
+    double framesPerSecond = fpsFrameCallback.getFPS();
+
+    assertEquals(62.5, framesPerSecond, 0.1);
+  }
+
+  @Test public void shouldReturnZeroIfTheFrameCallbackHasBeenReset() {
+    fpsFrameCallback.doFrame(ANY_FRAME_TIME);
+
+    fpsFrameCallback.reset();
+
+    assertEquals(0, fpsFrameCallback.getFPS(), 0.1);
   }
 
   @Test public void shouldPostAnotherCallbackToTheChoreographerAfterTheDoFrameExecution() {

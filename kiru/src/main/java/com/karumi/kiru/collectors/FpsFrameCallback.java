@@ -11,7 +11,7 @@ class FpsFrameCallback implements Choreographer.FrameCallback {
   private final Choreographer choreographer;
 
   private long numberOfFrames = 0;
-  private long frameTimeNanos = 0;
+  private double frameTimeNanos = 0;
 
   FpsFrameCallback(Choreographer choreographer) {
     this.choreographer = choreographer;
@@ -23,9 +23,12 @@ class FpsFrameCallback implements Choreographer.FrameCallback {
     choreographer.postFrameCallback(this);
   }
 
-  int getFPS() {
-    long averageFrameTime = frameTimeNanos / numberOfFrames;
-    return (int) (1000000000 / averageFrameTime);
+  double getFPS() {
+    if (numberOfFrames == 0) {
+      return 0;
+    }
+
+    return (numberOfFrames / frameTimeNanos) * 10000000000L;
   }
 
   void reset() {

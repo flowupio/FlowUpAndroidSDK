@@ -44,8 +44,8 @@ class FpsCollector extends EmptyActivityLifecycleCallback implements Collector {
 
   private void initializeGauge(MetricRegistry registry) {
     String fpsMetricName = metricNamesGenerator.getFPSMetricName();
-    registry.register(fpsMetricName, new Gauge<Integer>() {
-      @Override public Integer getValue() {
+    registry.register(fpsMetricName, new Gauge<Double>() {
+      @Override public Double getValue() {
         Log.d("KIRU", "Collecting FPS metric-> " + fpsFrameCallback.getFPS());
         return fpsFrameCallback.getFPS();
       }
