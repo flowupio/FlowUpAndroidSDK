@@ -16,7 +16,7 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class) public class FrameTimeCallbackTest {
 
-  private static final long ANY_FRAME_TIME = 11;
+  private static final long ANY_FRAME_TIME = 11000000000L;
 
   private FrameTimeCallback frameTimeCallback;
   @Mock private Choreographer choreographer;
@@ -26,13 +26,13 @@ import static org.mockito.Mockito.verify;
   }
 
   @Test public void shouldCalculateTheAverageFrameTime() {
-    frameTimeCallback.doFrame(15);
-    frameTimeCallback.doFrame(20);
-    frameTimeCallback.doFrame(30);
+    frameTimeCallback.doFrame(15000000000L);
+    frameTimeCallback.doFrame(20000000000L);
+    frameTimeCallback.doFrame(30000000000L);
 
-    long frameTimeNanos = frameTimeCallback.getFrameTimeNanos();
+    long frameTimeNanos = frameTimeCallback.getFrameTime();
 
-    assertEquals(21, frameTimeNanos);
+    assertEquals(7500000000L, frameTimeNanos);
   }
 
   @Test public void shouldReturnZeroAsFrameTimeIfTheCallbackHasBeenReset() {
@@ -40,7 +40,7 @@ import static org.mockito.Mockito.verify;
 
     frameTimeCallback.reset();
 
-    long frameTimeNanos = frameTimeCallback.getFrameTimeNanos();
+    long frameTimeNanos = frameTimeCallback.getFrameTime();
     assertEquals(0, frameTimeNanos);
   }
 

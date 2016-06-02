@@ -27,20 +27,21 @@ import static org.mockito.Mockito.verify;
 
   @Test public void shouldCalculateTheNumberOfFramesPerSecondBasedOnTheAverageFrameTime() {
     for (int i = 0; i < 60; i++) {
-      fpsFrameCallback.doFrame(160000000);
+      fpsFrameCallback.doFrame(16000000 * (i+1));
     }
 
     double framesPerSecond = fpsFrameCallback.getFPS();
 
-    assertEquals(62.5, framesPerSecond, 0.1);
+    assertEquals(62, framesPerSecond, 0.1);
   }
 
   @Test public void shouldCalculateTheNumberOfFramesPerSecondBasedOnJustOneFrameTime() {
-    fpsFrameCallback.doFrame(160000000);
+    fpsFrameCallback.doFrame(16000000);
+    fpsFrameCallback.doFrame(16000000 * 2);
 
     double framesPerSecond = fpsFrameCallback.getFPS();
 
-    assertEquals(62.5, framesPerSecond, 0.1);
+    assertEquals(62, framesPerSecond, 0.1);
   }
 
   @Test public void shouldReturnZeroIfTheFrameCallbackHasBeenReset() {

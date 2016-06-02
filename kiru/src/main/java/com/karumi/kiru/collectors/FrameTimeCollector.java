@@ -51,8 +51,10 @@ class FrameTimeCollector extends EmptyActivityLifecycleCallback implements Colle
     String fpsMetricName = metricNamesGenerator.getFrameTimeMetricName();
     registry.register(fpsMetricName, new Gauge<Long>() {
       @Override public Long getValue() {
-        Log.d("KIRU", "Collecting frame time metric-> " + frameTimeCallback.getFrameTimeNanos());
-        return frameTimeCallback.getFrameTimeNanos();
+        long frameTimeNanos = frameTimeCallback.getFrameTime();
+        frameTimeCallback.reset();
+        Log.d("KIRU", "Collecting frame time metric-> " + frameTimeNanos);
+        return frameTimeNanos;
       }
     });
   }
