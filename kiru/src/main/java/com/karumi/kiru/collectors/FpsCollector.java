@@ -11,7 +11,6 @@ import android.view.Choreographer;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.MetricRegistry;
 import com.karumi.kiru.android.EmptyActivityLifecycleCallback;
-import com.karumi.kiru.android.FpsFrameCallback;
 import com.karumi.kiru.metricnames.MetricNamesGenerator;
 
 class FpsCollector extends EmptyActivityLifecycleCallback implements Collector {

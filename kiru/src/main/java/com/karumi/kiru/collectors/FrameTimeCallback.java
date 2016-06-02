@@ -2,18 +2,18 @@
  * Copyright (C) 2016 Go Karumi S.L.
  */
 
-package com.karumi.kiru.android;
+package com.karumi.kiru.collectors;
 
 import android.view.Choreographer;
 
-public class FrameTimeCallback implements Choreographer.FrameCallback {
+class FrameTimeCallback implements Choreographer.FrameCallback {
 
   private final Choreographer choreographer;
 
   private long numberOfFrames = 0;
   private long frameTimeNanos = 0;
 
-  public FrameTimeCallback(Choreographer choreographer) {
+  FrameTimeCallback(Choreographer choreographer) {
     this.choreographer = choreographer;
   }
 
@@ -23,11 +23,11 @@ public class FrameTimeCallback implements Choreographer.FrameCallback {
     choreographer.postFrameCallback(this);
   }
 
-  public long getFrameTimeNanos() {
+  long getFrameTimeNanos() {
     return frameTimeNanos / numberOfFrames;
   }
 
-  public void reset() {
+  void reset() {
     numberOfFrames = 0;
     frameTimeNanos = 0;
   }

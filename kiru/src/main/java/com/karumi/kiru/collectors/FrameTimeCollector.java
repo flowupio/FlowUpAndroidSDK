@@ -11,7 +11,6 @@ import android.view.Choreographer;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.MetricRegistry;
 import com.karumi.kiru.android.EmptyActivityLifecycleCallback;
-import com.karumi.kiru.android.FrameTimeCallback;
 import com.karumi.kiru.metricnames.MetricNamesGenerator;
 
 class FrameTimeCollector extends EmptyActivityLifecycleCallback implements Collector {
