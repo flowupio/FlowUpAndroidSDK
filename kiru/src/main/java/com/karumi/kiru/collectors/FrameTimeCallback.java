@@ -24,6 +24,9 @@ class FrameTimeCallback implements Choreographer.FrameCallback {
   }
 
   long getFrameTimeNanos() {
+    if(numberOfFrames == 0) {
+      return 0;
+    }
     return frameTimeNanos / numberOfFrames;
   }
 
