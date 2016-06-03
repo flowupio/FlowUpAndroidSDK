@@ -5,7 +5,6 @@
 package com.karumi.kiru.example;
 
 import android.app.Application;
-import android.net.TrafficStats;
 import com.karumi.kiru.Kiru;
 
 public class KiruApplication extends Application {
