@@ -26,7 +26,11 @@ public class MetricNamesGenerator {
   }
 
   public String getHttpBytesDownloadedMetricsName() {
-    return MetricRegistry.name(appendCrossMetricInfo("http.bytesSent"));
+    return MetricRegistry.name(appendCrossMetricInfo("http.bytesDownloaded"));
+  }
+
+  public String getHttpBytesUploadedMetricsName() {
+    return MetricRegistry.name(appendCrossMetricInfo("http.bytesUploaded"));
   }
 
   private String appendCrossMetricInfo(String metricName) {

@@ -54,16 +54,6 @@ public class Kiru {
     return registry != null;
   }
 
-  private void initializeForegroundCollectors() {
-    initializeFPSCollector();
-    initializeFrameTimeCollector();
-  }
-
-  private void initializeHttpCollectors() {
-    Collector httpBytesDownloadedCollector = Collectors.getHttpBytesDownloadedCollector(application);
-    httpBytesDownloadedCollector.initialize(registry);
-  }
-
   private void initializeMetrics() {
     Graphite graphite = new Graphite(new InetSocketAddress("carbon.hostedgraphite.com", 2003));
     registry = new MetricRegistry();
@@ -76,6 +66,11 @@ public class Kiru {
     reporter.start(10, TimeUnit.SECONDS);
   }
 
+  private void initializeForegroundCollectors() {
+    initializeFPSCollector();
+    initializeFrameTimeCollector();
+  }
+
   private void initializeFPSCollector() {
     Collector fpsCollector = Collectors.getFPSCollector(application);
     fpsCollector.initialize(registry);
@@ -84,5 +79,12 @@ public class Kiru {
   private void initializeFrameTimeCollector() {
     Collector frameTimeCollector = Collectors.getFrameTimeCollector(application);
     frameTimeCollector.initialize(registry);
+  }
+
+  private void initializeHttpCollectors() {
+    Collector httpBytesDownloadedCollector = Collectors.getHttpBytesDownloadedCollector(application);
+    httpBytesDownloadedCollector.initialize(registry);
+    Collector httpBytesUploadedCollector = Collectors.getHttpBytesUploadedCollector(application);
+    httpBytesUploadedCollector.initialize(registry);
   }
 }

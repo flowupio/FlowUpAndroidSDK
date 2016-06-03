@@ -20,4 +20,8 @@ public class Collectors {
   public static Collector getHttpBytesDownloadedCollector(Application application) {
     return new HttpBytesDownloadedCollector(new MetricNamesGenerator(application));
   }
+
+  public static Collector getHttpBytesUploadedCollector(Application application) {
+    return new HttpBytesUploadedCollector(new MetricNamesGenerator(application));
+  }
 }
