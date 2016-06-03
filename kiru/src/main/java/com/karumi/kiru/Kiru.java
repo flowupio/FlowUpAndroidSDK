@@ -56,10 +56,15 @@ public class Kiru {
   }
 
   private void initializeMetrics() {
-    Graphite graphite = new Graphite(new InetSocketAddress("carbon.hostedgraphite.com", 2003));
     registry = new MetricRegistry();
-    ConsoleReporter reporter = ConsoleReporter.forRegistry(registry).build();
-
+    //ConsoleReporter reporter = ConsoleReporter.forRegistry(registry).build();
+    Graphite graphite = new Graphite(new InetSocketAddress("carbon.hostedgraphite.com", 2003));
+    GraphiteReporter reporter = GraphiteReporter.forRegistry(registry)
+        .prefixedWith("6f9a168a-ea09-4fdd-8d11-b4c2c36f14e0")
+        .convertRatesTo(TimeUnit.SECONDS)
+        .convertDurationsTo(TimeUnit.MILLISECONDS)
+        .filter(MetricFilter.ALL)
+        .build(graphite);
     reporter.start(10, TimeUnit.SECONDS);
   }
 
