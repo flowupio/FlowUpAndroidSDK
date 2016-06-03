@@ -19,4 +19,11 @@
       android:layout_height="wrap_content"
       android:text="Hello World!"
       />
+
+  <ProgressBar
+      android:layout_width="30dp"
+      android:layout_height="30dp"
+      android:layout_centerHorizontal="true"
+      android:layout_centerVertical="true"
+      />
 </RelativeLayout>
