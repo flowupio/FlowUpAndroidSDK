@@ -6,7 +6,7 @@ package com.karumi.kiru.collectors;
 
 import android.view.Choreographer;
 
-class FpsFrameCallback extends FrameTimeCallback implements Choreographer.FrameCallback {
+class FpsFrameCallback extends FrameTimeCallback {
 
   FpsFrameCallback(Choreographer choreographer) {
     super(choreographer);

@@ -38,8 +38,4 @@ class FrameTimeCallback implements Choreographer.FrameCallback {
     numberOfFrames = 0;
     accumulatedFrameTime = 0;
   }
-
-  protected long getNumberOfFrames() {
-    return numberOfFrames;
-  }
 }
