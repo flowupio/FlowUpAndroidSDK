@@ -10,10 +10,10 @@ import com.karumi.kiru.metricnames.MetricNamesGenerator;
 public class CollectorsFactory {
 
   public static Collector getFPSCollector(Application application) {
-    return new FpsCollector(new MetricNamesGenerator(application), application);
+    return new FpsCollector(application, new MetricNamesGenerator(application));
   }
 
   public static Collector getFrameTimeCollector(Application application) {
-    return new FrameTimeCollector(new MetricNamesGenerator(application), application);
+    return new FrameTimeCollector(application, new MetricNamesGenerator(application));
   }
 }

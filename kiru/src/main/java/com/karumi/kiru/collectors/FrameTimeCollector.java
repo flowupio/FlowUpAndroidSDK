@@ -4,50 +4,43 @@
 
 package com.karumi.kiru.collectors;
 
-import android.app.Activity;
 import android.app.Application;
 import android.util.Log;
 import android.view.Choreographer;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.MetricRegistry;
-import com.karumi.kiru.android.EmptyActivityLifecycleCallback;
 import com.karumi.kiru.metricnames.MetricNamesGenerator;
 
-class FrameTimeCollector extends EmptyActivityLifecycleCallback implements Collector {
+class FrameTimeCollector extends ApplicationLifecycleCollector implements Collector {
 
   private final MetricNamesGenerator metricNamesGenerator;
-  private final Application application;
   private final Choreographer choreographer;
   private final FrameTimeCallback frameTimeCallback;
 
   private MetricRegistry registry;
 
-  FrameTimeCollector(MetricNamesGenerator metricNamesGenerator, Application application) {
+  FrameTimeCollector(Application application, MetricNamesGenerator metricNamesGenerator) {
+    super(application);
     this.metricNamesGenerator = metricNamesGenerator;
-    this.application = application;
     this.choreographer = Choreographer.getInstance();
     this.frameTimeCallback = new FrameTimeCallback(choreographer);
   }
 
   @Override public void initialize(MetricRegistry registry) {
-    application.registerActivityLifecycleCallbacks(this);
+    super.initialize(registry);
     initializeGauge(registry);
     choreographer.postFrameCallback(frameTimeCallback);
   }
 
-  @Override public void onActivityResumed(Activity activity) {
-    if (activity.isTaskRoot()) {
-      initializeGauge(registry);
-      choreographer.postFrameCallback(frameTimeCallback);
-    }
+  @Override protected void onApplicationResumed() {
+    initializeGauge(registry);
+    choreographer.postFrameCallback(frameTimeCallback);
   }
 
-  @Override public void onActivityPaused(Activity activity) {
-    if (activity.isTaskRoot()) {
-      choreographer.removeFrameCallback(frameTimeCallback);
-      frameTimeCallback.reset();
-      removeGauge();
-    }
+  @Override protected void onApplicationPaused() {
+    choreographer.removeFrameCallback(frameTimeCallback);
+    frameTimeCallback.reset();
+    removeGauge();
   }
 
   private void initializeGauge(MetricRegistry registry) {
