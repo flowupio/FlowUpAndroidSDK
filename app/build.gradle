@@ -25,4 +25,5 @@ android {
 dependencies {
   compile project(':kiru')
   compile 'com.android.support:appcompat-v7:23.2.1'
+  compile 'com.karumi:marvelapiclient:0.0.4'
 }
