@@ -25,6 +25,10 @@ public class MetricNamesGenerator {
     return MetricRegistry.name(appendCrossMetricInfo("ui.performance.frameTime"));
   }
 
+  public String getHttpBytesDownloadedMetricsName() {
+    return MetricRegistry.name(appendCrossMetricInfo("http.bytesSent"));
+  }
+
   private String appendCrossMetricInfo(String metricName) {
     return app.getApplicationName()
         + "."
