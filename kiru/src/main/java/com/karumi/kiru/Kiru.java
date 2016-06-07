@@ -7,7 +7,6 @@ package com.karumi.kiru;
 import android.app.Application;
 import android.os.Handler;
 import android.os.Looper;
-import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.graphite.Graphite;
@@ -84,7 +83,8 @@ public class Kiru {
   }
 
   private void initializeHttpCollectors() {
-    Collector httpBytesDownloadedCollector = Collectors.getHttpBytesDownloadedCollector(application);
+    Collector httpBytesDownloadedCollector =
+        Collectors.getHttpBytesDownloadedCollector(application);
     httpBytesDownloadedCollector.initialize(registry);
     Collector httpBytesUploadedCollector = Collectors.getHttpBytesUploadedCollector(application);
     httpBytesUploadedCollector.initialize(registry);
