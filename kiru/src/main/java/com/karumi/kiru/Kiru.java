@@ -12,7 +12,7 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.graphite.Graphite;
 import com.codahale.metrics.graphite.GraphiteReporter;
 import com.karumi.kiru.collectors.Collector;
-import com.karumi.kiru.collectors.CollectorsFactory;
+import com.karumi.kiru.collectors.Collectors;
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 
@@ -43,15 +43,11 @@ public class Kiru {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
           @Override public void run() {
             initializeForegroundCollectors();
+            initializeHttpCollectors();
           }
         });
       }
     }).start();
-  }
-
-  private void initializeForegroundCollectors() {
-    initializeFPSCollector();
-    initializeFrameTimeCollector();
   }
 
   private boolean hasBeenInitialized() {
@@ -59,8 +55,9 @@ public class Kiru {
   }
 
   private void initializeMetrics() {
-    Graphite graphite = new Graphite(new InetSocketAddress("carbon.hostedgraphite.com", 2003));
     registry = new MetricRegistry();
+    //ConsoleReporter reporter = ConsoleReporter.forRegistry(registry).build();
+    Graphite graphite = new Graphite(new InetSocketAddress("carbon.hostedgraphite.com", 2003));
     GraphiteReporter reporter = GraphiteReporter.forRegistry(registry)
         .prefixedWith("6f9a168a-ea09-4fdd-8d11-b4c2c36f14e0")
         .convertRatesTo(TimeUnit.SECONDS)
@@ -70,13 +67,26 @@ public class Kiru {
     reporter.start(10, TimeUnit.SECONDS);
   }
 
+  private void initializeForegroundCollectors() {
+    initializeFPSCollector();
+    initializeFrameTimeCollector();
+  }
+
   private void initializeFPSCollector() {
-    Collector fpsCollector = CollectorsFactory.getFPSCollector(application);
+    Collector fpsCollector = Collectors.getFPSCollector(application);
     fpsCollector.initialize(registry);
   }
 
   private void initializeFrameTimeCollector() {
-    Collector frameTimeCollector = CollectorsFactory.getFrameTimeCollector(application);
+    Collector frameTimeCollector = Collectors.getFrameTimeCollector(application);
     frameTimeCollector.initialize(registry);
+  }
+
+  private void initializeHttpCollectors() {
+    Collector httpBytesDownloadedCollector =
+        Collectors.getHttpBytesDownloadedCollector(application);
+    httpBytesDownloadedCollector.initialize(registry);
+    Collector httpBytesUploadedCollector = Collectors.getHttpBytesUploadedCollector(application);
+    httpBytesUploadedCollector.initialize(registry);
   }
 }
