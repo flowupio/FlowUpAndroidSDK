@@ -5,7 +5,7 @@ android {
   buildToolsVersion "23.0.1"
 
   defaultConfig {
-    applicationId "com.karumi.kiru.example"
+    applicationId "com.flowup.example"
     minSdkVersion 16
     targetSdkVersion 23
     versionCode 1
@@ -23,7 +23,7 @@ android {
 }
 
 dependencies {
-  compile project(':kiru')
+  compile project(':flowup')
   compile 'com.android.support:appcompat-v7:23.2.1'
   compile 'com.karumi:marvelapiclient:0.0.4'
 }
