@@ -1,1 +1,1 @@
-include ':app', ':kiru'
+include ':app', ':flowup'
