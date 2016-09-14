@@ -5,7 +5,7 @@ android {
   buildToolsVersion "23.0.1"
 
   defaultConfig {
-    applicationId "com.karumi.kiru.example"
+    applicationId "com.flowup.example"
     minSdkVersion 16
     targetSdkVersion 23
     versionCode 1
