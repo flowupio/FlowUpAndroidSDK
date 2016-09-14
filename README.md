@@ -1,5 +1,4 @@
-![Karumi logo][karumilogo]FlowUp [![Build Status](https://travis-ci.com/Karumi/FlowUpAndroidSDK
-.svg?token=Kb2RqPaWxFZ8XPxpqvqz&branch=master)](https://travis-ci.com/Karumi/FlowUpAndroidSDK)
+![Karumi logo][karumilogo]FlowUp [![Build Status](https://travis-ci.com/Karumi/FlowUpAndroidSDK.svg?token=Kb2RqPaWxFZ8XPxpqvqz&branch=master)](https://travis-ci.com/Karumi/FlowUpAndroidSDK)
 ==============================
 
 Android library to collect performance metrics easily.
