@@ -60,14 +60,14 @@ public class FlowUp {
     registry = new MetricRegistry();
     initializeConsoleReporter();
     initializeHostedGraphiteReporter();
-    initializeKarumiGraphiteReporter();
+    initializeKarumiStatsDReporter();
   }
 
   private void initializeConsoleReporter() {
     ConsoleReporter.forRegistry(registry).build().start(10, TimeUnit.SECONDS);
   }
 
-  private void initializeKarumiGraphiteReporter() {
+  private void initializeKarumiStatsDReporter() {
     StatsDReporter.forRegistry(registry)
         .convertRatesTo(TimeUnit.SECONDS)
         .convertDurationsTo(TimeUnit.MILLISECONDS)
