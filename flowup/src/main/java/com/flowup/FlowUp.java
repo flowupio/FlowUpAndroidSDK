@@ -7,6 +7,7 @@ package com.flowup;
 import android.app.Application;
 import android.os.Handler;
 import android.os.Looper;
+import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.graphite.Graphite;
@@ -57,9 +58,13 @@ public class FlowUp {
 
   private void initializeMetrics() {
     registry = new MetricRegistry();
-    //ConsoleReporter reporter = ConsoleReporter.forRegistry(registry).build();
+    initializeConsoleReporter();
     initializeHostedGraphiteReporter();
     initializeKarumiGraphiteReporter();
+  }
+
+  private void initializeConsoleReporter() {
+    ConsoleReporter.forRegistry(registry).build().start(10, TimeUnit.SECONDS);
   }
 
   private void initializeKarumiGraphiteReporter() {
