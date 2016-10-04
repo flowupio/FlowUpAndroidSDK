@@ -1,3 +1,4 @@
 <resources>
   <string name="app_name">FlowUp</string>
+  <string name="unknown_version_name_cross_metric_name">unknown</string>
 </resources>
