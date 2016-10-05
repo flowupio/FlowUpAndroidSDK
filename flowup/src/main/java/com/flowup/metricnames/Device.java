@@ -46,8 +46,10 @@ class Device {
 
   String getScreenSize() {
     DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-    int width = displayMetrics.widthPixels;
-    int height = displayMetrics.heightPixels;
-    return width + "X" + height;
+    int widthPixels = displayMetrics.widthPixels;
+    int heightPixels = displayMetrics.heightPixels;
+    int portraitWidth = Math.min(widthPixels, heightPixels);
+    int portraitHeight = Math.max(widthPixels, heightPixels);
+    return portraitWidth + "X" + portraitHeight;
   }
 }
