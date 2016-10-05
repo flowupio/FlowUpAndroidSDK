@@ -5,14 +5,14 @@
 package com.flowup.collectors;
 
 import android.view.Choreographer;
-
+import com.codahale.metrics.Histogram;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class) public class FpsFrameCallbackTests {
@@ -21,36 +21,27 @@ import static org.mockito.Mockito.verify;
 
   private FpsFrameCallback fpsFrameCallback;
   @Mock private Choreographer choreographer;
+  @Mock private Histogram histogram;
 
   @Before public void setUp() {
-    fpsFrameCallback = new FpsFrameCallback(choreographer);
-  }
-
-  @Test public void shouldCalculateTheNumberOfFramesPerSecondBasedOnTheAverageFrameTime() {
-    for (int i = 0; i < 60; i++) {
-      fpsFrameCallback.doFrame(16000000 * (i + 1));
-    }
-
-    double framesPerSecond = fpsFrameCallback.getFPS();
-
-    assertEquals(62, framesPerSecond, 0.1);
+    fpsFrameCallback = new FpsFrameCallback(histogram, choreographer);
   }
 
   @Test public void shouldCalculateTheNumberOfFramesPerSecondBasedOnJustOneFrameTime() {
     fpsFrameCallback.doFrame(16000000);
     fpsFrameCallback.doFrame(16000000 * 2);
 
-    double framesPerSecond = fpsFrameCallback.getFPS();
-
-    assertEquals(62, framesPerSecond, 0.1);
+    verify(histogram).update(62);
   }
 
-  @Test public void shouldReturnZeroIfTheFrameCallbackHasBeenReset() {
-    fpsFrameCallback.doFrame(ANY_FRAME_TIME);
+  @Test public void shouldCalculateSomeFramesPerSecondIfThereIsMoreThanOneDoFrameCalls() {
+    fpsFrameCallback.doFrame(16000000);
 
-    fpsFrameCallback.reset();
+    for (int i = 2; i <= 10; i++) {
+      fpsFrameCallback.doFrame(16000000 * i);
+    }
 
-    assertEquals(0, fpsFrameCallback.getFPS(), 0.1);
+    verify(histogram, times(9)).update(62);
   }
 
   @Test public void shouldPostAnotherCallbackToTheChoreographerAfterTheDoFrameExecution() {

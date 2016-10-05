@@ -4,19 +4,23 @@
 
 package com.flowup.collectors;
 
+import android.util.Log;
 import android.view.Choreographer;
+import com.codahale.metrics.Histogram;
+import com.flowup.android.LastFrameTimeCallback;
 
-class FpsFrameCallback extends FrameTimeCallback {
+class FpsFrameCallback extends LastFrameTimeCallback {
 
-  FpsFrameCallback(Choreographer choreographer) {
+  private final Histogram histogram;
+
+  FpsFrameCallback(Histogram histogram, Choreographer choreographer) {
     super(choreographer);
+    this.histogram = histogram;
   }
 
-  double getFPS() {
-    if (getFrameTime() == 0) {
-      return 0;
-    }
-
-    return 1000000000L / getFrameTime();
+  @Override protected void onFrameTimeMeasured(long frameTimeMillis) {
+    double fps = 1000d / frameTimeMillis;
+    Log.d("FlowUp", "Collecting FPS -> " + fps);
+    histogram.update((int) fps);
   }
 }
