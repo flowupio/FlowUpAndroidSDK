@@ -4,6 +4,7 @@
 
 package com.flowup.metricnames;
 
+import android.app.Activity;
 import android.content.Context;
 import com.codahale.metrics.MetricRegistry;
 
@@ -17,12 +18,14 @@ public class MetricNamesGenerator {
     this.device = new Device(context);
   }
 
-  public String getFPSMetricName() {
-    return MetricRegistry.name(appendCrossMetricInfo("ui.performance.fps"));
+  public String getFPSMetricName(Activity activity) {
+    String activityName = getActivityName(activity);
+    return MetricRegistry.name(appendCrossMetricInfo("ui.performance.fps." + activityName));
   }
 
-  public String getFrameTimeMetricName() {
-    return MetricRegistry.name(appendCrossMetricInfo("ui.performance.frameTime"));
+  public String getFrameTimeMetricName(Activity activity) {
+    String activityName = getActivityName(activity);
+    return MetricRegistry.name(appendCrossMetricInfo("ui.performance.frameTime." + activityName));
   }
 
   public String getHttpBytesDownloadedMetricsName() {
@@ -31,6 +34,10 @@ public class MetricNamesGenerator {
 
   public String getHttpBytesUploadedMetricsName() {
     return MetricRegistry.name(appendCrossMetricInfo("http.bytesUploaded"));
+  }
+
+  private String getActivityName(Activity activity) {
+    return activity.getClass().getSimpleName();
   }
 
   private String appendCrossMetricInfo(String metricName) {
