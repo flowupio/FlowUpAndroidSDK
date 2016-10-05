@@ -18,7 +18,9 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class) public class FrameTimeCallbackTest {
 
-  private static final long ANY_FRAME_TIME = 11000000000L;
+  private static final long SIXTEEN_MILLISECONDS = 16000000;
+  private static final int PERFECT_FRAME_TIME_IN_MILLISECONDS = 16;
+  private static final int ANY_NUMBER_OF_FRAMES = 10;
 
   private FrameTimeCallback frameTimeCallback;
   @Mock private Choreographer choreographer;
@@ -29,23 +31,24 @@ import static org.mockito.Mockito.verify;
   }
 
   @Test public void shouldCalculateTheAverageFrameTime() {
-    frameTimeCallback.doFrame(16000000L);
-    frameTimeCallback.doFrame(16000000L * 2);
+    frameTimeCallback.doFrame(SIXTEEN_MILLISECONDS);
+    frameTimeCallback.doFrame(SIXTEEN_MILLISECONDS * 2);
 
-    verify(timer).update(16, TimeUnit.MILLISECONDS);
+    verify(timer).update(PERFECT_FRAME_TIME_IN_MILLISECONDS, TimeUnit.MILLISECONDS);
   }
 
-  @Test
-  public void shouldCalculateSomeFramesTimesIfThereIsMoreThanOneDoFrameCalls() {
-    for (int i = 1; i <= 10; i++) {
-      frameTimeCallback.doFrame(16000000 * i);
+  @Test public void shouldCalculateSomeFramesTimesIfThereIsMoreThanOneDoFrameCalls() {
+    int doFrameInvocations = ANY_NUMBER_OF_FRAMES;
+    for (int i = 1; i <= doFrameInvocations; i++) {
+      frameTimeCallback.doFrame(SIXTEEN_MILLISECONDS * i);
     }
 
-    verify(timer, times(9)).update(16, TimeUnit.MILLISECONDS);
+    verify(timer, times(doFrameInvocations - 1)).update(PERFECT_FRAME_TIME_IN_MILLISECONDS,
+        TimeUnit.MILLISECONDS);
   }
 
   @Test public void shouldPostAnotherCallbackToTheChoreographerAfterTheDoFrameExecution() {
-    frameTimeCallback.doFrame(ANY_FRAME_TIME);
+    frameTimeCallback.doFrame(SIXTEEN_MILLISECONDS);
 
     verify(choreographer).postFrameCallback(frameTimeCallback);
   }
