@@ -11,9 +11,11 @@ import android.util.DisplayMetrics;
 class Device {
 
   private final Context context;
+  private final UUIDGenerator uuidGenerator;
 
   Device(Context context) {
     this.context = context;
+    this.uuidGenerator = new UUIDGenerator(context);
   }
 
   String getOSVersion() {
@@ -51,5 +53,9 @@ class Device {
     int portraitWidth = Math.min(widthPixels, heightPixels);
     int portraitHeight = Math.max(widthPixels, heightPixels);
     return portraitWidth + "X" + portraitHeight;
+  }
+
+  String getUUID() {
+    return uuidGenerator.getUUID();
   }
 }
