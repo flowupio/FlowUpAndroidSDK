@@ -6,7 +6,6 @@ package com.flowup.collectors;
 
 import android.app.Application;
 import android.view.Choreographer;
-import com.codahale.metrics.Counter;
 import com.codahale.metrics.Histogram;
 import com.codahale.metrics.MetricRegistry;
 import com.flowup.metricnames.MetricNamesGenerator;
