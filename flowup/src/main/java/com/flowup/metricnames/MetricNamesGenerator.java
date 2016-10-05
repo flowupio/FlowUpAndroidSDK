@@ -47,6 +47,8 @@ public class MetricNamesGenerator {
         + "."
         + device.getOSVersion()
         + "."
+        + device.getUUID()
+        + "."
         + device.getModel()
         + "."
         + device.getScreenDensity()
