@@ -22,19 +22,19 @@ class UUIDGenerator {
   }
 
   String getUUID() {
-    String uuid = getUUIDFromSharedPreferences();
-    if (uuid.isEmpty()) {
-      uuid = generateAndSaveUUID();
+    String uuid = "";
+    synchronized (GENERATOR_LOCK) {
+      uuid = getUUIDFromSharedPreferences();
+      if (uuid.isEmpty()) {
+        uuid = generateAndSaveUUID();
+      }
     }
     return uuid;
   }
 
   private String generateAndSaveUUID() {
-    String uuid = "";
-    synchronized (GENERATOR_LOCK) {
-      uuid = UUID.randomUUID().toString();
-      saveUUID(uuid);
-    }
+    String uuid = UUID.randomUUID().toString();
+    saveUUID(uuid);
     return uuid;
   }
 
