@@ -15,8 +15,6 @@ import java.util.concurrent.TimeUnit;
 
 public class FlowUp {
 
-  private static final String LOGTAG = "FlowUp";
-
   private final Application application;
   private static MetricRegistry registry;
 
