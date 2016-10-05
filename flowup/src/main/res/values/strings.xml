@@ -1,4 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2016 Go Karumi S.L.
+  -->
 <resources>
-  <string name="app_name">FlowUp</string>
-  <string name="unknown_version_name_cross_metric_name">unknown</string>
+  <string translatable="false" name="app_name">FlowUp</string>
+  <string translatable="false" name="unknown_version_name_cross_metric_name">unknown</string>
 </resources>

@@ -4,59 +4,43 @@
 
 package com.flowup.collectors;
 
+import android.app.Activity;
 import android.app.Application;
-import android.util.Log;
 import android.view.Choreographer;
-import com.codahale.metrics.Gauge;
 import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
 import com.flowup.metricnames.MetricNamesGenerator;
 
 class FrameTimeCollector extends ApplicationLifecycleCollector implements Collector {
 
   private final MetricNamesGenerator metricNamesGenerator;
   private final Choreographer choreographer;
-  private final FrameTimeCallback frameTimeCallback;
 
-  private MetricRegistry registry;
+  private FrameTimeCallback frameTimeCallback;
 
   FrameTimeCollector(Application application, MetricNamesGenerator metricNamesGenerator) {
     super(application);
     this.metricNamesGenerator = metricNamesGenerator;
     this.choreographer = Choreographer.getInstance();
-    this.frameTimeCallback = new FrameTimeCallback(choreographer);
   }
 
-  @Override public void initialize(MetricRegistry registry) {
-    super.initialize(registry);
-    initializeGauge(registry);
+  @Override protected void onApplicationResumed(Activity activity, MetricRegistry registry) {
+    Timer timer = initializeTimer(activity, registry);
+    frameTimeCallback = new FrameTimeCallback(timer, choreographer);
     choreographer.postFrameCallback(frameTimeCallback);
   }
 
-  @Override protected void onApplicationResumed() {
-    initializeGauge(registry);
-    choreographer.postFrameCallback(frameTimeCallback);
-  }
-
-  @Override protected void onApplicationPaused() {
+  @Override protected void onApplicationPaused(Activity activity, MetricRegistry registry) {
     choreographer.removeFrameCallback(frameTimeCallback);
-    frameTimeCallback.reset();
-    removeGauge();
+    removeTimer(activity, registry);
   }
 
-  private void initializeGauge(MetricRegistry registry) {
-    this.registry = registry;
-    String fpsMetricName = metricNamesGenerator.getFrameTimeMetricName();
-    registry.register(fpsMetricName, new Gauge<Long>() {
-      @Override public Long getValue() {
-        long frameTimeNanos = frameTimeCallback.getFrameTime();
-        frameTimeCallback.reset();
-        Log.d("FlowUp", "Collecting frame time metric-> " + frameTimeNanos);
-        return frameTimeNanos;
-      }
-    });
+  private Timer initializeTimer(Activity activity, MetricRegistry registry) {
+    String fpsMetricName = metricNamesGenerator.getFrameTimeMetricName(activity);
+    return registry.timer(fpsMetricName);
   }
 
-  private void removeGauge() {
-    registry.remove(metricNamesGenerator.getFrameTimeMetricName());
+  private void removeTimer(Activity activity, MetricRegistry registry) {
+    registry.remove(metricNamesGenerator.getFrameTimeMetricName(activity));
   }
 }

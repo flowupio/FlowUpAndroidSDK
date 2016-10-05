@@ -4,10 +4,10 @@
 
 package com.flowup.collectors;
 
+import android.app.Activity;
 import android.app.Application;
-import android.util.Log;
 import android.view.Choreographer;
-import com.codahale.metrics.Gauge;
+import com.codahale.metrics.Histogram;
 import com.codahale.metrics.MetricRegistry;
 import com.flowup.metricnames.MetricNamesGenerator;
 
@@ -15,48 +15,31 @@ class FpsCollector extends ApplicationLifecycleCollector implements Collector {
 
   private final MetricNamesGenerator metricNamesGenerator;
   private final Choreographer choreographer;
-  private final FpsFrameCallback fpsFrameCallback;
-
-  private MetricRegistry registry;
+  private FpsFrameCallback fpsFrameCallback;
 
   FpsCollector(Application application, MetricNamesGenerator metricNamesGenerator) {
     super(application);
     this.metricNamesGenerator = metricNamesGenerator;
     this.choreographer = Choreographer.getInstance();
-    this.fpsFrameCallback = new FpsFrameCallback(choreographer);
   }
 
-  @Override public void initialize(MetricRegistry registry) {
-    super.initialize(registry);
-    initializeGauge(registry);
+  @Override protected void onApplicationResumed(Activity activity, MetricRegistry registry) {
+    Histogram histogram = initializeHistogram(activity, registry);
+    fpsFrameCallback = new FpsFrameCallback(histogram, choreographer);
     choreographer.postFrameCallback(fpsFrameCallback);
   }
 
-  @Override protected void onApplicationResumed() {
-    initializeGauge(registry);
-    choreographer.postFrameCallback(fpsFrameCallback);
-  }
-
-  @Override protected void onApplicationPaused() {
+  @Override protected void onApplicationPaused(Activity activity, MetricRegistry registry) {
     choreographer.removeFrameCallback(fpsFrameCallback);
-    fpsFrameCallback.reset();
-    removeGauge();
+    removeCounter(activity, registry);
   }
 
-  private void initializeGauge(MetricRegistry registry) {
-    this.registry = registry;
-    String fpsMetricName = metricNamesGenerator.getFPSMetricName();
-    registry.register(fpsMetricName, new Gauge<Double>() {
-      @Override public Double getValue() {
-        double fps = fpsFrameCallback.getFPS();
-        fpsFrameCallback.reset();
-        Log.d("FlowUp", "Collecting FPS metric-> " + fps);
-        return fps;
-      }
-    });
+  private Histogram initializeHistogram(Activity activity, MetricRegistry registry) {
+    String fpsMetricName = metricNamesGenerator.getFPSMetricName(activity);
+    return registry.histogram(fpsMetricName);
   }
 
-  private void removeGauge() {
-    registry.remove(metricNamesGenerator.getFPSMetricName());
+  private void removeCounter(Activity activity, MetricRegistry registry) {
+    registry.remove(metricNamesGenerator.getFPSMetricName(activity));
   }
 }

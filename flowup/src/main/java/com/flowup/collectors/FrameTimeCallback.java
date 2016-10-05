@@ -4,38 +4,24 @@
 
 package com.flowup.collectors;
 
+import android.util.Log;
 import android.view.Choreographer;
+import com.codahale.metrics.Timer;
+import com.flowup.android.LastFrameTimeCallback;
 
-class FrameTimeCallback implements Choreographer.FrameCallback {
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
-  private final Choreographer choreographer;
+class FrameTimeCallback extends LastFrameTimeCallback {
 
-  private long numberOfFrames = 0;
-  private long accumulatedFrameTime = 0;
-  private long lastFrameTimeNanos = 0;
+  private final Timer timer;
 
-  FrameTimeCallback(Choreographer choreographer) {
-    this.choreographer = choreographer;
+  FrameTimeCallback(Timer timer, Choreographer choreographer) {
+    super(choreographer);
+    this.timer = timer;
   }
 
-  @Override public void doFrame(long frameTimeNanos) {
-    if (lastFrameTimeNanos != 0) {
-      this.numberOfFrames++;
-      this.accumulatedFrameTime += frameTimeNanos - lastFrameTimeNanos;
-    }
-    this.lastFrameTimeNanos = frameTimeNanos;
-    choreographer.postFrameCallback(this);
-  }
-
-  long getFrameTime() {
-    if (numberOfFrames == 0) {
-      return 0;
-    }
-    return accumulatedFrameTime / numberOfFrames;
-  }
-
-  void reset() {
-    numberOfFrames = 0;
-    accumulatedFrameTime = 0;
+  @Override protected void onFrameTimeMeasured(long frameTimeMillis) {
+    Log.d("FlowUp", "Collecting frame time in milliseconds -> " + frameTimeMillis);
+    timer.update(frameTimeMillis, MILLISECONDS);
   }
 }

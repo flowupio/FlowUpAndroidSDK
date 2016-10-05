@@ -11,9 +11,11 @@ import android.util.DisplayMetrics;
 class Device {
 
   private final Context context;
+  private final UUIDGenerator uuidGenerator;
 
   Device(Context context) {
     this.context = context;
+    this.uuidGenerator = new UUIDGenerator(context);
   }
 
   String getOSVersion() {
@@ -46,8 +48,14 @@ class Device {
 
   String getScreenSize() {
     DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-    int width = displayMetrics.widthPixels;
-    int height = displayMetrics.heightPixels;
-    return width + "X" + height;
+    int widthPixels = displayMetrics.widthPixels;
+    int heightPixels = displayMetrics.heightPixels;
+    int portraitWidth = Math.min(widthPixels, heightPixels);
+    int portraitHeight = Math.max(widthPixels, heightPixels);
+    return portraitWidth + "X" + portraitHeight;
+  }
+
+  String getUUID() {
+    return uuidGenerator.getUUID();
   }
 }
