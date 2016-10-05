@@ -5,48 +5,50 @@
 package com.flowup.collectors;
 
 import android.view.Choreographer;
-
+import com.codahale.metrics.Timer;
+import java.util.concurrent.TimeUnit;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class) public class FrameTimeCallbackTest {
 
-  private static final long ANY_FRAME_TIME = 11000000000L;
+  private static final long SIXTEEN_MILLISECONDS = 16000000;
+  private static final int PERFECT_FRAME_TIME_IN_MILLISECONDS = 16;
+  private static final int ANY_NUMBER_OF_FRAMES = 10;
 
   private FrameTimeCallback frameTimeCallback;
   @Mock private Choreographer choreographer;
+  @Mock private Timer timer;
 
   @Before public void setUp() {
-    frameTimeCallback = new FrameTimeCallback(choreographer);
+    frameTimeCallback = new FrameTimeCallback(timer, choreographer);
   }
 
   @Test public void shouldCalculateTheAverageFrameTime() {
-    frameTimeCallback.doFrame(15000000000L);
-    frameTimeCallback.doFrame(20000000000L);
-    frameTimeCallback.doFrame(30000000000L);
+    frameTimeCallback.doFrame(SIXTEEN_MILLISECONDS);
+    frameTimeCallback.doFrame(SIXTEEN_MILLISECONDS * 2);
 
-    long frameTimeNanos = frameTimeCallback.getFrameTime();
-
-    assertEquals(7500000000L, frameTimeNanos);
+    verify(timer).update(PERFECT_FRAME_TIME_IN_MILLISECONDS, TimeUnit.MILLISECONDS);
   }
 
-  @Test public void shouldReturnZeroAsFrameTimeIfTheCallbackHasBeenReset() {
-    frameTimeCallback.doFrame(ANY_FRAME_TIME);
+  @Test public void shouldCalculateSomeFramesTimesIfThereIsMoreThanOneDoFrameCalls() {
+    int doFrameInvocations = ANY_NUMBER_OF_FRAMES;
+    for (int i = 1; i <= doFrameInvocations; i++) {
+      frameTimeCallback.doFrame(SIXTEEN_MILLISECONDS * i);
+    }
 
-    frameTimeCallback.reset();
-
-    long frameTimeNanos = frameTimeCallback.getFrameTime();
-    assertEquals(0, frameTimeNanos);
+    verify(timer, times(doFrameInvocations - 1)).update(PERFECT_FRAME_TIME_IN_MILLISECONDS,
+        TimeUnit.MILLISECONDS);
   }
 
   @Test public void shouldPostAnotherCallbackToTheChoreographerAfterTheDoFrameExecution() {
-    frameTimeCallback.doFrame(ANY_FRAME_TIME);
+    frameTimeCallback.doFrame(SIXTEEN_MILLISECONDS);
 
     verify(choreographer).postFrameCallback(frameTimeCallback);
   }

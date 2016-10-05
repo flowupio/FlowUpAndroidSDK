@@ -5,52 +5,45 @@
 package com.flowup.collectors;
 
 import android.view.Choreographer;
-
+import com.codahale.metrics.Histogram;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class) public class FpsFrameCallbackTests {
 
   private static final long ANY_FRAME_TIME = 11;
+  private static final long SIXTEEN_MILLISECONDS = 16000000;
+  private static final int PERFECT_FPS = 62;
+  private static final int ANY_NUMBER_OF_FRAMES = 10;
 
   private FpsFrameCallback fpsFrameCallback;
   @Mock private Choreographer choreographer;
+  @Mock private Histogram histogram;
 
   @Before public void setUp() {
-    fpsFrameCallback = new FpsFrameCallback(choreographer);
-  }
-
-  @Test public void shouldCalculateTheNumberOfFramesPerSecondBasedOnTheAverageFrameTime() {
-    for (int i = 0; i < 60; i++) {
-      fpsFrameCallback.doFrame(16000000 * (i + 1));
-    }
-
-    double framesPerSecond = fpsFrameCallback.getFPS();
-
-    assertEquals(62, framesPerSecond, 0.1);
+    fpsFrameCallback = new FpsFrameCallback(histogram, choreographer);
   }
 
   @Test public void shouldCalculateTheNumberOfFramesPerSecondBasedOnJustOneFrameTime() {
-    fpsFrameCallback.doFrame(16000000);
-    fpsFrameCallback.doFrame(16000000 * 2);
+    fpsFrameCallback.doFrame(SIXTEEN_MILLISECONDS);
+    fpsFrameCallback.doFrame(SIXTEEN_MILLISECONDS * 2);
 
-    double framesPerSecond = fpsFrameCallback.getFPS();
-
-    assertEquals(62, framesPerSecond, 0.1);
+    verify(histogram).update(PERFECT_FPS);
   }
 
-  @Test public void shouldReturnZeroIfTheFrameCallbackHasBeenReset() {
-    fpsFrameCallback.doFrame(ANY_FRAME_TIME);
+  @Test public void shouldCalculateSomeFramesPerSecondIfThereIsMoreThanOneDoFrameCalls() {
+    int numberOfDoFrameInvocations = ANY_NUMBER_OF_FRAMES;
+    for (int i = 1; i <= numberOfDoFrameInvocations; i++) {
+      fpsFrameCallback.doFrame(SIXTEEN_MILLISECONDS * i);
+    }
 
-    fpsFrameCallback.reset();
-
-    assertEquals(0, fpsFrameCallback.getFPS(), 0.1);
+    verify(histogram, times(numberOfDoFrameInvocations - 1)).update(PERFECT_FPS);
   }
 
   @Test public void shouldPostAnotherCallbackToTheChoreographerAfterTheDoFrameExecution() {

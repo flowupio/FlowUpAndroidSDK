@@ -27,21 +27,17 @@ abstract class ApplicationLifecycleCollector implements Collector {
     application.registerActivityLifecycleCallbacks(new EmptyActivityLifecycleCallback() {
       @Override public void onActivityResumed(Activity activity) {
         super.onActivityResumed(activity);
-        if (activity.isTaskRoot()) {
-          onApplicationResumed(registry);
-        }
+        onApplicationResumed(activity, registry);
       }
 
       @Override public void onActivityPaused(Activity activity) {
         super.onActivityPaused(activity);
-        if (activity.isTaskRoot()) {
-          onApplicationPaused(registry);
-        }
+        onApplicationPaused(activity, registry);
       }
     });
   }
 
-  protected abstract void onApplicationResumed(MetricRegistry registry);
+  protected abstract void onApplicationResumed(Activity activity, MetricRegistry registry);
 
-  protected abstract void onApplicationPaused(MetricRegistry registry);
+  protected abstract void onApplicationPaused(Activity activity, MetricRegistry registry);
 }
