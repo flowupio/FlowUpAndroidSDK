@@ -36,7 +36,7 @@ public class MetricNamesGenerator {
   private String appendCrossMetricInfo(String metricName) {
     return app.getApplicationName()
         + "."
-        + app.getApplicationVersion()
+        + app.getApplicationVersionName()
         + "."
         + device.getOSVersion()
         + "."

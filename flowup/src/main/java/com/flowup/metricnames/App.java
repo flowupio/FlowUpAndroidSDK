@@ -23,7 +23,7 @@ class App {
     return replaceDots(context.getPackageName());
   }
 
-  String getApplicationVersion() {
+  String getApplicationVersionName() {
 
     try {
       String packageName = getApplicationName();
