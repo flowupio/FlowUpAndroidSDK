@@ -13,9 +13,9 @@ class Device {
   private final Context context;
   private final UUIDGenerator uuidGenerator;
 
-  Device(Context context, UUIDGenerator uuidGenerator) {
+  Device(Context context) {
     this.context = context;
-    this.uuidGenerator = uuidGenerator;
+    this.uuidGenerator = new UUIDGenerator(context);
   }
 
   String getOSVersion() {
