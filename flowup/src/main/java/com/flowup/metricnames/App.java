@@ -30,7 +30,7 @@ class App {
       PackageInfo packageInfo = context.getPackageManager().getPackageInfo(packageName, 0);
       return replaceDots(packageInfo.versionName);
     } catch (PackageManager.NameNotFoundException e) {
-      String buildConfigVersionName = BuildConfig.VERSION_NAME;
+      String buildConfigVersionName = replaceDots(BuildConfig.VERSION_NAME);
       if (buildConfigVersionName.isEmpty()) {
         return context.getString(R.string.unknown_version_name_cross_metric_name);
       } else {
