@@ -12,7 +12,7 @@ class UUIDGenerator {
 
   private static final String UUID_KEY = "uuid";
   private static final String UUID_SHARED_PREFS_NAME = "uuid_shared_prefs_name";
-  private static final Object generatorLock = new Object();
+  private static final Object GENERATOR_LOCK = new Object();
 
   private final SharedPreferences sharedPreferences;
 
@@ -31,7 +31,7 @@ class UUIDGenerator {
 
   private String generateAndSaveUUID() {
     String uuid = "";
-    synchronized (generatorLock) {
+    synchronized (GENERATOR_LOCK) {
       uuid = UUID.randomUUID().toString();
       saveUUID(uuid);
     }
