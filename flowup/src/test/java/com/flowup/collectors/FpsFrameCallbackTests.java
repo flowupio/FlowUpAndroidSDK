@@ -6,6 +6,7 @@ package com.flowup.collectors;
 
 import android.view.Choreographer;
 import com.codahale.metrics.Histogram;
+import java.util.concurrent.TimeUnit;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +19,9 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class) public class FpsFrameCallbackTests {
 
   private static final long ANY_FRAME_TIME = 11;
+  private static final long SIXTEEN_MILLISECONDS = TimeUnit.SECONDS.toMillis(16);
+  private static final int PERFECT_FPS = 62;
+  private static final int ANY_NUMBER_OF_FRAMES = 10;
 
   private FpsFrameCallback fpsFrameCallback;
   @Mock private Choreographer choreographer;
@@ -28,20 +32,19 @@ import static org.mockito.Mockito.verify;
   }
 
   @Test public void shouldCalculateTheNumberOfFramesPerSecondBasedOnJustOneFrameTime() {
-    fpsFrameCallback.doFrame(16000000);
-    fpsFrameCallback.doFrame(16000000 * 2);
+    fpsFrameCallback.doFrame(SIXTEEN_MILLISECONDS);
+    fpsFrameCallback.doFrame(SIXTEEN_MILLISECONDS * 2);
 
-    verify(histogram).update(62);
+    verify(histogram).update(PERFECT_FPS);
   }
 
   @Test public void shouldCalculateSomeFramesPerSecondIfThereIsMoreThanOneDoFrameCalls() {
-    fpsFrameCallback.doFrame(16000000);
-
-    for (int i = 2; i <= 10; i++) {
-      fpsFrameCallback.doFrame(16000000 * i);
+    int numberOfDoFrameInvocations = ANY_NUMBER_OF_FRAMES;
+    for (int i = 1; i <= numberOfDoFrameInvocations; i++) {
+      fpsFrameCallback.doFrame(SIXTEEN_MILLISECONDS * i);
     }
 
-    verify(histogram, times(9)).update(62);
+    verify(histogram, times(numberOfDoFrameInvocations - 1)).update(PERFECT_FPS);
   }
 
   @Test public void shouldPostAnotherCallbackToTheChoreographerAfterTheDoFrameExecution() {
