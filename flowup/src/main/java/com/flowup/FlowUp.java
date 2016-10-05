@@ -10,12 +10,9 @@ import android.os.Looper;
 import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.graphite.Graphite;
-import com.codahale.metrics.graphite.GraphiteReporter;
 import com.flowup.collectors.Collector;
 import com.flowup.collectors.Collectors;
 import com.readytalk.metrics.StatsDReporter;
-import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 
 public class FlowUp {
