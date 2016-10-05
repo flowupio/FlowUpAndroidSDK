@@ -24,7 +24,6 @@ class App {
   }
 
   String getApplicationVersionName() {
-
     try {
       String packageName = getApplicationName();
       PackageInfo packageInfo = context.getPackageManager().getPackageInfo(packageName, 0);

@@ -26,12 +26,6 @@ class FpsCollector extends ApplicationLifecycleCollector implements Collector {
     this.fpsFrameCallback = new FpsFrameCallback(choreographer);
   }
 
-  @Override public void initialize(MetricRegistry registry) {
-    super.initialize(registry);
-    initializeGauge(registry);
-    choreographer.postFrameCallback(fpsFrameCallback);
-  }
-
   @Override protected void onApplicationResumed() {
     initializeGauge(registry);
     choreographer.postFrameCallback(fpsFrameCallback);
@@ -57,6 +51,12 @@ class FpsCollector extends ApplicationLifecycleCollector implements Collector {
   }
 
   private void removeGauge() {
-    registry.remove(metricNamesGenerator.getFPSMetricName());
+    if (isRegistryInitialized()) {
+      registry.remove(metricNamesGenerator.getFPSMetricName());
+    }
+  }
+
+  private boolean isRegistryInitialized() {
+    return registry!= null;
   }
 }

@@ -18,6 +18,10 @@ abstract class ApplicationLifecycleCollector implements Collector {
   }
 
   @Override public void initialize(MetricRegistry registry) {
+    registerActivityLifecycleCallbacks();
+  }
+
+  private void registerActivityLifecycleCallbacks() {
     application.registerActivityLifecycleCallbacks(new EmptyActivityLifecycleCallback() {
       @Override public void onActivityResumed(Activity activity) {
         super.onActivityResumed(activity);

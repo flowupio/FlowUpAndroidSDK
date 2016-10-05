@@ -59,7 +59,6 @@ public class FlowUp {
   private void initializeMetrics() {
     registry = new MetricRegistry();
     initializeConsoleReporter();
-    initializeHostedGraphiteReporter();
     initializeKarumiStatsDReporter();
   }
 
@@ -73,17 +72,6 @@ public class FlowUp {
         .convertDurationsTo(TimeUnit.MILLISECONDS)
         .filter(MetricFilter.ALL)
         .build("54.194.240.147", 8125)
-        .start(10, TimeUnit.SECONDS);
-  }
-
-  private void initializeHostedGraphiteReporter() {
-    Graphite graphite = new Graphite(new InetSocketAddress("carbon.hostedgraphite.com", 2003));
-    GraphiteReporter.forRegistry(registry)
-        .prefixedWith("6f9a168a-ea09-4fdd-8d11-b4c2c36f14e0")
-        .convertRatesTo(TimeUnit.SECONDS)
-        .convertDurationsTo(TimeUnit.MILLISECONDS)
-        .filter(MetricFilter.ALL)
-        .build(graphite)
         .start(10, TimeUnit.SECONDS);
   }
 

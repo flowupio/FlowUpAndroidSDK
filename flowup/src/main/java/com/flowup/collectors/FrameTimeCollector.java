@@ -57,6 +57,12 @@ class FrameTimeCollector extends ApplicationLifecycleCollector implements Collec
   }
 
   private void removeGauge() {
-    registry.remove(metricNamesGenerator.getFrameTimeMetricName());
+    if (isRegistryInitialized()) {
+      registry.remove(metricNamesGenerator.getFrameTimeMetricName());
+    }
+  }
+
+  private boolean isRegistryInitialized() {
+    return registry != null;
   }
 }
