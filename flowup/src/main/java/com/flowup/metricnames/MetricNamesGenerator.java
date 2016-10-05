@@ -14,7 +14,7 @@ public class MetricNamesGenerator {
 
   public MetricNamesGenerator(Context context) {
     this.app = new App(context);
-    this.device = new Device(context);
+    this.device = new Device(context, new UUIDGenerator(context));
   }
 
   public String getFPSMetricName() {
@@ -39,6 +39,8 @@ public class MetricNamesGenerator {
         + app.getApplicationVersionName()
         + "."
         + device.getOSVersion()
+        + "."
+        + device.getUUID()
         + "."
         + device.getModel()
         + "."
