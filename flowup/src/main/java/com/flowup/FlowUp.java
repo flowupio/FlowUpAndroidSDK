@@ -5,8 +5,6 @@
 package com.flowup;
 
 import android.app.Application;
-import android.os.Handler;
-import android.os.Looper;
 import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
@@ -16,6 +14,8 @@ import com.readytalk.metrics.StatsDReporter;
 import java.util.concurrent.TimeUnit;
 
 public class FlowUp {
+
+  private static final String LOGTAG = "FlowUp";
 
   private final Application application;
   private static MetricRegistry registry;
@@ -36,25 +36,26 @@ public class FlowUp {
     if (hasBeenInitialized()) {
       return;
     }
-    new Thread(new Runnable() {
+    initializeMetrics();
+    Thread initializationThread = new Thread(new Runnable() {
       @Override public void run() {
-        initializeMetrics();
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-          @Override public void run() {
-            initializeForegroundCollectors();
-            initializeHttpCollectors();
-          }
-        });
+        initializeReporters();
       }
-    }).start();
+    });
+    initializationThread.start();
+    initializeForegroundCollectors();
+    initializeHttpCollectors();
+  }
+
+  private void initializeMetrics() {
+    registry = new MetricRegistry();
   }
 
   private boolean hasBeenInitialized() {
     return registry != null;
   }
 
-  private void initializeMetrics() {
-    registry = new MetricRegistry();
+  private void initializeReporters() {
     initializeConsoleReporter();
     initializeKarumiStatsDReporter();
   }

@@ -12,12 +12,14 @@ import com.flowup.android.EmptyActivityLifecycleCallback;
 abstract class ApplicationLifecycleCollector implements Collector {
 
   private final Application application;
+  private MetricRegistry registry;
 
   ApplicationLifecycleCollector(Application application) {
     this.application = application;
   }
 
   @Override public void initialize(MetricRegistry registry) {
+    this.registry = registry;
     registerActivityLifecycleCallbacks();
   }
 
@@ -26,20 +28,20 @@ abstract class ApplicationLifecycleCollector implements Collector {
       @Override public void onActivityResumed(Activity activity) {
         super.onActivityResumed(activity);
         if (activity.isTaskRoot()) {
-          onApplicationResumed();
+          onApplicationResumed(registry);
         }
       }
 
       @Override public void onActivityPaused(Activity activity) {
         super.onActivityPaused(activity);
         if (activity.isTaskRoot()) {
-          onApplicationPaused();
+          onApplicationPaused(registry);
         }
       }
     });
   }
 
-  protected abstract void onApplicationResumed();
+  protected abstract void onApplicationResumed(MetricRegistry registry);
 
-  protected abstract void onApplicationPaused();
+  protected abstract void onApplicationPaused(MetricRegistry registry);
 }

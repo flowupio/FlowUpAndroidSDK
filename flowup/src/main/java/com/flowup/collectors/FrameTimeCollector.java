@@ -17,8 +17,6 @@ class FrameTimeCollector extends ApplicationLifecycleCollector implements Collec
   private final Choreographer choreographer;
   private final FrameTimeCallback frameTimeCallback;
 
-  private MetricRegistry registry;
-
   FrameTimeCollector(Application application, MetricNamesGenerator metricNamesGenerator) {
     super(application);
     this.metricNamesGenerator = metricNamesGenerator;
@@ -26,25 +24,18 @@ class FrameTimeCollector extends ApplicationLifecycleCollector implements Collec
     this.frameTimeCallback = new FrameTimeCallback(choreographer);
   }
 
-  @Override public void initialize(MetricRegistry registry) {
-    super.initialize(registry);
+  @Override protected void onApplicationResumed(MetricRegistry registry) {
     initializeGauge(registry);
     choreographer.postFrameCallback(frameTimeCallback);
   }
 
-  @Override protected void onApplicationResumed() {
-    initializeGauge(registry);
-    choreographer.postFrameCallback(frameTimeCallback);
-  }
-
-  @Override protected void onApplicationPaused() {
+  @Override protected void onApplicationPaused(MetricRegistry registry) {
     choreographer.removeFrameCallback(frameTimeCallback);
     frameTimeCallback.reset();
-    removeGauge();
+    removeGauge(registry);
   }
 
   private void initializeGauge(MetricRegistry registry) {
-    this.registry = registry;
     String fpsMetricName = metricNamesGenerator.getFrameTimeMetricName();
     registry.register(fpsMetricName, new Gauge<Long>() {
       @Override public Long getValue() {
@@ -56,13 +47,7 @@ class FrameTimeCollector extends ApplicationLifecycleCollector implements Collec
     });
   }
 
-  private void removeGauge() {
-    if (isRegistryInitialized()) {
-      registry.remove(metricNamesGenerator.getFrameTimeMetricName());
-    }
-  }
-
-  private boolean isRegistryInitialized() {
-    return registry != null;
+  private void removeGauge(MetricRegistry registry) {
+    registry.remove(metricNamesGenerator.getFrameTimeMetricName());
   }
 }

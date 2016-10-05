@@ -17,8 +17,6 @@ class FpsCollector extends ApplicationLifecycleCollector implements Collector {
   private final Choreographer choreographer;
   private final FpsFrameCallback fpsFrameCallback;
 
-  private MetricRegistry registry;
-
   FpsCollector(Application application, MetricNamesGenerator metricNamesGenerator) {
     super(application);
     this.metricNamesGenerator = metricNamesGenerator;
@@ -26,19 +24,18 @@ class FpsCollector extends ApplicationLifecycleCollector implements Collector {
     this.fpsFrameCallback = new FpsFrameCallback(choreographer);
   }
 
-  @Override protected void onApplicationResumed() {
+  @Override protected void onApplicationResumed(MetricRegistry registry) {
     initializeGauge(registry);
     choreographer.postFrameCallback(fpsFrameCallback);
   }
 
-  @Override protected void onApplicationPaused() {
+  @Override protected void onApplicationPaused(MetricRegistry registry) {
     choreographer.removeFrameCallback(fpsFrameCallback);
     fpsFrameCallback.reset();
-    removeGauge();
+    removeGauge(registry);
   }
 
   private void initializeGauge(MetricRegistry registry) {
-    this.registry = registry;
     String fpsMetricName = metricNamesGenerator.getFPSMetricName();
     registry.register(fpsMetricName, new Gauge<Double>() {
       @Override public Double getValue() {
@@ -50,13 +47,7 @@ class FpsCollector extends ApplicationLifecycleCollector implements Collector {
     });
   }
 
-  private void removeGauge() {
-    if (isRegistryInitialized()) {
-      registry.remove(metricNamesGenerator.getFPSMetricName());
-    }
-  }
-
-  private boolean isRegistryInitialized() {
-    return registry!= null;
+  private void removeGauge(MetricRegistry registry) {
+    registry.remove(metricNamesGenerator.getFPSMetricName());
   }
 }

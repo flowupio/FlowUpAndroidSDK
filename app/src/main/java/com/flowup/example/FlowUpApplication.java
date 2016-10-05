@@ -10,7 +10,7 @@ import com.flowup.FlowUp;
 public class FlowUpApplication extends Application {
 
   @Override public void onCreate() {
-    super.onCreate();
     FlowUp.with(this).start();
+    super.onCreate();
   }
 }
