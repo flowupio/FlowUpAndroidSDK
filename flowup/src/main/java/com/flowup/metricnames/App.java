@@ -18,7 +18,7 @@ class App {
   }
 
   String getApplicationName() {
-    return context.getPackageName();
+    return context.getPackageName().replace(".", "-");
   }
 
   String getApplicationVersion() {
