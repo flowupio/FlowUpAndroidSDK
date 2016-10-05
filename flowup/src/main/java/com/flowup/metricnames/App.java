@@ -26,7 +26,7 @@ class App {
     try {
       String packageName = getApplicationName();
       PackageInfo packageInfo = context.getPackageManager().getPackageInfo(packageName, 0);
-      return packageInfo.versionName.replace(".", "");
+      return packageInfo.versionName.replace(".", "-");
     } catch (PackageManager.NameNotFoundException e) {
       return context.getString(R.string.unknown_version_name_cross_metric_name);
     }
