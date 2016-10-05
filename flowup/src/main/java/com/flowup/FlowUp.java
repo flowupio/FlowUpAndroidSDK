@@ -57,19 +57,21 @@ public class FlowUp {
 
   private void initializeReporters() {
     initializeConsoleReporter();
-    initializeKarumiStatsDReporter();
+    initializeFlowUpReporter();
   }
 
   private void initializeConsoleReporter() {
     ConsoleReporter.forRegistry(registry).build().start(10, TimeUnit.SECONDS);
   }
 
-  private void initializeKarumiStatsDReporter() {
+  private void initializeFlowUpReporter() {
+    String host = application.getString(R.string.host);
+    int port = application.getResources().getInteger(R.integer.port);
     StatsDReporter.forRegistry(registry)
         .convertRatesTo(TimeUnit.SECONDS)
         .convertDurationsTo(TimeUnit.MILLISECONDS)
         .filter(MetricFilter.ALL)
-        .build("54.194.240.147", 8125)
+        .build(host, port)
         .start(10, TimeUnit.SECONDS);
   }
 

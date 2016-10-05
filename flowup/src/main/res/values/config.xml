@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2016 Go Karumi S.L.
+  -->
+<resources>
+  <string translatable="false" name="host">54.194.240.147</string>
+  <integer name="port">8125</integer>
+</resources>

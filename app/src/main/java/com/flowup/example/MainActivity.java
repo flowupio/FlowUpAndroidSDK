@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Go Karumi S.L.
+ * Copyright (C) 2016 Go Karumi S.L.
  */
 
 package com.flowup.example;
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
                             Log.d("FlowUp", characters.getResponse().getCharacters().size()
                                     + "characters obtained from the api");
                         } catch (MarvelApiException e) {
-                            Log.e("Error", "Error retrieveing marvel characters", e);
+                            Log.e("Error", "Error getting marvel characters", e);
                         }
                     }
                 }).start();

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Go Karumi S.L.
+ * Copyright (C) 2016 Go Karumi S.L.
  */
 
 package com.flowup.example;
