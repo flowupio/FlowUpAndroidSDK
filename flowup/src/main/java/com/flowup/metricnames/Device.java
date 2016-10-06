@@ -58,4 +58,8 @@ class Device {
   String getUUID() {
     return uuidGenerator.getUUID();
   }
+
+  int getNumberOfCores() {
+    return Runtime.getRuntime().availableProcessors();
+  }
 }
