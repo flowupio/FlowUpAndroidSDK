@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2016 Go Karumi S.L.
+ */
+
 package com.flowup.reporter.android;
 
 import com.google.android.gms.gcm.GcmTaskService;
