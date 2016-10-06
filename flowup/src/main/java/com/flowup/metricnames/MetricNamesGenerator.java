@@ -7,25 +7,29 @@ package com.flowup.metricnames;
 import android.app.Activity;
 import android.content.Context;
 import com.codahale.metrics.MetricRegistry;
+import com.flowup.utils.Time;
 
 public class MetricNamesGenerator {
 
   private final App app;
   private final Device device;
+  private final Time time;
 
-  public MetricNamesGenerator(Context context) {
+  public MetricNamesGenerator(Context context, Time time) {
     this.app = new App(context);
     this.device = new Device(context);
+    this.time = time;
   }
 
   public String getFPSMetricName(Activity activity) {
     String activityName = getActivityName(activity);
-    return MetricRegistry.name(appendCrossMetricInfo("ui.fps." + activityName));
+    return MetricRegistry.name(appendCrossMetricInfo("ui.fps." + activityName + "." + time.now()));
   }
 
   public String getFrameTimeMetricName(Activity activity) {
     String activityName = getActivityName(activity);
-    return MetricRegistry.name(appendCrossMetricInfo("ui.frameTime." + activityName));
+    return MetricRegistry.name(
+        appendCrossMetricInfo("ui.frameTime." + activityName + "." + time.now()));
   }
 
   public String getHttpBytesDownloadedMetricsName() {
