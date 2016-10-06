@@ -1,6 +1,9 @@
+/*
+ * Copyright (C) 2016 Go Karumi S.L.
+ */
+
 package com.karumi.flowupreporter;
 
-import android.util.Log;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Histogram;
@@ -9,6 +12,8 @@ import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.ScheduledReporter;
 import com.codahale.metrics.Timer;
+import com.karumi.flowupreporter.apiclient.ApiClient;
+import com.karumi.flowupreporter.storage.MetricsStorage;
 import java.util.SortedMap;
 import java.util.concurrent.TimeUnit;
 
@@ -16,53 +21,24 @@ public class FlowUpReporter extends ScheduledReporter {
 
   private static final String LOGTAG = "FlowUpReporter";
 
-  private final String host;
-  private final int port;
-
   public static FlowUpReporter.Builder forRegistry(MetricRegistry registry) {
     return new FlowUpReporter.Builder(registry);
   }
 
+  private final MetricsStorage metricsStorage;
+  private final ApiClient apiClient;
+
   private FlowUpReporter(MetricRegistry registry, String name, MetricFilter filter,
-      TimeUnit rateUnit, TimeUnit durationUnit, String host, int port) {
+      TimeUnit rateUnit, TimeUnit durationUnit, String host, int port, boolean persistent) {
     super(registry, name, filter, rateUnit, durationUnit);
-    this.host = host;
-    this.port = port;
+    this.apiClient = new ApiClient(host, port);
+    this.metricsStorage = new MetricsStorage(persistent);
   }
 
   @Override public void report(SortedMap<String, Gauge> gauges, SortedMap<String, Counter> counters,
       SortedMap<String, Histogram> histograms, SortedMap<String, Meter> meters,
       SortedMap<String, Timer> timers) {
-    logReportStarting(gauges, counters, histograms, meters, timers);
-  }
-
-  private void logReportStarting(SortedMap<String, Gauge> gauges,
-      SortedMap<String, Counter> counters, SortedMap<String, Histogram> histograms,
-      SortedMap<String, Meter> meters, SortedMap<String, Timer> timers) {
-    Log.d(LOGTAG, "--------------------------------");
-    Log.d(LOGTAG, "Time to start reporting data!!!!");
-    Log.d(LOGTAG, "--------------------------------");
-    Log.d(LOGTAG, "Number of gauges: " + gauges.size());
-    for (String key : gauges.keySet()) {
-      Long value = (Long) gauges.get(key).getValue();
-      Log.d(LOGTAG, "Gauge: " + key + " received with value: " + value);
-    }
-    Log.d(LOGTAG, "Number of counters: " + counters.size());
-    for (String key : counters.keySet()) {
-      Log.d(LOGTAG, "Counter: " + key + " received with value: " + counters.get(key).getCount());
-    }
-    Log.d(LOGTAG, "Number of histograms: " + histograms.size());
-    for (String key : histograms.keySet()) {
-      Log.d(LOGTAG, "Histogram: " + key + " received with value: " + histograms.get(key).getSnapshot().getMean());
-    }
-    Log.d(LOGTAG, "Number of meters: " + meters.size());
-    for (String key : meters.keySet()) {
-      Log.d(LOGTAG, "Meter: " + key + " received with value: " + meters.get(key).getMeanRate());
-    }
-    Log.d(LOGTAG, "Number of timers: " + timers.size());
-    for (String key : timers.keySet()) {
-      Log.d(LOGTAG, "Timer: " + key + " received with value: " + timers.get(key).getSnapshot().getMean());
-    }
+    metricsStorage.storeMetrics(new Metrics(gauges, counters, histograms, meters, timers));
   }
 
   public static final class Builder {
@@ -71,6 +47,7 @@ public class FlowUpReporter extends ScheduledReporter {
     private MetricFilter filter;
     private TimeUnit rateUnit;
     private TimeUnit durationUnit;
+    private boolean persistent;
 
     public Builder(MetricRegistry registry) {
       this.registry = registry;
@@ -78,6 +55,7 @@ public class FlowUpReporter extends ScheduledReporter {
       this.filter = MetricFilter.ALL;
       this.rateUnit = TimeUnit.SECONDS;
       this.durationUnit = TimeUnit.MILLISECONDS;
+      this.persistent = true;
     }
 
     public Builder name(String name) {
@@ -103,7 +81,8 @@ public class FlowUpReporter extends ScheduledReporter {
     public FlowUpReporter build(String host, int port) {
       validateHost(host);
       validatePort(port);
-      return new FlowUpReporter(registry, name, filter, rateUnit, durationUnit, host, port);
+      return new FlowUpReporter(registry, name, filter, rateUnit, durationUnit, host, port,
+          persistent);
     }
 
     private void validateHost(String host) {
@@ -116,6 +95,11 @@ public class FlowUpReporter extends ScheduledReporter {
       if (port <= 0 || port >= 49151) {
         throw new IllegalArgumentException("The port configured can not be used: " + port);
       }
+    }
+
+    public Builder persistent(boolean persistent) {
+      this.persistent = persistent;
+      return this;
     }
   }
 }

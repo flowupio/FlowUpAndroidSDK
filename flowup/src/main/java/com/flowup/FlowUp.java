@@ -38,12 +38,7 @@ public class FlowUp {
       return;
     }
     initializeMetrics();
-    Thread initializationThread = new Thread(new Runnable() {
-      @Override public void run() {
-        initializeReporters();
-      }
-    });
-    initializationThread.start();
+    initializeReporters();
     initializeForegroundCollectors();
     initializeHttpCollectors();
   }
@@ -84,6 +79,7 @@ public class FlowUp {
         .rateUnit(TimeUnit.SECONDS)
         .durationUnit(TimeUnit.MILLISECONDS)
         .filter(MetricFilter.ALL)
+        .persistent(true)
         .build(host, port)
         .start(SAMPLING_RATE, TimeUnit.SECONDS);
   }
