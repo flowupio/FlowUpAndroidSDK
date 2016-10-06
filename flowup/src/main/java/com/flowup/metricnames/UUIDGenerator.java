@@ -4,6 +4,7 @@
 
 package com.flowup.metricnames;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import java.util.UUID;
@@ -38,7 +39,7 @@ class UUIDGenerator {
     return uuid;
   }
 
-  private void saveUUID(String uuid) {
+  @SuppressLint("CommitPrefEdits") private void saveUUID(String uuid) {
     sharedPreferences.edit().putString(UUID_KEY, uuid).commit();
   }
 

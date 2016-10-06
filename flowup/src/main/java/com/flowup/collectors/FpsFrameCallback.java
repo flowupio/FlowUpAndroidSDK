@@ -4,7 +4,6 @@
 
 package com.flowup.collectors;
 
-import android.util.Log;
 import android.view.Choreographer;
 import com.codahale.metrics.Histogram;
 import com.flowup.android.LastFrameTimeCallback;
@@ -20,7 +19,6 @@ class FpsFrameCallback extends LastFrameTimeCallback {
 
   @Override protected void onFrameTimeMeasured(long frameTimeMillis) {
     double fps = 1000d / frameTimeMillis;
-    Log.d("FlowUp", "Collecting FPS -> " + fps);
     histogram.update((int) fps);
   }
 }

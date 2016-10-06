@@ -10,10 +10,13 @@ import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.flowup.collectors.Collector;
 import com.flowup.collectors.Collectors;
+import com.flowup.reporter.FlowUpReporter;
 import com.readytalk.metrics.StatsDReporter;
 import java.util.concurrent.TimeUnit;
 
 public class FlowUp {
+
+  private static final int SAMPLING_INTERVAL = 10;
 
   private final Application application;
   private static MetricRegistry registry;
@@ -35,12 +38,7 @@ public class FlowUp {
       return;
     }
     initializeMetrics();
-    Thread initializationThread = new Thread(new Runnable() {
-      @Override public void run() {
-        initializeReporters();
-      }
-    });
-    initializationThread.start();
+    initializeReporters();
     initializeForegroundCollectors();
     initializeHttpCollectors();
   }
@@ -55,6 +53,7 @@ public class FlowUp {
 
   private void initializeReporters() {
     initializeConsoleReporter();
+    initializeKarumiGrafanaReporter();
     initializeFlowUpReporter();
   }
 
@@ -62,15 +61,27 @@ public class FlowUp {
     ConsoleReporter.forRegistry(registry).build().start(10, TimeUnit.SECONDS);
   }
 
-  private void initializeFlowUpReporter() {
-    String host = application.getString(R.string.host);
-    int port = application.getResources().getInteger(R.integer.port);
+  private void initializeKarumiGrafanaReporter() {
+    String host = application.getString(R.string.karumi_grafana_host);
+    int port = application.getResources().getInteger(R.integer.karumi_grafana_port);
     StatsDReporter.forRegistry(registry)
         .convertRatesTo(TimeUnit.SECONDS)
         .convertDurationsTo(TimeUnit.MILLISECONDS)
         .filter(MetricFilter.ALL)
         .build(host, port)
-        .start(10, TimeUnit.SECONDS);
+        .start(SAMPLING_INTERVAL, TimeUnit.SECONDS);
+  }
+
+  private void initializeFlowUpReporter() {
+    String host = application.getString(R.string.flowup_host);
+    int port = application.getResources().getInteger(R.integer.flowup_port);
+    FlowUpReporter.forRegistry(registry)
+        .rateUnit(TimeUnit.SECONDS)
+        .durationUnit(TimeUnit.MILLISECONDS)
+        .filter(MetricFilter.ALL)
+        .persistent(true)
+        .build(host, port)
+        .start(SAMPLING_INTERVAL, TimeUnit.SECONDS);
   }
 
   private void initializeForegroundCollectors() {

@@ -4,7 +4,6 @@
 
 package com.flowup.collectors;
 
-import android.util.Log;
 import android.view.Choreographer;
 import com.codahale.metrics.Timer;
 import com.flowup.android.LastFrameTimeCallback;
@@ -21,7 +20,6 @@ class FrameTimeCallback extends LastFrameTimeCallback {
   }
 
   @Override protected void onFrameTimeMeasured(long frameTimeMillis) {
-    Log.d("FlowUp", "Collecting frame time in milliseconds -> " + frameTimeMillis);
     timer.update(frameTimeMillis, MILLISECONDS);
   }
 }
