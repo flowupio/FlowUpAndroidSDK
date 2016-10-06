@@ -20,12 +20,13 @@ public class MetricNamesGenerator {
 
   public String getFPSMetricName(Activity activity) {
     String activityName = getActivityName(activity);
-    return MetricRegistry.name(appendCrossMetricInfo("ui.performance.fps." + activityName));
+    return MetricRegistry.name(appendCrossMetricInfo("ui." + activityName + ".performance.fps"));
   }
 
   public String getFrameTimeMetricName(Activity activity) {
     String activityName = getActivityName(activity);
-    return MetricRegistry.name(appendCrossMetricInfo("ui.performance.frameTime." + activityName));
+    return MetricRegistry.name(
+        appendCrossMetricInfo("ui." + activityName + ".performance.frameTime"));
   }
 
   public String getHttpBytesDownloadedMetricsName() {
