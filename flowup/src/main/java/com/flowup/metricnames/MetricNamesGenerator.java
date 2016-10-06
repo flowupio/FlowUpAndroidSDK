@@ -29,11 +29,11 @@ public class MetricNamesGenerator {
   }
 
   public String getHttpBytesDownloadedMetricsName() {
-    return MetricRegistry.name(appendCrossMetricInfo("http.bytesDownloaded"));
+    return MetricRegistry.name(appendCrossMetricInfo("network.traffic.bytesDownloaded"));
   }
 
   public String getHttpBytesUploadedMetricsName() {
-    return MetricRegistry.name(appendCrossMetricInfo("http.bytesUploaded"));
+    return MetricRegistry.name(appendCrossMetricInfo("network.traffic.bytesUploaded"));
   }
 
   private String getActivityName(Activity activity) {
