@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 public class FlowUp {
 
-  private static final int SAMPLING_RATE = 10;
+  private static final int SAMPLING_INTERVAL = 10;
 
   private final Application application;
   private static MetricRegistry registry;
@@ -69,7 +69,7 @@ public class FlowUp {
         .convertDurationsTo(TimeUnit.MILLISECONDS)
         .filter(MetricFilter.ALL)
         .build(host, port)
-        .start(SAMPLING_RATE, TimeUnit.SECONDS);
+        .start(SAMPLING_INTERVAL, TimeUnit.SECONDS);
   }
 
   private void initializeFlowUpReporter() {
@@ -81,7 +81,7 @@ public class FlowUp {
         .filter(MetricFilter.ALL)
         .persistent(true)
         .build(host, port)
-        .start(SAMPLING_RATE, TimeUnit.SECONDS);
+        .start(SAMPLING_INTERVAL, TimeUnit.SECONDS);
   }
 
   private void initializeForegroundCollectors() {
