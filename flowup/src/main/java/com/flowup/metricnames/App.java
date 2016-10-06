@@ -26,7 +26,7 @@ class App {
 
   String getApplicationVersionName() {
     try {
-      String packageName = getApplicationName();
+      String packageName = context.getPackageName();
       PackageInfo packageInfo = context.getPackageManager().getPackageInfo(packageName, 0);
       return replaceDots(packageInfo.versionName);
     } catch (PackageManager.NameNotFoundException e) {
