@@ -1,5 +1,6 @@
 package com.karumi.flowupreporter;
 
+import android.util.Log;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Histogram;
@@ -12,6 +13,8 @@ import java.util.SortedMap;
 import java.util.concurrent.TimeUnit;
 
 public class FlowUpReporter extends ScheduledReporter {
+
+  private static final String LOGTAG = "FlowUpReporter";
 
   private final String host;
   private final int port;
@@ -30,7 +33,36 @@ public class FlowUpReporter extends ScheduledReporter {
   @Override public void report(SortedMap<String, Gauge> gauges, SortedMap<String, Counter> counters,
       SortedMap<String, Histogram> histograms, SortedMap<String, Meter> meters,
       SortedMap<String, Timer> timers) {
+    logReportStarting(gauges, counters, histograms, meters, timers);
+  }
 
+  private void logReportStarting(SortedMap<String, Gauge> gauges,
+      SortedMap<String, Counter> counters, SortedMap<String, Histogram> histograms,
+      SortedMap<String, Meter> meters, SortedMap<String, Timer> timers) {
+    Log.d(LOGTAG, "--------------------------------");
+    Log.d(LOGTAG, "Time to start reporting data!!!!");
+    Log.d(LOGTAG, "--------------------------------");
+    Log.d(LOGTAG, "Number of gauges: " + gauges.size());
+    for (String key : gauges.keySet()) {
+      Long value = (Long) gauges.get(key).getValue();
+      Log.d(LOGTAG, "Gauge: " + key + " received with value: " + value);
+    }
+    Log.d(LOGTAG, "Number of counters: " + counters.size());
+    for (String key : counters.keySet()) {
+      Log.d(LOGTAG, "Counter: " + key + " received with value: " + counters.get(key).getCount());
+    }
+    Log.d(LOGTAG, "Number of histograms: " + histograms.size());
+    for (String key : histograms.keySet()) {
+      Log.d(LOGTAG, "Histogram: " + key + " received with value: " + histograms.get(key).getSnapshot().getMean());
+    }
+    Log.d(LOGTAG, "Number of meters: " + meters.size());
+    for (String key : meters.keySet()) {
+      Log.d(LOGTAG, "Meter: " + key + " received with value: " + meters.get(key).getMeanRate());
+    }
+    Log.d(LOGTAG, "Number of timers: " + timers.size());
+    for (String key : timers.keySet()) {
+      Log.d(LOGTAG, "Timer: " + key + " received with value: " + timers.get(key).getSnapshot().getMean());
+    }
   }
 
   public static final class Builder {
