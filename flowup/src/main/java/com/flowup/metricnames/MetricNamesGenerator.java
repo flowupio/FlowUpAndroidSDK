@@ -57,6 +57,8 @@ public class MetricNamesGenerator {
         + "."
         + device.getNumberOfCores()
         + "."
+        + device.isPowerSaverEnabled()
+        + "."
         + device.getScreenDensity()
         + "."
         + device.getScreenSize()

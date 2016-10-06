@@ -5,8 +5,12 @@
 package com.flowup.metricnames;
 
 import android.content.Context;
-import android.os.Build;
+import android.os.PowerManager;
 import android.util.DisplayMetrics;
+
+import static android.os.Build.MODEL;
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
 
 class Device {
 
@@ -19,11 +23,11 @@ class Device {
   }
 
   String getOSVersion() {
-    return "API-" + String.valueOf(Build.VERSION.SDK_INT);
+    return "API-" + String.valueOf(SDK_INT);
   }
 
   String getModel() {
-    return Build.MODEL.replace('.', '-');
+    return MODEL.replace('.', '-');
   }
 
   String getScreenDensity() {
@@ -61,5 +65,13 @@ class Device {
 
   int getNumberOfCores() {
     return Runtime.getRuntime().availableProcessors();
+  }
+
+  boolean isPowerSaverEnabled() {
+    PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+    if (SDK_INT >= LOLLIPOP) {
+      return powerManager.isPowerSaveMode();
+    }
+    return false;
   }
 }
