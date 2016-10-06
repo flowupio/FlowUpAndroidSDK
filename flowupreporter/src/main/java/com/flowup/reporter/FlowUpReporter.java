@@ -2,8 +2,9 @@
  * Copyright (C) 2016 Go Karumi S.L.
  */
 
-package com.karumi.flowupreporter;
+package com.flowup.reporter;
 
+import android.content.Context;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Histogram;
@@ -12,14 +13,13 @@ import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.ScheduledReporter;
 import com.codahale.metrics.Timer;
-import com.karumi.flowupreporter.apiclient.ApiClient;
-import com.karumi.flowupreporter.storage.MetricsStorage;
+import com.flowup.reporter.android.WiFiSyncServiceScheduler;
+import com.flowup.reporter.apiclient.ApiClient;
+import com.flowup.reporter.storage.MetricsStorage;
 import java.util.SortedMap;
 import java.util.concurrent.TimeUnit;
 
 public class FlowUpReporter extends ScheduledReporter {
-
-  private static final String LOGTAG = "FlowUpReporter";
 
   public static FlowUpReporter.Builder forRegistry(MetricRegistry registry) {
     return new FlowUpReporter.Builder(registry);
@@ -27,12 +27,15 @@ public class FlowUpReporter extends ScheduledReporter {
 
   private final MetricsStorage metricsStorage;
   private final ApiClient apiClient;
+  private final WiFiSyncServiceScheduler syncScheduler;
 
   private FlowUpReporter(MetricRegistry registry, String name, MetricFilter filter,
-      TimeUnit rateUnit, TimeUnit durationUnit, String host, int port, boolean persistent) {
+      TimeUnit rateUnit, TimeUnit durationUnit, String host, int port, boolean persistent,
+      Context context) {
     super(registry, name, filter, rateUnit, durationUnit);
     this.apiClient = new ApiClient(host, port);
     this.metricsStorage = new MetricsStorage(persistent);
+    this.syncScheduler = new WiFiSyncServiceScheduler(context);
   }
 
   @Override public void report(SortedMap<String, Gauge> gauges, SortedMap<String, Counter> counters,
@@ -42,12 +45,14 @@ public class FlowUpReporter extends ScheduledReporter {
   }
 
   public static final class Builder {
+
     private MetricRegistry registry;
     private String name;
     private MetricFilter filter;
     private TimeUnit rateUnit;
     private TimeUnit durationUnit;
     private boolean persistent;
+    private Context context;
 
     public Builder(MetricRegistry registry) {
       this.registry = registry;
@@ -56,6 +61,7 @@ public class FlowUpReporter extends ScheduledReporter {
       this.rateUnit = TimeUnit.SECONDS;
       this.durationUnit = TimeUnit.MILLISECONDS;
       this.persistent = true;
+      this.context = null;
     }
 
     public Builder name(String name) {
@@ -79,26 +85,17 @@ public class FlowUpReporter extends ScheduledReporter {
     }
 
     public FlowUpReporter build(String host, int port) {
-      validateHost(host);
-      validatePort(port);
       return new FlowUpReporter(registry, name, filter, rateUnit, durationUnit, host, port,
-          persistent);
-    }
-
-    private void validateHost(String host) {
-      if (host == null || host.isEmpty()) {
-        throw new IllegalArgumentException("The host configured can not be used: " + host);
-      }
-    }
-
-    private void validatePort(int port) {
-      if (port <= 0 || port >= 49151) {
-        throw new IllegalArgumentException("The port configured can not be used: " + port);
-      }
+          persistent, context);
     }
 
     public Builder persistent(boolean persistent) {
       this.persistent = persistent;
+      return this;
+    }
+
+    public Builder context(Context context) {
+      this.context = context;
       return this;
     }
   }

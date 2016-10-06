@@ -18,7 +18,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
-@RunWith(RobolectricTestRunner.class) @Config(constants = BuildConfig.class)
+@RunWith(RobolectricTestRunner.class)
+@Config(constants = BuildConfig.class)
 public class UUIDGeneratorTest {
 
   private static final String UUID_KEY = "uuid";

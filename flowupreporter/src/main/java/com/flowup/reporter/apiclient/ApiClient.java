@@ -2,9 +2,9 @@
  * Copyright (C) 2016 Go Karumi S.L.
  */
 
-package com.karumi.flowupreporter.apiclient;
+package com.flowup.reporter.apiclient;
 
-import com.karumi.flowupreporter.Metrics;
+import com.flowup.reporter.Metrics;
 
 public class ApiClient {
 

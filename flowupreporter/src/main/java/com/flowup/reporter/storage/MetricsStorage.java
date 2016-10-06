@@ -2,14 +2,14 @@
  * Copyright (C) 2016 Go Karumi S.L.
  */
 
-package com.karumi.flowupreporter.storage;
+package com.flowup.reporter.storage;
 
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.Timer;
-import com.karumi.flowupreporter.Metrics;
+import com.flowup.reporter.Metrics;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import java.util.SortedMap;

@@ -3,12 +3,21 @@
   ~ Copyright (C) 2016 Go Karumi S.L.
   -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.karumi.flowupreporter">
+    package="com.flowup.reporter">
 
-  <application android:allowBackup="true"
+  <application
+      android:allowBackup="true"
       android:label="@string/app_name"
-      android:supportsRtl="true"
-  >
+      >
+
+    <service
+        android:exported="true"
+        android:name=".android.WiFiSyncService"
+        android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE">
+      <intent-filter>
+        <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY"/>
+      </intent-filter>
+    </service>
 
   </application>
 

@@ -10,7 +10,7 @@ import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.flowup.collectors.Collector;
 import com.flowup.collectors.Collectors;
-import com.karumi.flowupreporter.FlowUpReporter;
+import com.flowup.reporter.FlowUpReporter;
 import com.readytalk.metrics.StatsDReporter;
 import java.util.concurrent.TimeUnit;
 

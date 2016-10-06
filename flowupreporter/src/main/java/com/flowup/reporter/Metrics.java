@@ -2,7 +2,7 @@
  * Copyright (C) 2016 Go Karumi S.L.
  */
 
-package com.karumi.flowupreporter;
+package com.flowup.reporter;
 
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Gauge;
