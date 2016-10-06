@@ -1,3 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2016 Go Karumi S.L.
+  -->
 <resources>
-  <string name="app_name">FlowUp Reporter</string>
+  <string translatable="false" name="app_name">FlowUp Reporter</string>
 </resources>
