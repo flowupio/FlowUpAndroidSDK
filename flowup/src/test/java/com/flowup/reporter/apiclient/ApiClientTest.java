@@ -9,6 +9,7 @@ import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.Timer;
+import com.flowup.BuildConfig;
 import com.flowup.MockWebServerTest;
 import com.flowup.reporter.Metrics;
 import java.util.SortedMap;
@@ -32,6 +33,42 @@ public class ApiClientTest extends MockWebServerTest {
     apiClient.sendMetrics(metrics);
 
     assertRequestContainsHeader("Accept", "application/json");
+  }
+
+  @Test public void sendsContentTypeJsonHeader() throws Exception {
+    enqueueMockResponse();
+    Metrics metrics = givenAnyMetrics();
+
+    apiClient.sendMetrics(metrics);
+
+    assertRequestContainsHeader("Content-Type", "application/json; charset=utf-8");
+  }
+
+  @Test public void sendsAcceptEncodingGzipDeflateHeader() throws Exception {
+    enqueueMockResponse();
+    Metrics metrics = givenAnyMetrics();
+
+    apiClient.sendMetrics(metrics);
+
+    assertRequestContainsHeader("Accept-Encoding", "gzip, deflate");
+  }
+
+  @Test public void sendsApiKeyHeader() throws Exception {
+    enqueueMockResponse();
+    Metrics metrics = givenAnyMetrics();
+
+    apiClient.sendMetrics(metrics);
+
+    assertRequestContainsHeader("X-Api-key", "<This will be implemented in the future>");
+  }
+
+  @Test public void sendsUserAgentHeader() throws Exception {
+    enqueueMockResponse();
+    Metrics metrics = givenAnyMetrics();
+
+    apiClient.sendMetrics(metrics);
+
+    assertRequestContainsHeader("User-Agent", "FlowUpAndroidSDK/" + BuildConfig.VERSION_NAME);
   }
 
   private Metrics givenAnyMetrics() {
