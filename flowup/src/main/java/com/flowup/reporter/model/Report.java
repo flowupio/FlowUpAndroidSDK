@@ -14,18 +14,18 @@ public class Report {
   @SerializedName("screenDensity") private final String screenDensity;
   @SerializedName("screenSize") private final String screenSize;
   @SerializedName("numberOfCores") private final int numberOfCores;
-  @SerializedName("network") private final NetworkMetric networkMetrics;
-  @SerializedName("ui") private final UIMetric uiMetrics;
+  @SerializedName("network") private final NetworkMetricReportReport networkMetricsReport;
+  @SerializedName("ui") private final UIMetricReportReport uiMetricsReport;
 
   public Report(String appPackage, String uuid, String deviceModel, String screenDensity,
-      String screenSize, int numberOfCores, NetworkMetric networkMetrics, UIMetric uiMetrics) {
+      String screenSize, int numberOfCores, NetworkMetricReportReport networkMetricsReport, UIMetricReportReport uiMetricsReport) {
     this.appPackage = appPackage;
     this.uuid = uuid;
     this.deviceModel = deviceModel;
     this.screenDensity = screenDensity;
     this.screenSize = screenSize;
     this.numberOfCores = numberOfCores;
-    this.networkMetrics = networkMetrics;
-    this.uiMetrics = uiMetrics;
+    this.networkMetricsReport = networkMetricsReport;
+    this.uiMetricsReport = uiMetricsReport;
   }
 }

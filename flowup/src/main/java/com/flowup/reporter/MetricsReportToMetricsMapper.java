@@ -7,10 +7,10 @@ package com.flowup.reporter;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Timer;
-import com.flowup.reporter.model.NetworkMetric;
+import com.flowup.reporter.model.NetworkMetricReportReport;
 import com.flowup.reporter.model.Report;
 import com.flowup.reporter.model.StatisticalValue;
-import com.flowup.reporter.model.UIMetric;
+import com.flowup.reporter.model.UIMetricReportReport;
 import com.flowup.utils.Mapper;
 import com.flowup.utils.MetricNameUtils;
 import com.flowup.utils.StatisticalValueUtils;
@@ -25,7 +25,7 @@ class MetricsReportToMetricsMapper extends Mapper<MetricsReport, Report> {
         getNetworkMetric(metricsReport), getUIMetric(metricsReport));
   }
 
-  private NetworkMetric getNetworkMetric(MetricsReport metricsReport) {
+  private NetworkMetricReportReport getNetworkMetric(MetricsReport metricsReport) {
     if (metricsReport.getGauges().isEmpty()) {
       return null;
     }
@@ -34,14 +34,14 @@ class MetricsReportToMetricsMapper extends Mapper<MetricsReport, Report> {
     return mapNetworkMetric(reportingTimestamp, metricsReport.getGauges());
   }
 
-  private UIMetric getUIMetric(MetricsReport metricsReport) {
+  private UIMetricReportReport getUIMetric(MetricsReport metricsReport) {
     if (metricsReport.getTimers().isEmpty() || metricsReport.getHistograms().isEmpty()) {
       return null;
     }
     return mapUIMetric(metricsReport.getHistograms(), metricsReport.getTimers());
   }
 
-  private NetworkMetric mapNetworkMetric(long reportingTimestamp, SortedMap<String, Gauge> gauges) {
+  private NetworkMetricReportReport mapNetworkMetric(long reportingTimestamp, SortedMap<String, Gauge> gauges) {
     long bytesUploaded = 0;
     long bytesDownloaded = 0;
     for (String metricName : gauges.keySet()) {
@@ -56,11 +56,11 @@ class MetricsReportToMetricsMapper extends Mapper<MetricsReport, Report> {
     String osVersion = MetricNameUtils.findCrossMetricInfoAtPosition(2, metricName);
     boolean batterySaverOne =
         Boolean.valueOf(MetricNameUtils.findCrossMetricInfoAtPosition(6, metricName));
-    return new NetworkMetric(reportingTimestamp, versionName, osVersion, batterySaverOne,
+    return new NetworkMetricReportReport(reportingTimestamp, versionName, osVersion, batterySaverOne,
         bytesUploaded, bytesDownloaded);
   }
 
-  private UIMetric mapUIMetric(SortedMap<String, Histogram> histograms,
+  private UIMetricReportReport mapUIMetric(SortedMap<String, Histogram> histograms,
       SortedMap<String, Timer> timers) {
     StatisticalValue frameTime = null;
     StatisticalValue framesPerSecond = null;
@@ -81,7 +81,7 @@ class MetricsReportToMetricsMapper extends Mapper<MetricsReport, Report> {
         Boolean.valueOf(MetricNameUtils.findCrossMetricInfoAtPosition(6, metricName));
     long timestamp = Long.valueOf(MetricNameUtils.findCrossMetricInfoAtPosition(12, metricName));
     String screenName = MetricNameUtils.findCrossMetricInfoAtPosition(11, metricName);
-    return new UIMetric(timestamp, versionName, osVersion, batterySaverOne, screenName, frameTime,
+    return new UIMetricReportReport(timestamp, versionName, osVersion, batterySaverOne, screenName, frameTime,
         framesPerSecond);
   }
 }
