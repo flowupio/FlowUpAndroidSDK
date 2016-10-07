@@ -15,7 +15,6 @@ class HeadersInterceptor implements Interceptor {
     Request request = chain.request()
         .newBuilder()
         .addHeader("Accept", "application/json")
-        .addHeader("Accept-Encoding", "gzip, deflate")
         .addHeader("X-Api-Key", "<This will be implemented in the future>")
         .addHeader("User-Agent", "FlowUpAndroidSDK/" + BuildConfig.VERSION_NAME)
         .build();

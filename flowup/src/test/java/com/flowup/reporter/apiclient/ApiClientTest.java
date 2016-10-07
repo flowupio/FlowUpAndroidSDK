@@ -50,7 +50,7 @@ public class ApiClientTest extends MockWebServerTest {
 
     apiClient.sendMetrics(metrics);
 
-    assertRequestContainsHeader("Accept-Encoding", "gzip, deflate");
+    assertRequestContainsHeader("Accept-Encoding", "gzip");
   }
 
   @Test public void sendsApiKeyHeader() throws Exception {
