@@ -41,13 +41,14 @@ class MetricsReportToMetricsMapper extends Mapper<MetricsReport, Report> {
     return mapUIMetric(metricsReport.getHistograms(), metricsReport.getTimers());
   }
 
-  private NetworkMetricReportReport mapNetworkMetric(long reportingTimestamp, SortedMap<String, Gauge> gauges) {
+  private NetworkMetricReportReport mapNetworkMetric(long reportingTimestamp,
+      SortedMap<String, Gauge> gauges) {
     long bytesUploaded = 0;
     long bytesDownloaded = 0;
     for (String metricName : gauges.keySet()) {
-      if (metricName.contains("bytesUploaded")) {//TODO: Extract this into a constant
+      if (metricName.contains("bytesUploaded")) { //TODO: Extract this into a constant
         bytesUploaded = (long) gauges.get(metricName).getValue();
-      } else if (metricName.contains("bytesDownloaded")) {//TODO: Extract this into a constant
+      } else if (metricName.contains("bytesDownloaded")) { //TODO: Extract this into a constant
         bytesDownloaded = (long) gauges.get(metricName).getValue();
       }
     }
@@ -56,8 +57,8 @@ class MetricsReportToMetricsMapper extends Mapper<MetricsReport, Report> {
     String osVersion = MetricNameUtils.findCrossMetricInfoAtPosition(2, metricName);
     boolean batterySaverOne =
         Boolean.valueOf(MetricNameUtils.findCrossMetricInfoAtPosition(6, metricName));
-    return new NetworkMetricReportReport(reportingTimestamp, versionName, osVersion, batterySaverOne,
-        bytesUploaded, bytesDownloaded);
+    return new NetworkMetricReportReport(reportingTimestamp, versionName, osVersion,
+        batterySaverOne, bytesUploaded, bytesDownloaded);
   }
 
   private UIMetricReportReport mapUIMetric(SortedMap<String, Histogram> histograms,
@@ -65,12 +66,12 @@ class MetricsReportToMetricsMapper extends Mapper<MetricsReport, Report> {
     StatisticalValue frameTime = null;
     StatisticalValue framesPerSecond = null;
     for (String metricName : timers.keySet()) {
-      if (metricName.contains("frameTime")) {//TODO: Extract this into a constant
+      if (metricName.contains("frameTime")) { //TODO: Extract this into a constant
         frameTime = StatisticalValueUtils.fromfSampling(timers.get(metricName));
       }
     }
     for (String metricName : histograms.keySet()) {
-      if (metricName.contains("fps")) {//TODO: Extract this into a constant
+      if (metricName.contains("fps")) { //TODO: Extract this into a constant
         framesPerSecond = StatisticalValueUtils.fromfSampling(histograms.get(metricName));
       }
     }
@@ -81,7 +82,7 @@ class MetricsReportToMetricsMapper extends Mapper<MetricsReport, Report> {
         Boolean.valueOf(MetricNameUtils.findCrossMetricInfoAtPosition(6, metricName));
     long timestamp = Long.valueOf(MetricNameUtils.findCrossMetricInfoAtPosition(12, metricName));
     String screenName = MetricNameUtils.findCrossMetricInfoAtPosition(11, metricName);
-    return new UIMetricReportReport(timestamp, versionName, osVersion, batterySaverOne, screenName, frameTime,
-        framesPerSecond);
+    return new UIMetricReportReport(timestamp, versionName, osVersion, batterySaverOne, screenName,
+        frameTime, framesPerSecond);
   }
 }

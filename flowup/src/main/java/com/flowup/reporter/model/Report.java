@@ -18,7 +18,8 @@ public class Report {
   @SerializedName("ui") private final UIMetricReportReport uiMetricsReport;
 
   public Report(String appPackage, String uuid, String deviceModel, String screenDensity,
-      String screenSize, int numberOfCores, NetworkMetricReportReport networkMetricsReport, UIMetricReportReport uiMetricsReport) {
+      String screenSize, int numberOfCores, NetworkMetricReportReport networkMetricsReport,
+      UIMetricReportReport uiMetricsReport) {
     this.appPackage = appPackage;
     this.uuid = uuid;
     this.deviceModel = deviceModel;
