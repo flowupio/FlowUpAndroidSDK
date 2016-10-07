@@ -30,10 +30,10 @@ public class FlowUpReporter extends ScheduledReporter {
   private final WiFiSyncServiceScheduler syncScheduler;
 
   private FlowUpReporter(MetricRegistry registry, String name, MetricFilter filter,
-      TimeUnit rateUnit, TimeUnit durationUnit, String host, int port, boolean persistent,
+      TimeUnit rateUnit, TimeUnit durationUnit, String scheme, String host, int port, boolean persistent,
       Context context) {
     super(registry, name, filter, rateUnit, durationUnit);
-    this.apiClient = new ApiClient(host, port);
+    this.apiClient = new ApiClient(scheme, host, port);
     this.metricsStorage = new MetricsStorage(context, persistent);
     this.syncScheduler = new WiFiSyncServiceScheduler(context);
   }
@@ -84,8 +84,8 @@ public class FlowUpReporter extends ScheduledReporter {
       return this;
     }
 
-    public FlowUpReporter build(String host, int port) {
-      return new FlowUpReporter(registry, name, filter, rateUnit, durationUnit, host, port,
+    public FlowUpReporter build(String scheme, String host, int port) {
+      return new FlowUpReporter(registry, name, filter, rateUnit, durationUnit, scheme, host, port,
           persistent, context);
     }
 

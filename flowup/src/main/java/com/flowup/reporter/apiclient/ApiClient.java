@@ -23,11 +23,11 @@ public class ApiClient {
   private final Gson jsonParser;
   private final HttpUrl reportEndpoint;
 
-  public ApiClient(String host, int port) {
+  public ApiClient(String scheme, String host, int port) {
     this.mapper = new MetricsToMetricsDTOMapper();
     this.httpClient = ApiClientConfig.getHttpClient();
     this.jsonParser = ApiClientConfig.getJsonParser();
-    this.reportEndpoint = ApiClientConfig.buildURL(host, port);
+    this.reportEndpoint = ApiClientConfig.buildURL(scheme, host, port);
   }
 
   public ApiReportResult sendMetrics(Metrics metrics) {

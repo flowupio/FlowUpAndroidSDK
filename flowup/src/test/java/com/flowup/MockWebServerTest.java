@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2016 Go Karumi S.L.
+ */
+
 package com.flowup;
 
 import com.google.gson.JsonParser;
@@ -136,8 +140,15 @@ import static junit.framework.Assert.assertTrue;
     assertEquals(fileContent, request.getBody().readUtf8());
   }
 
-  protected String getBaseUrl() {
-    return server.url("/").toString();
+  protected String getScheme() {
+    return "http";
+  }
+
+  protected String getHost() {
+    return server.getHostName();
+  }
+  protected int getPort() {
+    return server.getPort();
   }
 
   private RecordedRequest getRecordedRequestAtIndex(int requestIndex) throws InterruptedException {

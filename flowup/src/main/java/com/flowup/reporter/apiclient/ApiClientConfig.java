@@ -11,7 +11,6 @@ import okhttp3.OkHttpClient;
 
 class ApiClientConfig {
 
-  private static final String SCHEME = "https";
   private static final long HTTP_TIMEOUT = 10;
   private static final OkHttpClient httpClient =
       new OkHttpClient.Builder()
@@ -30,7 +29,7 @@ class ApiClientConfig {
     return GSON;
   }
 
-  static HttpUrl buildURL(String host, int port) {
-    return new HttpUrl.Builder().scheme(SCHEME).host(host).port(port).build();
+  static HttpUrl buildURL(String scheme, String host, int port) {
+    return new HttpUrl.Builder().scheme(scheme).host(host).port(port).build();
   }
 }

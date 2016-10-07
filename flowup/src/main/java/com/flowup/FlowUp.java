@@ -73,6 +73,7 @@ public class FlowUp {
   }
 
   private void initializeFlowUpReporter() {
+    String scheme = application.getString(R.string.flowup_scheme);
     String host = application.getString(R.string.flowup_host);
     int port = application.getResources().getInteger(R.integer.flowup_port);
     FlowUpReporter.forRegistry(registry, application)
@@ -80,7 +81,7 @@ public class FlowUp {
         .durationUnit(TimeUnit.MILLISECONDS)
         .filter(MetricFilter.ALL)
         .persistent(true)
-        .build(host, port)
+        .build(scheme, host, port)
         .start(SAMPLING_INTERVAL, TimeUnit.SECONDS);
   }
 
