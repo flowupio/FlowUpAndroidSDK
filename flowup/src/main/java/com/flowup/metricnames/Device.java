@@ -27,7 +27,7 @@ class Device {
   }
 
   String getModel() {
-    return MODEL;
+    return MODEL.replace(".", "");
   }
 
   String getScreenDensity() {

@@ -8,12 +8,14 @@ import com.google.gson.annotations.SerializedName;
 
 public class UIMetric extends Metric {
 
-  @SerializedName("frameTime") private final long frameTime;
-  @SerializedName("fps") private final long framesPerSecond;
+  @SerializedName("screenName") private final String screen;
+  @SerializedName("frameTime") private final StatisticalValue frameTime;
+  @SerializedName("fps") private final StatisticalValue framesPerSecond;
 
   public UIMetric(long timestamp, String appVersionName, String osVersion,
-      boolean batterySaverOn, long frameTime, long framesPerSecond) {
+      boolean batterySaverOn, String screen, StatisticalValue frameTime, StatisticalValue framesPerSecond) {
     super(timestamp, appVersionName, osVersion, batterySaverOn);
+    this.screen = screen;
     this.frameTime = frameTime;
     this.framesPerSecond = framesPerSecond;
   }

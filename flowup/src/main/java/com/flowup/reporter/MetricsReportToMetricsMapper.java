@@ -1,11 +1,19 @@
+/*
+ * Copyright (C) 2016 Go Karumi S.L.
+ */
+
 package com.flowup.reporter;
 
 import com.codahale.metrics.Gauge;
+import com.codahale.metrics.Histogram;
+import com.codahale.metrics.Timer;
 import com.flowup.reporter.model.NetworkMetric;
 import com.flowup.reporter.model.Report;
+import com.flowup.reporter.model.StatisticalValue;
 import com.flowup.reporter.model.UIMetric;
 import com.flowup.utils.Mapper;
 import com.flowup.utils.MetricNameUtils;
+import com.flowup.utils.StatisticalValueUtils;
 import java.util.SortedMap;
 
 class MetricsReportToMetricsMapper extends Mapper<MetricsReport, Report> {
@@ -24,6 +32,13 @@ class MetricsReportToMetricsMapper extends Mapper<MetricsReport, Report> {
 
     long reportingTimestamp = metricsReport.getReportingTimestamp();
     return mapNetworkMetric(reportingTimestamp, metricsReport.getGauges());
+  }
+
+  private UIMetric getUIMetric(MetricsReport metricsReport) {
+    if (metricsReport.getTimers().isEmpty() || metricsReport.getHistograms().isEmpty()) {
+      return null;
+    }
+    return mapUIMetric(metricsReport.getHistograms(), metricsReport.getTimers());
   }
 
   private NetworkMetric mapNetworkMetric(long reportingTimestamp, SortedMap<String, Gauge> gauges) {
@@ -45,10 +60,28 @@ class MetricsReportToMetricsMapper extends Mapper<MetricsReport, Report> {
         bytesUploaded, bytesDownloaded);
   }
 
-  private UIMetric getUIMetric(MetricsReport metrics) {
-    if (metrics.getTimers().isEmpty()) {
-      return null;
+  private UIMetric mapUIMetric(SortedMap<String, Histogram> histograms,
+      SortedMap<String, Timer> timers) {
+    StatisticalValue frameTime = null;
+    StatisticalValue framesPerSecond = null;
+    for (String metricName : timers.keySet()) {
+      if (metricName.contains("frameTime")) {//TODO: Extract this into a constant
+        frameTime = StatisticalValueUtils.fromfSampling(timers.get(metricName));
+      }
     }
-    return null;
+    for (String metricName : histograms.keySet()) {
+      if (metricName.contains("fps")) {//TODO: Extract this into a constant
+        framesPerSecond = StatisticalValueUtils.fromfSampling(histograms.get(metricName));
+      }
+    }
+    String metricName = timers.firstKey();
+    String versionName = MetricNameUtils.findCrossMetricInfoAtPosition(1, metricName);
+    String osVersion = MetricNameUtils.findCrossMetricInfoAtPosition(2, metricName);
+    boolean batterySaverOne =
+        Boolean.valueOf(MetricNameUtils.findCrossMetricInfoAtPosition(6, metricName));
+    long timestamp = Long.valueOf(MetricNameUtils.findCrossMetricInfoAtPosition(12, metricName));
+    String screenName = MetricNameUtils.findCrossMetricInfoAtPosition(11, metricName);
+    return new UIMetric(timestamp, versionName, osVersion, batterySaverOne, screenName, frameTime,
+        framesPerSecond);
   }
 }
