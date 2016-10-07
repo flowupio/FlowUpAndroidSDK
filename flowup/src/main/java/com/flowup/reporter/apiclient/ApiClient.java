@@ -7,7 +7,6 @@ package com.flowup.reporter.apiclient;
 import com.flowup.reporter.Metrics;
 import com.google.gson.Gson;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -17,22 +16,18 @@ import okhttp3.Response;
 
 public class ApiClient {
 
-  private static final String SCHEME = "https";
   private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-  private static final long HTTP_TIMEOUT = 10;
-  private static final Gson GSON = new Gson();
 
   private final MetricsToMetricsDTOMapper mapper;
   private final OkHttpClient httpClient;
+  private final Gson jsonParser;
   private final HttpUrl reportEndpoint;
 
   public ApiClient(String host, int port) {
     this.mapper = new MetricsToMetricsDTOMapper();
-    this.httpClient = new OkHttpClient.Builder().connectTimeout(HTTP_TIMEOUT, TimeUnit.SECONDS)
-        .readTimeout(HTTP_TIMEOUT, TimeUnit.SECONDS)
-        .writeTimeout(HTTP_TIMEOUT, TimeUnit.SECONDS)
-        .build();
-    this.reportEndpoint = new HttpUrl.Builder().scheme(SCHEME).host(host).port(port).build();
+    this.httpClient = ApiClientConfig.getHttpClient();
+    this.jsonParser = ApiClientConfig.getJsonParser();
+    this.reportEndpoint = ApiClientConfig.buildURL(host, port);
   }
 
   public ApiReportResult sendMetrics(Metrics metrics) {
@@ -50,7 +45,7 @@ public class ApiClient {
 
   private Request generateReportRequest(Metrics metrics) {
     MetricsDTO metricsDTO = mapper.map(metrics);
-    RequestBody body = RequestBody.create(JSON, GSON.toJson(metricsDTO));
+    RequestBody body = RequestBody.create(JSON, jsonParser.toJson(metricsDTO));
     return new Request.Builder().url(reportEndpoint).post(body).build();
   }
 }
