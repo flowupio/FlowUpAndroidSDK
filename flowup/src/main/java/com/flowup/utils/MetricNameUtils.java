@@ -11,6 +11,6 @@ public class MetricNameUtils {
   }
 
   public static String replaceDashes(String value) {
-    return value.replace("-",".");
+    return value.replace("-", ".");
   }
 }

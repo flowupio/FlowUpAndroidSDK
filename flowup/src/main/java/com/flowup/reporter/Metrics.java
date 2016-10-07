@@ -77,7 +77,7 @@ public class Metrics {
     try {
       return Integer.valueOf(findCrossMetricInfoAtPosition(5));
     } catch (NumberFormatException e) {
-      return 0;
+      return 1;
     }
   }
 
