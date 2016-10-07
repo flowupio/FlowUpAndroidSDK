@@ -15,7 +15,7 @@ import com.codahale.metrics.ScheduledReporter;
 import com.codahale.metrics.Timer;
 import com.flowup.reporter.android.WiFiSyncServiceScheduler;
 import com.flowup.reporter.apiclient.ApiClient;
-import com.flowup.reporter.model.Metrics;
+import com.flowup.reporter.model.Report;
 import com.flowup.reporter.storage.MetricsStorage;
 import com.flowup.utils.Mapper;
 import com.flowup.utils.Time;
@@ -32,7 +32,7 @@ public class FlowUpReporter extends ScheduledReporter {
   private final ApiClient apiClient;
   private final WiFiSyncServiceScheduler syncScheduler;
   private final Time time;
-  private final Mapper<MetricsReport, Metrics> mapper = new MetricsReportToMetricsMapper();
+  private final Mapper<MetricsReport, Report> mapper = new MetricsReportToMetricsMapper();
 
   private FlowUpReporter(MetricRegistry registry, String name, MetricFilter filter,
       TimeUnit rateUnit, TimeUnit durationUnit, String scheme, String host, int port,
@@ -55,7 +55,7 @@ public class FlowUpReporter extends ScheduledReporter {
       SortedMap<String, Meter> meters, SortedMap<String, Timer> timers) {
     MetricsReport metricsReport =
         new MetricsReport(time.now(), gauges, counters, histograms, meters, timers);
-    Metrics map = mapper.map(metricsReport);
+    Report map = mapper.map(metricsReport);
     metricsStorage.storeMetrics(map);
   }
 

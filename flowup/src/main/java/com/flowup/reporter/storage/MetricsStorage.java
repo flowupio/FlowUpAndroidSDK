@@ -5,7 +5,7 @@
 package com.flowup.reporter.storage;
 
 import android.content.Context;
-import com.flowup.reporter.model.Metrics;
+import com.flowup.reporter.model.Report;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
@@ -31,7 +31,7 @@ public class MetricsStorage {
     return builder;
   }
 
-  public void storeMetrics(Metrics metrics) {
+  public void storeMetrics(Report metrics) {
     realm.beginTransaction();
     //Persist shit
     realm.commitTransaction();

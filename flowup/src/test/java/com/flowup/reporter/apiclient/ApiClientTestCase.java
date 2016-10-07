@@ -6,7 +6,7 @@ package com.flowup.reporter.apiclient;
 
 import com.flowup.BuildConfig;
 import com.flowup.MockWebServerTestCase;
-import com.flowup.reporter.model.Metrics;
+import com.flowup.reporter.model.Report;
 import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +22,7 @@ public class ApiClientTestCase extends MockWebServerTestCase {
 
   @Test public void sendsAcceptApplicationJsonHeader() throws Exception {
     enqueueMockResponse();
-    Metrics metrics = givenAnyMetrics();
+    Report metrics = givenAnyMetrics();
 
     apiClient.sendMetrics(metrics);
 
@@ -31,7 +31,7 @@ public class ApiClientTestCase extends MockWebServerTestCase {
 
   @Test public void sendsContentTypeJsonHeader() throws Exception {
     enqueueMockResponse();
-    Metrics metrics = givenAnyMetrics();
+    Report metrics = givenAnyMetrics();
 
     apiClient.sendMetrics(metrics);
 
@@ -40,7 +40,7 @@ public class ApiClientTestCase extends MockWebServerTestCase {
 
   @Test public void sendsAcceptEncodingGzipDeflateHeader() throws Exception {
     enqueueMockResponse();
-    Metrics metrics = givenAnyMetrics();
+    Report metrics = givenAnyMetrics();
 
     apiClient.sendMetrics(metrics);
 
@@ -49,7 +49,7 @@ public class ApiClientTestCase extends MockWebServerTestCase {
 
   @Test public void sendsApiKeyHeader() throws Exception {
     enqueueMockResponse();
-    Metrics metrics = givenAnyMetrics();
+    Report metrics = givenAnyMetrics();
 
     apiClient.sendMetrics(metrics);
 
@@ -58,14 +58,14 @@ public class ApiClientTestCase extends MockWebServerTestCase {
 
   @Test public void sendsUserAgentHeader() throws Exception {
     enqueueMockResponse();
-    Metrics metrics = givenAnyMetrics();
+    Report metrics = givenAnyMetrics();
 
     apiClient.sendMetrics(metrics);
 
     assertRequestContainsHeader("User-Agent", "FlowUpAndroidSDK/" + BuildConfig.VERSION_NAME);
   }
 
-  private Metrics givenAnyMetrics() {
-    return new Metrics("", "", "", "", "", 0, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
+  private Report givenAnyMetrics() {
+    return new Report("", "", "", "", "", 0, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
   }
 }

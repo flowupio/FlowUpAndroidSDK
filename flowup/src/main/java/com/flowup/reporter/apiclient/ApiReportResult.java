@@ -4,14 +4,14 @@
 
 package com.flowup.reporter.apiclient;
 
-import com.flowup.reporter.model.Metrics;
+import com.flowup.reporter.model.Report;
 
 public class ApiReportResult {
 
-  private Metrics metrics;
+  private Report metrics;
   private Error error;
 
-  public ApiReportResult(Metrics metrics) {
+  public ApiReportResult(Report metrics) {
     this.metrics = metrics;
   }
 
@@ -23,7 +23,7 @@ public class ApiReportResult {
     return metrics != null && error == null;
   }
 
-  public Metrics getMetricsReported() {
+  public Report getMetricsReported() {
     return metrics;
   }
 

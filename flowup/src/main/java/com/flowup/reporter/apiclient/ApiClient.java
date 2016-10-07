@@ -4,8 +4,7 @@
 
 package com.flowup.reporter.apiclient;
 
-import com.flowup.reporter.MetricsReport;
-import com.flowup.reporter.model.Metrics;
+import com.flowup.reporter.model.Report;
 import com.google.gson.Gson;
 import java.io.IOException;
 import okhttp3.HttpUrl;
@@ -29,7 +28,7 @@ public class ApiClient {
     this.reportEndpoint = ApiClientConfig.buildURL(scheme, host, port);
   }
 
-  public ApiReportResult sendMetrics(Metrics metrics) {
+  public ApiReportResult sendMetrics(Report metrics) {
     Request request = generateReportRequest(metrics);
     try {
       Response response = httpClient.newCall(request).execute();
@@ -42,7 +41,7 @@ public class ApiClient {
     return new ApiReportResult(ApiReportResult.Error.UNKNOWN);
   }
 
-  private Request generateReportRequest(Metrics metrics) {
+  private Request generateReportRequest(Report metrics) {
     RequestBody body = RequestBody.create(JSON, jsonParser.toJson(metrics));
     return new Request.Builder().url(reportEndpoint).post(body).build();
   }

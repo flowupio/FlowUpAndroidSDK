@@ -15,11 +15,10 @@ public class MetricNameUtils {
   }
 
   public static String findCrossMetricInfoAtPosition(int index, String metricName) {
-    String[] metricNames = metricName.split(".");
+    String[] metricNames = metricName.split("\\.");
     if (metricNames.length > index) {
-      return replaceDots(metricNames[index]);
+      return replaceDashes(metricNames[index]);
     }
     return null;
   }
-
 }
