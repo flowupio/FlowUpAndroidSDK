@@ -5,4 +5,5 @@
 package com.flowup.reporter.apiclient;
 
 class UIMetricDTO {
+
 }
