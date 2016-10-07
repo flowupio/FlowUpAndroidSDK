@@ -15,7 +15,10 @@ import com.codahale.metrics.ScheduledReporter;
 import com.codahale.metrics.Timer;
 import com.flowup.reporter.android.WiFiSyncServiceScheduler;
 import com.flowup.reporter.apiclient.ApiClient;
+import com.flowup.reporter.model.Metrics;
 import com.flowup.reporter.storage.MetricsStorage;
+import com.flowup.utils.Mapper;
+import com.flowup.utils.Time;
 import java.util.SortedMap;
 import java.util.concurrent.TimeUnit;
 
@@ -28,20 +31,32 @@ public class FlowUpReporter extends ScheduledReporter {
   private final MetricsStorage metricsStorage;
   private final ApiClient apiClient;
   private final WiFiSyncServiceScheduler syncScheduler;
+  private final Time time;
+  private final Mapper<MetricsReport, Metrics> mapper = new MetricsReportToMetricsMapper();
 
   private FlowUpReporter(MetricRegistry registry, String name, MetricFilter filter,
-      TimeUnit rateUnit, TimeUnit durationUnit, String scheme, String host, int port, boolean persistent,
-      Context context) {
+      TimeUnit rateUnit, TimeUnit durationUnit, String scheme, String host, int port,
+      boolean persistent, Context context, Time time) {
     super(registry, name, filter, rateUnit, durationUnit);
     this.apiClient = new ApiClient(scheme, host, port);
     this.metricsStorage = new MetricsStorage(context, persistent);
     this.syncScheduler = new WiFiSyncServiceScheduler(context);
+    this.time = time;
   }
 
   @Override public void report(SortedMap<String, Gauge> gauges, SortedMap<String, Counter> counters,
       SortedMap<String, Histogram> histograms, SortedMap<String, Meter> meters,
       SortedMap<String, Timer> timers) {
-    metricsStorage.storeMetrics(new Metrics(gauges, counters, histograms, meters, timers));
+    storeMetricsReport(gauges, counters, histograms, meters, timers);
+  }
+
+  private void storeMetricsReport(SortedMap<String, Gauge> gauges,
+      SortedMap<String, Counter> counters, SortedMap<String, Histogram> histograms,
+      SortedMap<String, Meter> meters, SortedMap<String, Timer> timers) {
+    MetricsReport metricsReport =
+        new MetricsReport(time.now(), gauges, counters, histograms, meters, timers);
+    Metrics map = mapper.map(metricsReport);
+    metricsStorage.storeMetrics(map);
   }
 
   public static final class Builder {
@@ -86,7 +101,7 @@ public class FlowUpReporter extends ScheduledReporter {
 
     public FlowUpReporter build(String scheme, String host, int port) {
       return new FlowUpReporter(registry, name, filter, rateUnit, durationUnit, scheme, host, port,
-          persistent, context);
+          persistent, context, new Time());
     }
 
     public Builder persistent(boolean persistent) {

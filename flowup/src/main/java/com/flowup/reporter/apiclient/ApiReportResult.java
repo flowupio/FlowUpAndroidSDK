@@ -4,15 +4,15 @@
 
 package com.flowup.reporter.apiclient;
 
-import com.flowup.reporter.Metrics;
+import com.flowup.reporter.model.Metrics;
 
 public class ApiReportResult {
 
-  private Metrics metricsReported;
+  private Metrics metrics;
   private Error error;
 
-  public ApiReportResult(Metrics metricsReported) {
-    this.metricsReported = metricsReported;
+  public ApiReportResult(Metrics metrics) {
+    this.metrics = metrics;
   }
 
   public ApiReportResult(Error error) {
@@ -20,11 +20,11 @@ public class ApiReportResult {
   }
 
   public boolean isSuccess() {
-    return metricsReported != null && error == null;
+    return metrics != null && error == null;
   }
 
   public Metrics getMetricsReported() {
-    return metricsReported;
+    return metrics;
   }
 
   public Error getError() {

@@ -5,15 +5,9 @@
 package com.flowup.reporter.storage;
 
 import android.content.Context;
-import com.codahale.metrics.Counter;
-import com.codahale.metrics.Gauge;
-import com.codahale.metrics.Histogram;
-import com.codahale.metrics.Meter;
-import com.codahale.metrics.Timer;
-import com.flowup.reporter.Metrics;
+import com.flowup.reporter.model.Metrics;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import java.util.SortedMap;
 
 public class MetricsStorage {
 
@@ -39,31 +33,7 @@ public class MetricsStorage {
 
   public void storeMetrics(Metrics metrics) {
     realm.beginTransaction();
-    storeGauges(metrics.getGauges());
-    storeCounters(metrics.getCounters());
-    storeHistograms(metrics.getHistograms());
-    storeMeters(metrics.getMeters());
-    storeTimers(metrics.getTimers());
+    //Persist shit
     realm.commitTransaction();
-  }
-
-  private void storeGauges(SortedMap<String, Gauge> gauges) {
-
-  }
-
-  private void storeCounters(SortedMap<String, Counter> counters) {
-
-  }
-
-  private void storeHistograms(SortedMap<String, Histogram> histograms) {
-
-  }
-
-  private void storeMeters(SortedMap<String, Meter> meters) {
-
-  }
-
-  private void storeTimers(SortedMap<String, Timer> timers) {
-
   }
 }

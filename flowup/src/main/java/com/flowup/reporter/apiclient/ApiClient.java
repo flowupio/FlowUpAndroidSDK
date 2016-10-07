@@ -4,7 +4,8 @@
 
 package com.flowup.reporter.apiclient;
 
-import com.flowup.reporter.Metrics;
+import com.flowup.reporter.MetricsReport;
+import com.flowup.reporter.model.Metrics;
 import com.google.gson.Gson;
 import java.io.IOException;
 import okhttp3.HttpUrl;
@@ -18,13 +19,11 @@ public class ApiClient {
 
   private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
-  private final MetricsToMetricsDTOMapper mapper;
   private final OkHttpClient httpClient;
   private final Gson jsonParser;
   private final HttpUrl reportEndpoint;
 
   public ApiClient(String scheme, String host, int port) {
-    this.mapper = new MetricsToMetricsDTOMapper();
     this.httpClient = ApiClientConfig.getHttpClient();
     this.jsonParser = ApiClientConfig.getJsonParser();
     this.reportEndpoint = ApiClientConfig.buildURL(scheme, host, port);
@@ -44,8 +43,7 @@ public class ApiClient {
   }
 
   private Request generateReportRequest(Metrics metrics) {
-    MetricsDTO metricsDTO = mapper.map(metrics);
-    RequestBody body = RequestBody.create(JSON, jsonParser.toJson(metricsDTO));
+    RequestBody body = RequestBody.create(JSON, jsonParser.toJson(metrics));
     return new Request.Builder().url(reportEndpoint).post(body).build();
   }
 }

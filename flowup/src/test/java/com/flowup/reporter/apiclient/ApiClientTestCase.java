@@ -11,7 +11,7 @@ import com.codahale.metrics.Meter;
 import com.codahale.metrics.Timer;
 import com.flowup.BuildConfig;
 import com.flowup.MockWebServerTestCase;
-import com.flowup.reporter.Metrics;
+import com.flowup.reporter.MetricsReport;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import org.junit.Before;
@@ -28,7 +28,7 @@ public class ApiClientTestCase extends MockWebServerTestCase {
 
   @Test public void sendsAcceptApplicationJsonHeader() throws Exception {
     enqueueMockResponse();
-    Metrics metrics = givenAnyMetrics();
+    MetricsReport metrics = givenAnyMetrics();
 
     apiClient.sendMetrics(metrics);
 
@@ -37,7 +37,7 @@ public class ApiClientTestCase extends MockWebServerTestCase {
 
   @Test public void sendsContentTypeJsonHeader() throws Exception {
     enqueueMockResponse();
-    Metrics metrics = givenAnyMetrics();
+    MetricsReport metrics = givenAnyMetrics();
 
     apiClient.sendMetrics(metrics);
 
@@ -46,7 +46,7 @@ public class ApiClientTestCase extends MockWebServerTestCase {
 
   @Test public void sendsAcceptEncodingGzipDeflateHeader() throws Exception {
     enqueueMockResponse();
-    Metrics metrics = givenAnyMetrics();
+    MetricsReport metrics = givenAnyMetrics();
 
     apiClient.sendMetrics(metrics);
 
@@ -55,7 +55,7 @@ public class ApiClientTestCase extends MockWebServerTestCase {
 
   @Test public void sendsApiKeyHeader() throws Exception {
     enqueueMockResponse();
-    Metrics metrics = givenAnyMetrics();
+    MetricsReport metrics = givenAnyMetrics();
 
     apiClient.sendMetrics(metrics);
 
@@ -64,19 +64,19 @@ public class ApiClientTestCase extends MockWebServerTestCase {
 
   @Test public void sendsUserAgentHeader() throws Exception {
     enqueueMockResponse();
-    Metrics metrics = givenAnyMetrics();
+    MetricsReport metrics = givenAnyMetrics();
 
     apiClient.sendMetrics(metrics);
 
     assertRequestContainsHeader("User-Agent", "FlowUpAndroidSDK/" + BuildConfig.VERSION_NAME);
   }
 
-  private Metrics givenAnyMetrics() {
+  private MetricsReport givenAnyMetrics() {
     SortedMap<String, Gauge> gauges = new TreeMap<>();
     SortedMap<String, Counter> counters = new TreeMap<>();
     SortedMap<String, Histogram> histograms = new TreeMap<>();
     SortedMap<String, Meter> meters = new TreeMap<>();
     SortedMap<String, Timer> timers = new TreeMap<>();
-    return new Metrics(gauges, counters, histograms, meters, timers);
+    return new MetricsReport(gauges, counters, histograms, meters, timers);
   }
 }
