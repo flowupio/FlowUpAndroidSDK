@@ -12,7 +12,7 @@ import okhttp3.OkHttpClient;
 class ApiClientConfig {
 
   private static final long HTTP_TIMEOUT = 10;
-  private static final OkHttpClient httpClient =
+  private static final OkHttpClient HTTP_CLIENT =
       new OkHttpClient.Builder()
           .connectTimeout(HTTP_TIMEOUT, TimeUnit.SECONDS)
           .readTimeout(HTTP_TIMEOUT, TimeUnit.SECONDS)
@@ -22,7 +22,7 @@ class ApiClientConfig {
   private static final Gson GSON = new Gson();
 
   static OkHttpClient getHttpClient() {
-    return httpClient;
+    return HTTP_CLIENT;
   }
 
   static Gson getJsonParser() {
