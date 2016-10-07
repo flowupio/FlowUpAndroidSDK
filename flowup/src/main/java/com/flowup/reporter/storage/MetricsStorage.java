@@ -4,6 +4,7 @@
 
 package com.flowup.reporter.storage;
 
+import android.content.Context;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Histogram;
@@ -21,12 +22,13 @@ public class MetricsStorage {
 
   private final Realm realm;
 
-  public MetricsStorage(boolean persistent) {
-    RealmConfiguration.Builder builder = getRealmConfig(persistent);
+  public MetricsStorage(Context context, boolean persistent) {
+    RealmConfiguration.Builder builder = getRealmConfig(context, persistent);
     this.realm = Realm.getInstance(builder.build());
   }
 
-  private RealmConfiguration.Builder getRealmConfig(boolean persistent) {
+  private RealmConfiguration.Builder getRealmConfig(Context context, boolean persistent) {
+    Realm.init(context);
     RealmConfiguration.Builder builder =
         new RealmConfiguration.Builder().name(REALM_DB_NAME).schemaVersion(REALM_SCHEMA_VERSION);
     if (persistent) {

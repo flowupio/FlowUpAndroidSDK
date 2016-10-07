@@ -1,1 +1,1 @@
-include ':app', ':flowup', ':flowupreporter'
+include ':app', ':flowup'

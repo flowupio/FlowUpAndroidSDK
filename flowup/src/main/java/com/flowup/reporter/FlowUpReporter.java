@@ -21,8 +21,8 @@ import java.util.concurrent.TimeUnit;
 
 public class FlowUpReporter extends ScheduledReporter {
 
-  public static FlowUpReporter.Builder forRegistry(MetricRegistry registry) {
-    return new FlowUpReporter.Builder(registry);
+  public static FlowUpReporter.Builder forRegistry(MetricRegistry registry, Context context) {
+    return new FlowUpReporter.Builder(registry, context);
   }
 
   private final MetricsStorage metricsStorage;
@@ -34,7 +34,7 @@ public class FlowUpReporter extends ScheduledReporter {
       Context context) {
     super(registry, name, filter, rateUnit, durationUnit);
     this.apiClient = new ApiClient(host, port);
-    this.metricsStorage = new MetricsStorage(persistent);
+    this.metricsStorage = new MetricsStorage(context, persistent);
     this.syncScheduler = new WiFiSyncServiceScheduler(context);
   }
 
@@ -54,14 +54,14 @@ public class FlowUpReporter extends ScheduledReporter {
     private boolean persistent;
     private Context context;
 
-    public Builder(MetricRegistry registry) {
+    public Builder(MetricRegistry registry, Context context) {
       this.registry = registry;
       this.name = "FlowUp Reporter";
       this.filter = MetricFilter.ALL;
       this.rateUnit = TimeUnit.SECONDS;
       this.durationUnit = TimeUnit.MILLISECONDS;
       this.persistent = true;
-      this.context = null;
+      this.context = context;
     }
 
     public Builder name(String name) {
@@ -91,11 +91,6 @@ public class FlowUpReporter extends ScheduledReporter {
 
     public Builder persistent(boolean persistent) {
       this.persistent = persistent;
-      return this;
-    }
-
-    public Builder context(Context context) {
-      this.context = context;
       return this;
     }
   }

@@ -75,7 +75,7 @@ public class FlowUp {
   private void initializeFlowUpReporter() {
     String host = application.getString(R.string.flowup_host);
     int port = application.getResources().getInteger(R.integer.flowup_port);
-    FlowUpReporter.forRegistry(registry)
+    FlowUpReporter.forRegistry(registry, application)
         .rateUnit(TimeUnit.SECONDS)
         .durationUnit(TimeUnit.MILLISECONDS)
         .filter(MetricFilter.ALL)
