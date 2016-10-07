@@ -9,11 +9,10 @@ import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.Timer;
+import com.flowup.utils.MetricNameUtils;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedMap;
-
-import static com.flowup.utils.MetricNameUtils.replaceDashes;
 
 public class MetricsReport {
 
@@ -24,9 +23,9 @@ public class MetricsReport {
   private final SortedMap<String, Meter> meters;
   private final SortedMap<String, Timer> timers;
 
-  public MetricsReport(long reportingTimestamp, SortedMap<String, Gauge> gauges, SortedMap<String, Counter> counters,
-      SortedMap<String, Histogram> histograms, SortedMap<String, Meter> meters,
-      SortedMap<String, Timer> timers) {
+  public MetricsReport(long reportingTimestamp, SortedMap<String, Gauge> gauges,
+      SortedMap<String, Counter> counters, SortedMap<String, Histogram> histograms,
+      SortedMap<String, Meter> meters, SortedMap<String, Timer> timers) {
     this.reportingTimestamp = reportingTimestamp;
     this.gauges = gauges;
     this.counters = counters;
@@ -63,14 +62,6 @@ public class MetricsReport {
     return findCrossMetricInfoAtPosition(0);
   }
 
-  public String getAppVersionName() {
-    return findCrossMetricInfoAtPosition(1);
-  }
-
-  public String getOSVersion() {
-    return findCrossMetricInfoAtPosition(2);
-  }
-
   public String getInstallationUUID() {
     return findCrossMetricInfoAtPosition(3);
   }
@@ -85,6 +76,14 @@ public class MetricsReport {
     } catch (NumberFormatException e) {
       return 1;
     }
+  }
+
+  public String getAppVersionName(String metricName) {
+    return findCrossMetricInfoAtPosition(1);
+  }
+
+  public String getOSVersion() {
+    return findCrossMetricInfoAtPosition(2);
   }
 
   public boolean isPowerSaverEnabled() {
@@ -113,7 +112,7 @@ public class MetricsReport {
   private String findCrossMetricInfoAtPosition(int index) {
     Set<String> metricNames = getMetricNames();
     for (String metricName : metricNames) {
-      return replaceDashes(metricName.split(".")[index]);
+      return MetricNameUtils.findCrossMetricInfoAtPosition(index, metricName);
     }
     return null;
   }
