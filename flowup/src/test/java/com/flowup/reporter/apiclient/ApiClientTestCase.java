@@ -4,16 +4,10 @@
 
 package com.flowup.reporter.apiclient;
 
-import com.codahale.metrics.Counter;
-import com.codahale.metrics.Gauge;
-import com.codahale.metrics.Histogram;
-import com.codahale.metrics.Meter;
-import com.codahale.metrics.Timer;
 import com.flowup.BuildConfig;
 import com.flowup.MockWebServerTestCase;
-import com.flowup.reporter.MetricsReport;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import com.flowup.reporter.model.Metrics;
+import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,7 +22,7 @@ public class ApiClientTestCase extends MockWebServerTestCase {
 
   @Test public void sendsAcceptApplicationJsonHeader() throws Exception {
     enqueueMockResponse();
-    MetricsReport metrics = givenAnyMetrics();
+    Metrics metrics = givenAnyMetrics();
 
     apiClient.sendMetrics(metrics);
 
@@ -37,7 +31,7 @@ public class ApiClientTestCase extends MockWebServerTestCase {
 
   @Test public void sendsContentTypeJsonHeader() throws Exception {
     enqueueMockResponse();
-    MetricsReport metrics = givenAnyMetrics();
+    Metrics metrics = givenAnyMetrics();
 
     apiClient.sendMetrics(metrics);
 
@@ -46,7 +40,7 @@ public class ApiClientTestCase extends MockWebServerTestCase {
 
   @Test public void sendsAcceptEncodingGzipDeflateHeader() throws Exception {
     enqueueMockResponse();
-    MetricsReport metrics = givenAnyMetrics();
+    Metrics metrics = givenAnyMetrics();
 
     apiClient.sendMetrics(metrics);
 
@@ -55,7 +49,7 @@ public class ApiClientTestCase extends MockWebServerTestCase {
 
   @Test public void sendsApiKeyHeader() throws Exception {
     enqueueMockResponse();
-    MetricsReport metrics = givenAnyMetrics();
+    Metrics metrics = givenAnyMetrics();
 
     apiClient.sendMetrics(metrics);
 
@@ -64,19 +58,14 @@ public class ApiClientTestCase extends MockWebServerTestCase {
 
   @Test public void sendsUserAgentHeader() throws Exception {
     enqueueMockResponse();
-    MetricsReport metrics = givenAnyMetrics();
+    Metrics metrics = givenAnyMetrics();
 
     apiClient.sendMetrics(metrics);
 
     assertRequestContainsHeader("User-Agent", "FlowUpAndroidSDK/" + BuildConfig.VERSION_NAME);
   }
 
-  private MetricsReport givenAnyMetrics() {
-    SortedMap<String, Gauge> gauges = new TreeMap<>();
-    SortedMap<String, Counter> counters = new TreeMap<>();
-    SortedMap<String, Histogram> histograms = new TreeMap<>();
-    SortedMap<String, Meter> meters = new TreeMap<>();
-    SortedMap<String, Timer> timers = new TreeMap<>();
-    return new MetricsReport(gauges, counters, histograms, meters, timers);
+  private Metrics givenAnyMetrics() {
+    return new Metrics("", "", "", "", "", 0, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
   }
 }
