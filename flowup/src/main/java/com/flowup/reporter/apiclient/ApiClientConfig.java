@@ -14,9 +14,11 @@ class ApiClientConfig {
   private static final String SCHEME = "https";
   private static final long HTTP_TIMEOUT = 10;
   private static final OkHttpClient httpClient =
-      new OkHttpClient.Builder().connectTimeout(HTTP_TIMEOUT, TimeUnit.SECONDS)
+      new OkHttpClient.Builder()
+          .connectTimeout(HTTP_TIMEOUT, TimeUnit.SECONDS)
           .readTimeout(HTTP_TIMEOUT, TimeUnit.SECONDS)
           .writeTimeout(HTTP_TIMEOUT, TimeUnit.SECONDS)
+          .addInterceptor(new HeadersInterceptor())
           .build();
   private static final Gson GSON = new Gson();
 
