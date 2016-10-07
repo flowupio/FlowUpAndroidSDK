@@ -14,7 +14,7 @@ import okio.BufferedSink;
 import okio.GzipSink;
 import okio.Okio;
 
-public class GzipInterceptor implements Interceptor {
+class GzipInterceptor implements Interceptor {
 
   @Override public Response intercept(Interceptor.Chain chain) throws IOException {
     Request originalRequest = chain.request();

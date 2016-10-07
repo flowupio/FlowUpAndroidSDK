@@ -59,7 +59,7 @@ class Device {
     return portraitWidth + "X" + portraitHeight;
   }
 
-  String getUUID() {
+  String getInstallationUUID() {
     return uuidGenerator.getUUID();
   }
 

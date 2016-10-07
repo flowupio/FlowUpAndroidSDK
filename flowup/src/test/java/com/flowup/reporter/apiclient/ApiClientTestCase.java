@@ -10,14 +10,14 @@ import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.Timer;
 import com.flowup.BuildConfig;
-import com.flowup.MockWebServerTest;
+import com.flowup.MockWebServerTestCase;
 import com.flowup.reporter.Metrics;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ApiClientTest extends MockWebServerTest {
+public class ApiClientTestCase extends MockWebServerTestCase {
 
   private ApiClient apiClient;
 

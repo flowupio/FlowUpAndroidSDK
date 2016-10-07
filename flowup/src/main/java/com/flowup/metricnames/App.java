@@ -20,11 +20,11 @@ class App {
     this.context = context;
   }
 
-  String getApplicationName() {
+  String getAppPackageName() {
     return replaceDots(context.getPackageName());
   }
 
-  String getApplicationVersionName() {
+  String getAppVersionName() {
     try {
       String packageName = context.getPackageName();
       PackageInfo packageInfo = context.getPackageManager().getPackageInfo(packageName, 0);

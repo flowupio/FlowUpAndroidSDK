@@ -9,4 +9,8 @@ public class MetricNameUtils {
   public static String replaceDots(String value) {
     return value.replace(".", "-");
   }
+
+  public static String replaceDashes(String value) {
+    return value.replace("-",".");
+  }
 }

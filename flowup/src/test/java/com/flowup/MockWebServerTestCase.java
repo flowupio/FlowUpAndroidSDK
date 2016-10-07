@@ -24,13 +24,11 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
-@RunWith(MockitoJUnitRunner.class) public class MockWebServerTest {
+@RunWith(MockitoJUnitRunner.class) public abstract class MockWebServerTestCase {
 
   protected static final int OK_CODE = 200;
   protected static final int ANY_SERVER_ERROR_CODE = 500;
   protected static final String FILE_ENCODING = "UTF-8";
-  protected static final String ANY_DENSITY = "xhdpi";
-  protected static final String ANY_UUID = "anyuuid";
 
   private MockWebServer server;
 
