@@ -73,7 +73,8 @@ class DropwizardReportToRealmMetricReportMapper
   }
 
   private RealmMetricReport mapSampling(Realm realm, String metricName, Sampling sampling) {
-    RealmMetricReport realmMetricReport = realm.createObject(RealmMetricReport.class, String.valueOf(System.nanoTime()));
+    RealmMetricReport realmMetricReport =
+        realm.createObject(RealmMetricReport.class, String.valueOf(System.nanoTime()));
     realmMetricReport.setMetricName(metricName);
     RealmStatisticalValue realmValue =
         realm.createObject(RealmStatisticalValue.class, String.valueOf(System.nanoTime()));

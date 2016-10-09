@@ -112,7 +112,8 @@ public class FlowUp {
     Application application;
     boolean debuggable;
 
-    Builder() {}
+    Builder() {
+    }
 
     public static Builder with(Application application) {
       Builder builder = new Builder();
@@ -128,6 +129,5 @@ public class FlowUp {
     public void start() {
       new FlowUp(application, debuggable).start();
     }
-
   }
 }

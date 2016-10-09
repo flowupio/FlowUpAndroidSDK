@@ -47,8 +47,10 @@ public class WiFiSyncService extends GcmTaskService {
     Reports reports = reportsStorage.getReports();
     if (reports != null) {
       ReportResult result = apiClient.sendReports(reports);
-      if (result.isSuccess()) {
+      if (result.hasDataPendingToSync()) {
         reportsStorage.deleteReports(reports);
+        return RESULT_RESCHEDULE;
+      } else if (result.isSuccess()) {
         return RESULT_SUCCESS;
       } else {
         return RESULT_FAILURE;

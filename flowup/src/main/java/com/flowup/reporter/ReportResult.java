@@ -23,6 +23,10 @@ public class ReportResult {
     return metrics != null && error == null;
   }
 
+  public boolean hasDataPendingToSync() {
+    return false;
+  }
+
   public Reports getMetricsReported() {
     return metrics;
   }

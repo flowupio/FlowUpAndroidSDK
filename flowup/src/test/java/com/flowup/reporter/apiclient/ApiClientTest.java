@@ -7,6 +7,7 @@ package com.flowup.reporter.apiclient;
 import com.flowup.BuildConfig;
 import com.flowup.MockWebServerTestCase;
 import com.flowup.reporter.model.Reports;
+import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -56,6 +57,6 @@ public class ApiClientTest extends MockWebServerTestCase {
   }
 
   private Reports givenAnyMetrics() {
-    return new Reports("", "", "", "", "", 0, null, null);
+    return new Reports(Collections.EMPTY_LIST, "", "", "", "", "", 0, null, null);
   }
 }
