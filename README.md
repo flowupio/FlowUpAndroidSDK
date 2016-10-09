@@ -45,7 +45,7 @@ This library has been developed using [Realm][realm] as the persistence motor. F
 * Download the [Realm Browser][realmbrowser] app.
 * Open the file named ``FlowUp.realm`` using the Realm Browser.
 
-Inside this database you can find all the information persisted by FlowUp which is pending to be synced with our servers. Once this information be synced, it will be removed from the database.
+Inside this database you can find all the information persisted by FlowUp which is pending to be synced with our servers. Once this information be synced, it will be removed from the database. **Remember that to be able to inspect the databse the device used has to be an emulator or be rooted**.
 
 [flowuplogo]: ./art/FlowUpLogo.png
 [realm]: https://realm.io/es/docs/java/latest/
