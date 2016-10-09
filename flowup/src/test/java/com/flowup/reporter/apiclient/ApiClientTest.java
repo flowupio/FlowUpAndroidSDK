@@ -56,6 +56,15 @@ public class ApiClientTest extends MockWebServerTestCase {
     assertRequestContainsHeader("User-Agent", "FlowUpAndroidSDK/" + BuildConfig.VERSION_NAME);
   }
 
+  @Test public void sendsReportRequestToTheCorrectPath() throws Exception {
+    enqueueMockResponse();
+    Reports metrics = givenAnyMetrics();
+
+    apiClient.sendReports(metrics);
+
+    assertRequestSentTo("/report");
+  }
+
   private Reports givenAnyMetrics() {
     return new Reports(Collections.EMPTY_LIST, "", "", "", "", "", 0, null, null);
   }
