@@ -47,16 +47,14 @@ public class FlowUpReporter extends ScheduledReporter {
   @Override public void report(SortedMap<String, Gauge> gauges, SortedMap<String, Counter> counters,
       SortedMap<String, Histogram> histograms, SortedMap<String, Meter> meters,
       SortedMap<String, Timer> timers) {
-    storeMetricsReport(gauges, counters, histograms, meters, timers);
-  }
-
-  private void storeMetricsReport(SortedMap<String, Gauge> gauges,
-      SortedMap<String, Counter> counters, SortedMap<String, Histogram> histograms,
-      SortedMap<String, Meter> meters, SortedMap<String, Timer> timers) {
     MetricsReport metricsReport =
         new MetricsReport(time.now(), gauges, counters, histograms, meters, timers);
-    Report map = mapper.map(metricsReport);
-    metricsStorage.storeMetrics(map);
+    sendReport(metricsReport);
+  }
+
+  private void sendReport(MetricsReport metricsReport) {
+    Report report = mapper.map(metricsReport);
+    apiClient.sendMetrics(report);
   }
 
   public static final class Builder {

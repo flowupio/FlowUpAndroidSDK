@@ -14,6 +14,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedMap;
 
+import static com.flowup.utils.MetricNameUtils.replaceDashes;
+
 public class MetricsReport {
 
   private final long reportingTimestamp;
@@ -67,7 +69,7 @@ public class MetricsReport {
   }
 
   public String getDeviceModel() {
-    return findCrossMetricInfoAtPosition(4);
+    return replaceDashes(findCrossMetricInfoAtPosition(4));
   }
 
   public int getNumberOfCores() {

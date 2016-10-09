@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import java.util.concurrent.TimeUnit;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 class ApiClientConfig {
 
@@ -18,7 +19,7 @@ class ApiClientConfig {
           .readTimeout(HTTP_TIMEOUT, TimeUnit.SECONDS)
           .writeTimeout(HTTP_TIMEOUT, TimeUnit.SECONDS)
           .addInterceptor(new HeadersInterceptor())
-          .addInterceptor(new GzipInterceptor())
+          .addInterceptor(new OnlyDebugInterceptor(new HttpLoggingInterceptor()))
           .build();
   private static final Gson GSON = new Gson();
 

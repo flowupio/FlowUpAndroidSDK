@@ -11,6 +11,7 @@ import android.util.DisplayMetrics;
 import static android.os.Build.MODEL;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
+import static com.flowup.utils.MetricNameUtils.replaceDots;
 
 class Device {
 
@@ -27,7 +28,7 @@ class Device {
   }
 
   String getModel() {
-    return MODEL.replace(".", "");
+    return replaceDots(MODEL);
   }
 
   String getScreenDensity() {
@@ -60,7 +61,7 @@ class Device {
   }
 
   String getInstallationUUID() {
-    return uuidGenerator.getUUID();
+    return replaceDots(uuidGenerator.getUUID());
   }
 
   int getNumberOfCores() {

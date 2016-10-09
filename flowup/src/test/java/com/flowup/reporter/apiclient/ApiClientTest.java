@@ -37,15 +37,6 @@ public class ApiClientTest extends MockWebServerTestCase {
     assertRequestContainsHeader("Content-Type", "application/json; charset=utf-8");
   }
 
-  @Test public void sendsAcceptEncodingGzipDeflateHeader() throws Exception {
-    enqueueMockResponse();
-    Report metrics = givenAnyMetrics();
-
-    apiClient.sendMetrics(metrics);
-
-    assertRequestContainsHeader("Accept-Encoding", "gzip");
-  }
-
   @Test public void sendsApiKeyHeader() throws Exception {
     enqueueMockResponse();
     Report metrics = givenAnyMetrics();
