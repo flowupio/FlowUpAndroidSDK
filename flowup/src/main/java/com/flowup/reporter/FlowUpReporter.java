@@ -49,6 +49,7 @@ public class FlowUpReporter extends ScheduledReporter {
       SortedMap<String, Timer> timers) {
     MetricsReport metricsReport =
         new MetricsReport(time.now(), gauges, counters, histograms, meters, timers);
+    reportsStorage.storeMetrics(metricsReport);
     sendReport(metricsReport);
   }
 

@@ -80,7 +80,7 @@ public class FlowUp {
         .rateUnit(TimeUnit.SECONDS)
         .durationUnit(TimeUnit.MILLISECONDS)
         .filter(MetricFilter.ALL)
-        .persistent(true)
+        .persistent(false)//TODO: Connect this with the debug param or remove it
         .build(scheme, host, port)
         .start(SAMPLING_INTERVAL, TimeUnit.SECONDS);
   }

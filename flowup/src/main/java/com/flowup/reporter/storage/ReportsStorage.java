@@ -5,6 +5,7 @@
 package com.flowup.reporter.storage;
 
 import android.content.Context;
+import android.util.Log;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Histogram;
@@ -20,14 +21,31 @@ import java.util.SortedMap;
 
 public class ReportsStorage {
 
-  private static final String REALM_DB_NAME = "FlowUp";
+  private static final String REALM_DB_NAME = "FlowUp.realm";
   private static final long REALM_SCHEMA_VERSION = 1;
 
-  private final Realm realm;
+  private final Context context;
+  private final boolean persistent;
 
   public ReportsStorage(Context context, boolean persistent) {
+    this.context = context;
+    this.persistent = persistent;
+  }
+
+  public void storeMetrics(final MetricsReport metricsReport) {
+    Realm realm = getRealm();
+    Log.e("DEPURAR", "----------------->" + realm.getPath());
+    realm.executeTransaction(new Realm.Transaction() {
+      @Override public void execute(Realm realm) {
+        storeAsRealmObject(realm, metricsReport);
+      }
+    });
+    realm.close();
+  }
+
+  private Realm getRealm() {
     RealmConfiguration.Builder builder = getRealmConfig(context, persistent);
-    this.realm = Realm.getInstance(builder.build());
+    return Realm.getInstance(builder.build());
   }
 
   private RealmConfiguration.Builder getRealmConfig(Context context, boolean persistent) {
@@ -40,18 +58,13 @@ public class ReportsStorage {
     return builder;
   }
 
-  public void storeMetrics(MetricsReport metricsReport) {
-    realm.beginTransaction();
-    mapToRealmObjects(realm, metricsReport);
-    realm.commitTransaction();
-  }
-
-  private void mapToRealmObjects(Realm realm, MetricsReport metricsReport) {
-    String reportingTimestamp = String.valueOf(metricsReport.getReportingTimestamp());
+  private void storeAsRealmObject(Realm realm, MetricsReport metricsReport) {
     RealmReport report = realm.createObject(RealmReport.class);
-    report.setReportTimestamp(reportingTimestamp);
+    String reportingTimestamp = String.valueOf(metricsReport.getReportingTimestamp());
     RealmList<RealmMetricReport> realmMetricsReports = mapRealmMetricsReport(realm, metricsReport);
+    report.setReportTimestamp(reportingTimestamp);
     report.setMetrics(realmMetricsReports);
+    realm.insertOrUpdate(report);
   }
 
   private RealmList<RealmMetricReport> mapRealmMetricsReport(Realm realm,
