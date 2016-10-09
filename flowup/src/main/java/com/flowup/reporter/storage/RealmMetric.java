@@ -7,7 +7,7 @@ package com.flowup.reporter.storage;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class RealmMetricReport extends RealmObject {
+public class RealmMetric extends RealmObject {
 
   static final String ID_FIELD_NAME = "id";
 

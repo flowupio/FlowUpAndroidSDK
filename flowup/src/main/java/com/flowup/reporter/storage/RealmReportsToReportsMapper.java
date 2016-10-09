@@ -82,9 +82,9 @@ class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Repo
     long bytesUploaded = 0;
     for (int i = 0; i < reports.size(); i++) {
       RealmReport report = reports.get(i);
-      RealmList<RealmMetricReport> metrics = report.getMetrics();
+      RealmList<RealmMetric> metrics = report.getMetrics();
       for (int j = 0; j < metrics.size(); j++) {
-        RealmMetricReport metric = metrics.get(j);
+        RealmMetric metric = metrics.get(j);
         String metricName = metric.getMetricName();
         if (metricName.contains("bytesDownloaded")) {
           bytesDownloaded = metric.getStatisticalValue().getValue();
@@ -112,9 +112,9 @@ class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Repo
     StatisticalValue frameTime = null;
     StatisticalValue framesPerSecond = null;
     for (int i = 0; i < reports.size(); i++) {
-      RealmList<RealmMetricReport> metrics = reports.get(i).getMetrics();
+      RealmList<RealmMetric> metrics = reports.get(i).getMetrics();
       for (int j = 0; j < metrics.size(); j++) {
-        RealmMetricReport metric = metrics.get(j);
+        RealmMetric metric = metrics.get(j);
         String metricName = metric.getMetricName();
         if (metricName.contains("frameTime")) {
           frameTime = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());

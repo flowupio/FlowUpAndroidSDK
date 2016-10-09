@@ -67,11 +67,11 @@ public class ReportsStorage {
     realm.close();
   }
 
-  private void deleteMetricsReports(Realm realm, RealmList<RealmMetricReport> metricsToRemove) {
-    List<RealmResults<RealmMetricReport>> metricsReportsToRemove = new LinkedList<>();
-    for (RealmMetricReport metric : metricsToRemove) {
-      RealmResults<RealmMetricReport> metricsReports = realm.where(RealmMetricReport.class)
-          .equalTo(RealmMetricReport.ID_FIELD_NAME, metric.getId())
+  private void deleteMetricsReports(Realm realm, RealmList<RealmMetric> metricsToRemove) {
+    List<RealmResults<RealmMetric>> metricsReportsToRemove = new LinkedList<>();
+    for (RealmMetric metric : metricsToRemove) {
+      RealmResults<RealmMetric> metricsReports = realm.where(RealmMetric.class)
+          .equalTo(RealmMetric.ID_FIELD_NAME, metric.getId())
           .findAll();
       deleteStatisticalValues(realm, metric.getStatisticalValue());
       metricsReportsToRemove.add(metricsReports);
@@ -108,7 +108,7 @@ public class ReportsStorage {
   private void storeAsRealmObject(Realm realm, DropwizardReport dropwizardReport) {
     String reportingTimestamp = String.valueOf(dropwizardReport.getReportingTimestamp());
     RealmReport report = realm.createObject(RealmReport.class, reportingTimestamp);
-    RealmList<RealmMetricReport> realmMetricsReports =
+    RealmList<RealmMetric> realmMetricsReports =
         new DropwizardReportToRealmMetricReportMapper(realm).map(dropwizardReport);
     report.setMetrics(realmMetricsReports);
     realm.insertOrUpdate(report);

@@ -13,17 +13,17 @@ public class RealmReport extends RealmObject {
   static final String ID_FIELD_NAME = "reportTimestamp";
 
   @PrimaryKey private String reportTimestamp;
-  private RealmList<RealmMetricReport> metrics;
+  private RealmList<RealmMetric> metrics;
 
   public String getReportTimestamp() {
     return reportTimestamp;
   }
 
-  public RealmList<RealmMetricReport> getMetrics() {
+  public RealmList<RealmMetric> getMetrics() {
     return metrics;
   }
 
-  public void setMetrics(RealmList<RealmMetricReport> metrics) {
+  public void setMetrics(RealmList<RealmMetric> metrics) {
     this.metrics = metrics;
   }
 }
