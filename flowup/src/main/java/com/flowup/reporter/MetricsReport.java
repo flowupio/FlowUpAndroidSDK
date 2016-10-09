@@ -15,7 +15,6 @@ import java.util.Set;
 import java.util.SortedMap;
 
 import static com.flowup.utils.MetricNameUtils.replaceDashes;
-import static com.flowup.utils.MetricNameUtils.replaceDots;
 
 public class MetricsReport {
 
