@@ -16,6 +16,8 @@ import com.flowup.utils.MetricNameUtils;
 import com.flowup.utils.StatisticalValueUtils;
 import java.util.SortedMap;
 
+import static com.flowup.utils.MetricNameUtils.replaceDashes;
+
 class MetricsReportToMetricsMapper extends Mapper<MetricsReport, Report> {
 
   @Override public Report map(MetricsReport metricsReport) {
@@ -53,7 +55,8 @@ class MetricsReportToMetricsMapper extends Mapper<MetricsReport, Report> {
       }
     }
     String metricName = gauges.firstKey();
-    String versionName = MetricNameUtils.findCrossMetricInfoAtPosition(1, metricName);
+    String versionName =
+        replaceDashes(MetricNameUtils.findCrossMetricInfoAtPosition(1, metricName));
     String osVersion = MetricNameUtils.findCrossMetricInfoAtPosition(2, metricName);
     boolean batterySaverOne =
         Boolean.valueOf(MetricNameUtils.findCrossMetricInfoAtPosition(6, metricName));
@@ -76,7 +79,8 @@ class MetricsReportToMetricsMapper extends Mapper<MetricsReport, Report> {
       }
     }
     String metricName = timers.firstKey();
-    String versionName = MetricNameUtils.findCrossMetricInfoAtPosition(1, metricName);
+    String versionName =
+        replaceDashes(MetricNameUtils.findCrossMetricInfoAtPosition(1, metricName));
     String osVersion = MetricNameUtils.findCrossMetricInfoAtPosition(2, metricName);
     boolean batterySaverOne =
         Boolean.valueOf(MetricNameUtils.findCrossMetricInfoAtPosition(6, metricName));

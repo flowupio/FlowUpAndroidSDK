@@ -10,7 +10,7 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
-class HeadersInterceptor implements Interceptor {
+class FlowUpHeadersInterceptor implements Interceptor {
   @Override public Response intercept(Chain chain) throws IOException {
     Request request = chain.request()
         .newBuilder()

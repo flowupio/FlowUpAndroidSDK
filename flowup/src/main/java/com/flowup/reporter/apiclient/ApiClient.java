@@ -23,7 +23,7 @@ public class ApiClient {
   private final HttpUrl reportEndpoint;
 
   public ApiClient(String scheme, String host, int port) {
-    this.httpClient = ApiClientConfig.getHttpClient();
+    this.httpClient = ApiClientConfig.getHttpClient(true);
     this.jsonParser = ApiClientConfig.getJsonParser();
     this.reportEndpoint = ApiClientConfig.buildURL(scheme, host, port);
   }

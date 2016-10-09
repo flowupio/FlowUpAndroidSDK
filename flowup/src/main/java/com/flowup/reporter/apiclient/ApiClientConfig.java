@@ -14,17 +14,22 @@ class ApiClientConfig {
 
   private static final long HTTP_TIMEOUT = 10;
   private static final OkHttpClient HTTP_CLIENT =
-      new OkHttpClient.Builder()
-          .connectTimeout(HTTP_TIMEOUT, TimeUnit.SECONDS)
+      new OkHttpClient.Builder().connectTimeout(HTTP_TIMEOUT, TimeUnit.SECONDS)
           .readTimeout(HTTP_TIMEOUT, TimeUnit.SECONDS)
           .writeTimeout(HTTP_TIMEOUT, TimeUnit.SECONDS)
-          .addInterceptor(new HeadersInterceptor())
-          .addInterceptor(new OnlyDebugInterceptor(new HttpLoggingInterceptor()))
+          .addInterceptor(new FlowUpHeadersInterceptor())
           .build();
+
   private static final Gson GSON = new Gson();
 
-  static OkHttpClient getHttpClient() {
-    return HTTP_CLIENT;
+  static OkHttpClient getHttpClient(boolean debug) {
+    OkHttpClient httpClient = HTTP_CLIENT;
+    if (debug) {
+      HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
+      httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+      httpClient = HTTP_CLIENT.newBuilder().addInterceptor(httpLoggingInterceptor).build();
+    }
+    return httpClient;
   }
 
   static Gson getJsonParser() {
