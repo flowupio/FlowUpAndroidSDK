@@ -4,11 +4,13 @@
 
 package com.flowup.reporter.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class UIMetricReportReport extends MetricReport {
 
-  private final String screen;
-  private final StatisticalValue frameTime;
-  private final StatisticalValue framesPerSecond;
+  @SerializedName("screen") private final String screen;
+  @SerializedName("frameTime") private final StatisticalValue frameTime;
+  @SerializedName("framesPerSecond") private final StatisticalValue framesPerSecond;
 
   public UIMetricReportReport(long timestamp, String appVersionName, String osVersion,
       boolean batterySaverOn, String screen, StatisticalValue frameTime,

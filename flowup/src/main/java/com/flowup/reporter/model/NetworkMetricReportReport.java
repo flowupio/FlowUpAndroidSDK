@@ -4,10 +4,12 @@
 
 package com.flowup.reporter.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class NetworkMetricReportReport extends MetricReport {
 
-  private final long bytesUploaded;
-  private final long bytesDownloaded;
+  @SerializedName("bytesUploaded") private final long bytesUploaded;
+  @SerializedName("bytesDownloaded") private final long bytesDownloaded;
 
   public NetworkMetricReportReport(long timestamp, String appVersionName, String osVersion,
       boolean batterySaverOn, long bytesUploaded, long bytesDownloaded) {

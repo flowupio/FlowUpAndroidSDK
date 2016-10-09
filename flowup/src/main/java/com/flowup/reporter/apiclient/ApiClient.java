@@ -20,12 +20,12 @@ public class ApiClient {
 
   private final OkHttpClient httpClient;
   private final Gson jsonParser;
-  private final HttpUrl reportEndpoint;
+  private final HttpUrl baseUrl;
 
   public ApiClient(String scheme, String host, int port) {
     this.httpClient = ApiClientConfig.getHttpClient(true);
     this.jsonParser = ApiClientConfig.getJsonParser();
-    this.reportEndpoint = ApiClientConfig.buildURL(scheme, host, port);
+    this.baseUrl = ApiClientConfig.buildURL(scheme, host, port);
   }
 
   public ApiReportResult sendMetrics(Report metrics) {
@@ -42,7 +42,9 @@ public class ApiClient {
   }
 
   private Request generateReportRequest(Report metrics) {
+    HttpUrl reportUrl = baseUrl.newBuilder("/report").build();
     RequestBody body = RequestBody.create(JSON, jsonParser.toJson(metrics));
-    return new Request.Builder().url(reportEndpoint).post(body).build();
+    return new Request.Builder().url(reportUrl)
+        .post(body).build();
   }
 }

@@ -18,7 +18,7 @@ import java.util.SortedMap;
 
 import static com.flowup.utils.MetricNameUtils.replaceDashes;
 
-class MetricsReportToMetricsMapper extends Mapper<MetricsReport, Report> {
+class MetricsReportToReportMapper extends Mapper<MetricsReport, Report> {
 
   @Override public Report map(MetricsReport metricsReport) {
     return new Report(metricsReport.getAppPackageName(), metricsReport.getInstallationUUID(),

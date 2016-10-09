@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 public class Report {
 
   @SerializedName("appPackage") private final String appPackage;
-  @SerializedName("uuid") private final String uuid;
+  @SerializedName("installationUUID") private final String uuid;
   @SerializedName("deviceModel") private final String deviceModel;
   @SerializedName("screenDensity") private final String screenDensity;
   @SerializedName("screenSize") private final String screenSize;

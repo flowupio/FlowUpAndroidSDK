@@ -32,7 +32,7 @@ public class FlowUpReporter extends ScheduledReporter {
   private final ApiClient apiClient;
   private final WiFiSyncServiceScheduler syncScheduler;
   private final Time time;
-  private final Mapper<MetricsReport, Report> mapper = new MetricsReportToMetricsMapper();
+  private final Mapper<MetricsReport, Report> mapper = new MetricsReportToReportMapper();
 
   private FlowUpReporter(MetricRegistry registry, String name, MetricFilter filter,
       TimeUnit rateUnit, TimeUnit durationUnit, String scheme, String host, int port,
