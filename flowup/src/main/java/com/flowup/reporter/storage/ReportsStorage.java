@@ -18,14 +18,14 @@ import io.realm.RealmConfiguration;
 import io.realm.RealmList;
 import java.util.SortedMap;
 
-public class MetricsStorage {
+public class ReportsStorage {
 
   private static final String REALM_DB_NAME = "FlowUp";
   private static final long REALM_SCHEMA_VERSION = 1;
 
   private final Realm realm;
 
-  public MetricsStorage(Context context, boolean persistent) {
+  public ReportsStorage(Context context, boolean persistent) {
     RealmConfiguration.Builder builder = getRealmConfig(context, persistent);
     this.realm = Realm.getInstance(builder.build());
   }

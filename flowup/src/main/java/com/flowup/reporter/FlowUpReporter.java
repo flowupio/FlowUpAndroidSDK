@@ -16,7 +16,7 @@ import com.codahale.metrics.Timer;
 import com.flowup.reporter.android.WiFiSyncServiceScheduler;
 import com.flowup.reporter.apiclient.ApiClient;
 import com.flowup.reporter.model.Report;
-import com.flowup.reporter.storage.MetricsStorage;
+import com.flowup.reporter.storage.ReportsStorage;
 import com.flowup.utils.Mapper;
 import com.flowup.utils.Time;
 import java.util.SortedMap;
@@ -28,7 +28,7 @@ public class FlowUpReporter extends ScheduledReporter {
     return new FlowUpReporter.Builder(registry, context);
   }
 
-  private final MetricsStorage metricsStorage;
+  private final ReportsStorage reportsStorage;
   private final ApiClient apiClient;
   private final WiFiSyncServiceScheduler syncScheduler;
   private final Time time;
@@ -39,7 +39,7 @@ public class FlowUpReporter extends ScheduledReporter {
       boolean persistent, Context context, Time time) {
     super(registry, name, filter, rateUnit, durationUnit);
     this.apiClient = new ApiClient(scheme, host, port);
-    this.metricsStorage = new MetricsStorage(context, persistent);
+    this.reportsStorage = new ReportsStorage(context, persistent);
     this.syncScheduler = new WiFiSyncServiceScheduler(context);
     this.time = time;
   }
