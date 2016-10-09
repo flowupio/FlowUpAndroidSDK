@@ -36,6 +36,19 @@ This repository contains an Android project built on top of ``gradlew``, a binar
 
 By default the project is ready to execute a sample app reporting metrics to our service. If you start the sample app some metrics obtained from your application instalation will be sent to our server.**
 
+How to review the persisted data
+--------------------------------
+
+This library has been developed using [Realm][realm] as the persistence motor. FlowUp will store metrics reports until the sync process be activated. All this information is persisted inside a Realm data base you can check what's inside following the next steps:
+
+* Get a copy of the Realm database executing: ``adb pull /data/data/<APPLICATION_PACKAGE_WHERE_FLOWUP_IS_BEING_USED>/files/FlowUp.realm .
+* Download the [Realm Browser][realmbrowser] app.
+* Open the file named ``FlowUp.realm`` using the Realm Browser.
+
+Inside this database you can find all the information persisted by FlowUp which is pending to be synced with our servers. Once this information be synced, it will be removed from the database.
+
 [flowuplogo]: ./art/FlowUpLogo.png
+[realm]: https://realm.io/es/docs/java/latest/
+[realmbrowser]: https://itunes.apple.com/es/app/realm-browser/id1007457278?mt=12
 
 
