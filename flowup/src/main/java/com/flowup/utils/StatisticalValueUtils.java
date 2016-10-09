@@ -10,8 +10,8 @@ import com.flowup.reporter.model.StatisticalValue;
 
 public class StatisticalValueUtils {
 
-  public static StatisticalValue fromfSampling(Sampling metered) {
-    Snapshot snapshot = metered.getSnapshot();
+  public static StatisticalValue fromSampling(Sampling sampling) {
+    Snapshot snapshot = sampling.getSnapshot();
     return new StatisticalValue(snapshot.getValues().length, snapshot.getMin(), snapshot.getMax(),
         snapshot.getMean(), snapshot.getStdDev(), snapshot.getMedian(), snapshot.getValue(0.5),
         snapshot.getValue(0.10), snapshot.getValue(0.15), snapshot.getValue(0.20),

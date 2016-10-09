@@ -8,11 +8,11 @@ import io.realm.RealmObject;
 
 public class RealmStatisticalValue extends RealmObject {
 
-  private long value;
+  private Long value;
 
   private Long count;
-  private Double min;
-  private Double max;
+  private Long min;
+  private Long max;
   private Double mean;
   private Double standardDev;
   private Double median;
@@ -34,11 +34,11 @@ public class RealmStatisticalValue extends RealmObject {
   private Double p98;
   private Double p99;
 
-  public long getValue() {
+  public Long getValue() {
     return value;
   }
 
-  public void setValue(long value) {
+  public void setValue(Long value) {
     this.value = value;
   }
 
@@ -50,19 +50,19 @@ public class RealmStatisticalValue extends RealmObject {
     this.count = count;
   }
 
-  public Double getMin() {
+  public Long getMin() {
     return min;
   }
 
-  public void setMin(Double min) {
+  public void setMin(Long min) {
     this.min = min;
   }
 
-  public Double getMax() {
+  public Long getMax() {
     return max;
   }
 
-  public void setMax(Double max) {
+  public void setMax(Long max) {
     this.max = max;
   }
 

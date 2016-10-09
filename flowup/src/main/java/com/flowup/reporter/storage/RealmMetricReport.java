@@ -9,15 +9,15 @@ import io.realm.annotations.Index;
 
 public class RealmMetricReport extends RealmObject {
 
-  @Index private String metricInfo;
+  @Index private String metricName;
   private RealmStatisticalValue value;
 
-  public String getMetricInfo() {
-    return metricInfo;
+  public String getMetricName() {
+    return metricName;
   }
 
-  public void setMetricInfo(String metricInfo) {
-    this.metricInfo = metricInfo;
+  public void setMetricName(String metricName) {
+    this.metricName = metricName;
   }
 
   public RealmStatisticalValue getValue() {

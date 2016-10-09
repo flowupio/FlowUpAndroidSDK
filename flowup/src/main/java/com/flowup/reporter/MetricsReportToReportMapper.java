@@ -70,12 +70,12 @@ class MetricsReportToReportMapper extends Mapper<MetricsReport, Report> {
     StatisticalValue framesPerSecond = null;
     for (String metricName : timers.keySet()) {
       if (metricName.contains("frameTime")) { //TODO: Extract this into a constant
-        frameTime = StatisticalValueUtils.fromfSampling(timers.get(metricName));
+        frameTime = StatisticalValueUtils.fromSampling(timers.get(metricName));
       }
     }
     for (String metricName : histograms.keySet()) {
       if (metricName.contains("fps")) { //TODO: Extract this into a constant
-        framesPerSecond = StatisticalValueUtils.fromfSampling(histograms.get(metricName));
+        framesPerSecond = StatisticalValueUtils.fromSampling(histograms.get(metricName));
       }
     }
     String metricName = timers.firstKey();
