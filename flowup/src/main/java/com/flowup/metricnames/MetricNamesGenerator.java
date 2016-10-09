@@ -47,21 +47,21 @@ public class MetricNamesGenerator {
   private String appendCrossMetricInfo(String metricName) {
     return app.getAppPackageName()
         + "."
-        + app.getAppVersionName()
-        + "."
-        + device.getOSVersion()
-        + "."
         + device.getInstallationUUID()
         + "."
         + device.getModel()
         + "."
         + device.getNumberOfCores()
         + "."
-        + device.isPowerSaverEnabled()
-        + "."
         + device.getScreenDensity()
         + "."
         + device.getScreenSize()
+        + "."
+        + device.getOSVersion()
+        + "."
+        + app.getAppVersionName()
+        + "."
+        + device.isBatterySaverOn()
         + "."
         + metricName;
   }

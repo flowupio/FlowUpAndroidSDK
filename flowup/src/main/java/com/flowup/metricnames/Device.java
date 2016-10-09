@@ -68,7 +68,7 @@ class Device {
     return Runtime.getRuntime().availableProcessors();
   }
 
-  boolean isPowerSaverEnabled() {
+  boolean isBatterySaverOn() {
     PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
     if (SDK_INT >= LOLLIPOP) {
       return powerManager.isPowerSaveMode();
