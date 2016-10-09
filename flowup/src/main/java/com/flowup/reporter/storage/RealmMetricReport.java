@@ -10,7 +10,7 @@ import io.realm.annotations.Index;
 public class RealmMetricReport extends RealmObject {
 
   @Index private String metricName;
-  private RealmStatisticalValue value;
+  private RealmStatisticalValue statisticalValue;
 
   public String getMetricName() {
     return metricName;
@@ -20,11 +20,11 @@ public class RealmMetricReport extends RealmObject {
     this.metricName = metricName;
   }
 
-  public RealmStatisticalValue getValue() {
-    return value;
+  public RealmStatisticalValue getStatisticalValue() {
+    return statisticalValue;
   }
 
-  public void setValue(RealmStatisticalValue value) {
-    this.value = value;
+  public void setStatisticalValue(RealmStatisticalValue value) {
+    this.statisticalValue = value;
   }
 }

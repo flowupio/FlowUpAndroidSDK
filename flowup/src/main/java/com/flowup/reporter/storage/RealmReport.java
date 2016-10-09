@@ -10,6 +10,8 @@ import io.realm.annotations.Index;
 
 public class RealmReport extends RealmObject {
 
+  static final String REPORT_TIMESTAMP_FIELD_NAME = "reportTimestamp";
+
   @Index private String reportTimestamp;
   private RealmList<RealmMetricReport> metrics;
 

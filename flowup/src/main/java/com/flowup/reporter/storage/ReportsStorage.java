@@ -5,7 +5,6 @@
 package com.flowup.reporter.storage;
 
 import android.content.Context;
-import android.util.Log;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Histogram;
@@ -13,10 +12,13 @@ import com.codahale.metrics.Meter;
 import com.codahale.metrics.Sampling;
 import com.codahale.metrics.Snapshot;
 import com.codahale.metrics.Timer;
-import com.flowup.reporter.MetricsReport;
+import com.flowup.reporter.DropwizardReport;
+import com.flowup.reporter.model.Reports;
+import com.flowup.utils.Mapper;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
+import io.realm.RealmResults;
 import java.util.SortedMap;
 
 public class ReportsStorage {
@@ -26,6 +28,7 @@ public class ReportsStorage {
 
   private final Context context;
   private final boolean persistent;
+  private final Mapper<RealmResults<RealmReport>, Reports> mapper;
 
   public ReportsStorage(Context context) {
     this(context, true);
@@ -34,14 +37,36 @@ public class ReportsStorage {
   public ReportsStorage(Context context, boolean persistent) {
     this.context = context;
     this.persistent = persistent;
+    this.mapper = new RealmReportsToReportsMapper();
   }
 
-  public void storeMetrics(final MetricsReport metricsReport) {
+  public void storeMetrics(final DropwizardReport dropwizardReport) {
     Realm realm = getRealm();
-    Log.e("DEPURAR", "----------------->" + realm.getPath());
     realm.executeTransaction(new Realm.Transaction() {
       @Override public void execute(Realm realm) {
-        storeAsRealmObject(realm, metricsReport);
+        storeAsRealmObject(realm, dropwizardReport);
+      }
+    });
+    realm.close();
+  }
+
+  public Reports getReports() {
+    Realm realm = getRealm();
+    RealmResults<RealmReport> reportsSorted =
+        realm.where(RealmReport.class).findAllSorted(RealmReport.REPORT_TIMESTAMP_FIELD_NAME);
+    return mapper.map(reportsSorted);
+  }
+
+  public void deleteReports(final Reports reports) {
+    Realm realm = getRealm();
+    realm.executeTransaction(new Realm.Transaction() {
+      @Override public void execute(Realm realm) {
+        RealmResults<RealmReport> reportsToRemove = realm.where(RealmReport.class)
+            .equalTo(RealmReport.REPORT_TIMESTAMP_FIELD_NAME, reports.getReportId())
+            .findAll();
+        for (int i = 0; i < reportsToRemove.size(); i++) {
+          reportsToRemove.get(i).deleteFromRealm();
+        }
       }
     });
     realm.close();
@@ -62,23 +87,24 @@ public class ReportsStorage {
     return builder;
   }
 
-  private void storeAsRealmObject(Realm realm, MetricsReport metricsReport) {
+  private void storeAsRealmObject(Realm realm, DropwizardReport dropwizardReport) {
     RealmReport report = realm.createObject(RealmReport.class);
-    String reportingTimestamp = String.valueOf(metricsReport.getReportingTimestamp());
-    RealmList<RealmMetricReport> realmMetricsReports = mapRealmMetricsReport(realm, metricsReport);
+    String reportingTimestamp = String.valueOf(dropwizardReport.getReportingTimestamp());
+    RealmList<RealmMetricReport> realmMetricsReports =
+        mapRealmMetricsReport(realm, dropwizardReport);
     report.setReportTimestamp(reportingTimestamp);
     report.setMetrics(realmMetricsReports);
     realm.insertOrUpdate(report);
   }
 
   private RealmList<RealmMetricReport> mapRealmMetricsReport(Realm realm,
-      MetricsReport metricsReport) {
+      DropwizardReport dropwizardReport) {
     RealmList<RealmMetricReport> realmMetricReports = new RealmList<>();
-    realmMetricReports.addAll(mapGauges(realm, metricsReport.getGauges()));
-    realmMetricReports.addAll(mapCounters(realm, metricsReport.getCounters()));
-    realmMetricReports.addAll(mapHistograms(realm, metricsReport.getHistograms()));
-    realmMetricReports.addAll(mapMeters(realm, metricsReport.getMeters()));
-    realmMetricReports.addAll(mapTimers(realm, metricsReport.getTimers()));
+    realmMetricReports.addAll(mapGauges(realm, dropwizardReport.getGauges()));
+    realmMetricReports.addAll(mapCounters(realm, dropwizardReport.getCounters()));
+    realmMetricReports.addAll(mapHistograms(realm, dropwizardReport.getHistograms()));
+    realmMetricReports.addAll(mapMeters(realm, dropwizardReport.getMeters()));
+    realmMetricReports.addAll(mapTimers(realm, dropwizardReport.getTimers()));
 
     return realmMetricReports;
   }
@@ -113,7 +139,7 @@ public class ReportsStorage {
   }
 
   private RealmList<RealmMetricReport> mapMeters(Realm realm, SortedMap<String, Meter> meters) {
-    //TODO: This will be implemented when needed
+    //This will be implemented when needed
     return new RealmList<RealmMetricReport>();
   }
 
@@ -156,7 +182,7 @@ public class ReportsStorage {
     realmValue.setP98(snapshot.getValue(0.98));
     realmValue.setP99(snapshot.getValue(0.99));
 
-    realmMetricReport.setValue(realmValue);
+    realmMetricReport.setStatisticalValue(realmValue);
   }
 
   private void mapGauge(Realm realm, String metricName, Gauge gauge) {
@@ -165,7 +191,7 @@ public class ReportsStorage {
     realmMetricReport.setMetricName(metricName);
     RealmStatisticalValue realmValue = realm.createObject(RealmStatisticalValue.class);
     realmValue.setValue(gaugeValue);
-    realmMetricReport.setValue(realmValue);
+    realmMetricReport.setStatisticalValue(realmValue);
   }
 
   private void mapCounter(Realm realm, String metricName, Counter counter) {
@@ -174,6 +200,6 @@ public class ReportsStorage {
     realmMetricReport.setMetricName(metricName);
     RealmStatisticalValue realmValue = realm.createObject(RealmStatisticalValue.class);
     realmValue.setValue(gaugeValue);
-    realmMetricReport.setValue(realmValue);
+    realmMetricReport.setStatisticalValue(realmValue);
   }
 }

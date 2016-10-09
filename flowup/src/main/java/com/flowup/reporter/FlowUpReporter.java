@@ -15,9 +15,8 @@ import com.codahale.metrics.ScheduledReporter;
 import com.codahale.metrics.Timer;
 import com.flowup.reporter.android.WiFiSyncServiceScheduler;
 import com.flowup.reporter.apiclient.ApiClient;
-import com.flowup.reporter.model.Report;
+import com.flowup.reporter.model.Reports;
 import com.flowup.reporter.storage.ReportsStorage;
-import com.flowup.utils.Mapper;
 import com.flowup.utils.Time;
 import java.util.SortedMap;
 import java.util.concurrent.TimeUnit;
@@ -53,21 +52,26 @@ public class FlowUpReporter extends ScheduledReporter {
   @Override public void report(SortedMap<String, Gauge> gauges, SortedMap<String, Counter> counters,
       SortedMap<String, Histogram> histograms, SortedMap<String, Meter> meters,
       SortedMap<String, Timer> timers) {
-    MetricsReport metricsReport =
-        new MetricsReport(time.now(), gauges, counters, histograms, meters, timers);
-    storeReport(metricsReport);
+    DropwizardReport dropwizardReport =
+        new DropwizardReport(time.now(), gauges, counters, histograms, meters, timers);
+    storeReport(dropwizardReport);
     if (debuggable) {
-      sendReport(metricsReport);
+      sendStoredReports();
     }
   }
 
-  private void storeReport(MetricsReport metricsReport) {
-    reportsStorage.storeMetrics(metricsReport);
+  private void storeReport(DropwizardReport dropwizardReport) {
+    reportsStorage.storeMetrics(dropwizardReport);
   }
 
-  private void sendReport(MetricsReport metricsReport) {
-    //Report report = mapper.map(metricsReport);
-    //apiClient.sendMetrics(report);
+  private void sendStoredReports() {
+    Reports reports = reportsStorage.getReports();
+    if (reports != null) {
+      ReportResult result = apiClient.sendReports(reports);
+      if(result.isSuccess()) {
+        reportsStorage.deleteReports(reports);
+      }
+    }
   }
 
   public static final class Builder {

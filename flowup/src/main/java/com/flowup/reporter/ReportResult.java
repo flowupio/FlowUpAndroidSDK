@@ -2,20 +2,20 @@
  * Copyright (C) 2016 Go Karumi S.L.
  */
 
-package com.flowup.reporter.apiclient;
+package com.flowup.reporter;
 
-import com.flowup.reporter.model.Report;
+import com.flowup.reporter.model.Reports;
 
-public class ApiReportResult {
+public class ReportResult {
 
-  private Report metrics;
+  private Reports metrics;
   private Error error;
 
-  public ApiReportResult(Report metrics) {
+  public ReportResult(Reports metrics) {
     this.metrics = metrics;
   }
 
-  public ApiReportResult(Error error) {
+  public ReportResult(Error error) {
     this.error = error;
   }
 
@@ -23,7 +23,7 @@ public class ApiReportResult {
     return metrics != null && error == null;
   }
 
-  public Report getMetricsReported() {
+  public Reports getMetricsReported() {
     return metrics;
   }
 
@@ -31,7 +31,7 @@ public class ApiReportResult {
     return error;
   }
 
-  enum Error {
+  public enum Error {
     NETWORK_ERROR,
     UNKNOWN
   }
