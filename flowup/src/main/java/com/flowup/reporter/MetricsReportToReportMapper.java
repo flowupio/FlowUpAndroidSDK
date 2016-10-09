@@ -10,7 +10,7 @@ import com.codahale.metrics.Timer;
 import com.flowup.reporter.model.NetworkMetricReportReport;
 import com.flowup.reporter.model.Report;
 import com.flowup.reporter.model.StatisticalValue;
-import com.flowup.reporter.model.UIMetricReportReport;
+import com.flowup.reporter.model.UIMetricReport;
 import com.flowup.utils.Mapper;
 import com.flowup.utils.MetricNameUtils;
 import com.flowup.utils.StatisticalValueUtils;
@@ -36,7 +36,7 @@ class MetricsReportToReportMapper extends Mapper<MetricsReport, Report> {
     return mapNetworkMetric(reportingTimestamp, metricsReport.getGauges());
   }
 
-  private UIMetricReportReport getUIMetric(MetricsReport metricsReport) {
+  private UIMetricReport getUIMetric(MetricsReport metricsReport) {
     if (metricsReport.getTimers().isEmpty() || metricsReport.getHistograms().isEmpty()) {
       return null;
     }
@@ -64,7 +64,7 @@ class MetricsReportToReportMapper extends Mapper<MetricsReport, Report> {
         batterySaverOne, bytesUploaded, bytesDownloaded);
   }
 
-  private UIMetricReportReport mapUIMetric(SortedMap<String, Histogram> histograms,
+  private UIMetricReport mapUIMetric(SortedMap<String, Histogram> histograms,
       SortedMap<String, Timer> timers) {
     StatisticalValue frameTime = null;
     StatisticalValue framesPerSecond = null;
@@ -86,7 +86,7 @@ class MetricsReportToReportMapper extends Mapper<MetricsReport, Report> {
         Boolean.valueOf(MetricNameUtils.findCrossMetricInfoAtPosition(6, metricName));
     long timestamp = Long.valueOf(MetricNameUtils.findCrossMetricInfoAtPosition(12, metricName));
     String screenName = MetricNameUtils.findCrossMetricInfoAtPosition(11, metricName);
-    return new UIMetricReportReport(timestamp, versionName, osVersion, batterySaverOne, screenName,
+    return new UIMetricReport(timestamp, versionName, osVersion, batterySaverOne, screenName,
         frameTime, framesPerSecond);
   }
 }
