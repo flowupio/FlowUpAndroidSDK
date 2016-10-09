@@ -32,16 +32,22 @@ public class FlowUpReporter extends ScheduledReporter {
   private final ApiClient apiClient;
   private final WiFiSyncServiceScheduler syncScheduler;
   private final Time time;
-  private final Mapper<MetricsReport, Report> mapper = new MetricsReportToReportMapper();
+  private final boolean debuggable;
 
   private FlowUpReporter(MetricRegistry registry, String name, MetricFilter filter,
       TimeUnit rateUnit, TimeUnit durationUnit, String scheme, String host, int port,
-      boolean persistent, Context context, Time time) {
+      boolean debuggable, Context context, Time time) {
     super(registry, name, filter, rateUnit, durationUnit);
     this.apiClient = new ApiClient(scheme, host, port);
-    this.reportsStorage = new ReportsStorage(context, persistent);
+    this.reportsStorage = new ReportsStorage(context);
     this.syncScheduler = new WiFiSyncServiceScheduler(context);
     this.time = time;
+    this.debuggable = debuggable;
+  }
+
+  @Override public void start(long period, TimeUnit unit) {
+    super.start(period, unit);
+    syncScheduler.scheduleSyncTask();
   }
 
   @Override public void report(SortedMap<String, Gauge> gauges, SortedMap<String, Counter> counters,
@@ -49,13 +55,19 @@ public class FlowUpReporter extends ScheduledReporter {
       SortedMap<String, Timer> timers) {
     MetricsReport metricsReport =
         new MetricsReport(time.now(), gauges, counters, histograms, meters, timers);
+    storeReport(metricsReport);
+    if (debuggable) {
+      sendReport(metricsReport);
+    }
+  }
+
+  private void storeReport(MetricsReport metricsReport) {
     reportsStorage.storeMetrics(metricsReport);
-    sendReport(metricsReport);
   }
 
   private void sendReport(MetricsReport metricsReport) {
-    Report report = mapper.map(metricsReport);
-    apiClient.sendMetrics(report);
+    //Report report = mapper.map(metricsReport);
+    //apiClient.sendMetrics(report);
   }
 
   public static final class Builder {
@@ -65,7 +77,7 @@ public class FlowUpReporter extends ScheduledReporter {
     private MetricFilter filter;
     private TimeUnit rateUnit;
     private TimeUnit durationUnit;
-    private boolean persistent;
+    private boolean debuggable;
     private Context context;
 
     public Builder(MetricRegistry registry, Context context) {
@@ -74,7 +86,7 @@ public class FlowUpReporter extends ScheduledReporter {
       this.filter = MetricFilter.ALL;
       this.rateUnit = TimeUnit.SECONDS;
       this.durationUnit = TimeUnit.MILLISECONDS;
-      this.persistent = true;
+      this.debuggable = true;
       this.context = context;
     }
 
@@ -100,11 +112,11 @@ public class FlowUpReporter extends ScheduledReporter {
 
     public FlowUpReporter build(String scheme, String host, int port) {
       return new FlowUpReporter(registry, name, filter, rateUnit, durationUnit, scheme, host, port,
-          persistent, context, new Time());
+          debuggable, context, new Time());
     }
 
-    public Builder persistent(boolean persistent) {
-      this.persistent = persistent;
+    public Builder debuggable(boolean debuggable) {
+      this.debuggable = debuggable;
       return this;
     }
   }

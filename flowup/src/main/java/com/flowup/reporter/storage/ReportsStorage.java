@@ -27,6 +27,10 @@ public class ReportsStorage {
   private final Context context;
   private final boolean persistent;
 
+  public ReportsStorage(Context context) {
+    this(context, true);
+  }
+
   public ReportsStorage(Context context, boolean persistent) {
     this.context = context;
     this.persistent = persistent;

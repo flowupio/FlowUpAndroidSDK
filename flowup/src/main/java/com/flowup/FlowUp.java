@@ -19,18 +19,17 @@ public class FlowUp {
   private static final int SAMPLING_INTERVAL = 10;
 
   private final Application application;
+  private final boolean debuggable;
+
   private static MetricRegistry registry;
 
-  public static FlowUp with(Application application) {
-    return new FlowUp(application);
-  }
-
-  FlowUp(Application application) {
+  FlowUp(Application application, boolean debuggable) {
     if (application == null) {
       throw new IllegalArgumentException(
           "The application instance used to initialize FlowUp can not be null.");
     }
     this.application = application;
+    this.debuggable = debuggable;
   }
 
   public void start() {
@@ -80,7 +79,7 @@ public class FlowUp {
         .rateUnit(TimeUnit.SECONDS)
         .durationUnit(TimeUnit.MILLISECONDS)
         .filter(MetricFilter.ALL)
-        .persistent(false)//TODO: Connect this with the debug param or remove it
+        .debuggable(debuggable)
         .build(scheme, host, port)
         .start(SAMPLING_INTERVAL, TimeUnit.SECONDS);
   }
@@ -106,5 +105,29 @@ public class FlowUp {
     httpBytesDownloadedCollector.initialize(registry);
     Collector httpBytesUploadedCollector = Collectors.getHttpBytesUploadedCollector(application);
     httpBytesUploadedCollector.initialize(registry);
+  }
+
+  public static class Builder {
+
+    Application application;
+    boolean debuggable;
+
+    Builder() {}
+
+    public static Builder with(Application application) {
+      Builder builder = new Builder();
+      builder.application = application;
+      return builder;
+    }
+
+    public Builder debuggable(boolean debuggable) {
+      this.debuggable = debuggable;
+      return this;
+    }
+
+    public void start() {
+      new FlowUp(application, debuggable).start();
+    }
+
   }
 }
