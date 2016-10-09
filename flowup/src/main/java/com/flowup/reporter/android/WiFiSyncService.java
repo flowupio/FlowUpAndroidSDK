@@ -36,19 +36,11 @@ public class WiFiSyncService extends GcmTaskService {
       return RESULT_FAILURE;
     }
 
-    if (!isWiFiConnectionEnabled()) {
-      return RESULT_RESCHEDULE;
-    }
-
     return syncStoredReports();
   }
 
   private boolean isTaskSupported(TaskParams taskParams) {
     return !taskParams.getTag().equals(SYNCHRONIZE_METRICS_REPORT);
-  }
-
-  private boolean isWiFiConnectionEnabled() {
-    return false;
   }
 
   private int syncStoredReports() {

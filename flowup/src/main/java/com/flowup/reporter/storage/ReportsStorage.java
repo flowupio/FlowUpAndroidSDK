@@ -5,7 +5,6 @@
 package com.flowup.reporter.storage;
 
 import android.content.Context;
-import android.util.Log;
 import com.flowup.reporter.DropwizardReport;
 import com.flowup.reporter.model.Reports;
 import io.realm.Realm;
@@ -91,18 +90,19 @@ public class ReportsStorage {
   }
 
   private Realm getRealm() {
-    RealmConfiguration.Builder builder = getRealmConfig(context, persistent);
-    return Realm.getInstance(builder.build());
+    RealmConfiguration config = getRealmConfig(context, persistent);
+    return Realm.getInstance(config);
   }
 
-  private RealmConfiguration.Builder getRealmConfig(Context context, boolean persistent) {
+  private RealmConfiguration getRealmConfig(Context context, boolean persistent) {
     Realm.init(context);
-    RealmConfiguration.Builder builder =
-        new RealmConfiguration.Builder().name(REALM_DB_NAME).schemaVersion(REALM_SCHEMA_VERSION);
+    RealmConfiguration.Builder builder = new RealmConfiguration.Builder().name(REALM_DB_NAME)
+        .schemaVersion(REALM_SCHEMA_VERSION)
+        .deleteRealmIfMigrationNeeded();
     if (!persistent) {
       builder.inMemory();
     }
-    return builder;
+    return builder.build();
   }
 
   private void storeAsRealmObject(Realm realm, DropwizardReport dropwizardReport) {
