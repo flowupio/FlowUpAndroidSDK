@@ -6,21 +6,17 @@ package com.flowup.reporter.storage;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
-import io.realm.annotations.Index;
+import io.realm.annotations.PrimaryKey;
 
 public class RealmReport extends RealmObject {
 
-  static final String REPORT_TIMESTAMP_FIELD_NAME = "reportTimestamp";
+  static final String ID_FIELD_NAME = "reportTimestamp";
 
-  @Index private String reportTimestamp;
+  @PrimaryKey private String reportTimestamp;
   private RealmList<RealmMetricReport> metrics;
 
   public String getReportTimestamp() {
     return reportTimestamp;
-  }
-
-  public void setReportTimestamp(String reportTimestamp) {
-    this.reportTimestamp = reportTimestamp;
   }
 
   public RealmList<RealmMetricReport> getMetrics() {

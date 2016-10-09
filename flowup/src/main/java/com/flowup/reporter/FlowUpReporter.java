@@ -68,7 +68,7 @@ public class FlowUpReporter extends ScheduledReporter {
     Reports reports = reportsStorage.getReports();
     if (reports != null) {
       ReportResult result = apiClient.sendReports(reports);
-      if(result.isSuccess()) {
+      if (result.isSuccess()) {
         reportsStorage.deleteReports(reports);
       }
     }

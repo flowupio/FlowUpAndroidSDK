@@ -5,12 +5,19 @@
 package com.flowup.reporter.storage;
 
 import io.realm.RealmObject;
-import io.realm.annotations.Index;
+import io.realm.annotations.PrimaryKey;
 
 public class RealmMetricReport extends RealmObject {
 
-  @Index private String metricName;
+  static final String ID_FIELD_NAME = "id";
+
+  @PrimaryKey private String id;
+  private String metricName;
   private RealmStatisticalValue statisticalValue;
+
+  public String getId() {
+    return id;
+  }
 
   public String getMetricName() {
     return metricName;

@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Reports {
 
-  private final transient String reportId;
+  private final transient List<String> reportsIds;
   @SerializedName("appPackage") private final String appPackage;
   @SerializedName("installationUUID") private final String uuid;
   @SerializedName("deviceModel") private final String deviceModel;
@@ -19,10 +19,10 @@ public class Reports {
   @SerializedName("network") private final List<NetworkMetricReport> networkMetricsReports;
   @SerializedName("ui") private final List<UIMetricReport> uiMetricsReports;
 
-  public Reports(String reportId, String appPackage, String uuid, String deviceModel, String screenDensity,
+  public Reports(List<String> reportsIds, String appPackage, String uuid, String deviceModel, String screenDensity,
       String screenSize, int numberOfCores, List<NetworkMetricReport> networkMetricsReports,
       List<UIMetricReport> uiMetricsReports) {
-    this.reportId = reportId;
+    this.reportsIds = reportsIds;
     this.appPackage = appPackage;
     this.uuid = uuid;
     this.deviceModel = deviceModel;
@@ -33,7 +33,7 @@ public class Reports {
     this.uiMetricsReports = uiMetricsReports;
   }
 
-  public String getReportId() {
-    return reportId;
+  public List<String> getReportsIds() {
+    return reportsIds;
   }
 }

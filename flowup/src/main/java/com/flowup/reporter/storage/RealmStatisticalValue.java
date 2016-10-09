@@ -5,11 +5,14 @@
 package com.flowup.reporter.storage;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class RealmStatisticalValue extends RealmObject {
 
-  private Long value;
+  static final String ID_FIELD_NAME = "id";
 
+  @PrimaryKey private String id;
+  private Long value;
   private Long count;
   private Long min;
   private Long max;
@@ -33,6 +36,10 @@ public class RealmStatisticalValue extends RealmObject {
   private Double p95;
   private Double p98;
   private Double p99;
+
+  public String getId() {
+    return id;
+  }
 
   public Long getValue() {
     return value;
