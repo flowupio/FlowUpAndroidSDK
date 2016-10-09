@@ -4,21 +4,22 @@
 
 package com.flowup.reporter.storage;
 
+import com.flowup.metricnames.MetricNamesExtractor;
+import com.flowup.metricnames.MetricNamesGenerator;
 import com.flowup.reporter.model.NetworkMetricReport;
 import com.flowup.reporter.model.Reports;
 import com.flowup.reporter.model.StatisticalValue;
 import com.flowup.reporter.model.UIMetricReport;
 import com.flowup.utils.Mapper;
-import com.flowup.utils.MetricNameUtils;
 import com.flowup.utils.StatisticalValueUtils;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.flowup.utils.MetricNameUtils.replaceDashes;
-
 class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Reports> {
+
+  private final MetricNamesExtractor extractor = new MetricNamesExtractor();
 
   @Override public Reports map(RealmResults<RealmReport> realmReports) {
     if (realmReports.size() == 0) {
@@ -48,32 +49,27 @@ class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Repo
   }
 
   private String getAppPackage(String metricName) {
-    return MetricNameUtils.replaceDashes(
-        MetricNameUtils.findCrossMetricInfoAtPosition(0, metricName));
+    return extractor.getAppPackage(metricName);
   }
 
   private String getUUID(String metricName) {
-    return MetricNameUtils.findCrossMetricInfoAtPosition(1, metricName);
+    return extractor.getUUID(metricName);
   }
 
   private String getDeviceModel(String metricName) {
-    return MetricNameUtils.findCrossMetricInfoAtPosition(2, metricName);
+    return extractor.getDeviceModel(metricName);
   }
 
   private int getNumberOfCores(String metricName) {
-    try {
-      return Integer.valueOf(MetricNameUtils.findCrossMetricInfoAtPosition(3, metricName));
-    } catch (NumberFormatException e) {
-      return 1;
-    }
+    return extractor.getNumberOfCores(metricName);
   }
 
   private String getScreenDensity(String metricName) {
-    return MetricNameUtils.findCrossMetricInfoAtPosition(4, metricName);
+    return extractor.getScreenDensity(metricName);
   }
 
   private String getScreenSize(String metricName) {
-    return MetricNameUtils.findCrossMetricInfoAtPosition(5, metricName);
+    return extractor.getScreenSize(metricName);
   }
 
   private List<NetworkMetricReport> mapNetworkMetricsReport(RealmResults<RealmReport> reports) {
@@ -86,21 +82,21 @@ class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Repo
       for (int j = 0; j < metrics.size(); j++) {
         RealmMetric metric = metrics.get(j);
         String metricName = metric.getMetricName();
-        if (metricName.contains("bytesDownloaded")) {
+        if (metricName.contains(MetricNamesGenerator.BYTES_DOWNLOADED)) {
           bytesDownloaded = metric.getStatisticalValue().getValue();
-        } else if (metricName.contains("bytesUploaded")) {
+        } else if (metricName.contains(MetricNamesGenerator.BYTES_UPLOADED)) {
           bytesUploaded = metric.getStatisticalValue().getValue();
         } else {
           continue;
         }
-        String versionName =
-            replaceDashes(MetricNameUtils.findCrossMetricInfoAtPosition(7, metricName));
-        String osVersion = MetricNameUtils.findCrossMetricInfoAtPosition(6, metricName);
-        boolean batterySaverOne =
-            Boolean.valueOf(MetricNameUtils.findCrossMetricInfoAtPosition(8, metricName));
+        String osVersion = extractor.getOSVersion(metricName);
+        String versionName = extractor.getVersionName(metricName);
+
+        boolean batterySaverOn = extractor.getIsBatterSaverOn(metricName);
+
         long reportTimestamp = Long.valueOf(report.getReportTimestamp());
         networkMetricsReports.add(
-            new NetworkMetricReport(reportTimestamp, versionName, osVersion, batterySaverOne,
+            new NetworkMetricReport(reportTimestamp, versionName, osVersion, batterySaverOn,
                 bytesUploaded, bytesDownloaded));
       }
     }
@@ -116,21 +112,19 @@ class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Repo
       for (int j = 0; j < metrics.size(); j++) {
         RealmMetric metric = metrics.get(j);
         String metricName = metric.getMetricName();
-        if (metricName.contains("frameTime")) {
+        if (metricName.contains(MetricNamesGenerator.FRAME_TIME)) {
           frameTime = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
-        } else if (metricName.contains("fps")) {
+        } else if (metricName.contains(MetricNamesGenerator.FPS)) {
           framesPerSecond = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
         } else {
           continue;
         }
-        String versionName =
-            replaceDashes(MetricNameUtils.findCrossMetricInfoAtPosition(7, metricName));
-        String osVersion = MetricNameUtils.findCrossMetricInfoAtPosition(6, metricName);
-        boolean batterySaverOne =
-            Boolean.valueOf(MetricNameUtils.findCrossMetricInfoAtPosition(8, metricName));
-        long timestamp =
-            Long.valueOf(MetricNameUtils.findCrossMetricInfoAtPosition(12, metricName));
-        String screenName = MetricNameUtils.findCrossMetricInfoAtPosition(11, metricName);
+        String versionName = extractor.getVersionName(metricName);
+        String osVersion = extractor.getOSVersion(metricName);
+        boolean batterySaverOne = extractor.getIsBatterSaverOn(metricName);
+        String screenName = extractor.getScreenName(metricName);
+        long timestamp = extractor.getTimestamp(metricName);
+
         uiMetricsReports.add(
             new UIMetricReport(timestamp, versionName, osVersion, batterySaverOne, screenName,
                 frameTime, framesPerSecond));

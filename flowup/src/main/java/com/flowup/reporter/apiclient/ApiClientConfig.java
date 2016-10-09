@@ -12,7 +12,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 
 class ApiClientConfig {
 
-  private static final long HTTP_TIMEOUT = 2;
+  private static final long HTTP_TIMEOUT = 10;
   private static final OkHttpClient HTTP_CLIENT =
       new OkHttpClient.Builder().connectTimeout(HTTP_TIMEOUT, TimeUnit.SECONDS)
           .readTimeout(HTTP_TIMEOUT, TimeUnit.SECONDS)
