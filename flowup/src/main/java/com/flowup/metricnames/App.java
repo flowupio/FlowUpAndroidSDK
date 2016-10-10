@@ -12,19 +12,19 @@ import com.flowup.R;
 
 import static com.flowup.utils.MetricNameUtils.replaceDots;
 
-class App {
+public class App {
 
   private final Context context;
 
-  App(Context context) {
+  public App(Context context) {
     this.context = context;
   }
 
-  String getAppPackageName() {
+  public String getAppPackageName() {
     return replaceDots(context.getPackageName());
   }
 
-  String getAppVersionName() {
+  public String getAppVersionName() {
     try {
       String packageName = context.getPackageName();
       PackageInfo packageInfo = context.getPackageManager().getPackageInfo(packageName, 0);
