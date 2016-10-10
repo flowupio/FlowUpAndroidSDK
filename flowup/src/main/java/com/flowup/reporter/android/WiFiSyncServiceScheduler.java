@@ -23,7 +23,7 @@ public class WiFiSyncServiceScheduler {
     this.gcmNetworkManager = GcmNetworkManager.getInstance(context);
   }
 
-  public void scheduleSync() {
+  public void scheduleSyncTask() {
     PeriodicTask task = new PeriodicTask.Builder().setService(WiFiSyncService.class)
         .setTag(SYNCHRONIZE_METRICS_REPORT)
         .setPeriod(SYNC_PERIOD)

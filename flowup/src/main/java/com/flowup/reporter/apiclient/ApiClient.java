@@ -4,19 +4,48 @@
 
 package com.flowup.reporter.apiclient;
 
-import com.flowup.reporter.Metrics;
+import com.flowup.reporter.ReportResult;
+import com.flowup.reporter.model.Reports;
+import com.google.gson.Gson;
+import java.io.IOException;
+import okhttp3.HttpUrl;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class ApiClient {
 
-  private final String host;
-  private final int port;
+  private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
-  public ApiClient(String host, int port) {
-    this.host = host;
-    this.port = port;
+  private final OkHttpClient httpClient;
+  private final Gson jsonParser;
+  private final HttpUrl baseUrl;
+
+  public ApiClient(String scheme, String host, int port) {
+    this.httpClient = ApiClientConfig.getHttpClient(true);
+    this.jsonParser = ApiClientConfig.getJsonParser();
+    this.baseUrl = ApiClientConfig.buildURL(scheme, host, port);
   }
 
-  public void sendMetrics(Metrics metrics) {
+  public ReportResult sendReports(Reports metrics) {
+    Request request = generateReportRequest(metrics);
+    try {
+      Response response = httpClient.newCall(request).execute();
+      if (response.isSuccessful()) {
+        return new ReportResult(metrics);
+      }
+    } catch (IOException e) {
+      return new ReportResult(ReportResult.Error.NETWORK_ERROR);
+    }
+    return new ReportResult(ReportResult.Error.UNKNOWN);
+  }
 
+  private Request generateReportRequest(Reports metrics) {
+    HttpUrl reportUrl = baseUrl.newBuilder("/report").build();
+    RequestBody body = RequestBody.create(JSON, jsonParser.toJson(metrics));
+    return new Request.Builder().url(reportUrl)
+        .post(body).build();
   }
 }

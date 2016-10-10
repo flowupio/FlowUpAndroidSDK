@@ -5,6 +5,7 @@
 <resources>
   <string translatable="false" name="karumi_grafana_host">54.194.240.147</string>
   <integer name="karumi_grafana_port">8125</integer>
-  <string translatable="false" name="flowup_host">54.194.240.147</string>
-  <integer name="flowup_port">8125</integer>
+  <string translatable="false" name="flowup_scheme">http</string>
+  <string translatable="false" name="flowup_host">flowupapp-env.eu-west-1.elasticbeanstalk.com</string>
+  <integer name="flowup_port">80</integer>
 </resources>

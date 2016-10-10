@@ -11,6 +11,7 @@ import android.util.DisplayMetrics;
 import static android.os.Build.MODEL;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
+import static com.flowup.utils.MetricNameUtils.replaceDots;
 
 class Device {
 
@@ -23,11 +24,11 @@ class Device {
   }
 
   String getOSVersion() {
-    return "API-" + String.valueOf(SDK_INT);
+    return "API" + String.valueOf(SDK_INT);
   }
 
   String getModel() {
-    return MODEL.replace('.', '-');
+    return replaceDots(MODEL);
   }
 
   String getScreenDensity() {
@@ -59,15 +60,15 @@ class Device {
     return portraitWidth + "X" + portraitHeight;
   }
 
-  String getUUID() {
-    return uuidGenerator.getUUID();
+  String getInstallationUUID() {
+    return replaceDots(uuidGenerator.getUUID());
   }
 
   int getNumberOfCores() {
     return Runtime.getRuntime().availableProcessors();
   }
 
-  boolean isPowerSaverEnabled() {
+  boolean isBatterySaverOn() {
     PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
     if (SDK_INT >= LOLLIPOP) {
       return powerManager.isPowerSaveMode();
