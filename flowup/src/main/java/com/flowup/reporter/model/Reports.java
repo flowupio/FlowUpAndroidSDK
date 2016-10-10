@@ -65,7 +65,7 @@ public class Reports {
     return networkMetricsReports;
   }
 
-  public List<UIMetric> getUiMetricsReports() {
+  public List<UIMetric> getUIMetricsReports() {
     return uiMetricsReports;
   }
 }

@@ -101,6 +101,7 @@ class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Repo
           networkMetricsReports.add(
               new NetworkMetric(reportTimestamp, versionName, osVersion, batterySaverOn,
                   bytesUploaded, bytesDownloaded));
+          break;
         }
       }
     }
@@ -132,6 +133,7 @@ class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Repo
           uiMetricsReports.add(
               new UIMetric(timestamp, versionName, osVersion, batterySaverOne, screenName,
                   frameTime, framesPerSecond));
+          break;
         }
       }
     }

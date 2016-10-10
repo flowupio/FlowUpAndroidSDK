@@ -58,4 +58,96 @@ public class StatisticalValue {
     this.p98 = p98;
     this.p99 = p99;
   }
+
+  public long getCount() {
+    return count;
+  }
+
+  public double getMin() {
+    return min;
+  }
+
+  public double getMax() {
+    return max;
+  }
+
+  public double getMean() {
+    return mean;
+  }
+
+  public double getStandardDev() {
+    return standardDev;
+  }
+
+  public double getMedian() {
+    return median;
+  }
+
+  public double getP5() {
+    return p5;
+  }
+
+  public double getP10() {
+    return p10;
+  }
+
+  public double getP15() {
+    return p15;
+  }
+
+  public double getP20() {
+    return p20;
+  }
+
+  public double getP25() {
+    return p25;
+  }
+
+  public double getP30() {
+    return p30;
+  }
+
+  public double getP40() {
+    return p40;
+  }
+
+  public double getP50() {
+    return p50;
+  }
+
+  public double getP60() {
+    return p60;
+  }
+
+  public double getP70() {
+    return p70;
+  }
+
+  public double getP75() {
+    return p75;
+  }
+
+  public double getP80() {
+    return p80;
+  }
+
+  public double getP85() {
+    return p85;
+  }
+
+  public double getP90() {
+    return p90;
+  }
+
+  public double getP95() {
+    return p95;
+  }
+
+  public double getP98() {
+    return p98;
+  }
+
+  public double getP99() {
+    return p99;
+  }
 }
