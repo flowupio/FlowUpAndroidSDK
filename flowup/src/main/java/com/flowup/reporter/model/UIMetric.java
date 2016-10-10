@@ -6,13 +6,13 @@ package com.flowup.reporter.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class UIMetricReport extends MetricReport {
+public class UIMetric extends MetricReport {
 
   @SerializedName("screen") private final String screen;
   @SerializedName("frameTime") private final StatisticalValue frameTime;
   @SerializedName("framesPerSecond") private final StatisticalValue framesPerSecond;
 
-  public UIMetricReport(long timestamp, String appVersionName, String osVersion,
+  public UIMetric(long timestamp, String appVersionName, String osVersion,
       boolean batterySaverOn, String screen, StatisticalValue frameTime,
       StatisticalValue framesPerSecond) {
     super(timestamp, appVersionName, osVersion, batterySaverOn);

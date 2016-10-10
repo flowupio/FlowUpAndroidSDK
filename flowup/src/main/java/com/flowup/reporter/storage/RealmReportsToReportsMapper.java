@@ -5,10 +5,10 @@
 package com.flowup.reporter.storage;
 
 import com.flowup.metricnames.MetricNamesExtractor;
-import com.flowup.reporter.model.NetworkMetricReport;
+import com.flowup.reporter.model.NetworkMetric;
 import com.flowup.reporter.model.Reports;
 import com.flowup.reporter.model.StatisticalValue;
-import com.flowup.reporter.model.UIMetricReport;
+import com.flowup.reporter.model.UIMetric;
 import com.flowup.utils.Mapper;
 import com.flowup.utils.StatisticalValueUtils;
 import io.realm.RealmList;
@@ -32,8 +32,8 @@ class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Repo
     String screenDensity = getScreenDensity(firstMetricName);
     String screenSize = getScreenSize(firstMetricName);
     int numberOfCores = getNumberOfCores(firstMetricName);
-    List<NetworkMetricReport> networkMetrics = mapNetworkMetricsReport(realmReports);
-    List<UIMetricReport> uiMetrics = mapUIMetricsReport(realmReports);
+    List<NetworkMetric> networkMetrics = mapNetworkMetricsReport(realmReports);
+    List<UIMetric> uiMetrics = mapUIMetricsReport(realmReports);
     return new Reports(reportsIds, appPackage, uuid, deviceModel, screenDensity, screenSize,
         numberOfCores, networkMetrics, uiMetrics);
   }
@@ -71,8 +71,8 @@ class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Repo
     return extractor.getScreenSize(metricName);
   }
 
-  private List<NetworkMetricReport> mapNetworkMetricsReport(RealmResults<RealmReport> reports) {
-    List<NetworkMetricReport> networkMetricsReports = new LinkedList<>();
+  private List<NetworkMetric> mapNetworkMetricsReport(RealmResults<RealmReport> reports) {
+    List<NetworkMetric> networkMetricsReports = new LinkedList<>();
     long bytesDownloaded = 0;
     long bytesUploaded = 0;
     for (int i = 0; i < reports.size(); i++) {
@@ -95,15 +95,15 @@ class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Repo
 
         long reportTimestamp = Long.valueOf(report.getReportTimestamp());
         networkMetricsReports.add(
-            new NetworkMetricReport(reportTimestamp, versionName, osVersion, batterySaverOn,
+            new NetworkMetric(reportTimestamp, versionName, osVersion, batterySaverOn,
                 bytesUploaded, bytesDownloaded));
       }
     }
     return networkMetricsReports;
   }
 
-  private List<UIMetricReport> mapUIMetricsReport(RealmResults<RealmReport> reports) {
-    List<UIMetricReport> uiMetricsReports = new LinkedList<>();
+  private List<UIMetric> mapUIMetricsReport(RealmResults<RealmReport> reports) {
+    List<UIMetric> uiMetricsReports = new LinkedList<>();
     StatisticalValue frameTime = null;
     StatisticalValue framesPerSecond = null;
     for (int i = 0; i < reports.size(); i++) {
@@ -125,7 +125,7 @@ class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Repo
         long timestamp = extractor.getTimestamp(metricName);
 
         uiMetricsReports.add(
-            new UIMetricReport(timestamp, versionName, osVersion, batterySaverOne, screenName,
+            new UIMetric(timestamp, versionName, osVersion, batterySaverOne, screenName,
                 frameTime, framesPerSecond));
       }
     }

@@ -8,6 +8,7 @@ import com.google.gson.JsonParser;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -168,7 +169,8 @@ import static junit.framework.Assert.assertTrue;
   }
 
   protected String getContentFromFile(String fileName) throws IOException {
-    String composeFileName = getClass().getResource("/" + fileName).getFile();
+    URL resource = getClass().getResource("/" + fileName);
+    String composeFileName = resource.getFile();
     File file = new File(composeFileName);
     List<String> lines = FileUtils.readLines(file, FILE_ENCODING);
     StringBuilder stringBuilder = new StringBuilder();

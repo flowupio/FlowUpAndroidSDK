@@ -32,7 +32,7 @@ android {
 dependencies {
   compile fileTree(dir: 'libs', include: ['*.jar'])
   compile "io.dropwizard.metrics:metrics-core:3.1.0"
-  compile'com.readytalk:metrics3-statsd:4.1.0'
+  compile 'com.readytalk:metrics3-statsd:4.1.0'
   compile 'com.squareup.okhttp3:okhttp:3.4.1'
   compile 'com.google.code.gson:gson:2.7'
   compile 'com.google.android.gms:play-services-gcm:9.6.1'
@@ -42,5 +42,4 @@ dependencies {
   testCompile 'org.robolectric:robolectric:3.1.1'
   testCompile 'com.squareup.okhttp3:mockwebserver:3.4.1'
   testCompile 'commons-io:commons-io:2.5'
-
 }
