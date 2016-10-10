@@ -77,8 +77,8 @@ class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Repo
 
   private List<NetworkMetric> mapNetworkMetricsReport(RealmResults<RealmReport> reports) {
     List<NetworkMetric> networkMetricsReports = new LinkedList<>();
-    long bytesDownloaded = 0;
-    long bytesUploaded = 0;
+    Long bytesDownloaded = null;
+    Long bytesUploaded = null;
     for (int i = 0; i < reports.size(); i++) {
       RealmReport report = reports.get(i);
       RealmList<RealmMetric> metrics = report.getMetrics();
@@ -96,11 +96,12 @@ class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Repo
         String versionName = extractor.getVersionName(metricName);
 
         boolean batterySaverOn = extractor.getIsBatterSaverOn(metricName);
-
-        long reportTimestamp = Long.valueOf(report.getReportTimestamp());
-        networkMetricsReports.add(
-            new NetworkMetric(reportTimestamp, versionName, osVersion, batterySaverOn,
-                bytesUploaded, bytesDownloaded));
+        if (bytesDownloaded != null && bytesUploaded != null) {
+          long reportTimestamp = Long.valueOf(report.getReportTimestamp());
+          networkMetricsReports.add(
+              new NetworkMetric(reportTimestamp, versionName, osVersion, batterySaverOn,
+                  bytesUploaded, bytesDownloaded));
+        }
       }
     }
     return networkMetricsReports;
@@ -127,10 +128,11 @@ class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Repo
         boolean batterySaverOne = extractor.getIsBatterSaverOn(metricName);
         String screenName = extractor.getScreenName(metricName);
         long timestamp = extractor.getTimestamp(metricName);
-
-        uiMetricsReports.add(
-            new UIMetric(timestamp, versionName, osVersion, batterySaverOne, screenName, frameTime,
-                framesPerSecond));
+        if (frameTime != null && framesPerSecond != null) {
+          uiMetricsReports.add(
+              new UIMetric(timestamp, versionName, osVersion, batterySaverOne, screenName,
+                  frameTime, framesPerSecond));
+        }
       }
     }
     return uiMetricsReports;

@@ -23,7 +23,7 @@ public class Collectors {
   }
 
   public static Collector getHttpBytesDownloadedCollector(Application application) {
-    return new HttpBytesDownloadedCollector(
+    return new BytesDownloadedCollector(
         new MetricNamesGenerator(new App(application), new Device(application), new Time()));
   }
 

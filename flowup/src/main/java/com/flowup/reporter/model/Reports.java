@@ -36,4 +36,36 @@ public class Reports {
   public List<String> getReportsIds() {
     return reportsIds;
   }
+
+  public String getAppPackage() {
+    return appPackage;
+  }
+
+  public String getUUID() {
+    return uuid;
+  }
+
+  public String getDeviceModel() {
+    return deviceModel;
+  }
+
+  public String getScreenDensity() {
+    return screenDensity;
+  }
+
+  public String getScreenSize() {
+    return screenSize;
+  }
+
+  public Integer getNumberOfCores() {
+    return numberOfCores;
+  }
+
+  public List<NetworkMetric> getNetworkMetricsReports() {
+    return networkMetricsReports;
+  }
+
+  public List<UIMetric> getUiMetricsReports() {
+    return uiMetricsReports;
+  }
 }

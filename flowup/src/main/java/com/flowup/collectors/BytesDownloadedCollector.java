@@ -11,13 +11,13 @@ import com.codahale.metrics.Gauge;
 import com.codahale.metrics.MetricRegistry;
 import com.flowup.metricnames.MetricNamesGenerator;
 
-class HttpBytesDownloadedCollector implements Collector {
+class BytesDownloadedCollector implements Collector {
 
   private final MetricNamesGenerator metricNamesGenerator;
 
   private long lastBytesSample;
 
-  HttpBytesDownloadedCollector(MetricNamesGenerator metricNamesGenerator) {
+  BytesDownloadedCollector(MetricNamesGenerator metricNamesGenerator) {
     this.metricNamesGenerator = metricNamesGenerator;
   }
 

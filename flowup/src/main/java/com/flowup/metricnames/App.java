@@ -28,6 +28,9 @@ public class App {
     try {
       String packageName = context.getPackageName();
       PackageInfo packageInfo = context.getPackageManager().getPackageInfo(packageName, 0);
+      if (packageInfo.versionName == null) {
+        throw new PackageManager.NameNotFoundException("Name found but is null");
+      }
       return replaceDots(packageInfo.versionName);
     } catch (PackageManager.NameNotFoundException e) {
       String buildConfigVersionName = replaceDots(BuildConfig.VERSION_NAME);
