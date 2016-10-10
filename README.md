@@ -39,7 +39,7 @@ By default the project is ready to execute a sample app reporting metrics to our
 How to review the persisted data
 --------------------------------
 
-This library has been developed using [Realm][realm] as the persistence motor. FlowUp will store metrics reports until the sync process be activated. All this information is persisted inside a Realm data base you can check what's inside following the next steps:
+This library has been developed using [Realm][realm] as the persistence engine. FlowUp will store metrics reports until the sync process be activated. All this information is persisted inside a Realm data base you can check what's inside following the next steps:
 
 * Get a copy of the Realm database executing: ``adb pull /data/data/<APPLICATION_PACKAGE_WHERE_FLOWUP_IS_BEING_USED>/files/FlowUp.realm .``
 * Download the [Realm Browser][realmbrowser] app.
