@@ -24,8 +24,12 @@ class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Repo
     if (realmReports.size() == 0) {
       return null;
     }
+    RealmList<RealmMetric> metrics = realmReports.first().getMetrics();
     List<String> reportsIds = mapReportsIds(realmReports);
-    String firstMetricName = realmReports.first().getMetrics().first().getMetricName();
+    if (metrics.isEmpty()) {
+      return new Reports(reportsIds, null, null, null, null, null, null, null, null);
+    }
+    String firstMetricName = metrics.first().getMetricName();
     String appPackage = getAppPackage(firstMetricName);
     String uuid = getUUID(firstMetricName);
     String deviceModel = getDeviceModel(firstMetricName);
@@ -125,8 +129,8 @@ class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Repo
         long timestamp = extractor.getTimestamp(metricName);
 
         uiMetricsReports.add(
-            new UIMetric(timestamp, versionName, osVersion, batterySaverOne, screenName,
-                frameTime, framesPerSecond));
+            new UIMetric(timestamp, versionName, osVersion, batterySaverOne, screenName, frameTime,
+                framesPerSecond));
       }
     }
     return uiMetricsReports;

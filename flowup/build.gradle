@@ -10,6 +10,7 @@ android {
     targetSdkVersion 23
     versionCode 2
     versionName "0.0.2-SNAPSHOT"
+    testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
   }
 
   buildTypes {
@@ -42,4 +43,11 @@ dependencies {
   testCompile 'org.robolectric:robolectric:3.1.1'
   testCompile 'com.squareup.okhttp3:mockwebserver:3.4.1'
   testCompile 'commons-io:commons-io:2.5'
+  androidTestCompile 'com.android.support.test:runner:0.5'
+  androidTestCompile 'com.android.support.test:rules:0.5'
+  androidTestCompile 'org.mockito:mockito-core:1.10.19'
+  androidTestCompile 'com.google.dexmaker:dexmaker:1.2'
+  androidTestCompile('com.google.dexmaker:dexmaker-mockito:1.2') {
+    exclude group: 'org.hamcrest', module: 'hamcrest-core'
+  }
 }
