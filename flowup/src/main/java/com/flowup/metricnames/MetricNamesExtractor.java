@@ -62,8 +62,24 @@ public class MetricNamesExtractor {
     }
   }
 
+  public boolean isBytesDownloadedMetric(String metricName) {
+    return metricName.contains(MetricNamesGenerator.BYTES_DOWNLOADED);
+  }
+
+  public boolean isBytesUploadedMetric(String metricName) {
+    return metricName.contains(MetricNamesGenerator.BYTES_UPLOADED);
+  }
+
+  public boolean isFPSMetric(String metricName) {
+    return metricName.contains(MetricNamesGenerator.FPS);
+  }
+
+  public boolean isFrameTimeMetric(String metricName) {
+    return metricName.contains(MetricNamesGenerator.FRAME_TIME);
+  }
+
   private String findCrossMetricInfoAtPosition(int index, String metricName) {
-    String[] metricNames = metricName.split("\\.");
+    String[] metricNames = MetricNameUtils.split(metricName);
     if (metricNames.length > index) {
       return metricNames[index];
     }

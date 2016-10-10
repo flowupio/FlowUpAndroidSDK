@@ -14,4 +14,8 @@ public class MetricNameUtils {
     return value.replace("-", ".");
   }
 
+  public static String[] split(String metricName) {
+    return metricName.split("\\.");
+  }
+
 }

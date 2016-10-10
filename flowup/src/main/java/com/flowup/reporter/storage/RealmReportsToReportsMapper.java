@@ -5,7 +5,6 @@
 package com.flowup.reporter.storage;
 
 import com.flowup.metricnames.MetricNamesExtractor;
-import com.flowup.metricnames.MetricNamesGenerator;
 import com.flowup.reporter.model.NetworkMetricReport;
 import com.flowup.reporter.model.Reports;
 import com.flowup.reporter.model.StatisticalValue;
@@ -82,9 +81,9 @@ class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Repo
       for (int j = 0; j < metrics.size(); j++) {
         RealmMetric metric = metrics.get(j);
         String metricName = metric.getMetricName();
-        if (metricName.contains(MetricNamesGenerator.BYTES_DOWNLOADED)) {
+        if (extractor.isBytesDownloadedMetric(metricName)) {
           bytesDownloaded = metric.getStatisticalValue().getValue();
-        } else if (metricName.contains(MetricNamesGenerator.BYTES_UPLOADED)) {
+        } else if (extractor.isBytesUploadedMetric(metricName)) {
           bytesUploaded = metric.getStatisticalValue().getValue();
         } else {
           continue;
@@ -112,9 +111,9 @@ class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Repo
       for (int j = 0; j < metrics.size(); j++) {
         RealmMetric metric = metrics.get(j);
         String metricName = metric.getMetricName();
-        if (metricName.contains(MetricNamesGenerator.FRAME_TIME)) {
+        if (extractor.isFrameTimeMetric(metricName)) {
           frameTime = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
-        } else if (metricName.contains(MetricNamesGenerator.FPS)) {
+        } else if (extractor.isFPSMetric(metricName)) {
           framesPerSecond = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
         } else {
           continue;

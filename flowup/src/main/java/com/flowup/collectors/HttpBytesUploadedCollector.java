@@ -22,7 +22,7 @@ class HttpBytesUploadedCollector implements Collector {
   }
 
   @Override public void initialize(MetricRegistry registry) {
-    registry.register(metricNamesGenerator.getHttpBytesUploadedMetricsName(), new Gauge<Long>() {
+    registry.register(metricNamesGenerator.getBytesUploadedMetricsName(), new Gauge<Long>() {
       @Override public Long getValue() {
         int applicationUid = Process.myUid();
         long totalTxBytes = TrafficStats.getUidTxBytes(applicationUid);

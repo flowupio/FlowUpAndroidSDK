@@ -41,11 +41,11 @@ public class MetricNamesGenerator {
         appendCrossMetricInfo(UI + SEPARATOR + FRAME_TIME + SEPARATOR + activityName + SEPARATOR + time.now()));
   }
 
-  public String getHttpBytesDownloadedMetricsName() {
+  public String getBytesDownloadedMetricsName() {
     return MetricRegistry.name(appendCrossMetricInfo(NETWORK + SEPARATOR + BYTES_DOWNLOADED));
   }
 
-  public String getHttpBytesUploadedMetricsName() {
+  public String getBytesUploadedMetricsName() {
     return MetricRegistry.name(appendCrossMetricInfo(NETWORK + SEPARATOR + BYTES_UPLOADED));
   }
 
