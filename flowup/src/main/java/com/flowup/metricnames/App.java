@@ -24,7 +24,7 @@ public class App {
     return replaceDots(context.getPackageName());
   }
 
-  public String getAppVersionName() {
+  public String getVersionName() {
     try {
       String packageName = context.getPackageName();
       PackageInfo packageInfo = context.getPackageManager().getPackageInfo(packageName, 0);

@@ -53,7 +53,7 @@ class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Repo
   }
 
   private String getUUID(String metricName) {
-    return extractor.getUUID(metricName);
+    return extractor.getInstallationUUID(metricName);
   }
 
   private String getDeviceModel(String metricName) {

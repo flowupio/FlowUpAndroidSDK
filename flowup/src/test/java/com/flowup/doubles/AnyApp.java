@@ -9,21 +9,21 @@ import com.flowup.metricnames.App;
 
 import static org.mockito.Mockito.mock;
 
-public class FakeApp extends App {
+public class AnyApp extends App {
 
-  public FakeApp() {
+  public AnyApp() {
     this(mock(Context.class));
   }
 
-  public FakeApp(Context context) {
+  public AnyApp(Context context) {
     super(context);
   }
 
   @Override public String getAppPackageName() {
-    return "io.flowup.androidsdk";
+    return "io-flowup-androidsdk";
   }
 
-  @Override public String getAppVersionName() {
-    return "1.0.0";
+  @Override public String getVersionName() {
+    return "1-0-0";
   }
 }

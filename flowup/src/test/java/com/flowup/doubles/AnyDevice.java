@@ -9,13 +9,13 @@ import com.flowup.metricnames.Device;
 
 import static org.mockito.Mockito.mock;
 
-public class FakeDevice extends Device {
+public class AnyDevice extends Device {
 
-  public FakeDevice() {
+  public AnyDevice() {
     this(mock(Context.class));
   }
 
-  public FakeDevice(Context context) {
+  public AnyDevice(Context context) {
     super(context);
   }
 
@@ -29,6 +29,10 @@ public class FakeDevice extends Device {
 
   @Override public String getScreenDensity() {
     return "xxhdpi";
+  }
+
+  @Override public String getScreenSize() {
+    return "800X600";
   }
 
   @Override public String getInstallationUUID() {

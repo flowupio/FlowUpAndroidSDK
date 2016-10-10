@@ -14,7 +14,7 @@ public class MetricNamesExtractor {
     return MetricNameUtils.replaceDashes(findCrossMetricInfoAtPosition(0, metricName));
   }
 
-  public String getUUID(String metricName) {
+  public String getInstallationUUID(String metricName) {
     return findCrossMetricInfoAtPosition(1, metricName);
   }
 

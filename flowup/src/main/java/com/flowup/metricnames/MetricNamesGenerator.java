@@ -5,7 +5,6 @@
 package com.flowup.metricnames;
 
 import android.app.Activity;
-import android.content.Context;
 import com.codahale.metrics.MetricRegistry;
 import com.flowup.utils.Time;
 
@@ -69,7 +68,7 @@ public class MetricNamesGenerator {
         + SEPARATOR
         + device.getOSVersion()
         + SEPARATOR
-        + app.getAppVersionName()
+        + app.getVersionName()
         + SEPARATOR
         + device.isBatterySaverOn()
         + SEPARATOR

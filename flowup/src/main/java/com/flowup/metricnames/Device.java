@@ -51,7 +51,7 @@ public class Device {
     return "ldpi";
   }
 
-  String getScreenSize() {
+  public String getScreenSize() {
     DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
     int widthPixels = displayMetrics.widthPixels;
     int heightPixels = displayMetrics.heightPixels;
