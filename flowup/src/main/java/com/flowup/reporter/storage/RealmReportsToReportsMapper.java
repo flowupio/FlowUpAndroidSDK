@@ -5,11 +5,10 @@
 package com.flowup.reporter.storage;
 
 import com.flowup.metricnames.MetricNamesExtractor;
-import com.flowup.metricnames.MetricNamesGenerator;
-import com.flowup.reporter.model.NetworkMetricReport;
+import com.flowup.reporter.model.NetworkMetric;
 import com.flowup.reporter.model.Reports;
 import com.flowup.reporter.model.StatisticalValue;
-import com.flowup.reporter.model.UIMetricReport;
+import com.flowup.reporter.model.UIMetric;
 import com.flowup.utils.Mapper;
 import com.flowup.utils.StatisticalValueUtils;
 import io.realm.RealmList;
@@ -25,16 +24,20 @@ class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Repo
     if (realmReports.size() == 0) {
       return null;
     }
+    RealmList<RealmMetric> metrics = realmReports.first().getMetrics();
     List<String> reportsIds = mapReportsIds(realmReports);
-    String firstMetricName = realmReports.first().getMetrics().first().getMetricName();
+    if (metrics.isEmpty()) {
+      return new Reports(reportsIds, null, null, null, null, null, null, null, null);
+    }
+    String firstMetricName = metrics.first().getMetricName();
     String appPackage = getAppPackage(firstMetricName);
     String uuid = getUUID(firstMetricName);
     String deviceModel = getDeviceModel(firstMetricName);
     String screenDensity = getScreenDensity(firstMetricName);
     String screenSize = getScreenSize(firstMetricName);
     int numberOfCores = getNumberOfCores(firstMetricName);
-    List<NetworkMetricReport> networkMetrics = mapNetworkMetricsReport(realmReports);
-    List<UIMetricReport> uiMetrics = mapUIMetricsReport(realmReports);
+    List<NetworkMetric> networkMetrics = mapNetworkMetricsReport(realmReports);
+    List<UIMetric> uiMetrics = mapUIMetricsReport(realmReports);
     return new Reports(reportsIds, appPackage, uuid, deviceModel, screenDensity, screenSize,
         numberOfCores, networkMetrics, uiMetrics);
   }
@@ -53,7 +56,7 @@ class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Repo
   }
 
   private String getUUID(String metricName) {
-    return extractor.getUUID(metricName);
+    return extractor.getInstallationUUID(metricName);
   }
 
   private String getDeviceModel(String metricName) {
@@ -72,19 +75,19 @@ class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Repo
     return extractor.getScreenSize(metricName);
   }
 
-  private List<NetworkMetricReport> mapNetworkMetricsReport(RealmResults<RealmReport> reports) {
-    List<NetworkMetricReport> networkMetricsReports = new LinkedList<>();
-    long bytesDownloaded = 0;
-    long bytesUploaded = 0;
+  private List<NetworkMetric> mapNetworkMetricsReport(RealmResults<RealmReport> reports) {
+    List<NetworkMetric> networkMetricsReports = new LinkedList<>();
+    Long bytesDownloaded = null;
+    Long bytesUploaded = null;
     for (int i = 0; i < reports.size(); i++) {
       RealmReport report = reports.get(i);
       RealmList<RealmMetric> metrics = report.getMetrics();
       for (int j = 0; j < metrics.size(); j++) {
         RealmMetric metric = metrics.get(j);
         String metricName = metric.getMetricName();
-        if (metricName.contains(MetricNamesGenerator.BYTES_DOWNLOADED)) {
+        if (extractor.isBytesDownloadedMetric(metricName)) {
           bytesDownloaded = metric.getStatisticalValue().getValue();
-        } else if (metricName.contains(MetricNamesGenerator.BYTES_UPLOADED)) {
+        } else if (extractor.isBytesUploadedMetric(metricName)) {
           bytesUploaded = metric.getStatisticalValue().getValue();
         } else {
           continue;
@@ -93,18 +96,20 @@ class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Repo
         String versionName = extractor.getVersionName(metricName);
 
         boolean batterySaverOn = extractor.getIsBatterSaverOn(metricName);
-
-        long reportTimestamp = Long.valueOf(report.getReportTimestamp());
-        networkMetricsReports.add(
-            new NetworkMetricReport(reportTimestamp, versionName, osVersion, batterySaverOn,
-                bytesUploaded, bytesDownloaded));
+        if (bytesDownloaded != null && bytesUploaded != null) {
+          long reportTimestamp = Long.valueOf(report.getReportTimestamp());
+          networkMetricsReports.add(
+              new NetworkMetric(reportTimestamp, versionName, osVersion, batterySaverOn,
+                  bytesUploaded, bytesDownloaded));
+          break;
+        }
       }
     }
     return networkMetricsReports;
   }
 
-  private List<UIMetricReport> mapUIMetricsReport(RealmResults<RealmReport> reports) {
-    List<UIMetricReport> uiMetricsReports = new LinkedList<>();
+  private List<UIMetric> mapUIMetricsReport(RealmResults<RealmReport> reports) {
+    List<UIMetric> uiMetricsReports = new LinkedList<>();
     StatisticalValue frameTime = null;
     StatisticalValue framesPerSecond = null;
     for (int i = 0; i < reports.size(); i++) {
@@ -112,9 +117,9 @@ class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Repo
       for (int j = 0; j < metrics.size(); j++) {
         RealmMetric metric = metrics.get(j);
         String metricName = metric.getMetricName();
-        if (metricName.contains(MetricNamesGenerator.FRAME_TIME)) {
+        if (extractor.isFrameTimeMetric(metricName)) {
           frameTime = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
-        } else if (metricName.contains(MetricNamesGenerator.FPS)) {
+        } else if (extractor.isFPSMetric(metricName)) {
           framesPerSecond = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
         } else {
           continue;
@@ -124,10 +129,12 @@ class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Repo
         boolean batterySaverOne = extractor.getIsBatterSaverOn(metricName);
         String screenName = extractor.getScreenName(metricName);
         long timestamp = extractor.getTimestamp(metricName);
-
-        uiMetricsReports.add(
-            new UIMetricReport(timestamp, versionName, osVersion, batterySaverOne, screenName,
-                frameTime, framesPerSecond));
+        if (frameTime != null && framesPerSecond != null) {
+          uiMetricsReports.add(
+              new UIMetric(timestamp, versionName, osVersion, batterySaverOne, screenName,
+                  frameTime, framesPerSecond));
+          break;
+        }
       }
     }
     return uiMetricsReports;

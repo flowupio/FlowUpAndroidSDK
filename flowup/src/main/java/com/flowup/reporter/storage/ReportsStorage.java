@@ -16,19 +16,10 @@ import java.util.List;
 
 public class ReportsStorage {
 
-  private static final String REALM_DB_NAME = "FlowUp.realm";
-  private static final long REALM_SCHEMA_VERSION = 1;
-
   private final Context context;
-  private final boolean persistent;
 
   public ReportsStorage(Context context) {
-    this(context, true);
-  }
-
-  public ReportsStorage(Context context, boolean persistent) {
     this.context = context;
-    this.persistent = persistent;
   }
 
   public void storeMetrics(final DropwizardReport dropwizardReport) {
@@ -90,19 +81,8 @@ public class ReportsStorage {
   }
 
   private Realm getRealm() {
-    RealmConfiguration config = getRealmConfig(context, persistent);
+    RealmConfiguration config = RealmConfig.getRealmConfig(context);
     return Realm.getInstance(config);
-  }
-
-  private RealmConfiguration getRealmConfig(Context context, boolean persistent) {
-    Realm.init(context);
-    RealmConfiguration.Builder builder = new RealmConfiguration.Builder().name(REALM_DB_NAME)
-        .schemaVersion(REALM_SCHEMA_VERSION)
-        .deleteRealmIfMigrationNeeded();
-    if (!persistent) {
-      builder.inMemory();
-    }
-    return builder.build();
   }
 
   private void storeAsRealmObject(Realm realm, DropwizardReport dropwizardReport) {

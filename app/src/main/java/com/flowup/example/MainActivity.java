@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             MarvelResponse<CharactersDto> characters = characterApiClient.getAll(0, 50);
                             Log.d("FlowUp", characters.getResponse().getCharacters().size()
-                                    + "characters obtained from the api");
+                                    + " characters obtained from the api");
                         } catch (MarvelApiException e) {
                             Log.e("Error", "Error getting marvel characters", e);
                         }

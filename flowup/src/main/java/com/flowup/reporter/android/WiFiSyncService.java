@@ -51,6 +51,7 @@ public class WiFiSyncService extends GcmTaskService {
         reportsStorage.deleteReports(reports);
         return RESULT_RESCHEDULE;
       } else if (result.isSuccess()) {
+        reportsStorage.deleteReports(reports);
         return RESULT_SUCCESS;
       } else {
         return RESULT_FAILURE;

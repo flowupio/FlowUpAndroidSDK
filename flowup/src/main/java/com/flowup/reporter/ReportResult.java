@@ -8,11 +8,11 @@ import com.flowup.reporter.model.Reports;
 
 public class ReportResult {
 
-  private Reports metrics;
+  private Reports reports;
   private Error error;
 
-  public ReportResult(Reports metrics) {
-    this.metrics = metrics;
+  public ReportResult(Reports reports) {
+    this.reports = reports;
   }
 
   public ReportResult(Error error) {
@@ -20,15 +20,15 @@ public class ReportResult {
   }
 
   public boolean isSuccess() {
-    return metrics != null && error == null;
+    return reports != null && error == null;
   }
 
   public boolean hasDataPendingToSync() {
     return false;
   }
 
-  public Reports getMetricsReported() {
-    return metrics;
+  public Reports getReports() {
+    return reports;
   }
 
   public Error getError() {

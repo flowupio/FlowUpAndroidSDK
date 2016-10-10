@@ -5,7 +5,6 @@
 package com.flowup.metricnames;
 
 import android.app.Activity;
-import android.content.Context;
 import com.codahale.metrics.MetricRegistry;
 import com.flowup.utils.Time;
 
@@ -15,6 +14,7 @@ public class MetricNamesGenerator {
   public static final String FRAME_TIME = "frameTime";
   public static final String BYTES_DOWNLOADED = "bytesDownloaded";
   public static final String BYTES_UPLOADED = "bytesUploaded";
+
   private static final String UI = "ui";
   private static final String NETWORK = "network";
   private static final String SEPARATOR = ".";
@@ -23,9 +23,9 @@ public class MetricNamesGenerator {
   private final Device device;
   private final Time time;
 
-  public MetricNamesGenerator(Context context, Time time) {
-    this.app = new App(context);
-    this.device = new Device(context);
+  public MetricNamesGenerator(App app, Device device, Time time) {
+    this.app = app;
+    this.device = device;
     this.time = time;
   }
 
@@ -41,11 +41,11 @@ public class MetricNamesGenerator {
         appendCrossMetricInfo(UI + SEPARATOR + FRAME_TIME + SEPARATOR + activityName + SEPARATOR + time.now()));
   }
 
-  public String getHttpBytesDownloadedMetricsName() {
+  public String getBytesDownloadedMetricsName() {
     return MetricRegistry.name(appendCrossMetricInfo(NETWORK + SEPARATOR + BYTES_DOWNLOADED));
   }
 
-  public String getHttpBytesUploadedMetricsName() {
+  public String getBytesUploadedMetricsName() {
     return MetricRegistry.name(appendCrossMetricInfo(NETWORK + SEPARATOR + BYTES_UPLOADED));
   }
 
@@ -68,7 +68,7 @@ public class MetricNamesGenerator {
         + SEPARATOR
         + device.getOSVersion()
         + SEPARATOR
-        + app.getAppVersionName()
+        + app.getVersionName()
         + SEPARATOR
         + device.isBatterySaverOn()
         + SEPARATOR

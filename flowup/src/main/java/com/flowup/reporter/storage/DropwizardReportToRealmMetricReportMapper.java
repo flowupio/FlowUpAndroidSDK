@@ -40,8 +40,7 @@ class DropwizardReportToRealmMetricReportMapper
     return realmMetrics;
   }
 
-  private RealmList<RealmMetric> mapCounters(Realm realm,
-      SortedMap<String, Counter> counters) {
+  private RealmList<RealmMetric> mapCounters(Realm realm, SortedMap<String, Counter> counters) {
     RealmList<RealmMetric> realmMetrics = new RealmList<>();
     for (String metricName : counters.keySet()) {
       Counter counter = counters.get(metricName);

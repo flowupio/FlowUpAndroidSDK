@@ -33,13 +33,13 @@ public class FlowUpReporter extends ScheduledReporter {
   private final Time time;
   private final boolean debuggable;
 
-  private FlowUpReporter(MetricRegistry registry, String name, MetricFilter filter,
-      TimeUnit rateUnit, TimeUnit durationUnit, String scheme, String host, int port,
-      boolean debuggable, Context context, Time time) {
+  FlowUpReporter(MetricRegistry registry, String name, MetricFilter filter,
+      TimeUnit rateUnit, TimeUnit durationUnit, ApiClient apiClient, ReportsStorage reportsStorage,
+      WiFiSyncServiceScheduler syncScheduler, Time time, boolean debuggable) {
     super(registry, name, filter, rateUnit, durationUnit);
-    this.apiClient = new ApiClient(scheme, host, port);
-    this.reportsStorage = new ReportsStorage(context);
-    this.syncScheduler = new WiFiSyncServiceScheduler(context);
+    this.apiClient = apiClient;
+    this.reportsStorage = reportsStorage;
+    this.syncScheduler = syncScheduler;
     this.time = time;
     this.debuggable = debuggable;
   }
@@ -115,8 +115,9 @@ public class FlowUpReporter extends ScheduledReporter {
     }
 
     public FlowUpReporter build(String scheme, String host, int port) {
-      return new FlowUpReporter(registry, name, filter, rateUnit, durationUnit, scheme, host, port,
-          debuggable, context, new Time());
+      return new FlowUpReporter(registry, name, filter, rateUnit, durationUnit,
+          new ApiClient(scheme, host, port), new ReportsStorage(context),
+          new WiFiSyncServiceScheduler(context), new Time(), debuggable);
     }
 
     public Builder debuggable(boolean debuggable) {

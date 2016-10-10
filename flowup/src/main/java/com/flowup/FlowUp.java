@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 public class FlowUp {
 
   private static final int SAMPLING_INTERVAL = 10;
+  private static final TimeUnit SAMPLING_TIME_UNIT = TimeUnit.SECONDS;
 
   private final Application application;
   private final boolean debuggable;
@@ -39,7 +40,7 @@ public class FlowUp {
     initializeMetrics();
     initializeReporters();
     initializeForegroundCollectors();
-    initializeHttpCollectors();
+    initializeNetworkCollectors();
   }
 
   private void initializeMetrics() {
@@ -68,7 +69,7 @@ public class FlowUp {
         .convertDurationsTo(TimeUnit.MILLISECONDS)
         .filter(MetricFilter.ALL)
         .build(host, port)
-        .start(SAMPLING_INTERVAL, TimeUnit.SECONDS);
+        .start(SAMPLING_INTERVAL, SAMPLING_TIME_UNIT);
   }
 
   private void initializeFlowUpReporter() {
@@ -99,12 +100,14 @@ public class FlowUp {
     frameTimeCollector.initialize(registry);
   }
 
-  private void initializeHttpCollectors() {
-    Collector httpBytesDownloadedCollector =
-        Collectors.getHttpBytesDownloadedCollector(application);
-    httpBytesDownloadedCollector.initialize(registry);
-    Collector httpBytesUploadedCollector = Collectors.getHttpBytesUploadedCollector(application);
-    httpBytesUploadedCollector.initialize(registry);
+  private void initializeNetworkCollectors() {
+    Collector bytesDownloadedCollector =
+        Collectors.getBytesDownloadedCollector(application, SAMPLING_INTERVAL, SAMPLING_TIME_UNIT);
+    bytesDownloadedCollector.initialize(registry);
+
+    Collector bytesUploadedCollector =
+        Collectors.getBytesUploadedCollector(application, SAMPLING_INTERVAL, SAMPLING_TIME_UNIT);
+    bytesUploadedCollector.initialize(registry);
   }
 
   public static class Builder {
