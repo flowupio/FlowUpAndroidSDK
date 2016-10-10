@@ -54,4 +54,42 @@ public class DropwizardReport {
   public SortedMap<String, Timer> getTimers() {
     return timers;
   }
+
+  @Override public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    DropwizardReport that = (DropwizardReport) o;
+
+    if (reportingTimestamp != that.reportingTimestamp) {
+      return false;
+    }
+    if (!gauges.equals(that.gauges)) {
+      return false;
+    }
+    if (!counters.equals(that.counters)) {
+      return false;
+    }
+    if (!histograms.equals(that.histograms)) {
+      return false;
+    }
+    if (!meters.equals(that.meters)) {
+      return false;
+    }
+    return timers.equals(that.timers);
+  }
+
+  @Override public int hashCode() {
+    int result = (int) (reportingTimestamp ^ (reportingTimestamp >>> 32));
+    result = 31 * result + gauges.hashCode();
+    result = 31 * result + counters.hashCode();
+    result = 31 * result + histograms.hashCode();
+    result = 31 * result + meters.hashCode();
+    result = 31 * result + timers.hashCode();
+    return result;
+  }
 }

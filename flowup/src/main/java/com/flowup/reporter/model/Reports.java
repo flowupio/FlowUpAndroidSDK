@@ -68,4 +68,21 @@ public class Reports {
   public List<UIMetric> getUIMetricsReports() {
     return uiMetricsReports;
   }
+
+  @Override public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    Reports reports = (Reports) o;
+
+    return reportsIds.equals(reports.reportsIds);
+  }
+
+  @Override public int hashCode() {
+    return reportsIds.hashCode();
+  }
 }
