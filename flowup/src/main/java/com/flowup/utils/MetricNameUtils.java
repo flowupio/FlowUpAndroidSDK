@@ -14,11 +14,4 @@ public class MetricNameUtils {
     return value.replace("-", ".");
   }
 
-  public static String findCrossMetricInfoAtPosition(int index, String metricName) {
-    String[] metricNames = metricName.split("\\.");
-    if (metricNames.length > index) {
-      return metricNames[index];
-    }
-    return null;
-  }
 }

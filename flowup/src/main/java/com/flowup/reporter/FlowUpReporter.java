@@ -15,9 +15,8 @@ import com.codahale.metrics.ScheduledReporter;
 import com.codahale.metrics.Timer;
 import com.flowup.reporter.android.WiFiSyncServiceScheduler;
 import com.flowup.reporter.apiclient.ApiClient;
-import com.flowup.reporter.model.Report;
-import com.flowup.reporter.storage.MetricsStorage;
-import com.flowup.utils.Mapper;
+import com.flowup.reporter.model.Reports;
+import com.flowup.reporter.storage.ReportsStorage;
 import com.flowup.utils.Time;
 import java.util.SortedMap;
 import java.util.concurrent.TimeUnit;
@@ -28,33 +27,51 @@ public class FlowUpReporter extends ScheduledReporter {
     return new FlowUpReporter.Builder(registry, context);
   }
 
-  private final MetricsStorage metricsStorage;
+  private final ReportsStorage reportsStorage;
   private final ApiClient apiClient;
   private final WiFiSyncServiceScheduler syncScheduler;
   private final Time time;
-  private final Mapper<MetricsReport, Report> mapper = new MetricsReportToReportMapper();
+  private final boolean debuggable;
 
   private FlowUpReporter(MetricRegistry registry, String name, MetricFilter filter,
       TimeUnit rateUnit, TimeUnit durationUnit, String scheme, String host, int port,
-      boolean persistent, Context context, Time time) {
+      boolean debuggable, Context context, Time time) {
     super(registry, name, filter, rateUnit, durationUnit);
     this.apiClient = new ApiClient(scheme, host, port);
-    this.metricsStorage = new MetricsStorage(context, persistent);
+    this.reportsStorage = new ReportsStorage(context);
     this.syncScheduler = new WiFiSyncServiceScheduler(context);
     this.time = time;
+    this.debuggable = debuggable;
+  }
+
+  @Override public void start(long period, TimeUnit unit) {
+    super.start(period, unit);
+    syncScheduler.scheduleSyncTask();
   }
 
   @Override public void report(SortedMap<String, Gauge> gauges, SortedMap<String, Counter> counters,
       SortedMap<String, Histogram> histograms, SortedMap<String, Meter> meters,
       SortedMap<String, Timer> timers) {
-    MetricsReport metricsReport =
-        new MetricsReport(time.now(), gauges, counters, histograms, meters, timers);
-    sendReport(metricsReport);
+    DropwizardReport dropwizardReport =
+        new DropwizardReport(time.now(), gauges, counters, histograms, meters, timers);
+    storeReport(dropwizardReport);
+    if (debuggable) {
+      sendStoredReports();
+    }
   }
 
-  private void sendReport(MetricsReport metricsReport) {
-    Report report = mapper.map(metricsReport);
-    apiClient.sendMetrics(report);
+  private void storeReport(DropwizardReport dropwizardReport) {
+    reportsStorage.storeMetrics(dropwizardReport);
+  }
+
+  private void sendStoredReports() {
+    Reports reports = reportsStorage.getReports();
+    if (reports != null) {
+      ReportResult result = apiClient.sendReports(reports);
+      if (result.isSuccess()) {
+        reportsStorage.deleteReports(reports);
+      }
+    }
   }
 
   public static final class Builder {
@@ -64,7 +81,7 @@ public class FlowUpReporter extends ScheduledReporter {
     private MetricFilter filter;
     private TimeUnit rateUnit;
     private TimeUnit durationUnit;
-    private boolean persistent;
+    private boolean debuggable;
     private Context context;
 
     public Builder(MetricRegistry registry, Context context) {
@@ -73,7 +90,7 @@ public class FlowUpReporter extends ScheduledReporter {
       this.filter = MetricFilter.ALL;
       this.rateUnit = TimeUnit.SECONDS;
       this.durationUnit = TimeUnit.MILLISECONDS;
-      this.persistent = true;
+      this.debuggable = true;
       this.context = context;
     }
 
@@ -99,11 +116,11 @@ public class FlowUpReporter extends ScheduledReporter {
 
     public FlowUpReporter build(String scheme, String host, int port) {
       return new FlowUpReporter(registry, name, filter, rateUnit, durationUnit, scheme, host, port,
-          persistent, context, new Time());
+          debuggable, context, new Time());
     }
 
-    public Builder persistent(boolean persistent) {
-      this.persistent = persistent;
+    public Builder debuggable(boolean debuggable) {
+      this.debuggable = debuggable;
       return this;
     }
   }

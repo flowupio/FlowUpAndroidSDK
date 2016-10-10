@@ -10,7 +10,10 @@ import com.flowup.FlowUp;
 public class FlowUpApplication extends Application {
 
   @Override public void onCreate() {
-    FlowUp.with(this).start();
+    FlowUp.Builder
+        .with(this)
+        .debuggable(BuildConfig.DEBUG)
+        .start();
     super.onCreate();
   }
 }
