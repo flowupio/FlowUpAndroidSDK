@@ -3,7 +3,7 @@
 
 FlowUp, mobile real time applications performance monitoring solution!
 
-FlowUp helps you to radically improve your mobile applications performance with actionable insight into real-time key metrics including frame time, frames per second, bandwidth, memory consumption, CPU/GPU performance, disk usage and much more. Available for Android and iOS soon.
+FlowUp helps you to radically improve your mobile applications performance with actionable insight into real-time key reports including frame time, frames per second, bandwidth, memory consumption, CPU/GPU performance, disk usage and much more. Available for Android and iOS soon.
 
 How to build this project
 -------------------------
@@ -34,12 +34,12 @@ This repository contains an Android project built on top of ``gradlew``, a binar
 	* Execute Android instrumentation: Press the ``connectedCheck`` task in the Gradle tab you have on the right or press the secondary mouse button over a instrumentation test file or test method choosing the ``run test`` button to execute the unit tests.
 	* Install and run the app: Press the ``play button`` you have in the top project bar, close to the ``debug button``.
 
-By default the project is ready to execute a sample app reporting metrics to our service. If you start the sample app some metrics obtained from your application instalation will be sent to our server.**
+By default the project is ready to execute a sample app reporting reports to our service. If you start the sample app some reports obtained from your application instalation will be sent to our server.**
 
 How to review the persisted data
 --------------------------------
 
-This library has been developed using [Realm][realm] as the persistence motor. FlowUp will store metrics reports until the sync process be activated. All this information is persisted inside a Realm data base you can check what's inside following the next steps:
+This library has been developed using [Realm][realm] as the persistence motor. FlowUp will store reports reports until the sync process be activated. All this information is persisted inside a Realm data base you can check what's inside following the next steps:
 
 * Get a copy of the Realm database executing: ``adb pull /data/data/<APPLICATION_PACKAGE_WHERE_FLOWUP_IS_BEING_USED>/files/FlowUp.realm .``
 * Download the [Realm Browser][realmbrowser] app.

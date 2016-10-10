@@ -6,6 +6,7 @@ package com.flowup.reporter.apiclient;
 
 import com.flowup.BuildConfig;
 import com.flowup.MockWebServerTestCase;
+import com.flowup.reporter.ReportResult;
 import com.flowup.reporter.model.NetworkMetric;
 import com.flowup.reporter.model.Reports;
 import com.flowup.reporter.model.StatisticalValue;
@@ -14,6 +15,10 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
+
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.TestCase.assertTrue;
 
 public class ApiClientTest extends MockWebServerTestCase {
 
@@ -81,6 +86,35 @@ public class ApiClientTest extends MockWebServerTestCase {
     apiClient.sendReports(reports);
 
     assertRequestBodyEquals("simpleReportRequestBody.json");
+  }
+
+  @Test public void returnsSuccessResultIfTheHttpStatusCodeIsOk() throws Exception {
+    enqueueMockResponse(OK_CODE);
+    Reports reports = givenSomeReports();
+
+    ReportResult result = apiClient.sendReports(reports);
+
+    assertTrue(result.isSuccess());
+  }
+
+  @Test
+  public void returnsErrorIfServerHasAnInternalError() throws Exception {
+    enqueueMockResponse(ANY_SERVER_ERROR_CODE);
+    Reports reports = givenSomeReports();
+
+    ReportResult result = apiClient.sendReports(reports);
+
+    assertFalse(result.isSuccess());
+  }
+
+  @Test
+  public void returnsTheReportsSentAsPartOfTheReportResultIfTheResponseIsOk() throws Exception {
+    enqueueMockResponse(OK_CODE);
+    Reports reports = givenSomeReports();
+
+    ReportResult result = apiClient.sendReports(reports);
+
+    assertEquals(reports, result.getReports());
   }
 
   private Reports givenSomeReports() {
