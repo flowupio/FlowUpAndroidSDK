@@ -146,6 +146,7 @@ import static junit.framework.Assert.assertTrue;
   protected String getHost() {
     return server.getHostName();
   }
+
   protected int getPort() {
     return server.getPort();
   }

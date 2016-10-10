@@ -17,5 +17,4 @@ public class MetricNameUtils {
   public static String[] split(String metricName) {
     return metricName.split("\\.");
   }
-
 }

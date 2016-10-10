@@ -97,8 +97,7 @@ public class ApiClientTest extends MockWebServerTestCase {
     assertTrue(result.isSuccess());
   }
 
-  @Test
-  public void returnsErrorIfServerHasAnInternalError() throws Exception {
+  @Test public void returnsErrorIfServerHasAnInternalError() throws Exception {
     enqueueMockResponse(ANY_SERVER_ERROR_CODE);
     Reports reports = givenSomeReports();
 
@@ -107,8 +106,8 @@ public class ApiClientTest extends MockWebServerTestCase {
     assertFalse(result.isSuccess());
   }
 
-  @Test
-  public void returnsTheReportsSentAsPartOfTheReportResultIfTheResponseIsOk() throws Exception {
+  @Test public void returnsTheReportsSentAsPartOfTheReportResultIfTheResponseIsOk()
+      throws Exception {
     enqueueMockResponse(OK_CODE);
     Reports reports = givenSomeReports();
 

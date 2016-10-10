@@ -6,7 +6,7 @@ package com.flowup.reporter.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class NetworkMetric extends MetricReport {
+public class NetworkMetric extends Metric {
 
   @SerializedName("bytesUploaded") private final long bytesUploaded;
   @SerializedName("bytesDownloaded") private final long bytesDownloaded;

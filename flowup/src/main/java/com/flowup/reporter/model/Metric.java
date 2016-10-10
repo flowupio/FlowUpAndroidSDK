@@ -6,14 +6,14 @@ package com.flowup.reporter.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class MetricReport {
+public class Metric {
 
   @SerializedName("timestamp") private final long timestamp;
   @SerializedName("appVersionName") private final String appVersionName;
   @SerializedName("androidOSVersion") private final String osVersion;
   @SerializedName("batterySaverOn") private final boolean batterySaverOn;
 
-  public MetricReport(long timestamp, String appVersionName, String osVersion,
+  public Metric(long timestamp, String appVersionName, String osVersion,
       boolean batterySaverOn) {
     this.timestamp = timestamp;
     this.appVersionName = appVersionName;
