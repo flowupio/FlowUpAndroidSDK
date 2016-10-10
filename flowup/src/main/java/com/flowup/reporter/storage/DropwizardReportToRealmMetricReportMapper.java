@@ -1,5 +1,6 @@
 package com.flowup.reporter.storage;
 
+import android.util.Log;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Histogram;

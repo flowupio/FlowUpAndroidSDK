@@ -9,6 +9,7 @@ import com.flowup.metricnames.App;
 import com.flowup.metricnames.Device;
 import com.flowup.metricnames.MetricNamesGenerator;
 import com.flowup.utils.Time;
+import java.util.concurrent.TimeUnit;
 
 public class Collectors {
 
@@ -22,13 +23,17 @@ public class Collectors {
         new MetricNamesGenerator(new App(application), new Device(application), new Time()));
   }
 
-  public static Collector getHttpBytesDownloadedCollector(Application application) {
+  public static Collector getBytesDownloadedCollector(Application application,
+      long samplingInterval, TimeUnit timeUnit) {
     return new BytesDownloadedCollector(
-        new MetricNamesGenerator(new App(application), new Device(application), new Time()));
+        new MetricNamesGenerator(new App(application), new Device(application), new Time()),
+        samplingInterval, timeUnit);
   }
 
-  public static Collector getHttpBytesUploadedCollector(Application application) {
-    return new HttpBytesUploadedCollector(
-        new MetricNamesGenerator(new App(application), new Device(application), new Time()));
+  public static Collector getBytesUploadedCollector(Application application, long samplingInterval,
+      TimeUnit timeUnit) {
+    return new BytesUploadedCollector(
+        new MetricNamesGenerator(new App(application), new Device(application), new Time()),
+        samplingInterval, timeUnit);
   }
 }
