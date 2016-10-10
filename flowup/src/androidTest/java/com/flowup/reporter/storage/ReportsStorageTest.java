@@ -115,6 +115,39 @@ public class ReportsStorageTest {
     assertUIMetricsContainsExpectedValues(numberOfReports, reports);
   }
 
+  @Test public void deletesTheReportsPreviouslyObtained() {
+    int numberOfReports = 10;
+    List<DropwizardReport> dropwizardReports = givenSomeDropwizardReports(numberOfReports);
+    Reports reports = storeAndGet(dropwizardReports);
+
+    storage.deleteReports(reports);
+    reports = storage.getReports();
+
+    assertNull(reports);
+  }
+
+  @Test public void deletesTheReportsMatchingWithTheReportId() {
+    int numberOfReports = 10;
+    List<DropwizardReport> dropwizardReports = givenSomeDropwizardReports(numberOfReports);
+    storeAndGet(dropwizardReports);
+
+    int numberOfReportsToRemove = numberOfReports / 2;
+    Reports reportsToRemove = givenReportsWithId(numberOfReportsToRemove);
+    storage.deleteReports(reportsToRemove);
+    Reports restOfReports = storage.getReports();
+
+    assertEquals(numberOfReportsToRemove, restOfReports.getReportsIds().size());
+  }
+
+  private Reports givenReportsWithId(int iterativeReportsId) {
+    List<String> reportsIds = new LinkedList<>();
+    for (int i = 0; i < iterativeReportsId; i++) {
+      reportsIds.add(String.valueOf(i));
+    }
+    return new Reports(reportsIds, null, null, null, null, null, null, Collections.EMPTY_LIST,
+        Collections.EMPTY_LIST);
+  }
+
   private void assertNetworkMetricsContainsExpectedValues(int numberOfReports, Reports reports) {
     List<NetworkMetric> networkReports = reports.getNetworkMetricsReports();
     assertEquals(numberOfReports, networkReports.size());
