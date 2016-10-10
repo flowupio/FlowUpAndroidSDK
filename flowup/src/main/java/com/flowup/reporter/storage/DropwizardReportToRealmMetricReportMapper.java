@@ -1,6 +1,5 @@
 package com.flowup.reporter.storage;
 
-import android.util.Log;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Histogram;
@@ -41,8 +40,7 @@ class DropwizardReportToRealmMetricReportMapper
     return realmMetrics;
   }
 
-  private RealmList<RealmMetric> mapCounters(Realm realm,
-      SortedMap<String, Counter> counters) {
+  private RealmList<RealmMetric> mapCounters(Realm realm, SortedMap<String, Counter> counters) {
     RealmList<RealmMetric> realmMetrics = new RealmList<>();
     for (String metricName : counters.keySet()) {
       Counter counter = counters.get(metricName);

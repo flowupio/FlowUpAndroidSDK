@@ -4,7 +4,6 @@
 
 package com.flowup.reporter.storage;
 
-import android.util.Log;
 import com.flowup.metricnames.MetricNamesExtractor;
 import com.flowup.reporter.model.NetworkMetric;
 import com.flowup.reporter.model.Reports;

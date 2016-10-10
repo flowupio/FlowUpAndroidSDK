@@ -20,7 +20,8 @@ class BytesUploadedCollector implements Collector {
 
   private long lastBytesSample;
 
-  BytesUploadedCollector(MetricNamesGenerator metricNamesGenerator,long samplingInterval, TimeUnit timeUnit) {
+  BytesUploadedCollector(MetricNamesGenerator metricNamesGenerator, long samplingInterval,
+      TimeUnit timeUnit) {
     this.metricNamesGenerator = metricNamesGenerator;
     this.samplingInterval = samplingInterval;
     this.timeUnit = timeUnit;

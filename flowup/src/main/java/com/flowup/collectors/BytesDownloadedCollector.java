@@ -21,7 +21,8 @@ class BytesDownloadedCollector implements Collector {
 
   private long lastBytesSample;
 
-  BytesDownloadedCollector(MetricNamesGenerator metricNamesGenerator, long samplingInterval, TimeUnit timeUnit) {
+  BytesDownloadedCollector(MetricNamesGenerator metricNamesGenerator, long samplingInterval,
+      TimeUnit timeUnit) {
     this.metricNamesGenerator = metricNamesGenerator;
     this.samplingInterval = samplingInterval;
     this.timeUnit = timeUnit;
