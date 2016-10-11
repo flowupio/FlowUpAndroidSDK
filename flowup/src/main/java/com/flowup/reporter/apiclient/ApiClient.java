@@ -33,12 +33,12 @@ public class ApiClient {
     this.baseUrl = ApiClientConfig.buildURL(scheme, host, port);
   }
 
-  public ReportResult sendReports(Reports metrics) {
-    Request request = generateReportRequest(metrics);
+  public ReportResult sendReports(Reports reports) {
+    Request request = generateReportRequest(reports);
     try {
       Response response = httpClient.newCall(request).execute();
       if (response.isSuccessful()) {
-        return new ReportResult(metrics);
+        return new ReportResult(reports);
       }
     } catch (IOException e) {
       return new ReportResult(ReportResult.Error.NETWORK_ERROR);

@@ -63,13 +63,13 @@ import static org.mockito.Mockito.when;
   @Test public void storesDropwizardReportAndInitializesSynProcessIfDebugIsEnabled() {
     FlowUpReporter reporter = givenAFlowUpReporter(false);
 
-    DropwizardReport report = reportSomeMetrics(reporter);
+    reportSomeMetrics(reporter);
 
     List<String> ids = Collections.singletonList(String.valueOf(ANY_TIMESTAMP));
     verify(apiClient, never()).sendReports(givenAReportsInstanceWithId(ids));
   }
 
-  @Test public void ifTheSyncProcessIsSuccessTheReportsShouldBeDeleted() {
+  @Test public void ifTheSyncProcessIsSuccessfulTheReportsShouldBeDeleted() {
     List<String> ids = Collections.singletonList(String.valueOf(ANY_TIMESTAMP));
     Reports reportsSent = givenAReportsInstanceWithId(ids);
     givenTheSyncProcessIsSuccess(reportsSent);
