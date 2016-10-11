@@ -115,19 +115,19 @@ import static org.mockito.Mockito.when;
   }
 
   @Test public void bytesDownloadedMetricShouldContainExactly11FieldsSeparatedByDots() {
-    String bytesDownloaded = generator.getBytesDownloadedMetricsName();
+    String bytesDownloaded = generator.getBytesDownloadedMetricName();
 
     assertEquals(11, MetricNameUtils.split(bytesDownloaded).length);
   }
 
   @Test public void bytesDownloadedShouldContainTheCrossMetricInfoInTheName() {
-    String bytesDownloaded = generator.getBytesDownloadedMetricsName();
+    String bytesDownloaded = generator.getBytesDownloadedMetricName();
 
     assertContainsCrossMetricInfoName(bytesDownloaded);
   }
 
   @Test public void bytesDownloadedContainsTheMetricNameInTheCorrectPosition() {
-    String bytesDownloaded = generator.getBytesDownloadedMetricsName();
+    String bytesDownloaded = generator.getBytesDownloadedMetricName();
 
     String[] parts = MetricNameUtils.split(bytesDownloaded);
     assertEquals("network", parts[9]);
@@ -135,19 +135,19 @@ import static org.mockito.Mockito.when;
   }
 
   @Test public void bytesUploadedMetricShouldContainExactly11FieldsSeparatedByDots() {
-    String bytesUploaded = generator.getBytesUploadedMetricsName();
+    String bytesUploaded = generator.getBytesUploadedMetricName();
 
     assertEquals(11, MetricNameUtils.split(bytesUploaded).length);
   }
 
   @Test public void bytesUploadedShouldContainTheCrossMetricInfoInTheName() {
-    String bytesUploaded = generator.getBytesUploadedMetricsName();
+    String bytesUploaded = generator.getBytesUploadedMetricName();
 
     assertContainsCrossMetricInfoName(bytesUploaded);
   }
 
   @Test public void bytesUploadedContainsTheMetricNameInTheCorrectPosition() {
-    String bytesUploaded = generator.getBytesUploadedMetricsName();
+    String bytesUploaded = generator.getBytesUploadedMetricName();
 
     String[] parts = MetricNameUtils.split(bytesUploaded);
     assertEquals("network", parts[9]);
@@ -184,28 +184,28 @@ import static org.mockito.Mockito.when;
 
   @Test
   public void identifiesABytesDownloadedMetricProperly() {
-    String bytesDownloaded = generator.getBytesDownloadedMetricsName();
+    String bytesDownloaded = generator.getBytesDownloadedMetricName();
 
     assertTrue(extractor.isBytesDownloadedMetric(bytesDownloaded));
   }
 
   @Test
   public void doesNotIdentifyABytesDownloadedMetricAsABytesUploaded() {
-    String bytesDownloaded = generator.getBytesDownloadedMetricsName();
+    String bytesDownloaded = generator.getBytesDownloadedMetricName();
 
     assertFalse(extractor.isBytesUploadedMetric(bytesDownloaded));
   }
 
   @Test
   public void identifiesABytesUploadedMetricProperly() {
-    String bytesUploaded = generator.getBytesUploadedMetricsName();
+    String bytesUploaded = generator.getBytesUploadedMetricName();
 
     assertTrue(extractor.isBytesUploadedMetric(bytesUploaded));
   }
 
   @Test
   public void doesNotIdentifyABytesUploadedMetricAsABytesDownloaded() {
-    String bytesUploaded = generator.getBytesUploadedMetricsName();
+    String bytesUploaded = generator.getBytesUploadedMetricName();
 
     assertFalse(extractor.isBytesDownloadedMetric(bytesUploaded));
   }

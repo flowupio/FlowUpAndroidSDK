@@ -5,6 +5,8 @@
 package com.flowup.collectors;
 
 import android.app.Application;
+import android.support.annotation.NonNull;
+import com.flowup.android.CPU;
 import com.flowup.metricnames.App;
 import com.flowup.metricnames.Device;
 import com.flowup.metricnames.MetricNamesGenerator;
@@ -14,26 +16,31 @@ import java.util.concurrent.TimeUnit;
 public class Collectors {
 
   public static Collector getFPSCollector(Application application) {
-    return new FpsCollector(application,
-        new MetricNamesGenerator(new App(application), new Device(application), new Time()));
+    return new FpsCollector(application, getMetricNamesGenerator(application));
   }
 
   public static Collector getFrameTimeCollector(Application application) {
-    return new FrameTimeCollector(application,
-        new MetricNamesGenerator(new App(application), new Device(application), new Time()));
+    return new FrameTimeCollector(application, getMetricNamesGenerator(application));
   }
 
   public static Collector getBytesDownloadedCollector(Application application,
       long samplingInterval, TimeUnit timeUnit) {
-    return new BytesDownloadedCollector(
-        new MetricNamesGenerator(new App(application), new Device(application), new Time()),
+    return new BytesDownloadedCollector(getMetricNamesGenerator(application),
         samplingInterval, timeUnit);
+  }
+
+  @NonNull private static MetricNamesGenerator getMetricNamesGenerator(Application application) {
+    return new MetricNamesGenerator(new App(application), new Device(application), new Time());
   }
 
   public static Collector getBytesUploadedCollector(Application application, long samplingInterval,
       TimeUnit timeUnit) {
-    return new BytesUploadedCollector(
-        new MetricNamesGenerator(new App(application), new Device(application), new Time()),
+    return new BytesUploadedCollector(getMetricNamesGenerator(application),
         samplingInterval, timeUnit);
+  }
+
+  public static Collector getCPUCollector(Application application, int samplingInterval, TimeUnit samplingTimeUnit,
+      CPU cpu) {
+    return new CPUCollector(getMetricNamesGenerator(application),samplingInterval, samplingTimeUnit, cpu);
   }
 }

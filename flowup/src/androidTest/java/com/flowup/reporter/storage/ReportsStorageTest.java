@@ -231,8 +231,8 @@ public class ReportsStorageTest {
       }
     };
     SortedMap<String, Gauge> gauges = new TreeMap<>();
-    gauges.put(generator.getBytesDownloadedMetricsName(), bytesUploaded);
-    gauges.put(generator.getBytesUploadedMetricsName(), bytesDownloaded);
+    gauges.put(generator.getBytesDownloadedMetricName(), bytesUploaded);
+    gauges.put(generator.getBytesUploadedMetricName(), bytesDownloaded);
     return gauges;
   }
 

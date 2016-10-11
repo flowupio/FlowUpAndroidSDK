@@ -17,6 +17,7 @@ public class MetricNamesGenerator {
 
   private static final String UI = "ui";
   private static final String NETWORK = "network";
+  private static final String CPU = "cpu";
   private static final String SEPARATOR = ".";
 
   private final App app;
@@ -31,22 +32,26 @@ public class MetricNamesGenerator {
 
   public String getFPSMetricName(Activity activity) {
     String activityName = getActivityName(activity);
-    return MetricRegistry.name(
-        appendCrossMetricInfo(UI + SEPARATOR + FPS + SEPARATOR + activityName + SEPARATOR + time.now()));
+    return MetricRegistry.name(appendCrossMetricInfo(
+        UI + SEPARATOR + FPS + SEPARATOR + activityName + SEPARATOR + time.now()));
   }
 
   public String getFrameTimeMetricName(Activity activity) {
     String activityName = getActivityName(activity);
-    return MetricRegistry.name(
-        appendCrossMetricInfo(UI + SEPARATOR + FRAME_TIME + SEPARATOR + activityName + SEPARATOR + time.now()));
+    return MetricRegistry.name(appendCrossMetricInfo(
+        UI + SEPARATOR + FRAME_TIME + SEPARATOR + activityName + SEPARATOR + time.now()));
   }
 
-  public String getBytesDownloadedMetricsName() {
+  public String getBytesDownloadedMetricName() {
     return MetricRegistry.name(appendCrossMetricInfo(NETWORK + SEPARATOR + BYTES_DOWNLOADED));
   }
 
-  public String getBytesUploadedMetricsName() {
+  public String getBytesUploadedMetricName() {
     return MetricRegistry.name(appendCrossMetricInfo(NETWORK + SEPARATOR + BYTES_UPLOADED));
+  }
+
+  public String getCPUUsageMetricName() {
+    return MetricRegistry.name(appendCrossMetricInfo(CPU));
   }
 
   private String getActivityName(Activity activity) {
