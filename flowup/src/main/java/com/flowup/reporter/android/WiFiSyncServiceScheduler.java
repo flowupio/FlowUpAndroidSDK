@@ -29,7 +29,6 @@ public class WiFiSyncServiceScheduler {
         .setPeriod(SYNC_PERIOD)
         .setFlex(FLEX_PERIOD)
         .setRequiredNetwork(Task.NETWORK_STATE_UNMETERED)
-        .setUpdateCurrent(true)
         .build();
     gcmNetworkManager.schedule(task);
   }
