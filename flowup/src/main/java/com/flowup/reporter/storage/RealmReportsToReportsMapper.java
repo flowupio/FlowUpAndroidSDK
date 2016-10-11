@@ -12,19 +12,18 @@ import com.flowup.reporter.model.UIMetric;
 import com.flowup.utils.Mapper;
 import com.flowup.utils.StatisticalValueUtils;
 import io.realm.RealmList;
-import io.realm.RealmResults;
 import java.util.LinkedList;
 import java.util.List;
 
-class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Reports> {
+class RealmReportsToReportsMapper extends Mapper<List<RealmReport>, Reports> {
 
   private final MetricNamesExtractor extractor = new MetricNamesExtractor();
 
-  @Override public Reports map(RealmResults<RealmReport> realmReports) {
+  @Override public Reports map(List<RealmReport> realmReports) {
     if (realmReports.size() == 0) {
       return null;
     }
-    RealmList<RealmMetric> metrics = realmReports.first().getMetrics();
+    RealmList<RealmMetric> metrics = realmReports.get(0).getMetrics();
     List<String> reportsIds = mapReportsIds(realmReports);
     if (metrics.isEmpty()) {
       return new Reports(reportsIds, null, null, null, null, null, null, null, null);
@@ -42,7 +41,7 @@ class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Repo
         numberOfCores, networkMetrics, uiMetrics);
   }
 
-  private List<String> mapReportsIds(RealmResults<RealmReport> realmReports) {
+  private List<String> mapReportsIds(List<RealmReport> realmReports) {
     List<String> ids = new LinkedList<>();
     for (int i = 0; i < realmReports.size(); i++) {
       String id = realmReports.get(i).getReportTimestamp();
@@ -75,7 +74,7 @@ class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Repo
     return extractor.getScreenSize(metricName);
   }
 
-  private List<NetworkMetric> mapNetworkMetricsReport(RealmResults<RealmReport> reports) {
+  private List<NetworkMetric> mapNetworkMetricsReport(List<RealmReport> reports) {
     List<NetworkMetric> networkMetricsReports = new LinkedList<>();
     Long bytesDownloaded = null;
     Long bytesUploaded = null;
@@ -108,7 +107,7 @@ class RealmReportsToReportsMapper extends Mapper<RealmResults<RealmReport>, Repo
     return networkMetricsReports;
   }
 
-  private List<UIMetric> mapUIMetricsReport(RealmResults<RealmReport> reports) {
+  private List<UIMetric> mapUIMetricsReport(List<RealmReport> reports) {
     List<UIMetric> uiMetricsReports = new LinkedList<>();
     StatisticalValue frameTime = null;
     StatisticalValue framesPerSecond = null;

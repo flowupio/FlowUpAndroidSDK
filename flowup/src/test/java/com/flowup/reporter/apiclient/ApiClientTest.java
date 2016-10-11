@@ -31,7 +31,8 @@ public class ApiClientTest extends MockWebServerTestCase {
 
   @Before public void setUp() throws Exception {
     super.setUp();
-    apiClient = new ApiClient(getScheme(), getHost(), getPort());
+    boolean useGzip = false;
+    apiClient = givenAnApiClient(useGzip);
   }
 
   @Test public void sendsAcceptApplicationJsonHeader() throws Exception {
@@ -50,6 +51,15 @@ public class ApiClientTest extends MockWebServerTestCase {
     apiClient.sendReports(reports);
 
     assertRequestContainsHeader("Content-Type", "application/json; charset=utf-8");
+  }
+
+  @Test public void sendsGzipSupportHeader() throws Exception {
+    enqueueMockResponse();
+    Reports reports = givenSomeReports();
+
+    givenAnApiClient(true).sendReports(reports);
+
+    assertRequestContainsHeader("Content-Encoding", "gzip");
   }
 
   @Test public void sendsApiKeyHeader() throws Exception {
@@ -114,6 +124,10 @@ public class ApiClientTest extends MockWebServerTestCase {
     ReportResult result = apiClient.sendReports(reports);
 
     assertEquals(reports, result.getReports());
+  }
+
+  private ApiClient givenAnApiClient(boolean useGzip) {
+    return new ApiClient(getScheme(), getHost(), getPort(), useGzip);
   }
 
   private Reports givenSomeReports() {

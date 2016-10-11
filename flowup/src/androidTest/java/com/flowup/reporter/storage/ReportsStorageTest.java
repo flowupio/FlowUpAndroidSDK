@@ -121,7 +121,7 @@ public class ReportsStorageTest {
     Reports reports = storeAndGet(dropwizardReports);
 
     storage.deleteReports(reports);
-    reports = storage.getReports();
+    reports = storage.getReports(numberOfReports);
 
     assertNull(reports);
   }
@@ -134,7 +134,7 @@ public class ReportsStorageTest {
     int numberOfReportsToRemove = numberOfReports / 2;
     Reports reportsToRemove = givenReportsWithId(numberOfReportsToRemove);
     storage.deleteReports(reportsToRemove);
-    Reports restOfReports = storage.getReports();
+    Reports restOfReports = storage.getReports(numberOfReports);
 
     assertEquals(numberOfReportsToRemove, restOfReports.getReportsIds().size());
   }
@@ -252,10 +252,11 @@ public class ReportsStorageTest {
   }
 
   private Reports storeAndGet(List<DropwizardReport> dropwizardReports) {
-    for (int i = 0; i < dropwizardReports.size(); i++) {
+    int numberOfReports = dropwizardReports.size();
+    for (int i = 0; i < numberOfReports; i++) {
       storage.storeMetrics(dropwizardReports.get(i));
     }
-    return storage.getReports();
+    return storage.getReports(numberOfReports);
   }
 
   private List<DropwizardReport> givenSomeEmptyDropwizardReports(int numberOfReports) {

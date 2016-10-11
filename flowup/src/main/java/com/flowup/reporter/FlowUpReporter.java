@@ -23,6 +23,8 @@ import java.util.concurrent.TimeUnit;
 
 public class FlowUpReporter extends ScheduledReporter {
 
+  public static final int NUMBER_OF_REPORTS_PER_REQUEST = 712;
+
   public static FlowUpReporter.Builder forRegistry(MetricRegistry registry, Context context) {
     return new FlowUpReporter.Builder(registry, context);
   }
@@ -33,8 +35,8 @@ public class FlowUpReporter extends ScheduledReporter {
   private final Time time;
   private final boolean debuggable;
 
-  FlowUpReporter(MetricRegistry registry, String name, MetricFilter filter,
-      TimeUnit rateUnit, TimeUnit durationUnit, ApiClient apiClient, ReportsStorage reportsStorage,
+  FlowUpReporter(MetricRegistry registry, String name, MetricFilter filter, TimeUnit rateUnit,
+      TimeUnit durationUnit, ApiClient apiClient, ReportsStorage reportsStorage,
       WiFiSyncServiceScheduler syncScheduler, Time time, boolean debuggable) {
     super(registry, name, filter, rateUnit, durationUnit);
     this.apiClient = apiClient;
@@ -65,13 +67,18 @@ public class FlowUpReporter extends ScheduledReporter {
   }
 
   private void sendStoredReports() {
-    Reports reports = reportsStorage.getReports();
-    if (reports != null) {
-      ReportResult result = apiClient.sendReports(reports);
+    Reports reports = reportsStorage.getReports(NUMBER_OF_REPORTS_PER_REQUEST);
+    if (reports == null) {
+      return;
+    }
+    ReportResult result;
+    do {
+      result = apiClient.sendReports(reports);
       if (result.isSuccess()) {
         reportsStorage.deleteReports(reports);
       }
-    }
+      reports = reportsStorage.getReports(NUMBER_OF_REPORTS_PER_REQUEST);
+    } while (reports != null && result.isSuccess());
   }
 
   public static final class Builder {

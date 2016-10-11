@@ -5,6 +5,7 @@
 package com.flowup.reporter.android;
 
 import com.flowup.R;
+import com.flowup.reporter.FlowUpReporter;
 import com.flowup.reporter.ReportResult;
 import com.flowup.reporter.apiclient.ApiClient;
 import com.flowup.reporter.model.Reports;
@@ -44,20 +45,24 @@ public class WiFiSyncService extends GcmTaskService {
   }
 
   private int syncStoredReports() {
-    Reports reports = reportsStorage.getReports();
-    if (reports != null) {
-      ReportResult result = apiClient.sendReports(reports);
-      if (result.hasDataPendingToSync()) {
-        reportsStorage.deleteReports(reports);
-        return RESULT_RESCHEDULE;
-      } else if (result.isSuccess()) {
-        reportsStorage.deleteReports(reports);
-        return RESULT_SUCCESS;
-      } else {
-        return RESULT_FAILURE;
-      }
-    } else {
+    Reports reports = reportsStorage.getReports(FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST);
+    if (reports == null) {
       return RESULT_SUCCESS;
+    }
+    ReportResult.Error error;
+    ReportResult result;
+    do {
+      result = apiClient.sendReports(reports);
+      if (result.isSuccess()) {
+        reportsStorage.deleteReports(reports);
+      }
+      reports = reportsStorage.getReports(FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST);
+      error = result.getError();
+    } while (reports != null && result.isSuccess());
+    if (error == ReportResult.Error.NETWORK_ERROR) {
+      return RESULT_RESCHEDULE;
+    } else {
+      return RESULT_FAILURE;
     }
   }
 }

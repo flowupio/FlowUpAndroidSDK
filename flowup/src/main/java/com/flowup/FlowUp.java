@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 public class FlowUp {
 
-  private static final int SAMPLING_INTERVAL = 10;
+  public static final int SAMPLING_INTERVAL = 10;
   private static final TimeUnit SAMPLING_TIME_UNIT = TimeUnit.SECONDS;
 
   private final Application application;
