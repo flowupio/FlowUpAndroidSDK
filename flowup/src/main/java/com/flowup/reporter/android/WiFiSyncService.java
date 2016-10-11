@@ -46,17 +46,20 @@ public class WiFiSyncService extends GcmTaskService {
 
   private int syncStoredReports() {
     Reports reports = reportsStorage.getReports(FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST);
-    if (reports != null) {
+    if (reports == null) {
+      return RESULT_SUCCESS;
+    }
+    ReportResult.Error error;
+    do {
       ReportResult result = apiClient.sendReports(reports);
-      if (result.hasDataPendingToSync()) {
+      if (result.isSuccess()) {
         reportsStorage.deleteReports(reports);
-        return RESULT_RESCHEDULE;
-      } else if (result.isSuccess()) {
-        reportsStorage.deleteReports(reports);
-        return RESULT_SUCCESS;
-      } else {
-        return RESULT_FAILURE;
       }
+      reports = reportsStorage.getReports(FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST);
+      error = result.getError();
+    } while (reports != null && error != ReportResult.Error.NETWORK_ERROR);
+    if (error == ReportResult.Error.NETWORK_ERROR) {
+      return RESULT_RESCHEDULE;
     } else {
       return RESULT_SUCCESS;
     }
