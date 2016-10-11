@@ -10,11 +10,8 @@ import com.flowup.reporter.model.Reports;
 import com.flowup.reporter.model.StatisticalValue;
 import com.flowup.reporter.model.UIMetric;
 import com.google.gson.Gson;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.zip.GZIPOutputStream;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertTrue;
@@ -27,7 +24,7 @@ public class NumberOfReportsPerBatchTest {
   private static final long BYTES_UPLOADED = Long.MAX_VALUE;
   private static final long BYTES_DOWNLOADED = Long.MAX_VALUE;
 
-  private static final long MAX_REQUEST_SIZE_IN_BYTES = 90 * 1024;
+  private static final double MAX_REQUEST_SIZE_WITHOUT_COMPRESSION_IN_BYTES = 9.5d * 1024 * 1024;
 
   private final Gson gson = new Gson();
 
@@ -36,23 +33,11 @@ public class NumberOfReportsPerBatchTest {
 
     long bytes = toBytes(reports);
 
-    assertTrue(bytes <= MAX_REQUEST_SIZE_IN_BYTES);
+    assertTrue(bytes <= MAX_REQUEST_SIZE_WITHOUT_COMPRESSION_IN_BYTES);
   }
 
   private long toBytes(Reports reports) throws Exception {
-    String body = gson.toJson(reports);
-    return gzip(body).length;
-  }
-
-  private byte[] gzip(String str) throws IOException {
-    if ((str == null) || (str.length() == 0)) {
-      return null;
-    }
-    ByteArrayOutputStream obj = new ByteArrayOutputStream();
-    GZIPOutputStream gzip = new GZIPOutputStream(obj);
-    gzip.write(str.getBytes("UTF-8"));
-    gzip.close();
-    return obj.toByteArray();
+    return gson.toJson(reports).getBytes("UTF-8").length;
   }
 
   private Reports givenAReportsInstanceFullOfData(int numberOfReports) {
