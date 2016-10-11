@@ -50,14 +50,15 @@ public class WiFiSyncService extends GcmTaskService {
       return RESULT_SUCCESS;
     }
     ReportResult.Error error;
+    ReportResult result;
     do {
-      ReportResult result = apiClient.sendReports(reports);
+      result = apiClient.sendReports(reports);
       if (result.isSuccess()) {
         reportsStorage.deleteReports(reports);
       }
       reports = reportsStorage.getReports(FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST);
       error = result.getError();
-    } while (reports != null && error != ReportResult.Error.NETWORK_ERROR);
+    } while (reports != null && result.isSuccess());
     if (error == ReportResult.Error.NETWORK_ERROR) {
       return RESULT_RESCHEDULE;
     } else {

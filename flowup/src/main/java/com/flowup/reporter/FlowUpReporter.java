@@ -71,15 +71,14 @@ public class FlowUpReporter extends ScheduledReporter {
     if (reports == null) {
       return;
     }
-    ReportResult.Error error;
+    ReportResult result;
     do {
-      ReportResult result = apiClient.sendReports(reports);
+      result = apiClient.sendReports(reports);
       if (result.isSuccess()) {
         reportsStorage.deleteReports(reports);
       }
       reports = reportsStorage.getReports(NUMBER_OF_REPORTS_PER_REQUEST);
-      error = result.getError();
-    } while (reports != null && error != ReportResult.Error.NETWORK_ERROR);
+    } while (reports != null && result.isSuccess());
   }
 
   public static final class Builder {
