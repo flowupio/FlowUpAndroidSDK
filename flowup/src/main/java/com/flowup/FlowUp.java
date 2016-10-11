@@ -52,7 +52,7 @@ public class FlowUp {
   }
 
   private void initializeReporters() {
-    initializeConsoleReporter();
+    //initializeConsoleReporter();
     initializeKarumiGrafanaReporter();
     initializeFlowUpReporter();
   }
