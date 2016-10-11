@@ -77,7 +77,7 @@ public class FlowUpReporter extends ScheduledReporter {
       if (result.isSuccess()) {
         reportsStorage.deleteReports(reports);
       }
-      reportsStorage.getReports(NUMBER_OF_REPORTS_PER_REQUEST);
+      reports = reportsStorage.getReports(NUMBER_OF_REPORTS_PER_REQUEST);
       error = result.getError();
     } while (reports != null && error != ReportResult.Error.NETWORK_ERROR);
   }
