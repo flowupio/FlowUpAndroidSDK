@@ -1,5 +1,7 @@
-package com.flowup;
+package com.flowup.reporter;
 
+import com.flowup.FlowUp;
+import com.flowup.reporter.FlowUpReporter;
 import com.flowup.reporter.model.NetworkMetric;
 import com.flowup.reporter.model.Reports;
 import com.flowup.reporter.model.StatisticalValue;
@@ -25,7 +27,7 @@ public class NumberOfReportsPerBatch {
   private final Gson gson = new Gson();
 
   @Test public void shouldNotSendMoreThan100KBOfBodyInAReportRequest() throws Exception {
-    Reports reports = givenAReportsInstanceFullOfData(FlowUp.NUMBER_OF_REPORTS_PER_REQUEST);
+    Reports reports = givenAReportsInstanceFullOfData(FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST);
 
     long bytes = toBytes(reports);
 
