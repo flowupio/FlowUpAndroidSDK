@@ -52,7 +52,7 @@ public class FlowUp {
   }
 
   private void initializeReporters() {
-    initializeConsoleReporter();
+    //initializeConsoleReporter();
     initializeKarumiGrafanaReporter();
     initializeFlowUpReporter();
   }
@@ -65,8 +65,8 @@ public class FlowUp {
     String host = application.getString(R.string.karumi_grafana_host);
     int port = application.getResources().getInteger(R.integer.karumi_grafana_port);
     StatsDReporter.forRegistry(registry)
-        .convertRatesTo(TimeUnit.MILLISECONDS)
-        .convertDurationsTo(TimeUnit.MILLISECONDS)
+        .convertRatesTo(TimeUnit.NANOSECONDS)
+        .convertDurationsTo(TimeUnit.NANOSECONDS)
         .filter(MetricFilter.ALL)
         .build(host, port)
         .start(SAMPLING_INTERVAL, SAMPLING_TIME_UNIT);
@@ -77,8 +77,6 @@ public class FlowUp {
     String host = application.getString(R.string.flowup_host);
     int port = application.getResources().getInteger(R.integer.flowup_port);
     FlowUpReporter.forRegistry(registry, application)
-        .rateUnit(TimeUnit.SECONDS)
-        .durationUnit(TimeUnit.MILLISECONDS)
         .filter(MetricFilter.ALL)
         .debuggable(debuggable)
         .build(scheme, host, port)

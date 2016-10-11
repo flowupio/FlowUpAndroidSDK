@@ -6,8 +6,6 @@ package com.flowup.android;
 
 import android.view.Choreographer;
 
-import static java.util.concurrent.TimeUnit.NANOSECONDS;
-
 public abstract class LastFrameTimeCallback implements Choreographer.FrameCallback {
 
   private final Choreographer choreographer;
@@ -20,8 +18,8 @@ public abstract class LastFrameTimeCallback implements Choreographer.FrameCallba
 
   @Override public void doFrame(long frameTimeNanos) {
     if (lastFrameTimeNanos != null) {
-      long frameTimeMillis = NANOSECONDS.toMillis(frameTimeNanos - lastFrameTimeNanos);
-      onFrameTimeMeasured(frameTimeMillis);
+      long frameTime = frameTimeNanos - lastFrameTimeNanos;
+      onFrameTimeMeasured(frameTime);
     }
     this.lastFrameTimeNanos = frameTimeNanos;
     choreographer.postFrameCallback(this);
