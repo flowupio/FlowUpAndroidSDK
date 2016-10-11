@@ -17,8 +17,8 @@ class FpsFrameCallback extends LastFrameTimeCallback {
     this.histogram = histogram;
   }
 
-  @Override protected void onFrameTimeMeasured(long frameTimeMillis) {
-    double fps = 1000d / frameTimeMillis;
+  @Override protected void onFrameTimeMeasured(long frameTimeNanos) {
+    double fps = 1000000000d / frameTimeNanos;
     histogram.update((int) fps);
   }
 }
