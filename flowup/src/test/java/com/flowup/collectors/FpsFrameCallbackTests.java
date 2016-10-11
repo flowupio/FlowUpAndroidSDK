@@ -18,7 +18,7 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class) public class FpsFrameCallbackTests {
 
   private static final long ANY_FRAME_TIME = 11;
-  private static final long SIXTEEN_MILLISECONDS = 16000000;
+  private static final long SIXTEEN_MILLIS_IN_NANOSECONDS = 16000000;
   private static final int PERFECT_FPS = 62;
   private static final int ANY_NUMBER_OF_FRAMES = 10;
 
@@ -31,8 +31,8 @@ import static org.mockito.Mockito.verify;
   }
 
   @Test public void shouldCalculateTheNumberOfFramesPerSecondBasedOnJustOneFrameTime() {
-    fpsFrameCallback.doFrame(SIXTEEN_MILLISECONDS);
-    fpsFrameCallback.doFrame(SIXTEEN_MILLISECONDS * 2);
+    fpsFrameCallback.doFrame(SIXTEEN_MILLIS_IN_NANOSECONDS);
+    fpsFrameCallback.doFrame(SIXTEEN_MILLIS_IN_NANOSECONDS * 2);
 
     verify(histogram).update(PERFECT_FPS);
   }
@@ -40,7 +40,7 @@ import static org.mockito.Mockito.verify;
   @Test public void shouldCalculateSomeFramesPerSecondIfThereIsMoreThanOneDoFrameCalls() {
     int numberOfDoFrameInvocations = ANY_NUMBER_OF_FRAMES;
     for (int i = 1; i <= numberOfDoFrameInvocations; i++) {
-      fpsFrameCallback.doFrame(SIXTEEN_MILLISECONDS * i);
+      fpsFrameCallback.doFrame(SIXTEEN_MILLIS_IN_NANOSECONDS * i);
     }
 
     verify(histogram, times(numberOfDoFrameInvocations - 1)).update(PERFECT_FPS);

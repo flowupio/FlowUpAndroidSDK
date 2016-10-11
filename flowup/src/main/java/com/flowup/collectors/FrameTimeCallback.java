@@ -8,7 +8,7 @@ import android.view.Choreographer;
 import com.codahale.metrics.Timer;
 import com.flowup.android.LastFrameTimeCallback;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 class FrameTimeCallback extends LastFrameTimeCallback {
 
@@ -19,7 +19,7 @@ class FrameTimeCallback extends LastFrameTimeCallback {
     this.timer = timer;
   }
 
-  @Override protected void onFrameTimeMeasured(long frameTimeMillis) {
-    timer.update(frameTimeMillis, MILLISECONDS);
+  @Override protected void onFrameTimeMeasured(long frameTimeNanos) {
+    timer.update(frameTimeNanos, NANOSECONDS);
   }
 }
