@@ -16,6 +16,7 @@ import com.flowup.metricnames.App;
 import com.flowup.metricnames.Device;
 import com.flowup.metricnames.MetricNamesGenerator;
 import com.flowup.reporter.DropwizardReport;
+import com.flowup.reporter.doubles.ActivityTwo;
 import com.flowup.reporter.model.NetworkMetric;
 import com.flowup.reporter.model.Reports;
 import com.flowup.reporter.model.UIMetric;
@@ -139,17 +140,29 @@ public class ReportsStorageTest {
     assertEquals(numberOfReportsToRemove, restOfReports.getReportsIds().size());
   }
 
-  @Test
-  public void savesDataAssociatedToDifferentScreensAsDifferentReports() {
-    SortedMap<String, Histogram> fpsMetric = givenAFPSMetric();
-    SortedMap<String, Timer> frameTimeMetric = givenAFrameTimeMetric();
+  @Test public void savesDataAssociatedToDifferentScreensAsDifferentUIMetricsInsideTheSameReport() {
+    SortedMap<String, Histogram> fpsMetric = givenSomeFPSMetricsFromTwoScreens();
+    SortedMap<String, Timer> frameTimeMetric = givenSomeFrameTimeMetricsTwoDifferentScreens();
     DropwizardReport dropwizardReport =
         givenADropWizardReport(new TreeMap<String, Gauge>(), fpsMetric, frameTimeMetric);
 
     Reports reports = storeAndGet(dropwizardReport);
 
-    assertEquals(1, reports.getUIMetricsReports().size());
-    assertEquals(0, reports.getNetworkMetricsReports().size());
+    assertEquals(2, reports.getUIMetricsReports().size());
+  }
+
+  private SortedMap<String, Histogram> givenSomeFPSMetricsFromTwoScreens() {
+    SortedMap<String, Histogram> fpsMetrics = new TreeMap<>();
+    fpsMetrics.putAll(givenAFPSMetric(mock(Activity.class)));
+    fpsMetrics.putAll(givenAFPSMetric(mock(ActivityTwo.class)));
+    return fpsMetrics;
+  }
+
+  private SortedMap<String, Timer> givenSomeFrameTimeMetricsTwoDifferentScreens() {
+    SortedMap<String, Timer> frameTimeMetrics = new TreeMap<>();
+    frameTimeMetrics.putAll(givenAFrameTimeMetric(mock(Activity.class)));
+    frameTimeMetrics.putAll(givenAFrameTimeMetric(mock(ActivityTwo.class)));
+    return frameTimeMetrics;
   }
 
   private Reports givenReportsWithId(int iterativeReportsId) {
@@ -193,8 +206,12 @@ public class ReportsStorageTest {
   }
 
   private SortedMap<String, Timer> givenAFrameTimeMetric() {
-    SortedMap<String, Timer> timers = new TreeMap<>();
     Activity activity = mock(Activity.class);
+    return givenAFrameTimeMetric(activity);
+  }
+
+  private SortedMap<String, Timer> givenAFrameTimeMetric(Activity activity) {
+    SortedMap<String, Timer> timers = new TreeMap<>();
     Timer timer = new Timer();
     timer.update((long) ANY_FRAME_TIME, TimeUnit.MILLISECONDS);
     timers.put(generator.getFrameTimeMetricName(activity), timer);
@@ -202,8 +219,12 @@ public class ReportsStorageTest {
   }
 
   private SortedMap<String, Histogram> givenAFPSMetric() {
-    SortedMap<String, Histogram> histograms = new TreeMap<>();
     Activity activity = mock(Activity.class);
+    return givenAFPSMetric(activity);
+  }
+
+  private SortedMap<String, Histogram> givenAFPSMetric(Activity activity) {
+    SortedMap<String, Histogram> histograms = new TreeMap<>();
     String name = generator.getFPSMetricName(activity);
     Histogram histogram = new Histogram(new ExponentiallyDecayingReservoir());
     histogram.update((long) ANY_FRAMES_PER_SECOND);
