@@ -144,6 +144,22 @@ import static org.mockito.Mockito.when;
     verify(storage, never()).deleteReports(secondBatch);
   }
 
+  @Test
+  public void evenIfThereAreReportsPendingToBeSentIfASyncRequestFailsTheReportProcessStops() {
+    FlowUpReporter reporter = givenAFlowUpReporter(true);
+    List<String> firstBatchIds = Collections.singletonList(String.valueOf("1"));
+    List<String> secondBatchIds = Collections.singletonList(String.valueOf("2"));
+    Reports firstBatch = givenAReportsInstanceWithId(firstBatchIds);
+    Reports secondBatch = givenAReportsInstanceWithId(secondBatchIds);
+    when(storage.getReports(anyInt())).thenReturn(firstBatch, secondBatch, null);
+    givenTheSyncProcessFails(firstBatch);
+
+    reportSomeMetrics(reporter);
+
+    verify(storage, never()).deleteReports(firstBatch);
+    verify(storage, never()).deleteReports(secondBatch);
+  }
+
   private void givenTheSyncProcessIsSuccess(Reports reports) {
     when(apiClient.sendReports(reports)).thenReturn(new ReportResult(reports));
   }
@@ -154,8 +170,7 @@ import static org.mockito.Mockito.when;
   }
 
   private void givenTheSyncProcessFails(Reports reports) {
-    when(apiClient.sendReports(reports)).thenReturn(
-        new ReportResult(ReportResult.Error.UNKNOWN));
+    when(apiClient.sendReports(reports)).thenReturn(new ReportResult(ReportResult.Error.UNKNOWN));
   }
 
   private DropwizardReport report(FlowUpReporter reporter) {
