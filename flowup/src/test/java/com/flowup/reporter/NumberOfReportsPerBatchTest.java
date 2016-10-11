@@ -1,20 +1,25 @@
+/*
+ * Copyright (C) 2016 Go Karumi S.L.
+ */
+
 package com.flowup.reporter;
 
 import com.flowup.FlowUp;
-import com.flowup.reporter.FlowUpReporter;
 import com.flowup.reporter.model.NetworkMetric;
 import com.flowup.reporter.model.Reports;
 import com.flowup.reporter.model.StatisticalValue;
 import com.flowup.reporter.model.UIMetric;
 import com.google.gson.Gson;
-import java.io.UnsupportedEncodingException;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.zip.GZIPOutputStream;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertTrue;
 
-public class NumberOfReportsPerBatch {
+public class NumberOfReportsPerBatchTest {
 
   private static final String ANY_VERSION_NAME = "1.0.0";
   private static final String ANY_OS_VERSION = "API24";
@@ -34,9 +39,20 @@ public class NumberOfReportsPerBatch {
     assertTrue(bytes <= MAX_REQUEST_SIZE_IN_BYTES);
   }
 
-  private long toBytes(Reports reports) throws UnsupportedEncodingException {
+  private long toBytes(Reports reports) throws Exception {
     String body = gson.toJson(reports);
-    return body.getBytes("UTF-8").length;
+    return gzip(body).length;
+  }
+
+  private byte[] gzip(String str) throws IOException {
+    if ((str == null) || (str.length() == 0)) {
+      return null;
+    }
+    ByteArrayOutputStream obj = new ByteArrayOutputStream();
+    GZIPOutputStream gzip = new GZIPOutputStream(obj);
+    gzip.write(str.getBytes("UTF-8"));
+    gzip.close();
+    return obj.toByteArray();
   }
 
   private Reports givenAReportsInstanceFullOfData(int numberOfReports) {

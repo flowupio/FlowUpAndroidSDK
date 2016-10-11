@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 public class FlowUpReporter extends ScheduledReporter {
 
-  static final int NUMBER_OF_REPORTS_PER_REQUEST = 6;
+  public static final int NUMBER_OF_REPORTS_PER_REQUEST = 844;
 
   public static FlowUpReporter.Builder forRegistry(MetricRegistry registry, Context context) {
     return new FlowUpReporter.Builder(registry, context);

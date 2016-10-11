@@ -18,6 +18,7 @@ class ApiClientConfig {
           .readTimeout(HTTP_TIMEOUT, TimeUnit.SECONDS)
           .writeTimeout(HTTP_TIMEOUT, TimeUnit.SECONDS)
           .addInterceptor(new FlowUpHeadersInterceptor())
+          .addInterceptor(new GzipRequestInterceptor())
           .build();
 
   private static final Gson GSON = new Gson();

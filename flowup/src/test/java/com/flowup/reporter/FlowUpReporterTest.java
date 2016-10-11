@@ -27,6 +27,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -91,7 +92,7 @@ import static org.mockito.Mockito.when;
     reporter.report(report.getGauges(), report.getCounters(), report.getHistograms(),
         report.getMeters(), report.getTimers());
     List<String> ids = Collections.singletonList(String.valueOf(ANY_TIMESTAMP));
-    when(storage.getReports()).thenReturn(givenAReportsInstanceWithId(ids));
+    when(storage.getReports(anyInt())).thenReturn(givenAReportsInstanceWithId(ids));
     return report;
   }
 

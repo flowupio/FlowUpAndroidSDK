@@ -5,6 +5,7 @@
 package com.flowup.reporter.android;
 
 import com.flowup.R;
+import com.flowup.reporter.FlowUpReporter;
 import com.flowup.reporter.ReportResult;
 import com.flowup.reporter.apiclient.ApiClient;
 import com.flowup.reporter.model.Reports;
@@ -44,7 +45,7 @@ public class WiFiSyncService extends GcmTaskService {
   }
 
   private int syncStoredReports() {
-    Reports reports = reportsStorage.getReports();
+    Reports reports = reportsStorage.getReports(FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST);
     if (reports != null) {
       ReportResult result = apiClient.sendReports(reports);
       if (result.hasDataPendingToSync()) {

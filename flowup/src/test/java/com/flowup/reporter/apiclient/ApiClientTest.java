@@ -52,6 +52,15 @@ public class ApiClientTest extends MockWebServerTestCase {
     assertRequestContainsHeader("Content-Type", "application/json; charset=utf-8");
   }
 
+  @Test public void sendsGzipSupportHeader() throws Exception {
+    enqueueMockResponse();
+    Reports reports = givenSomeReports();
+
+    apiClient.sendReports(reports);
+
+    assertRequestContainsHeader("Content-Encoding", "gzip");
+  }
+
   @Test public void sendsApiKeyHeader() throws Exception {
     enqueueMockResponse();
     Reports reports = givenSomeReports();
