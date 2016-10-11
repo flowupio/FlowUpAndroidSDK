@@ -68,6 +68,9 @@ public class FlowUpReporter extends ScheduledReporter {
 
   private void sendStoredReports() {
     Reports reports = reportsStorage.getReports(NUMBER_OF_REPORTS_PER_REQUEST);
+    if (reports == null) {
+      return;
+    }
     ReportResult.Error error;
     do {
       ReportResult result = apiClient.sendReports(reports);

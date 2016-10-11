@@ -37,7 +37,7 @@ public class ReportsStorage {
     RealmResults<RealmReport> reportsSorted =
         realm.where(RealmReport.class).findAllSorted(RealmReport.ID_FIELD_NAME);
     List<RealmReport> reportsToMap = new LinkedList<>();
-    for (int i = 0; i < numberOfReports && numberOfReports < reportsToMap.size(); i++) {
+    for (int i = 0; i < numberOfReports && i < reportsSorted.size(); i++) {
       RealmReport realmReport = reportsSorted.get(i);
       reportsToMap.add(realmReport);
     }
