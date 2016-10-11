@@ -24,7 +24,11 @@ public class ApiClient {
   private final HttpUrl baseUrl;
 
   public ApiClient(String scheme, String host, int port) {
-    this.httpClient = ApiClientConfig.getHttpClient(true);
+    this(scheme, host, port, true);
+  }
+
+  public ApiClient(String scheme, String host, int port, boolean useGzip) {
+    this.httpClient = ApiClientConfig.getHttpClient(true, useGzip);
     this.jsonParser = ApiClientConfig.getJsonParser();
     this.baseUrl = ApiClientConfig.buildURL(scheme, host, port);
   }
