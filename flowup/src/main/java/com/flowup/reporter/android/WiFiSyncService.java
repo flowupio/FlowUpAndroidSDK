@@ -61,7 +61,7 @@ public class WiFiSyncService extends GcmTaskService {
     if (error == ReportResult.Error.NETWORK_ERROR) {
       return RESULT_RESCHEDULE;
     } else {
-      return RESULT_SUCCESS;
+      return RESULT_FAILURE;
     }
   }
 }

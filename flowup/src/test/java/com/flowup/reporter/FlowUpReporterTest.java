@@ -69,8 +69,7 @@ import static org.mockito.Mockito.when;
     verify(apiClient, never()).sendReports(givenAReportsInstanceWithId(ids));
   }
 
-  @Test
-  public void ifTheSyncProcessIsSuccessTheReportsShouldBeDeleted() {
+  @Test public void ifTheSyncProcessIsSuccessTheReportsShouldBeDeleted() {
     List<String> ids = Collections.singletonList(String.valueOf(ANY_TIMESTAMP));
     Reports reportsSent = givenAReportsInstanceWithId(ids);
     givenTheSyncProcessIsSuccess(reportsSent);
@@ -81,16 +80,95 @@ import static org.mockito.Mockito.when;
     verify(apiClient, never()).sendReports(reportsSent);
   }
 
+  @Test public void sendsReportsInBatches() {
+    FlowUpReporter reporter = givenAFlowUpReporter(true);
+    List<String> firstBatchIds = Collections.singletonList(String.valueOf("1"));
+    List<String> secondBatchIds = Collections.singletonList(String.valueOf("2"));
+    Reports firstBatch = givenAReportsInstanceWithId(firstBatchIds);
+    Reports secondBatch = givenAReportsInstanceWithId(secondBatchIds);
+    when(storage.getReports(anyInt())).thenReturn(firstBatch, secondBatch, null);
+    givenTheSyncProcessIsSuccess(firstBatch);
+    givenTheSyncProcessIsSuccess(secondBatch);
+
+    reportSomeMetrics(reporter);
+
+    verify(apiClient).sendReports(firstBatch);
+    verify(apiClient).sendReports(secondBatch);
+  }
+
+  @Test public void deletesEveryReportProperlySent() {
+    FlowUpReporter reporter = givenAFlowUpReporter(true);
+    List<String> firstBatchIds = Collections.singletonList(String.valueOf("1"));
+    List<String> secondBatchIds = Collections.singletonList(String.valueOf("2"));
+    Reports firstBatch = givenAReportsInstanceWithId(firstBatchIds);
+    Reports secondBatch = givenAReportsInstanceWithId(secondBatchIds);
+    when(storage.getReports(anyInt())).thenReturn(firstBatch, secondBatch, null);
+    givenTheSyncProcessIsSuccess(firstBatch);
+    givenTheSyncProcessIsSuccess(secondBatch);
+
+    reportSomeMetrics(reporter);
+
+    verify(storage).deleteReports(firstBatch);
+    verify(storage).deleteReports(secondBatch);
+  }
+
+  @Test public void deletesJustReportsSentProperlyBecauseThereIsNoConnection() {
+    FlowUpReporter reporter = givenAFlowUpReporter(true);
+    List<String> firstBatchIds = Collections.singletonList(String.valueOf("1"));
+    List<String> secondBatchIds = Collections.singletonList(String.valueOf("2"));
+    Reports firstBatch = givenAReportsInstanceWithId(firstBatchIds);
+    Reports secondBatch = givenAReportsInstanceWithId(secondBatchIds);
+    when(storage.getReports(anyInt())).thenReturn(firstBatch, secondBatch, null);
+    givenTheSyncProcessIsSuccess(firstBatch);
+    givenTheSyncProcessFailsBecauseThereIsNoConnection(secondBatch);
+
+    reportSomeMetrics(reporter);
+
+    verify(storage).deleteReports(firstBatch);
+    verify(storage, never()).deleteReports(secondBatch);
+  }
+
+  @Test public void deletesJustReportsSentProperlyBecauseServerFails() {
+    FlowUpReporter reporter = givenAFlowUpReporter(true);
+    List<String> firstBatchIds = Collections.singletonList(String.valueOf("1"));
+    List<String> secondBatchIds = Collections.singletonList(String.valueOf("2"));
+    Reports firstBatch = givenAReportsInstanceWithId(firstBatchIds);
+    Reports secondBatch = givenAReportsInstanceWithId(secondBatchIds);
+    when(storage.getReports(anyInt())).thenReturn(firstBatch, secondBatch, null);
+    givenTheSyncProcessIsSuccess(firstBatch);
+    givenTheSyncProcessFails(secondBatch);
+
+    reportSomeMetrics(reporter);
+
+    verify(storage).deleteReports(firstBatch);
+    verify(storage, never()).deleteReports(secondBatch);
+  }
+
   private void givenTheSyncProcessIsSuccess(Reports reports) {
     when(apiClient.sendReports(reports)).thenReturn(new ReportResult(reports));
   }
 
-  private DropwizardReport reportSomeMetrics(FlowUpReporter reporter) {
+  private void givenTheSyncProcessFailsBecauseThereIsNoConnection(Reports reports) {
+    when(apiClient.sendReports(reports)).thenReturn(
+        new ReportResult(ReportResult.Error.NETWORK_ERROR));
+  }
+
+  private void givenTheSyncProcessFails(Reports reports) {
+    when(apiClient.sendReports(reports)).thenReturn(
+        new ReportResult(ReportResult.Error.UNKNOWN));
+  }
+
+  private DropwizardReport report(FlowUpReporter reporter) {
     DropwizardReport report = new DropwizardReport(ANY_TIMESTAMP, new TreeMap<String, Gauge>(),
         new TreeMap<String, Counter>(), new TreeMap<String, Histogram>(),
         new TreeMap<String, Meter>(), new TreeMap<String, Timer>());
     reporter.report(report.getGauges(), report.getCounters(), report.getHistograms(),
         report.getMeters(), report.getTimers());
+    return report;
+  }
+
+  private DropwizardReport reportSomeMetrics(FlowUpReporter reporter) {
+    DropwizardReport report = report(reporter);
     List<String> ids = Collections.singletonList(String.valueOf(ANY_TIMESTAMP));
     when(storage.getReports(anyInt())).thenReturn(givenAReportsInstanceWithId(ids));
     return report;
