@@ -139,6 +139,19 @@ public class ReportsStorageTest {
     assertEquals(numberOfReportsToRemove, restOfReports.getReportsIds().size());
   }
 
+  @Test
+  public void savesDataAssociatedToDifferentScreensAsDifferentReports() {
+    SortedMap<String, Histogram> fpsMetric = givenAFPSMetric();
+    SortedMap<String, Timer> frameTimeMetric = givenAFrameTimeMetric();
+    DropwizardReport dropwizardReport =
+        givenADropWizardReport(new TreeMap<String, Gauge>(), fpsMetric, frameTimeMetric);
+
+    Reports reports = storeAndGet(dropwizardReport);
+
+    assertEquals(1, reports.getUIMetricsReports().size());
+    assertEquals(0, reports.getNetworkMetricsReports().size());
+  }
+
   private Reports givenReportsWithId(int iterativeReportsId) {
     List<String> reportsIds = new LinkedList<>();
     for (int i = 0; i < iterativeReportsId; i++) {
