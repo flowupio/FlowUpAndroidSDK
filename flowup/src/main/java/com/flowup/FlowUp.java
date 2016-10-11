@@ -65,7 +65,7 @@ public class FlowUp {
     String host = application.getString(R.string.karumi_grafana_host);
     int port = application.getResources().getInteger(R.integer.karumi_grafana_port);
     StatsDReporter.forRegistry(registry)
-        .convertRatesTo(TimeUnit.SECONDS)
+        .convertRatesTo(TimeUnit.MILLISECONDS)
         .convertDurationsTo(TimeUnit.MILLISECONDS)
         .filter(MetricFilter.ALL)
         .build(host, port)
