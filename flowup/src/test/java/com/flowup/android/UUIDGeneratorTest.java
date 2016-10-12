@@ -2,7 +2,7 @@
  * Copyright (C) 2016 Go Karumi S.L.
  */
 
-package com.flowup.metricnames;
+package com.flowup.android;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -17,8 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
-@RunWith(RobolectricTestRunner.class)
-public class UUIDGeneratorTest extends RobolectricTest {
+@RunWith(RobolectricTestRunner.class) public class UUIDGeneratorTest extends RobolectricTest {
 
   private static final String UUID_KEY = "uuid";
   private static final String UUID_SHARED_PREFS_NAME = "uuid_shared_prefs_name";

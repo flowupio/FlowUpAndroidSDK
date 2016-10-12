@@ -29,7 +29,7 @@ class BytesDownloadedCollector implements Collector {
   }
 
   @Override public void initialize(MetricRegistry registry) {
-    registry.register(metricNamesGenerator.getBytesDownloadedMetricsName(),
+    registry.register(metricNamesGenerator.getBytesDownloadedMetricName(),
         new CachedGauge<Long>(samplingInterval, timeUnit) {
           @Override public Long loadValue() {
             int applicationUid = Process.myUid();

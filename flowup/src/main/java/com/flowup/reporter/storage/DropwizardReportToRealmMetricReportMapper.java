@@ -34,6 +34,9 @@ class DropwizardReportToRealmMetricReportMapper
     RealmList<RealmMetric> realmMetrics = new RealmList<>();
     for (String metricName : gauges.keySet()) {
       Gauge gauge = gauges.get(metricName);
+      if (gauge.getValue() == null) {
+        continue;
+      }
       RealmMetric realmMetric = mapGauge(realm, metricName, gauge);
       realmMetrics.add(realmMetric);
     }

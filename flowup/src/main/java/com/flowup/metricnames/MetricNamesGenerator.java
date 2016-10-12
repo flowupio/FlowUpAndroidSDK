@@ -6,6 +6,8 @@ package com.flowup.metricnames;
 
 import android.app.Activity;
 import com.codahale.metrics.MetricRegistry;
+import com.flowup.android.App;
+import com.flowup.android.Device;
 import com.flowup.utils.Time;
 
 public class MetricNamesGenerator {
@@ -14,6 +16,7 @@ public class MetricNamesGenerator {
   public static final String FRAME_TIME = "frameTime";
   public static final String BYTES_DOWNLOADED = "bytesDownloaded";
   public static final String BYTES_UPLOADED = "bytesUploaded";
+  public static final String CPU_USAGE = "cpuUsage";
 
   private static final String UI = "ui";
   private static final String NETWORK = "network";
@@ -31,22 +34,26 @@ public class MetricNamesGenerator {
 
   public String getFPSMetricName(Activity activity) {
     String activityName = getActivityName(activity);
-    return MetricRegistry.name(
-        appendCrossMetricInfo(UI + SEPARATOR + FPS + SEPARATOR + activityName + SEPARATOR + time.now()));
+    return MetricRegistry.name(appendCrossMetricInfo(
+        UI + SEPARATOR + FPS + SEPARATOR + activityName + SEPARATOR + time.now()));
   }
 
   public String getFrameTimeMetricName(Activity activity) {
     String activityName = getActivityName(activity);
-    return MetricRegistry.name(
-        appendCrossMetricInfo(UI + SEPARATOR + FRAME_TIME + SEPARATOR + activityName + SEPARATOR + time.now()));
+    return MetricRegistry.name(appendCrossMetricInfo(
+        UI + SEPARATOR + FRAME_TIME + SEPARATOR + activityName + SEPARATOR + time.now()));
   }
 
-  public String getBytesDownloadedMetricsName() {
+  public String getBytesDownloadedMetricName() {
     return MetricRegistry.name(appendCrossMetricInfo(NETWORK + SEPARATOR + BYTES_DOWNLOADED));
   }
 
-  public String getBytesUploadedMetricsName() {
+  public String getBytesUploadedMetricName() {
     return MetricRegistry.name(appendCrossMetricInfo(NETWORK + SEPARATOR + BYTES_UPLOADED));
+  }
+
+  public String getCPUUsageMetricName() {
+    return MetricRegistry.name(appendCrossMetricInfo(CPU_USAGE));
   }
 
   private String getActivityName(Activity activity) {

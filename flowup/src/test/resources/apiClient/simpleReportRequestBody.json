@@ -73,5 +73,14 @@
       "androidOSVersion": "API24",
       "batterySaverOn": true
     }
+  ],
+  "cpu": [
+    {
+      "consumption": 10,
+      "timestamp": 123456789,
+      "appVersionName": "1.0.0",
+      "androidOSVersion": "API24",
+      "batterySaverOn": true
+    }
   ]
 }

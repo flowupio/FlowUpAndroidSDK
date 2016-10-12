@@ -2,7 +2,7 @@
  * Copyright (C) 2016 Go Karumi S.L.
  */
 
-package com.flowup.metricnames;
+package com.flowup.android;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
