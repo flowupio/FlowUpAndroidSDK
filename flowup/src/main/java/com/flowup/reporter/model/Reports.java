@@ -17,11 +17,12 @@ public class Reports {
   @SerializedName("screenSize") private final String screenSize;
   @SerializedName("numberOfCores") private final Integer numberOfCores;
   @SerializedName("network") private final List<NetworkMetric> networkMetricsReports;
-  @SerializedName("ui") private final List<UIMetric> uiMetricsReports;
+  @SerializedName("ui") private final List<UIMetric> uiMetrics;
+  @SerializedName("cpu") private final List<CPUMetric> cpuMetrics;
 
   public Reports(List<String> reportsIds, String appPackage, String uuid, String deviceModel,
       String screenDensity, String screenSize, Integer numberOfCores,
-      List<NetworkMetric> networkMetricsReports, List<UIMetric> uiMetricsReports) {
+      List<NetworkMetric> networkMetricsReports, List<UIMetric> uiMetrics, List<CPUMetric> cpuMetrics) {
     this.reportsIds = reportsIds;
     this.appPackage = appPackage;
     this.uuid = uuid;
@@ -30,7 +31,8 @@ public class Reports {
     this.screenSize = screenSize;
     this.numberOfCores = numberOfCores;
     this.networkMetricsReports = networkMetricsReports;
-    this.uiMetricsReports = uiMetricsReports;
+    this.uiMetrics = uiMetrics;
+    this.cpuMetrics = cpuMetrics;
   }
 
   public List<String> getReportsIds() {
@@ -61,12 +63,16 @@ public class Reports {
     return numberOfCores;
   }
 
-  public List<NetworkMetric> getNetworkMetricsReports() {
+  public List<NetworkMetric> getNetworkMetrics() {
     return networkMetricsReports;
   }
 
-  public List<UIMetric> getUIMetricsReports() {
-    return uiMetricsReports;
+  public List<UIMetric> getUIMetrics() {
+    return uiMetrics;
+  }
+
+  public List<CPUMetric> getCpuMetrics() {
+    return cpuMetrics;
   }
 
   @Override public boolean equals(Object o) {

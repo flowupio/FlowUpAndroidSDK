@@ -89,8 +89,8 @@ public class ReportsStorageTest {
 
     Reports reports = storeAndGet(dropwizardReport);
 
-    assertEquals(1, reports.getNetworkMetricsReports().size());
-    assertEquals(0, reports.getUIMetricsReports().size());
+    assertEquals(1, reports.getNetworkMetrics().size());
+    assertEquals(0, reports.getUIMetrics().size());
   }
 
   @Test public void returnsReportInfoBasedOnDropwizardMetricsWithOnlyUIMetricsReported() {
@@ -101,8 +101,8 @@ public class ReportsStorageTest {
 
     Reports reports = storeAndGet(dropwizardReport);
 
-    assertEquals(1, reports.getUIMetricsReports().size());
-    assertEquals(0, reports.getNetworkMetricsReports().size());
+    assertEquals(1, reports.getUIMetrics().size());
+    assertEquals(0, reports.getNetworkMetrics().size());
   }
 
   @Test public void joinsSomeReportsIntoOneReportsInstanceWithAllTheMetricsInside() {
@@ -149,7 +149,7 @@ public class ReportsStorageTest {
   }
 
   private void assertNetworkMetricsContainsExpectedValues(int numberOfReports, Reports reports) {
-    List<NetworkMetric> networkReports = reports.getNetworkMetricsReports();
+    List<NetworkMetric> networkReports = reports.getNetworkMetrics();
     assertEquals(numberOfReports, networkReports.size());
     for (int i = 0; i < numberOfReports; i++) {
       assertEquals(ANY_BYTES_UPLOADED, networkReports.get(i).getBytesUploaded());
@@ -158,7 +158,7 @@ public class ReportsStorageTest {
   }
 
   private void assertUIMetricsContainsExpectedValues(int numberOfReports, Reports reports) {
-    List<UIMetric> uiReports = reports.getUIMetricsReports();
+    List<UIMetric> uiReports = reports.getUIMetrics();
     assertEquals(numberOfReports, uiReports.size());
     for (int i = 0; i < numberOfReports; i++) {
       assertEquals(1.7E7, uiReports.get(i).getFrameTime().getMean(), DELTA);
@@ -243,8 +243,8 @@ public class ReportsStorageTest {
     assertNull(reports.getScreenSize());
     assertNull(reports.getScreenDensity());
     assertNull(reports.getUUID());
-    assertNull(reports.getNetworkMetricsReports());
-    assertNull(reports.getUIMetricsReports());
+    assertNull(reports.getNetworkMetrics());
+    assertNull(reports.getUIMetrics());
   }
 
   private Reports storeAndGet(DropwizardReport report) {

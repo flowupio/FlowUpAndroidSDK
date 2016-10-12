@@ -144,8 +144,7 @@ import static org.mockito.Mockito.when;
     verify(storage, never()).deleteReports(secondBatch);
   }
 
-  @Test
-  public void evenIfThereAreReportsPendingToBeSentIfASyncRequestFailsTheReportProcessStops() {
+  @Test public void evenIfThereAreReportsPendingToBeSentIfASyncRequestFailsTheReportProcessStops() {
     FlowUpReporter reporter = givenAFlowUpReporter(true);
     List<String> firstBatchIds = Collections.singletonList(String.valueOf("1"));
     List<String> secondBatchIds = Collections.singletonList(String.valueOf("2"));
@@ -190,6 +189,7 @@ import static org.mockito.Mockito.when;
   }
 
   @NonNull private Reports givenAReportsInstanceWithId(List<String> ids) {
-    return new Reports(ids, "", "", "", "", "", 0, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
+    return new Reports(ids, "", "", "", "", "", 0, Collections.EMPTY_LIST, Collections.EMPTY_LIST,
+        Collections.EMPTY_LIST);
   }
 }

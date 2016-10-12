@@ -7,6 +7,7 @@ package com.flowup.reporter.apiclient;
 import com.flowup.BuildConfig;
 import com.flowup.MockWebServerTestCase;
 import com.flowup.reporter.ReportResult;
+import com.flowup.reporter.model.CPUMetric;
 import com.flowup.reporter.model.NetworkMetric;
 import com.flowup.reporter.model.Reports;
 import com.flowup.reporter.model.StatisticalValue;
@@ -144,8 +145,13 @@ public class ApiClientTest extends MockWebServerTestCase {
     int numberOfCores = 4;
     List<NetworkMetric> networkMetrics = Collections.singletonList(givenANetworkMetric());
     List<UIMetric> uiMetrics = Collections.singletonList(givenAUIMetric());
+    List<CPUMetric> cpuMetrics = Collections.singletonList(givenACPUMetric());
     return new Reports(reportIds, appPackage, uuid, deviceModel, screenDensity, screenSize,
-        numberOfCores, networkMetrics, uiMetrics);
+        numberOfCores, networkMetrics, uiMetrics, cpuMetrics);
+  }
+
+  private CPUMetric givenACPUMetric() {
+    return new CPUMetric(ANY_TIMESTAMP, ANY_VERSION_NAME, ANY_OS_VERSION, ANY_BATTERY_SAVER_ON, 10);
   }
 
   private NetworkMetric givenANetworkMetric() {

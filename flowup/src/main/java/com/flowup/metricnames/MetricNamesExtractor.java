@@ -66,6 +66,10 @@ public class MetricNamesExtractor {
     return metricName.contains(MetricNamesGenerator.BYTES_DOWNLOADED);
   }
 
+  public boolean isCPUUsageMetric(String metricName) {
+    return metricName.contains(MetricNamesGenerator.CPU_USAGE);
+  }
+
   public boolean isBytesUploadedMetric(String metricName) {
     return metricName.contains(MetricNamesGenerator.BYTES_UPLOADED);
   }

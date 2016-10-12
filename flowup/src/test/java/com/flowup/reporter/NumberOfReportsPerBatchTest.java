@@ -5,6 +5,7 @@
 package com.flowup.reporter;
 
 import com.flowup.FlowUp;
+import com.flowup.reporter.model.CPUMetric;
 import com.flowup.reporter.model.NetworkMetric;
 import com.flowup.reporter.model.Reports;
 import com.flowup.reporter.model.StatisticalValue;
@@ -25,6 +26,7 @@ public class NumberOfReportsPerBatchTest {
   private static final long BYTES_DOWNLOADED = Long.MAX_VALUE;
 
   private static final double MAX_REQUEST_SIZE_WITHOUT_COMPRESSION_IN_BYTES = 9.5d * 1024 * 1024;
+  private static final int CPU_USAGE = 100;
 
   private final Gson gson = new Gson();
 
@@ -33,7 +35,24 @@ public class NumberOfReportsPerBatchTest {
 
     long bytes = toBytes(reports);
 
-    assertTrue(bytes <= MAX_REQUEST_SIZE_WITHOUT_COMPRESSION_IN_BYTES);
+    assertTrue(
+        "Your modification to the Reports classes used to send data to our severs has increased the"
+            + " request body size exceeding the maximum size supported. The new max number of reports"
+            + " we can send in one request is: "
+            + calculateMaxNumberOfReportsPerRequest(),
+        bytes <= MAX_REQUEST_SIZE_WITHOUT_COMPRESSION_IN_BYTES);
+  }
+
+  private int calculateMaxNumberOfReportsPerRequest() throws Exception {
+    int newMax;
+    for (newMax = FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST; newMax >= 0; newMax--) {
+      Reports reports = givenAReportsInstanceFullOfData(newMax);
+      long bytes = toBytes(reports);
+      if (bytes <= MAX_REQUEST_SIZE_WITHOUT_COMPRESSION_IN_BYTES) {
+        break;
+      }
+    }
+    return newMax;
   }
 
   private long toBytes(Reports reports) throws Exception {
@@ -49,9 +68,10 @@ public class NumberOfReportsPerBatchTest {
     String screenSize = "1080X1794";
     int numberOfCores = 6;
     List<NetworkMetric> networkMetrics = givenSomeNetworkMetrics(numberOfReports);
-    List<UIMetric> uiMetricsReports = givenSomeUIMetrics(numberOfReports);
+    List<UIMetric> uiMetrics = givenSomeUIMetrics(numberOfReports);
+    List<CPUMetric> cpuMetrics = givenSomeCPUMetrics(numberOfReports);
     return new Reports(reportIds, appPackage, uuid, deviceModel, screenDensity, screenSize,
-        numberOfCores, networkMetrics, uiMetricsReports);
+        numberOfCores, networkMetrics, uiMetrics, cpuMetrics);
   }
 
   private List<NetworkMetric> givenSomeNetworkMetrics(int numberOfReports) {
@@ -61,6 +81,15 @@ public class NumberOfReportsPerBatchTest {
       networkMetrics.add(networkMetric);
     }
     return networkMetrics;
+  }
+
+  private List<CPUMetric> givenSomeCPUMetrics(int numberOfReports) {
+    List<CPUMetric> cpuMetrics = new LinkedList<>();
+    for (int i = 0; i < numberOfReports; i++) {
+      CPUMetric networkMetric = generateAnyCPUMetric(i);
+      cpuMetrics.add(networkMetric);
+    }
+    return cpuMetrics;
   }
 
   private List<UIMetric> givenSomeUIMetrics(int numberOfReports) {
@@ -91,6 +120,11 @@ public class NumberOfReportsPerBatchTest {
   private NetworkMetric generateAnyNetworkMetric(long timestamp) {
     return new NetworkMetric(timestamp, ANY_VERSION_NAME, ANY_OS_VERSION, ANY_BATTERY_SAVER_ON,
         BYTES_UPLOADED, BYTES_DOWNLOADED);
+  }
+
+  private CPUMetric generateAnyCPUMetric(int timestamp) {
+    return new CPUMetric(timestamp, ANY_VERSION_NAME, ANY_OS_VERSION, ANY_BATTERY_SAVER_ON,
+        CPU_USAGE);
   }
 
   private List<String> givenSomeIds(int numberOfReports) {
