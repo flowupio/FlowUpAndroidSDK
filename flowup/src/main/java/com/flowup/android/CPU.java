@@ -35,9 +35,10 @@ public class CPU {
   private int extractCPUUsage(String topOutput) {
     String processLine = extractCurrentProcessStats(topOutput);
     String[] topValuesPerProcess = processLine.split(" ");
-    for(String value: topValuesPerProcess) {
+    for (String value : topValuesPerProcess) {
       if (value.contains("%")) {
-        return Integer.parseInt(value.replace("%", ""));
+        int cpuUsage = Integer.parseInt(value.replace("%", ""));
+        return cpuUsage;
       }
     }
     return 0;

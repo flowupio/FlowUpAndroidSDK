@@ -14,10 +14,10 @@ public class MetricNamesGenerator {
   public static final String FRAME_TIME = "frameTime";
   public static final String BYTES_DOWNLOADED = "bytesDownloaded";
   public static final String BYTES_UPLOADED = "bytesUploaded";
+  public static final String CPU_USAGE = "cpuUsage";
 
   private static final String UI = "ui";
   private static final String NETWORK = "network";
-  private static final String CPU = "cpu";
   private static final String SEPARATOR = ".";
 
   private final App app;
@@ -51,7 +51,7 @@ public class MetricNamesGenerator {
   }
 
   public String getCPUUsageMetricName() {
-    return MetricRegistry.name(appendCrossMetricInfo(CPU));
+    return MetricRegistry.name(appendCrossMetricInfo(CPU_USAGE));
   }
 
   private String getActivityName(Activity activity) {
