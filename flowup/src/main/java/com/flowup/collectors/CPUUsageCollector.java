@@ -29,8 +29,7 @@ class CPUUsageCollector implements Collector {
     registry.register(metricNamesGenerator.getCPUUsageMetricName(),
         new CachedGauge<Long>(samplingInterval, timeUnit) {
           @Override protected Long loadValue() {
-            Long usage = Long.valueOf(cpu.getUsage());
-            return usage;
+            return Long.valueOf(cpu.getUsage());
           }
         });
   }

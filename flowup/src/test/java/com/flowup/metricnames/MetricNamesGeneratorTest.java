@@ -212,9 +212,6 @@ import static org.mockito.Mockito.when;
     assertFalse(extractor.isBytesDownloadedMetric(bytesUploaded));
   }
 
-  ///////////
-
-
   @Test public void cpuUsageMetricNameShouldContainExactly10FieldsSeparatedByDots() {
     String cpuUsage = generator.getCPUUsageMetricName();
 

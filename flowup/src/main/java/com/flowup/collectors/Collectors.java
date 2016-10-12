@@ -29,10 +29,6 @@ public class Collectors {
         timeUnit);
   }
 
-  @NonNull private static MetricNamesGenerator getMetricNamesGenerator(Application application) {
-    return new MetricNamesGenerator(new App(application), new Device(application), new Time());
-  }
-
   public static Collector getBytesUploadedCollector(Application application, long samplingInterval,
       TimeUnit timeUnit) {
     return new BytesUploadedCollector(getMetricNamesGenerator(application), samplingInterval,
@@ -43,5 +39,9 @@ public class Collectors {
       TimeUnit samplingTimeUnit, CPU cpu) {
     return new CPUUsageCollector(getMetricNamesGenerator(application), samplingInterval,
         samplingTimeUnit, cpu);
+  }
+
+  private static MetricNamesGenerator getMetricNamesGenerator(Application application) {
+    return new MetricNamesGenerator(new App(application), new Device(application), new Time());
   }
 }
