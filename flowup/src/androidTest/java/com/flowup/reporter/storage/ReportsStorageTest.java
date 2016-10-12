@@ -16,6 +16,7 @@ import com.flowup.android.App;
 import com.flowup.android.Device;
 import com.flowup.metricnames.MetricNamesGenerator;
 import com.flowup.reporter.DropwizardReport;
+import com.flowup.reporter.model.CPUMetric;
 import com.flowup.reporter.model.NetworkMetric;
 import com.flowup.reporter.model.Reports;
 import com.flowup.reporter.model.UIMetric;
@@ -43,6 +44,7 @@ public class ReportsStorageTest {
   private static final long ANY_BYTES_UPLOADED = 1024L;
   private static final long ANY_BYTES_DOWNLOADED = 1024L;
   private static final double DELTA = 0.1d;
+  private static final long ANY_CPU_USAGE = 11;
 
   private ReportsStorage storage;
   private MetricNamesGenerator generator;
@@ -91,6 +93,7 @@ public class ReportsStorageTest {
 
     assertEquals(1, reports.getNetworkMetrics().size());
     assertEquals(0, reports.getUIMetrics().size());
+    assertEquals(0, reports.getCpuMetrics().size());
   }
 
   @Test public void returnsReportInfoBasedOnDropwizardMetricsWithOnlyUIMetricsReported() {
@@ -103,6 +106,18 @@ public class ReportsStorageTest {
 
     assertEquals(1, reports.getUIMetrics().size());
     assertEquals(0, reports.getNetworkMetrics().size());
+    assertEquals(0, reports.getCpuMetrics().size());
+  }
+
+  @Test public void returnsReportInfoBasedOnDropwizardMetricsWithOnlyCPUMetricsReported() {
+    SortedMap<String, Gauge> cpuMetrics = givenACPUMetric();
+    DropwizardReport dropwizardReport = givenADropWizardReport(cpuMetrics);
+
+    Reports reports = storeAndGet(dropwizardReport);
+
+    assertEquals(0, reports.getUIMetrics().size());
+    assertEquals(0, reports.getNetworkMetrics().size());
+    assertEquals(1, reports.getCpuMetrics().size());
   }
 
   @Test public void joinsSomeReportsIntoOneReportsInstanceWithAllTheMetricsInside() {
@@ -113,6 +128,7 @@ public class ReportsStorageTest {
 
     assertNetworkMetricsContainsExpectedValues(numberOfReports, reports);
     assertUIMetricsContainsExpectedValues(numberOfReports, reports);
+    assertCPUMetricsContainsExpectedValues(numberOfReports, reports);
   }
 
   @Test public void deletesTheReportsPreviouslyObtained() {
@@ -157,6 +173,14 @@ public class ReportsStorageTest {
     }
   }
 
+  private void assertCPUMetricsContainsExpectedValues(int numberOfReports, Reports reports) {
+    List<CPUMetric> networkReports = reports.getCpuMetrics();
+    assertEquals(numberOfReports, networkReports.size());
+    for (int i = 0; i < numberOfReports; i++) {
+      assertEquals(ANY_CPU_USAGE, networkReports.get(i).getCpuUsage());
+    }
+  }
+
   private void assertUIMetricsContainsExpectedValues(int numberOfReports, Reports reports) {
     List<UIMetric> uiReports = reports.getUIMetrics();
     assertEquals(numberOfReports, uiReports.size());
@@ -172,8 +196,12 @@ public class ReportsStorageTest {
       SortedMap<String, Gauge> networkMetrics = givenANetworkMetric();
       SortedMap<String, Histogram> fpsMetric = givenAFPSMetric();
       SortedMap<String, Timer> frameTimeMetric = givenAFrameTimeMetric();
+      SortedMap<String, Gauge> cpuMetrics = givenACPUMetric();
+      SortedMap<String, Gauge> gauges = new TreeMap<>();
+      gauges.putAll(networkMetrics);
+      gauges.putAll(cpuMetrics);
       DropwizardReport dropwizardReport =
-          givenADropWizardReport(i, networkMetrics, fpsMetric, frameTimeMetric);
+          givenADropWizardReport(i, gauges, fpsMetric, frameTimeMetric);
       dropwizardReports.add(dropwizardReport);
     }
     return dropwizardReports;
@@ -198,24 +226,20 @@ public class ReportsStorageTest {
     return histograms;
   }
 
-  private DropwizardReport givenADropWizardReport(SortedMap<String, Gauge> networkMetrics) {
-    return givenADropWizardReport(0, networkMetrics, new TreeMap<String, Histogram>(),
+  private DropwizardReport givenADropWizardReport(SortedMap<String, Gauge> gauges) {
+    return givenADropWizardReport(0, gauges, new TreeMap<String, Histogram>(),
         new TreeMap<String, Timer>());
   }
 
-  private DropwizardReport givenADropWizardReport(SortedMap<String, Gauge> networkMetrics,
-      SortedMap<String, Histogram> fpsMetrics, SortedMap<String, Timer> frameTimeMetrics) {
-    return givenADropWizardReport(0, networkMetrics, fpsMetrics, frameTimeMetrics);
+  private DropwizardReport givenADropWizardReport(SortedMap<String, Gauge> gauges,
+      SortedMap<String, Histogram> histograms, SortedMap<String, Timer> timers) {
+    return givenADropWizardReport(0, gauges, histograms, timers);
   }
 
-  private DropwizardReport givenADropWizardReport(long timestamp,
-      SortedMap<String, Gauge> networkMetrics, SortedMap<String, Histogram> fpsMetrics,
-      SortedMap<String, Timer> frameTimeMetrics) {
-    SortedMap<String, Gauge> gauges = networkMetrics;
+  private DropwizardReport givenADropWizardReport(long timestamp, SortedMap<String, Gauge> gauges,
+      SortedMap<String, Histogram> histograms, SortedMap<String, Timer> timers) {
     SortedMap<String, Counter> counters = new TreeMap<>();
-    SortedMap<String, Histogram> histograms = fpsMetrics;
     SortedMap<String, Meter> meters = new TreeMap<>();
-    SortedMap<String, Timer> timers = frameTimeMetrics;
     return new DropwizardReport(timestamp, gauges, counters, histograms, meters, timers);
   }
 
@@ -233,6 +257,17 @@ public class ReportsStorageTest {
     SortedMap<String, Gauge> gauges = new TreeMap<>();
     gauges.put(generator.getBytesDownloadedMetricName(), bytesUploaded);
     gauges.put(generator.getBytesUploadedMetricName(), bytesDownloaded);
+    return gauges;
+  }
+
+  private SortedMap<String, Gauge> givenACPUMetric() {
+    Gauge<Long> bytesUploaded = new Gauge<Long>() {
+      @Override public Long getValue() {
+        return ANY_CPU_USAGE;
+      }
+    };
+    SortedMap<String, Gauge> gauges = new TreeMap<>();
+    gauges.put(generator.getCPUUsageMetricName(), bytesUploaded);
     return gauges;
   }
 
