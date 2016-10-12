@@ -212,6 +212,28 @@ import static org.mockito.Mockito.when;
     assertFalse(extractor.isBytesDownloadedMetric(bytesUploaded));
   }
 
+  ///////////
+
+
+  @Test public void cpuUsageMetricNameShouldContainExactly10FieldsSeparatedByDots() {
+    String cpuUsage = generator.getCPUUsageMetricName();
+
+    assertEquals(10, MetricNameUtils.split(cpuUsage).length);
+  }
+
+  @Test public void cpuUsageMetricNameShouldContainTheCrossMetricInfoName() {
+    String cpuUsage = generator.getCPUUsageMetricName();
+
+    assertContainsCrossMetricInfoName(cpuUsage);
+  }
+
+  @Test public void cpuUsageContainsTheMetricNameInTheCorrectPosition() {
+    String cpuUsage = generator.getCPUUsageMetricName();
+
+    String[] parts = MetricNameUtils.split(cpuUsage);
+    assertEquals("cpuUsage", parts[9]);
+  }
+
   private void assertContainsCrossMetricInfoName(String metricName) {
     assertEquals(replaceDashes(app.getAppPackageName()), extractor.getAppPackage(metricName));
     assertEquals(device.getInstallationUUID(), extractor.getInstallationUUID(metricName));
