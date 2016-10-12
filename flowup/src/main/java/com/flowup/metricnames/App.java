@@ -41,4 +41,8 @@ public class App {
       }
     }
   }
+
+  public int getPid() {
+    return android.os.Process.myPid();
+  }
 }

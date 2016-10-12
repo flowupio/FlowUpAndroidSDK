@@ -41,6 +41,6 @@ public class Collectors {
 
   public static Collector getCPUCollector(Application application, int samplingInterval, TimeUnit samplingTimeUnit,
       CPU cpu) {
-    return new CPUCollector(getMetricNamesGenerator(application),samplingInterval, samplingTimeUnit, cpu);
+    return new CPUUsageCollector(getMetricNamesGenerator(application),samplingInterval, samplingTimeUnit, cpu);
   }
 }

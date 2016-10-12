@@ -10,14 +10,14 @@ import com.flowup.android.CPU;
 import com.flowup.metricnames.MetricNamesGenerator;
 import java.util.concurrent.TimeUnit;
 
-class CPUCollector implements Collector {
+class CPUUsageCollector implements Collector {
 
   private final MetricNamesGenerator metricNamesGenerator;
   private final long samplingInterval;
   private final TimeUnit timeUnit;
   private final CPU cpu;
 
-  CPUCollector(MetricNamesGenerator metricNamesGenerator, long samplingInterval,
+  CPUUsageCollector(MetricNamesGenerator metricNamesGenerator, long samplingInterval,
       TimeUnit timeUnit, CPU cpu) {
     this.metricNamesGenerator = metricNamesGenerator;
     this.samplingInterval = samplingInterval;
@@ -27,9 +27,10 @@ class CPUCollector implements Collector {
 
   @Override public void initialize(MetricRegistry registry) {
     registry.register(metricNamesGenerator.getCPUUsageMetricName(),
-        new CachedGauge<Float>(samplingInterval, timeUnit) {
-          @Override protected Float loadValue() {
-            return cpu.getLoad();
+        new CachedGauge<Long>(samplingInterval, timeUnit) {
+          @Override protected Long loadValue() {
+            long usage = cpu.getUsage();
+            return usage;
           }
         });
   }

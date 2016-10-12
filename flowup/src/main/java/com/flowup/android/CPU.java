@@ -4,53 +4,55 @@
 
 package com.flowup.android;
 
+import android.app.Application;
 import android.util.Log;
+import com.flowup.metricnames.App;
+import com.flowup.unix.Terminal;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 
 public class CPU {
 
   private static final String LOGTAG = "FlowUp.CPU";
 
-  public float getLoad() {
+  private final App app;
+  private final Terminal terminal;
+
+  public CPU(Application application, Terminal terminal) {
+    this.app = new App(application);
+    this.terminal = terminal;
+  }
+
+  public int getUsage() {
     try {
-      RandomAccessFile reader = new RandomAccessFile("/proc/stat", "r");
-      String load = reader.readLine();
+      String result = terminal.exec("top -s cpu -n 1");
+      return extractCPUUsage(result);
+    } catch (IOException e) {
+      Log.e(LOGTAG, "Exception catch while reading the CPU usage", e);
+      return 0;
+    }
+  }
 
-      String[] toks = load.split(" ");
-
-      long idle1 = Long.parseLong(toks[5]);
-      long cpu1 = Long.parseLong(toks[2])
-          + Long.parseLong(toks[3])
-          + Long.parseLong(toks[4])
-          + Long.parseLong(toks[6])
-          + Long.parseLong(toks[7])
-          + Long.parseLong(toks[8]);
-
-      try {
-        Thread.sleep(360);
-      } catch (Exception e) {
-        Log.e(LOGTAG, "Exception catch waiting for CPU usage lecture",e);
+  private int extractCPUUsage(String topOutput) {
+    String processLine = extractCurrentProcessStats(topOutput);
+    String[] topValuesPerProcess = processLine.split(" ");
+    for(String value: topValuesPerProcess) {
+      if (value.contains("%")) {
+        return Integer.parseInt(value.replace("%", ""));
       }
-
-      reader.seek(0);
-      load = reader.readLine();
-      reader.close();
-
-      toks = load.split(" ");
-
-      long idle2 = Long.parseLong(toks[5]);
-      long cpu2 = Long.parseLong(toks[2])
-          + Long.parseLong(toks[3])
-          + Long.parseLong(toks[4])
-          + Long.parseLong(toks[6])
-          + Long.parseLong(toks[7])
-          + Long.parseLong(toks[8]);
-
-      return (float) (cpu2 - cpu1) / ((cpu2 + idle2) - (cpu1 + idle1));
-    } catch (IOException ex) {
-      Log.e(LOGTAG, "Exception catch reading CPU usage file",ex);
     }
     return 0;
+  }
+
+  private String extractCurrentProcessStats(String topOutput) {
+    String pid = String.valueOf(app.getPid());
+    String[] split = topOutput.split("\\n");
+    for (String line : split) {
+      line = line.trim();
+      String[] lineBySpaces = line.split(" ");
+      if (lineBySpaces.length > 1 && lineBySpaces[0].equals(pid)) {
+        return line;
+      }
+    }
+    return "";
   }
 }
