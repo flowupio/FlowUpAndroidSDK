@@ -8,6 +8,7 @@ import android.app.Application;
 import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
+import com.flowup.android.App;
 import com.flowup.android.CPU;
 import com.flowup.collectors.Collector;
 import com.flowup.collectors.Collectors;
@@ -114,7 +115,7 @@ public class FlowUp {
   private void initializeCPUCollectors() {
     Collector cpuCollector =
         Collectors.getCPUCollector(application, SAMPLING_INTERVAL, SAMPLING_TIME_UNIT,
-            new CPU(application, new Terminal()));
+            new CPU(new App(application), new Terminal()));
     cpuCollector.initialize(registry);
   }
 

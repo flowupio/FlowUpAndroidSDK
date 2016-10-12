@@ -5,7 +5,7 @@
 package com.flowup.doubles;
 
 import android.content.Context;
-import com.flowup.metricnames.App;
+import com.flowup.android.App;
 
 import static org.mockito.Mockito.mock;
 

@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class CPUMetric extends Metric {
 
-  @SerializedName("cpuUsage") private final int cpuUsage;
+  @SerializedName("consumption") private final int cpuUsage;
 
   public CPUMetric(long timestamp, String appVersionName, String osVersion, boolean batterySaverOn,
       int cpuUsage) {

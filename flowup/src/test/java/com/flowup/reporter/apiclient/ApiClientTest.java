@@ -96,7 +96,7 @@ public class ApiClientTest extends MockWebServerTestCase {
 
     apiClient.sendReports(reports);
 
-    assertRequestBodyEquals("simpleReportRequestBody.json");
+    assertRequestBodyEquals("apiClient/simpleReportRequestBody.json");
   }
 
   @Test public void returnsSuccessResultIfTheHttpStatusCodeIsOk() throws Exception {

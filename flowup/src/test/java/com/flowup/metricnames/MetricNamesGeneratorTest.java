@@ -5,6 +5,8 @@
 package com.flowup.metricnames;
 
 import android.app.Activity;
+import com.flowup.android.App;
+import com.flowup.android.Device;
 import com.flowup.doubles.AnyApp;
 import com.flowup.doubles.AnyDevice;
 import com.flowup.utils.MetricNameUtils;

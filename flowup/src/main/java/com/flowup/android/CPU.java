@@ -4,9 +4,7 @@
 
 package com.flowup.android;
 
-import android.app.Application;
 import android.util.Log;
-import com.flowup.metricnames.App;
 import com.flowup.unix.Terminal;
 import java.io.IOException;
 
@@ -17,8 +15,8 @@ public class CPU {
   private final App app;
   private final Terminal terminal;
 
-  public CPU(Application application, Terminal terminal) {
-    this.app = new App(application);
+  public CPU(App app, Terminal terminal) {
+    this.app = app;
     this.terminal = terminal;
   }
 

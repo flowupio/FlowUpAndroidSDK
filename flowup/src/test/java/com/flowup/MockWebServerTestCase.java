@@ -4,6 +4,7 @@
 
 package com.flowup;
 
+import com.flowup.utils.TestResourcesFileReader;
 import com.google.gson.JsonParser;
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +30,6 @@ import static junit.framework.Assert.assertTrue;
 
   protected static final int OK_CODE = 200;
   protected static final int ANY_SERVER_ERROR_CODE = 500;
-  protected static final String FILE_ENCODING = "UTF-8";
 
   private MockWebServer server;
 
@@ -170,15 +170,7 @@ import static junit.framework.Assert.assertTrue;
   }
 
   protected String getContentFromFile(String fileName) throws IOException {
-    URL resource = getClass().getResource("/" + fileName);
-    String composeFileName = resource.getFile();
-    File file = new File(composeFileName);
-    List<String> lines = FileUtils.readLines(file, FILE_ENCODING);
-    StringBuilder stringBuilder = new StringBuilder();
-    for (String line : lines) {
-      stringBuilder.append(line);
-    }
-    return stringBuilder.toString();
+    return TestResourcesFileReader.getContentFromFile(fileName);
   }
 
   protected void assertRequestContainsHeader(String key, String expectedValue)

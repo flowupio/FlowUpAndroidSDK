@@ -6,6 +6,8 @@ package com.flowup.metricnames;
 
 import android.app.Activity;
 import com.codahale.metrics.MetricRegistry;
+import com.flowup.android.App;
+import com.flowup.android.Device;
 import com.flowup.utils.Time;
 
 public class MetricNamesGenerator {

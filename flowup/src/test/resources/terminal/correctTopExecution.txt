@@ -1,0 +1,278 @@
+User 13%, System 9%, IOW 0%, IRQ 0%
+User 81 + Nice 2 + Sys 56 + Idle 452 + IOW 2 + IRQ 0 + SIRQ 1 = 594
+
+  PID PR CPU% S  #THR     VSS     RSS PCY UID      Name
+21339  0   8% S    23 1556212K  56600K  fg u0_a263  com.flowup.example
+ 9056  3   4% S    30 1577524K  71860K  bg u0_a262  com.nero.elrubiusomg
+  272  3   2% S    17  84692K  11256K  fg system   /system/bin/surfaceflinger
+  856  3   1% S   136 1864188K 153560K  fg system   system_server
+21731  3   1% R     1  10692K   1184K  fg u0_a263  top
+ 8087  3   1% S     6  18040K    320K  fg shell    /sbin/adbd
+  374  3   0% S    11  54532K   8260K  fg system   /system/bin/mm-pp-daemon
+  373  2   0% S    21  37044K   1940K  fg root     /system/bin/system_monitor
+20021  0   0% S     1      0K      0K  fg root     kworker/0:1H
+20192  0   0% S     1      0K      0K  fg root     kworker/0:0
+12473  3   0% S     1      0K      0K  fg root     ksoftirqd/3
+    3  0   0% S     1      0K      0K  fg root     ksoftirqd/0
+ 3834  0   0% S     6  19276K    808K  fg root     /system/bin/mpdecision
+ 1401  0   0% S     1      0K      0K  fg root     dhd_dpc
+  407  0   0% S    39  55316K   1448K  fg sensors  /system/bin/sensors.qcom
+ 1428  3   0% S    39 1611296K  92264K  fg u0_a77   com.android.systemui
+ 6468  0   0% S    16 1511176K  34168K  bg system   com.sonymobile.phoneusage
+18353  0   0% S     1      0K      0K  fg root     kworker/u:3
+ 1400  3   0% S     1      0K      0K  fg root     dhd_watchdog_th
+ 6445  3   0% S    15 1507756K  32492K  bg u0_a97   com.sonymobile.ree
+  152  0   0% S     1      0K      0K  fg root     cfinteractive
+ 7124  0   0% S     1      0K      0K  fg root     kworker/u:1
+    7  0   0% D     1      0K      0K  fg root     kworker/u:0H
+  277  3   0% S     9  22496K    920K  fg system   /system/bin/illumination_service
+ 1464  3   0% S     1  12616K   2780K  fg wifi     /system/bin/wpa_supplicant
+ 1791  3   0% S    41 1544504K  45152K  fg nfc      com.android.nfc
+18205  3   0% S     1      0K      0K  fg root     kworker/3:0H
+   64  1   0% S     1      0K      0K  fg root     irq/75-msm_iomm
+   65  1   0% S     1      0K      0K  fg root     irq/273-msm_iom
+   66  1   0% S     1      0K      0K  fg root     irq/273-msm_iom
+   67  1   0% S     1      0K      0K  fg root     irq/273-msm_iom
+   68  1   0% S     1      0K      0K  fg root     irq/97-msm_iomm
+   69  1   0% S     1      0K      0K  fg root     irq/97-msm_iomm
+   70  1   0% S     1      0K      0K  fg root     irq/97-msm_iomm
+   71  1   0% S     1      0K      0K  fg root     devfreq_wq
+   72  1   0% S     1      0K      0K  fg root     l2cap
+   73  1   0% S     1      0K      0K  fg root     a2mp
+   74  1   0% S     1      0K      0K  fg root     cfg80211
+   76  1   0% S     1      0K      0K  fg root     irq/476-adsp
+   77  1   0% S     1      0K      0K  fg root     irq/412-mba
+   78  1   0% S     1      0K      0K  fg root     qmi
+   79  1   0% S     1      0K      0K  fg root     nmea
+   80  1   0% S     1      0K      0K  fg root     msm_ipc_router
+   81  1   0% S     1      0K      0K  fg root     apr_driver
+   85  0   0% S     1      0K      0K  fg root     kswapd0
+   86  1   0% S     1      0K      0K  fg root     ksmd
+   87  2   0% S     1      0K      0K  fg root     fsnotify_mark
+   88  1   0% S     1      0K      0K  fg root     ecryptfs-kthrea
+   89  1   0% S     1      0K      0K  fg root     cifsiod
+   90  1   0% S     1      0K      0K  fg root     crypto
+  108  1   0% S     1      0K      0K  fg root     ad_calc_wq
+  109  1   0% D     1      0K      0K  fg root     mdss_dsi_event
+  110  1   0% S     1      0K      0K  fg root     hdmi_tx_workq
+  111  1   0% S     1      0K      0K  fg root     unblanker
+  112  1   0% S     1      0K      0K  fg root     k_hsuart
+  113  1   0% S     1      0K      0K  fg root     diag_real_time_
+  114  1   0% S     1      0K      0K  fg root     diag_modem_data
+  115  1   0% S     1      0K      0K  fg root     diag_lpass_data
+  116  1   0% S     1      0K      0K  fg root     diag_wcnss_data
+  117  1   0% S     1      0K      0K  fg root     diag_wq
+  118  1   0% S     1      0K      0K  fg root     diag_usb_wq
+  119  1   0% S     1      0K      0K  fg root     diag_cntl_wq
+  120  1   0% S     1      0K      0K  fg root     diag_dci_wq
+  121  1   0% S     1      0K      0K  fg root     kgsl-3d0
+  122  1   0% S     1      0K      0K  fg root     kgsl_devfreq_wq
+  123  1   0% S     1      0K      0K  fg root     spi0
+  133  1   0% S     1      0K      0K  fg root     usbnet
+  134  1   0% S     1      0K      0K  fg root     k_rmnet_mux_wor
+  135  1   0% S     1      0K      0K  fg root     f_mtp
+  136  0   0% S     1      0K      0K  fg root     file-storage
+  137  1   0% S     1      0K      0K  fg root     uether
+  139  1   0% S     1      0K      0K  fg root     kpsmoused
+  140  1   0% S     1      0K      0K  fg root     irq/637-bu520x1
+  141  1   0% S     1      0K      0K  fg root     msm_vidc_worker
+  142  1   0% S     1      0K      0K  fg root     pm_workerq_venu
+  143  1   0% S     1      0K      0K  fg root     msm_vidc_worker
+  144  0   0% S     1      0K      0K  fg root     irq/344-pn547
+  145  3   0% S     1      0K      0K  fg root     irq/345-clearpa
+  146  1   0% S     1      0K      0K  fg root     msm_cpp_workque
+  147  1   0% S     1      0K      0K  fg root     irq/638-bt host
+  148  1   0% D     1      0K      0K  fg root     dbs_sync/0
+  149  1   0% D     1      0K      0K  fg root     dbs_sync/1
+  150  1   0% D     1      0K      0K  fg root     dbs_sync/2
+  151  1   0% D     1      0K      0K  fg root     dbs_sync/3
+  153  0   0% S     1      0K      0K  fg root     irq/170-msm_sdc
+  154  0   0% S     1      0K      0K  fg root     irq/253-msm_sdc
+  155  0   0% S     1      0K      0K  fg root     irq/289-msm_sdc
+  156  1   0% S     1      0K      0K  fg root     binder
+  157  1   0% S     1      0K      0K  fg root     usb_bam_wq
+  158  1   0% S     1      0K      0K  fg root     krfcommd
+  159  1   0% S     1      0K      0K  fg root     bam_dmux_rx
+  160  1   0% S     1      0K      0K  fg root     bam_dmux_tx
+  161  1   0% S     1      0K      0K  fg root     rq_stats
+  162  1   0% S     1      0K      0K  fg root     deferwq
+  163  0   0% S     1      0K      0K  fg root     sb-1
+  164  1   0% S     1      0K      0K  fg root     irq/195-ngd_sli
+  165  0   0% D     1      0K      0K  fg root     ngd_rx_thread1
+    1  3   0% S     1   8808K    664K  fg root     /init
+  167  0   0% S     1      0K      0K  fg root     msm_thermal:hot
+  168  0   0% S     1      0K      0K  fg root     msm_thermal:fre
+  169  0   0% S     1      0K      0K  fg root     msm_thermal:the
+  170  0   0% S     1      0K      0K  fg root     boost_sync/0
+  171  1   0% S     1      0K      0K  fg root     boost_sync/1
+  172  1   0% S     1      0K      0K  fg root     boost_sync/2
+  173  1   0% S     1      0K      0K  fg root     boost_sync/3
+  179  0   0% S     1      0K      0K  fg root     mmcqd/1
+  180  0   0% S     1      0K      0K  fg root     mmcqd/1rpmb
+  181  0   0% S     1   8804K    564K  fg root     /sbin/ueventd
+  182  1   0% S     1      0K      0K  fg root     irq/299-bsi-bat
+  183  0   0% S     1   8700K    456K  fg tad      /sbin/tad_static
+  194  3   0% S     1      0K      0K  fg root     flush-179:0
+  199  0   0% S     1      0K      0K  fg root     jbd2/mmcblk0p23
+  200  1   0% S     1      0K      0K  fg root     ext4-dio-unwrit
+  203  0   0% S     1      0K      0K  fg root     jbd2/mmcblk0p25
+  204  1   0% S     1      0K      0K  fg root     ext4-dio-unwrit
+  206  0   0% S     1      0K      0K  fg root     jbd2/mmcblk0p24
+  207  1   0% S     1      0K      0K  fg root     ext4-dio-unwrit
+  209  0   0% S     1      0K      0K  fg root     jbd2/mmcblk0p22
+  210  1   0% S     1      0K      0K  fg root     ext4-dio-unwrit
+  215  0   0% S     2  10320K    404K  fg nobody   /system/bin/hvdcp
+  222  0   0% S     1      0K      0K  fg root     jbd2/mmcblk0p18
+  223  1   0% S     1      0K      0K  fg root     ext4-dio-unwrit
+  226  1   0% S     1      0K      0K  fg root     sii8620_timer
+  227  1   0% S     1      0K      0K  fg root     mhl_rcp_key_rel
+  228  1   0% S     1      0K      0K  fg root     irq/635-sii8620
+  252  1   0% S     1      0K      0K  fg root     IPCRTR
+  255  1   0% S     1      0K      0K  fg root     ipc_rtr_q6_ipcr
+  257  0   0% S     1  10068K    640K  fg root     /system/bin/sct_service
+  258  0   0% S     1  10068K    736K  fg root     /system/bin/mlog_qmi_service
+  267  0   0% S     8  21352K   3068K  fg logd     /system/bin/logd
+  268  3   0% S     2  10880K    188K  fg root     /sbin/healthd
+  269  3   0% S     1  10564K   1032K  fg root     /system/bin/lmkd
+  270  3   0% S     1   9540K    640K  fg system   /system/bin/servicemanager
+  271  0   0% S     3  18160K   1376K  fg root     /system/bin/vold
+  274  0   0% S     2  15248K    884K  fg system   /system/bin/rfs_access
+  275  0   0% S     1  11088K    688K  fg system   /system/bin/qseecomd
+  276  3   0% S     1  10148K    960K  fg system   /system/bin/kobjeventd
+  278  0   0% S     2  14444K    308K  fg root     /system/bin/remote_vold
+  287  0   0% S     1      0K      0K  fg root     kauditd
+  296  0   0% S     3  13200K    356K  fg system   /system/bin/qseecomd
+  310  1   0% S     1      0K      0K  fg root     msm_slim_qmi_cl
+  311  1   0% S     1      0K      0K  fg root     msm_qmi_rtx_q
+  313  0   0% S     4  18796K    876K  fg nobody   /system/bin/rmt_storage
+  314  0   0% S     9  22872K   1208K  fg root     /system/bin/netd
+  315  3   0% S     1  10128K   1372K  fg root     /system/bin/debuggerd
+  316  0   0% S    18  49204K   7884K  fg radio    /system/bin/rild
+  317  0   0% S     4  54396K  10548K  fg drm      /system/bin/drmserver
+  319  0   0% S    26 231524K  72396K  fg media    /system/bin/mediaserver
+  322  0   0% S     1   9444K    640K  fg install  /system/bin/installd
+  325  0   0% S     2  13532K   1400K  fg keystore /system/bin/keystore
+  326  2   0% S     2  12452K    688K  fg root     /system/bin/qcom-system-daemon
+  332  0   0% S     2  13632K   1840K  fg idd      /system/bin/iddd
+  333  0   0% S     2  14448K    304K  fg media    /system/bin/adsprpcd
+  334  2   0% S     2  12524K    680K  fg system   /system/bin/imsqmidaemon
+  337  3   0% S     1   1468K    412K  fg root     /system/bin/ssrapp
+  338  3   0% S     1   8664K    196K  fg root     /sbin/ric
+  339  0   0% S    15  27852K    500K  fg root     /system/bin/xssm
+  340  0   0% S     2  14440K    308K  fg root     /system/bin/apfd
+  341  0   0% S     5  19880K   1180K  fg fastdorm /system/bin/fast-dormancy
+  346  0   0% S     1  14444K   2376K  fg system   /system/bin/credmgrd
+  347  0   0% S     6 1496864K  50812K  fg root     zygote
+  348  3   0% S     2  13188K   1096K  fg system   /system/bin/cnd
+  350  0   0% S     1  10048K    604K  fg gps      /system/bin/loc_launcher
+  353  3   0% S     3  15444K   3180K  fg media_rw /system/bin/sdcard
+  354  1   0% S     5  38240K   3844K  fg camera   /system/bin/mm-qcamera-daemon
+  355  2   0% S     6  20652K    944K  fg system   /system/bin/time_daemon
+  356  2   0% S     4  23648K   2456K  fg system   /system/bin/audiod
+  357  0   0% S     1  10004K    764K  fg system   /system/bin/scd
+  375  2   0% S     2  10340K    304K  fg system   /system/bin/touchscreend
+  380  1   0% S     1      0K      0K  fg root     irq/288-wcd9xxx
+  389  0   0% S    10  25092K   1112K  fg radio    /system/bin/qmuxd
+  395  0   0% S     1  10540K    536K  fg system   /system/bin/suntrold
+  397  0   0% S     7  22596K   1316K  fg radio    /system/bin/netmgrd
+  421  0   0% S     2  13412K    964K  fg system   /system/bin/imsdatadaemon
+  444  3   0% S     1  10140K    836K  fg idd      /system/bin/idd-logreader
+  507  0   0% D     1      0K      0K  fg root     mdss_fb0
+  639  1   0% S     1      0K      0K  fg root     IPCRTR
+  640  1   0% S     1      0K      0K  fg root     ipc_rtr_smd_ipc
+ 1081  3   0% S     1  10108K   1072K  fg ta_qmi   /system/bin/ta_qmi_service
+ 1399  3   0% S     1      0K      0K  fg root     wl_event_handle
+ 1402  3   0% S     1      0K      0K  fg root     dhd_rxf
+ 1468  3   0% S    27 1530336K  49312K  bg u0_a36   android.process.media
+ 1500  0   0% S    33 1620356K  58956K  fg u0_a42   com.google.process.gapps
+ 1617  3   0% S    17 1533512K  48260K  fg system   com.sonyericsson.usbux
+ 1648  3   0% S    14 1539916K  32036K  fg u0_a81   com.google.android.googlequicksearchbox:interactor
+ 1671  3   0% S    22 1568656K  51312K  fg u0_a127  com.sonymobile.experienceflow2
+ 1699  3   0% S    18 1528316K  37780K  bg u0_a238  com.sonyericsson.textinput.uxp
+ 1714  0   0% S    13 1509904K  27048K  fg system   com.sonymobile.superstamina:usmprovider
+ 1807  3   0% S    15 1509036K  32892K  fg system   com.sonyericsson.devicemonitor
+ 1840  0   0% S    16 1516764K  39560K  fg u0_a50   com.sonymobile.mx.android
+ 1866  0   0% S    13 1505256K  28244K  fg radio    com.sonymobile.transmitpower
+ 1883  0   0% S    34 1541192K  47888K  fg radio    com.android.phone
+ 1902  0   0% S    18 1511692K  33636K  fg u0_a133  com.sonymobile.googleanalyticsproxy
+ 1909  3   0% S    15 1507312K  26876K  fg system   com.sonyericsson.android.wakeup
+ 1943  0   0% S    37 1595232K  86724K  bg u0_a117  com.sonyericsson.home
+ 2033  3   0% S    39 1758300K  68108K  bg u0_a42   com.google.android.gms
+ 2039  0   0% S    13 1507556K  27656K  fg system   com.android.server.telecom:am
+ 2110  0   0% S     1   9380K    816K  fg dhcp     /system/bin/dhcpcd
+ 2131  0   0% S    13 1505244K  26456K  fg u0_a219  com.android.smspush
+ 3197  0   0% S    40 1613932K  57164K  fg u0_a42   com.google.android.gms.persistent
+ 3711  0   0% S     1      0K      0K  fg root     kworker/u:8
+ 3873  0   0% S     1   9284K    448K  fg root     /system/bin/fota-trigger
+ 3891  3   0% S     1      0K      0K  fg root     irq/33-cpubw_hw
+ 3974  0   0% S    16 1509012K  32252K  bg u0_a195  com.sonymobile.camerawidget
+ 4235  0   0% S    14 1514724K  31044K  bg system   com.sonymobile.enterprise.service
+ 5017  0   0% S    14 1506304K  26924K  bg system   com.sonyericsson.android.bootinfo:remote
+ 5334  3   0% S    16 1508928K  28220K  bg smartcar org.simalliance.openmobileapi.service
+ 5538  0   0% S    15 1507376K  27380K  bg radio    com.qualcomm.qcrilmsgtunnel
+ 7449  3   0% S    15 1515720K  37848K  bg u0_a90   com.sonyericsson.extras.liveware
+ 7508  0   0% S    16 1510840K  35688K  bg u0_a71   com.sonymobile.photoanalyzer
+ 7927  0   0% S    24 1574436K  66968K  bg system   com.android.settings
+12470  3   0% S     1      0K      0K  fg root     migration/3
+12511  3   0% S     1      0K      0K  fg root     kworker/3:1
+12588  0   0% S     1      0K      0K  fg root     kworker/0:4
+12751  2   0% S    17 1553524K  39752K  bg u0_a169  com.google.android.apps.plus
+12777  3   0% S    15 1509644K  35472K  bg u0_a61   android.process.acore
+12924  3   0% S     1   9432K    844K  fg shell    /system/bin/sh
+12936  3   0% S    18 1544160K  42156K  bg u0_a81   com.google.android.googlequicksearchbox:search
+13047  3   0% S    13 1535364K  40600K  bg u0_a31   com.sonymobile.cameracommon
+13071  3   0% S    36 1551084K  46048K  bg u0_a55   com.android.vending
+13133  2   0% S    13 1508844K  27396K  bg u0_a41   com.sonymobile.social.services
+13303  3   0% S     1      0K      0K  fg root     kworker/3:2H
+14483  2   0% S    14 1514096K  29216K  bg u0_a39   com.android.exchange
+14526  3   0% S    13 1505428K  28488K  bg u0_a49   com.android.musicfx
+14553  2   0% S    14 1530128K  34388K  bg u0_a98   com.sonyericsson.album
+14642  0   0% S    17 1533008K  45492K  bg u0_a121  com.google.android.apps.docs
+14682  3   0% S    14 1511856K  30928K  bg u0_a193  com.sonymobile.autopairing
+14703  2   0% S    13 1508032K  27748K  bg u0_a234  com.sonymobile.runtimeskinning.core
+16943  0   0% S    18 1520496K  35608K  bg u0_a80   com.sonyericsson.updatecenter
+19766  3   0% S     1      0K      0K  fg root     kworker/3:2
+20418  0   0% S     1   9292K    684K  fg shell    logcat
+20718  3   0% S     1      0K      0K  fg root     kworker/u:2
+20801  0   0% S     1      0K      0K  fg root     kworker/0:2
+20873  0   0% S     1      0K      0K  fg root     kworker/0:0H
+21181  3   0% S    13 1505204K  27892K  bg u0_a35   com.android.defcontainer
+21223  0   0% S     1      0K      0K  fg root     kworker/0:1
+21237  0   0% S    13 1506292K  28852K  bg u0_a191  com.sony.smallapp.launcher
+21272  2   0% S    13 1505308K  29156K  bg system   com.android.keychain
+21305  2   0% S    13 1505372K  25988K  bg u0_a174  com.realvnc.android.remote
+21364  3   0% S    13 1505760K  27336K  bg u0_a45   com.google.android.partnersetup
+21385  3   0% S    14 1586100K  33996K  bg u0_a42   com.google.android.gms.wearable
+21416  3   0% S    19 1525440K  34040K  bg u0_a100  com.sonymobile.entrance
+21451  3   0% S    13 1507872K  25908K  bg u0_a119  com.sonymobile.deviceconfigtool
+21471  0   0% S    49 1579732K  50500K  bg u0_a156  com.google.android.apps.magazines
+21530  3   0% S    13 1521040K  29876K  bg u0_a60   com.sonyericsson.android.camera
+21548  3   0% S    13 1517696K  29312K  bg u0_a76   com.sonymobile.android.addoncamera.supervideo
+21567  3   0% S    22 1521248K  33720K  bg u0_a245  com.sonymobile.runtimeskinning.picker
+  166  1   0% D     1      0K      0K  fg root     ngd_notify_sl1
+    2  0   0% S     1      0K      0K  fg root     kthreadd
+    6  3   0% D     1      0K      0K  fg root     kworker/u:0
+    8  0   0% S     1      0K      0K  fg root     migration/0
+   21  1   0% S     1      0K      0K  fg root     khelper
+   22  1   0% S     1      0K      0K  fg root     netns
+   28  1   0% S     1      0K      0K  fg root     modem_notifier
+   29  1   0% S     1      0K      0K  fg root     smd_channel_clo
+   30  1   0% S     1      0K      0K  fg root     smsm_cb_wq
+   32  1   0% S     1      0K      0K  fg root     rpm-smd
+   33  0   0% S     1      0K      0K  fg root     kworker/u:1H
+   34  1   0% S     1      0K      0K  fg root     mpm
+   49  0   0% S     1      0K      0K  fg root     sync_supers
+   50  3   0% S     1      0K      0K  fg root     bdi-default
+   51  1   0% S     1      0K      0K  fg root     kblockd
+   52  0   0% S     1      0K      0K  fg root     system
+   53  1   0% S     1      0K      0K  fg root     khubd
+   54  1   0% S     1      0K      0K  fg root     irq/102-msm_iom
+   55  1   0% S     1      0K      0K  fg root     irq/102-msm_iom
+   56  1   0% S     1      0K      0K  fg root     irq/102-msm_iom
+   57  1   0% S     1      0K      0K  fg root     irq/79-msm_iomm
+   58  1   0% S     1      0K      0K  fg root     irq/78-msm_iomm
+   59  1   0% S     1      0K      0K  fg root     irq/78-msm_iomm
+   60  1   0% S     1      0K      0K  fg root     irq/74-msm_iomm
+   61  1   0% S     1      0K      0K  fg root     irq/75-msm_iomm
+   62  1   0% S     1      0K      0K  fg root     irq/75-msm_iomm
+   63  1   0% S     1      0K      0K  fg root     irq/75-msm_iomm
