@@ -23,7 +23,8 @@ public class CPU {
   public int getUsage() {
     try {
       String result = terminal.exec("top -s cpu -n 1");
-      return extractCPUUsage(result);
+      int cpuUsage = extractCPUUsage(result);
+      return cpuUsage;
     } catch (IOException e) {
       Log.e(LOGTAG, "Exception catch while reading the CPU usage", e);
       return 0;
