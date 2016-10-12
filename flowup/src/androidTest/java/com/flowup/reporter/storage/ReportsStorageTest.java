@@ -145,7 +145,7 @@ public class ReportsStorageTest {
       reportsIds.add(String.valueOf(i));
     }
     return new Reports(reportsIds, null, null, null, null, null, null, Collections.EMPTY_LIST,
-        Collections.EMPTY_LIST);
+        Collections.EMPTY_LIST, Collections.EMPTY_LIST);
   }
 
   private void assertNetworkMetricsContainsExpectedValues(int numberOfReports, Reports reports) {
