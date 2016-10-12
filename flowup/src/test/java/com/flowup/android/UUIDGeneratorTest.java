@@ -7,7 +7,6 @@ package com.flowup.android;
 import android.content.Context;
 import android.content.SharedPreferences;
 import com.flowup.RobolectricTest;
-import com.flowup.android.UUIDGenerator;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,8 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
-@RunWith(RobolectricTestRunner.class)
-public class UUIDGeneratorTest extends RobolectricTest {
+@RunWith(RobolectricTestRunner.class) public class UUIDGeneratorTest extends RobolectricTest {
 
   private static final String UUID_KEY = "uuid";
   private static final String UUID_SHARED_PREFS_NAME = "uuid_shared_prefs_name";

@@ -1,6 +1,5 @@
 package com.flowup.utils;
 
-import android.support.annotation.NonNull;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
