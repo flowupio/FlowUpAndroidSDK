@@ -5,9 +5,8 @@
 package com.flowup.collectors;
 
 import android.app.Application;
-import android.support.annotation.NonNull;
-import com.flowup.android.CPU;
 import com.flowup.android.App;
+import com.flowup.android.CPU;
 import com.flowup.android.Device;
 import com.flowup.metricnames.MetricNamesGenerator;
 import com.flowup.utils.Time;
