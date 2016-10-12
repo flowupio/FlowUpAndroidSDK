@@ -113,7 +113,8 @@ public class FlowUp {
 
   private void initializeCPUCollectors() {
     Collector cpuCollector =
-        Collectors.getCPUCollector(application, SAMPLING_INTERVAL, SAMPLING_TIME_UNIT, new CPU(application, new Terminal()));
+        Collectors.getCPUCollector(application, SAMPLING_INTERVAL, SAMPLING_TIME_UNIT,
+            new CPU(application, new Terminal()));
     cpuCollector.initialize(registry);
   }
 
