@@ -34,10 +34,16 @@ public class Collectors {
         timeUnit);
   }
 
-  public static Collector getCPUCollector(Application application, int samplingInterval,
+  public static Collector getCPUUsageCollector(Application application, int samplingInterval,
       TimeUnit samplingTimeUnit, CPU cpu) {
     return new CPUUsageCollector(getMetricNamesGenerator(application), samplingInterval,
         samplingTimeUnit, cpu);
+  }
+
+  public static Collector getMemoryUsageCollector(Application application, int samplingInterval,
+      TimeUnit samplingTimeUnit, Device device) {
+    return new MemoryUsageCollector(getMetricNamesGenerator(application), samplingInterval,
+        samplingTimeUnit, device);
   }
 
   private static MetricNamesGenerator getMetricNamesGenerator(Application application) {
