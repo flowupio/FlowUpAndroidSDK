@@ -4,6 +4,7 @@
 
 package com.flowup.reporter.model;
 
+import android.os.StatFs;
 import com.google.gson.annotations.SerializedName;
 
 public class Metric {
