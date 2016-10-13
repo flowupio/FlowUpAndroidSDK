@@ -41,9 +41,9 @@ public class Collectors {
   }
 
   public static Collector getMemoryUsageCollector(Application application, int samplingInterval,
-      TimeUnit samplingTimeUnit, Device device) {
+      TimeUnit samplingTimeUnit, App app) {
     return new MemoryUsageCollector(getMetricNamesGenerator(application), samplingInterval,
-        samplingTimeUnit, device);
+        samplingTimeUnit, app);
   }
 
   private static MetricNamesGenerator getMetricNamesGenerator(Application application) {

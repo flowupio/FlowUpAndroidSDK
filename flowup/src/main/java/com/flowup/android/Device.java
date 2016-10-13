@@ -4,7 +4,6 @@
 
 package com.flowup.android;
 
-import android.app.ActivityManager;
 import android.content.Context;
 import android.os.PowerManager;
 import android.util.DisplayMetrics;
@@ -75,16 +74,5 @@ public class Device {
       return powerManager.isPowerSaveMode();
     }
     return false;
-  }
-
-  public long getMemoryUsage() {
-    ActivityManager activityManager =
-        (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-    ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
-    activityManager.getMemoryInfo(memoryInfo);
-    double availMem = memoryInfo.availMem;
-    double totalMem = memoryInfo.totalMem;
-    int usage = (int) ((availMem / totalMem) * 100);
-    return usage;
   }
 }

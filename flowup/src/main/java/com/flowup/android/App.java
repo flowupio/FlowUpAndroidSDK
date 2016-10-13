@@ -45,4 +45,12 @@ public class App {
   public int getPid() {
     return android.os.Process.myPid();
   }
+
+  public long getMemoryUsage() {
+    Runtime runtime = Runtime.getRuntime();
+    double maxMemory = runtime.maxMemory();
+    double totalMemory = runtime.totalMemory();
+    double usedMemoryPercentage = (totalMemory / maxMemory) * 100;
+    return (long) usedMemoryPercentage;
+  }
 }

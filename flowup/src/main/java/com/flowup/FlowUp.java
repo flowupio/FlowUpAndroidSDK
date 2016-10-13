@@ -124,7 +124,7 @@ public class FlowUp {
   private void initializeMemoryCollectors() {
     Collector memoryUsageCollector =
         Collectors.getMemoryUsageCollector(application, SAMPLING_INTERVAL, SAMPLING_TIME_UNIT,
-            new Device(application));
+            new App(application));
     memoryUsageCollector.initialize(registry);
   }
 
