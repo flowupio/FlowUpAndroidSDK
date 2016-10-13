@@ -70,10 +70,6 @@ public class MetricNamesExtractor {
     return metricName.contains(MetricNamesGenerator.CPU_USAGE);
   }
 
-  public boolean isMemoryUsageMetric(String metricName) {
-    return metricName.contains(MetricNamesGenerator.MEMORY_USAGE);
-  }
-
   public boolean isBytesUploadedMetric(String metricName) {
     return metricName.contains(MetricNamesGenerator.BYTES_UPLOADED);
   }
@@ -84,6 +80,14 @@ public class MetricNamesExtractor {
 
   public boolean isFrameTimeMetric(String metricName) {
     return metricName.contains(MetricNamesGenerator.FRAME_TIME);
+  }
+
+  public boolean isMemoryUsageMetric(String metricName) {
+    return metricName.contains(MetricNamesGenerator.MEMORY_USAGE);
+  }
+
+  public boolean isBytesAllocatedMetric(String metricName) {
+    return metricName.contains(MetricNamesGenerator.BYTES_ALLOCATED);
   }
 
   private String findCrossMetricInfoAtPosition(int index, String metricName) {

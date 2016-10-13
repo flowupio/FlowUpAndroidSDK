@@ -140,18 +140,25 @@ class RealmReportsToReportsMapper extends Mapper<List<RealmReport>, Reports> {
     for (int i = 0; i < reports.size(); i++) {
       RealmReport report = reports.get(i);
       RealmList<RealmMetric> metrics = report.getMetrics();
+      Integer memoryUsage = null;
+      Long bytesAllocated = null;
       for (int j = 0; j < metrics.size(); j++) {
         RealmMetric metric = metrics.get(j);
         String metricName = metric.getMetricName();
         if (extractor.isMemoryUsageMetric(metricName)) {
+          memoryUsage = metric.getStatisticalValue().getValue().intValue();
+        } else if (extractor.isBytesAllocatedMetric(metricName)) {
+          bytesAllocated = metric.getStatisticalValue().getValue();
+        }
+        if (memoryUsage != null && bytesAllocated != null) {
           long reportTimestamp = Long.valueOf(report.getReportTimestamp());
           String osVersion = extractor.getOSVersion(metricName);
           String versionName = extractor.getVersionName(metricName);
           boolean batterySaverOn = extractor.getIsBatterSaverOn(metricName);
-          int memoryUsage = metric.getStatisticalValue().getValue().intValue();
           memoryMetrics.add(
               new MemoryMetric(reportTimestamp, versionName, osVersion, batterySaverOn,
-                  memoryUsage));
+                  bytesAllocated, memoryUsage));
+          break;
         }
       }
     }
