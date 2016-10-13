@@ -27,11 +27,11 @@ class ApiClientConfig {
     if (debug) {
       HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
       httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-      httpClient = HTTP_CLIENT.newBuilder().addInterceptor(httpLoggingInterceptor).build();
+      httpClient = httpClient.newBuilder().addInterceptor(httpLoggingInterceptor).build();
     }
     if (useGzip) {
       GzipRequestInterceptor gzipInterceptor = new GzipRequestInterceptor();
-      httpClient = HTTP_CLIENT.newBuilder().addInterceptor(gzipInterceptor).build();
+      httpClient = httpClient.newBuilder().addInterceptor(gzipInterceptor).build();
     }
     return httpClient;
   }

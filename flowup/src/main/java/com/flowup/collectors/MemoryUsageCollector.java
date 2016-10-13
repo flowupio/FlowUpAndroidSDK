@@ -3,7 +3,6 @@ package com.flowup.collectors;
 import com.codahale.metrics.CachedGauge;
 import com.codahale.metrics.MetricRegistry;
 import com.flowup.android.App;
-import com.flowup.android.Device;
 import com.flowup.metricnames.MetricNamesGenerator;
 import java.util.concurrent.TimeUnit;
 
@@ -26,7 +25,13 @@ class MemoryUsageCollector implements Collector {
     registry.register(metricNamesGenerator.getMemoryUsageMetricName(),
         new CachedGauge<Long>(samplingInterval, timeUnit) {
           @Override protected Long loadValue() {
-            return Long.valueOf(app.getMemoryUsage());
+            return app.getMemoryUsage();
+          }
+        });
+    registry.register(metricNamesGenerator.getBytesAllocatedMetricName(),
+        new CachedGauge<Long>(samplingInterval, timeUnit) {
+          @Override protected Long loadValue() {
+            return app.getBytesAllocated();
           }
         });
   }

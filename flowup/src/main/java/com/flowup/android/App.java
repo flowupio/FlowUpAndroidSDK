@@ -46,6 +46,12 @@ public class App {
     return android.os.Process.myPid();
   }
 
+  public long getBytesAllocated() {
+    Runtime runtime = Runtime.getRuntime();
+    double totalMemory = runtime.totalMemory();
+    return (long) totalMemory;
+  }
+
   public long getMemoryUsage() {
     Runtime runtime = Runtime.getRuntime();
     double maxMemory = runtime.maxMemory();

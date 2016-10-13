@@ -18,6 +18,7 @@ public class MetricNamesGenerator {
   public static final String BYTES_UPLOADED = "bytesUploaded";
   public static final String CPU_USAGE = "cpuUsage";
   public static final String MEMORY_USAGE = "memoryUsage";
+  public static final String BYTES_ALLOCATED = "bytesAllocated";
 
   private static final String UI = "ui";
   private static final String NETWORK = "network";
@@ -59,6 +60,10 @@ public class MetricNamesGenerator {
 
   public String getMemoryUsageMetricName() {
     return MetricRegistry.name(appendCrossMetricInfo(MEMORY_USAGE));
+  }
+
+  public String getBytesAllocatedMetricName() {
+    return MetricRegistry.name(appendCrossMetricInfo(BYTES_ALLOCATED));
   }
 
   private String getActivityName(Activity activity) {
