@@ -10,7 +10,6 @@ import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.flowup.android.App;
 import com.flowup.android.CPU;
-import com.flowup.android.Device;
 import com.flowup.collectors.Collector;
 import com.flowup.collectors.Collectors;
 import com.flowup.reporter.FlowUpReporter;
