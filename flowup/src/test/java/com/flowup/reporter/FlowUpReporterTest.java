@@ -190,6 +190,6 @@ import static org.mockito.Mockito.when;
 
   @NonNull private Reports givenAReportsInstanceWithId(List<String> ids) {
     return new Reports(ids, "", "", "", "", "", 0, Collections.EMPTY_LIST, Collections.EMPTY_LIST,
-        Collections.EMPTY_LIST);
+        Collections.EMPTY_LIST, Collections.EMPTY_LIST);
   }
 }

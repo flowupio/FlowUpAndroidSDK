@@ -231,6 +231,72 @@ import static org.mockito.Mockito.when;
     assertEquals("cpuUsage", parts[9]);
   }
 
+  @Test public void memoryUsageMetricNameShouldContainExactly11FieldsSeparatedByDots() {
+    String memoryUsage = generator.getMemoryUsageMetricName();
+
+    assertEquals(11, MetricNameUtils.split(memoryUsage).length);
+  }
+
+  @Test public void memoryUsageUsageMetricNameShouldContainTheCrossMetricInfoName() {
+    String memoryUsage = generator.getMemoryUsageMetricName();
+
+    assertContainsCrossMetricInfoName(memoryUsage);
+  }
+
+  @Test public void memoryUsageContainsTheMetricNameInTheCorrectPosition() {
+    String memoryUsage = generator.getMemoryUsageMetricName();
+
+    String[] parts = MetricNameUtils.split(memoryUsage);
+    assertEquals("memoryUsage", parts[10]);
+  }
+
+  @Test
+  public void identifiesAMemoryUsageMetricProperly() {
+    String memoryUsage = generator.getMemoryUsageMetricName();
+
+    assertTrue(extractor.isMemoryUsageMetric(memoryUsage));
+  }
+
+  @Test
+  public void doesNotIdentifyABytesAllocatedMetricAsMemoryUsage() {
+    String bytesAllocated = generator.getBytesAllocatedMetricName();
+
+    assertFalse(extractor.isMemoryUsageMetric(bytesAllocated));
+  }
+
+  @Test public void bytesAllocatedMetricNameShouldContainExactly11FieldsSeparatedByDots() {
+    String bytesAllocated = generator.getBytesAllocatedMetricName();
+
+    assertEquals(11, MetricNameUtils.split(bytesAllocated).length);
+  }
+
+  @Test public void bytesAllocatedUsageUsageMetricNameShouldContainTheCrossMetricInfoName() {
+    String bytesAllocated = generator.getBytesAllocatedMetricName();
+
+    assertContainsCrossMetricInfoName(bytesAllocated);
+  }
+
+  @Test public void bytesAllocatedUsageContainsTheMetricNameInTheCorrectPosition() {
+    String bytesAllocated = generator.getBytesAllocatedMetricName();
+
+    String[] parts = MetricNameUtils.split(bytesAllocated);
+    assertEquals("bytesAllocated", parts[10]);
+  }
+
+  @Test
+  public void identifiesABytesAllocatedMetricProperly() {
+    String bytesAllocated = generator.getBytesAllocatedMetricName();
+
+    assertTrue(extractor.isBytesAllocatedMetric(bytesAllocated));
+  }
+
+  @Test
+  public void doesNotIdentifyAMemoryUsageMetricAsBytesAllocated() {
+    String memoryUsage = generator.getMemoryUsageMetricName();
+
+    assertFalse(extractor.isBytesAllocatedMetric(memoryUsage));
+  }
+
   private void assertContainsCrossMetricInfoName(String metricName) {
     assertEquals(replaceDashes(app.getAppPackageName()), extractor.getAppPackage(metricName));
     assertEquals(device.getInstallationUUID(), extractor.getInstallationUUID(metricName));

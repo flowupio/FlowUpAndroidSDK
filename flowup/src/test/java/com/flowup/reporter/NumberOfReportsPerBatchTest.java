@@ -6,6 +6,7 @@ package com.flowup.reporter;
 
 import com.flowup.FlowUp;
 import com.flowup.reporter.model.CPUMetric;
+import com.flowup.reporter.model.MemoryMetric;
 import com.flowup.reporter.model.NetworkMetric;
 import com.flowup.reporter.model.Reports;
 import com.flowup.reporter.model.StatisticalValue;
@@ -27,6 +28,8 @@ public class NumberOfReportsPerBatchTest {
 
   private static final double MAX_REQUEST_SIZE_WITHOUT_COMPRESSION_IN_BYTES = 9.5d * 1024 * 1024;
   private static final int CPU_USAGE = 100;
+  private static final long BYTES_ALLOCATED = 1024;
+  private static final int MEMORY_USAGE = 4;
 
   private final Gson gson = new Gson();
 
@@ -70,8 +73,9 @@ public class NumberOfReportsPerBatchTest {
     List<NetworkMetric> networkMetrics = givenSomeNetworkMetrics(numberOfReports);
     List<UIMetric> uiMetrics = givenSomeUIMetrics(numberOfReports);
     List<CPUMetric> cpuMetrics = givenSomeCPUMetrics(numberOfReports);
+    List<MemoryMetric> memoryMetrics = givenSomeMemoryMetrics(numberOfReports);
     return new Reports(reportIds, appPackage, uuid, deviceModel, screenDensity, screenSize,
-        numberOfCores, networkMetrics, uiMetrics, cpuMetrics);
+        numberOfCores, networkMetrics, uiMetrics, cpuMetrics, memoryMetrics);
   }
 
   private List<NetworkMetric> givenSomeNetworkMetrics(int numberOfReports) {
@@ -90,6 +94,15 @@ public class NumberOfReportsPerBatchTest {
       cpuMetrics.add(networkMetric);
     }
     return cpuMetrics;
+  }
+
+  private List<MemoryMetric> givenSomeMemoryMetrics(int numberOfReports) {
+    List<MemoryMetric> memoryMetrics = new LinkedList<>();
+    for (int i = 0; i < numberOfReports; i++) {
+      MemoryMetric memoryMetric = generateAMemoryMetric(i);
+      memoryMetrics.add(memoryMetric);
+    }
+    return memoryMetrics;
   }
 
   private List<UIMetric> givenSomeUIMetrics(int numberOfReports) {
@@ -125,6 +138,11 @@ public class NumberOfReportsPerBatchTest {
   private CPUMetric generateAnyCPUMetric(int timestamp) {
     return new CPUMetric(timestamp, ANY_VERSION_NAME, ANY_OS_VERSION, ANY_BATTERY_SAVER_ON,
         CPU_USAGE);
+  }
+
+  private MemoryMetric generateAMemoryMetric(int timestamp) {
+    return new MemoryMetric(timestamp, ANY_VERSION_NAME, ANY_OS_VERSION, ANY_BATTERY_SAVER_ON,
+        BYTES_ALLOCATED, MEMORY_USAGE);
   }
 
   private List<String> givenSomeIds(int numberOfReports) {

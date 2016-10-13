@@ -23,6 +23,7 @@ public class MetricNamesGenerator {
   private static final String UI = "ui";
   private static final String NETWORK = "network";
   private static final String SEPARATOR = ".";
+  private static final String MEMORY = "memory";
 
   private final App app;
   private final Device device;
@@ -59,11 +60,11 @@ public class MetricNamesGenerator {
   }
 
   public String getMemoryUsageMetricName() {
-    return MetricRegistry.name(appendCrossMetricInfo(MEMORY_USAGE));
+    return MetricRegistry.name(appendCrossMetricInfo(MEMORY + SEPARATOR + MEMORY_USAGE));
   }
 
   public String getBytesAllocatedMetricName() {
-    return MetricRegistry.name(appendCrossMetricInfo(BYTES_ALLOCATED));
+    return MetricRegistry.name(appendCrossMetricInfo(MEMORY + SEPARATOR + BYTES_ALLOCATED));
   }
 
   private String getActivityName(Activity activity) {
