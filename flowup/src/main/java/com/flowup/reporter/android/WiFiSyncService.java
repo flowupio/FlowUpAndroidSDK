@@ -41,7 +41,7 @@ public class WiFiSyncService extends GcmTaskService {
   }
 
   private boolean isTaskSupported(TaskParams taskParams) {
-    return !taskParams.getTag().equals(SYNCHRONIZE_METRICS_REPORT);
+    return taskParams.getTag().equals(SYNCHRONIZE_METRICS_REPORT);
   }
 
   private int syncStoredReports() {
