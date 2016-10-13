@@ -58,8 +58,18 @@ This library has been developed using [Realm][realm] as the persistence engine. 
 
 Inside this database you can find all the information persisted by FlowUp which is pending to be synced with our servers. Once this information be synced, it will be removed from the database.
 
+How to get info about the sync process
+--------------------------------------
+
+This library uses part of the Google Play Services API to implement the reports sync mechanism. This API is named [GcmTaskService][gcmtaskservice] and it's being used to schedule a call to our ``WiFiSyncService`` every hour if the device is connected to an unmetered wifi network. You can review the scheduler configuration in the class ``WiFiSyncServiceScheduler``.
+
+The service will be invoked once per hour in the best case and to be able to know what's going on we've added some log traces. If you want to review the service tasks execution historic you can execute the following commands:
+
+* ``adb shell dumpsys activity service GcmService --endpoints``: Shows information about the tasks scheduled for every app in the connected device.
+* ``adb shell dumpsys activity service GcmService --endpoints <APP-PACKAGE-NAME>``: Shows information about the history of tasks executed for the application and the total time the service has been running in seconds since the application was installed.
+
 [flowuplogo]: ./art/FlowUpLogo.png
 [realm]: https://realm.io/es/docs/java/latest/
 [realmbrowser]: https://itunes.apple.com/es/app/realm-browser/id1007457278?mt=12
-
+[gcmtaskservice]: https://developers.google.com/cloud-messaging/network-manager
 

@@ -4,6 +4,7 @@
 
 package com.flowup.reporter.android;
 
+import android.util.Log;
 import com.flowup.R;
 import com.flowup.reporter.FlowUpReporter;
 import com.flowup.reporter.ReportResult;
@@ -20,6 +21,7 @@ import static com.google.android.gms.gcm.GcmNetworkManager.RESULT_SUCCESS;
 
 public class WiFiSyncService extends GcmTaskService {
 
+  private static final String LOGTAG = "FlowUp.WiFiSyncService";
   private ApiClient apiClient;
   private ReportsStorage reportsStorage;
 
@@ -45,6 +47,7 @@ public class WiFiSyncService extends GcmTaskService {
   }
 
   private int syncStoredReports() {
+    Log.d(LOGTAG, "Let's start with the sync process");
     Reports reports = reportsStorage.getReports(FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST);
     if (reports == null) {
       return RESULT_SUCCESS;
@@ -52,17 +55,31 @@ public class WiFiSyncService extends GcmTaskService {
     ReportResult.Error error;
     ReportResult result;
     do {
+      Log.d(LOGTAG, reports.getReportsIds().size() + " reports to sync");
       result = apiClient.sendReports(reports);
       if (result.isSuccess()) {
+        Log.d(LOGTAG, "Api response successful");
         reportsStorage.deleteReports(reports);
+      } else {
+        Log.d(LOGTAG, "Api response error");
       }
       reports = reportsStorage.getReports(FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST);
+      if (reports != null) {
+        Log.d(LOGTAG, "Let's continue reporting, we have "
+            + reports.getReportsIds().size()
+            + " reports pending");
+      }
       error = result.getError();
     } while (reports != null && result.isSuccess());
     if (error == ReportResult.Error.NETWORK_ERROR) {
+      Log.d(LOGTAG, "The last sync failed due to a network error, so let's reschedule a new task");
       return RESULT_RESCHEDULE;
-    } else {
+    } else if (!result.isSuccess()) {
+      Log.d(LOGTAG, "The last sync failed due to an unknown error");
       return RESULT_FAILURE;
+    } else {
+      Log.d(LOGTAG, "Sync process finished with a successful result");
+      return RESULT_SUCCESS;
     }
   }
 }
