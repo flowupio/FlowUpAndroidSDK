@@ -5,6 +5,7 @@
 package com.flowup;
 
 import android.app.Application;
+import android.util.Log;
 import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
@@ -15,6 +16,8 @@ import com.flowup.collectors.Collector;
 import com.flowup.collectors.Collectors;
 import com.flowup.reporter.FlowUpReporter;
 import com.flowup.unix.Terminal;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.readytalk.metrics.StatsDReporter;
 import java.util.concurrent.TimeUnit;
 
@@ -22,6 +25,7 @@ public class FlowUp {
 
   public static final int SAMPLING_INTERVAL = 10;
   private static final TimeUnit SAMPLING_TIME_UNIT = TimeUnit.SECONDS;
+  private static final String LOGTAG = "FlowUp";
 
   private final Application application;
   private final boolean debuggable;
@@ -38,7 +42,7 @@ public class FlowUp {
   }
 
   public void start() {
-    if (hasBeenInitialized()) {
+    if (hasBeenInitialized() || !doesSupportGooglePlayServices()) {
       return;
     }
     initializeMetrics();
@@ -56,6 +60,14 @@ public class FlowUp {
 
   private boolean hasBeenInitialized() {
     return registry != null;
+  }
+
+  private boolean doesSupportGooglePlayServices() {
+    GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
+    int resultCode = googleApiAvailability.isGooglePlayServicesAvailable(application);
+    boolean isGooglePlayServicesSupported = resultCode == ConnectionResult.SUCCESS;
+    Log.d(LOGTAG, "Google play services supported = " + isGooglePlayServicesSupported);
+    return isGooglePlayServicesSupported;
   }
 
   private void initializeReporters() {
