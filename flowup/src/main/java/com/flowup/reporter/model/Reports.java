@@ -20,11 +20,16 @@ public class Reports {
   @SerializedName("ui") private final List<UIMetric> uiMetrics;
   @SerializedName("cpu") private final List<CPUMetric> cpuMetrics;
   @SerializedName("memory") private final List<MemoryMetric> memoryMetrics;
+  @SerializedName("disk") private final List<DiskMetric> diskMetrics;
+
+  public Reports(List<String> reportsIds) {
+    this(reportsIds, null, null, null, null, null, null, null, null, null, null, null);
+  }
 
   public Reports(List<String> reportsIds, String appPackage, String uuid, String deviceModel,
       String screenDensity, String screenSize, Integer numberOfCores,
       List<NetworkMetric> networkMetricsReports, List<UIMetric> uiMetrics,
-      List<CPUMetric> cpuMetrics, List<MemoryMetric> memoryMetrics) {
+      List<CPUMetric> cpuMetrics, List<MemoryMetric> memoryMetrics, List<DiskMetric> diskMetrics) {
     this.reportsIds = reportsIds;
     this.appPackage = appPackage;
     this.uuid = uuid;
@@ -36,6 +41,7 @@ public class Reports {
     this.uiMetrics = uiMetrics;
     this.cpuMetrics = cpuMetrics;
     this.memoryMetrics = memoryMetrics;
+    this.diskMetrics = diskMetrics;
   }
 
   public List<String> getReportsIds() {
@@ -80,6 +86,10 @@ public class Reports {
 
   public List<MemoryMetric> getMemoryMetrics() {
     return memoryMetrics;
+  }
+
+  public List<DiskMetric> getDiskMetrics() {
+    return diskMetrics;
   }
 
   @Override public boolean equals(Object o) {

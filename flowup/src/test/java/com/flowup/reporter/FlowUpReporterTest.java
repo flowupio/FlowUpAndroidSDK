@@ -4,7 +4,6 @@
 
 package com.flowup.reporter;
 
-import android.support.annotation.NonNull;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Histogram;
@@ -188,8 +187,7 @@ import static org.mockito.Mockito.when;
     return report;
   }
 
-  @NonNull private Reports givenAReportsInstanceWithId(List<String> ids) {
-    return new Reports(ids, "", "", "", "", "", 0, Collections.EMPTY_LIST, Collections.EMPTY_LIST,
-        Collections.EMPTY_LIST, Collections.EMPTY_LIST);
+  private Reports givenAReportsInstanceWithId(List<String> ids) {
+    return new Reports(ids);
   }
 }

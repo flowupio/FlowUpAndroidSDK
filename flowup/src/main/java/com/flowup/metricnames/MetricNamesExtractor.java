@@ -90,6 +90,14 @@ public class MetricNamesExtractor {
     return metricName.contains(MetricNamesGenerator.BYTES_ALLOCATED);
   }
 
+  public boolean isInternalStorageAllocatedBytesMetric(String metricName) {
+    return metricName.contains(MetricNamesGenerator.INTERNAL_STORAGE_WRITTEN_BYTES);
+  }
+
+  public boolean isSharedPreferencesAllocatedBytesMetric(String metricName) {
+    return metricName.contains(MetricNamesGenerator.SHARED_PREFERENCES_WRITTEN_BYTES);
+  }
+
   private String findCrossMetricInfoAtPosition(int index, String metricName) {
     String[] metricNames = MetricNameUtils.split(metricName);
     if (metricNames.length > index) {

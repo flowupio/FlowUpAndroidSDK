@@ -12,18 +12,21 @@ import com.flowup.utils.Time;
 
 public class MetricNamesGenerator {
 
-  public static final String FPS = "fps";
-  public static final String FRAME_TIME = "frameTime";
-  public static final String BYTES_DOWNLOADED = "bytesDownloaded";
-  public static final String BYTES_UPLOADED = "bytesUploaded";
-  public static final String CPU_USAGE = "cpuUsage";
-  public static final String MEMORY_USAGE = "memoryUsage";
-  public static final String BYTES_ALLOCATED = "bytesAllocated";
+  static final String FPS = "fps";
+  static final String FRAME_TIME = "frameTime";
+  static final String BYTES_DOWNLOADED = "bytesDownloaded";
+  static final String BYTES_UPLOADED = "bytesUploaded";
+  static final String CPU_USAGE = "cpuUsage";
+  static final String MEMORY_USAGE = "memoryUsage";
+  static final String BYTES_ALLOCATED = "bytesAllocated";
+  static final String INTERNAL_STORAGE_WRITTEN_BYTES = "internalStorageWrittenBytes";
+  static final String SHARED_PREFERENCES_WRITTEN_BYTES = "sharedPreferencesStorageWrittenBytes";
 
   private static final String UI = "ui";
   private static final String NETWORK = "network";
   private static final String SEPARATOR = ".";
   private static final String MEMORY = "memory";
+  private static final String DISK = "disk";
 
   private final App app;
   private final Device device;
@@ -65,6 +68,16 @@ public class MetricNamesGenerator {
 
   public String getBytesAllocatedMetricName() {
     return MetricRegistry.name(appendCrossMetricInfo(MEMORY + SEPARATOR + BYTES_ALLOCATED));
+  }
+
+  public String getInternalStorageWrittenBytes() {
+    return MetricRegistry.name(
+        appendCrossMetricInfo(DISK + SEPARATOR + INTERNAL_STORAGE_WRITTEN_BYTES));
+  }
+
+  public String getSharedPreferencesWrittenBytes() {
+    return MetricRegistry.name(
+        appendCrossMetricInfo(DISK + SEPARATOR + SHARED_PREFERENCES_WRITTEN_BYTES));
   }
 
   private String getActivityName(Activity activity) {

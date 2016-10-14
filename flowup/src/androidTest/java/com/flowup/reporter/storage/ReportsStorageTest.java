@@ -18,6 +18,7 @@ import com.flowup.metricnames.MetricNamesGenerator;
 import com.flowup.reporter.DropwizardReport;
 import com.flowup.reporter.doubles.ActivityTwo;
 import com.flowup.reporter.model.CPUMetric;
+import com.flowup.reporter.model.DiskMetric;
 import com.flowup.reporter.model.MemoryMetric;
 import com.flowup.reporter.model.NetworkMetric;
 import com.flowup.reporter.model.Reports;
@@ -49,6 +50,8 @@ public class ReportsStorageTest {
   private static final long ANY_CPU_USAGE = 11;
   private static final long ANY_MEMORY_USAGE = 21;
   private static final long ANY_BYTES_ALLOCATED = 1024;
+  private static final long ANY_INTERNAL_STORAGE_WRITTEN_BYTES = 2048;
+  private static final long ANY_SHARED_PREFS_WRITTEN_BYTES = 3072;
 
   private ReportsStorage storage;
   private MetricNamesGenerator generator;
@@ -99,6 +102,7 @@ public class ReportsStorageTest {
     assertEquals(0, reports.getUIMetrics().size());
     assertEquals(0, reports.getCpuMetrics().size());
     assertEquals(0, reports.getMemoryMetrics().size());
+    assertEquals(0, reports.getDiskMetrics().size());
   }
 
   @Test public void returnsReportInfoBasedOnDropwizardMetricsWithOnlyUIMetricsReported() {
@@ -113,6 +117,7 @@ public class ReportsStorageTest {
     assertEquals(0, reports.getNetworkMetrics().size());
     assertEquals(0, reports.getCpuMetrics().size());
     assertEquals(0, reports.getMemoryMetrics().size());
+    assertEquals(0, reports.getDiskMetrics().size());
   }
 
   @Test public void returnsReportInfoBasedOnDropwizardMetricsWithOnlyCPUMetricsReported() {
@@ -125,6 +130,7 @@ public class ReportsStorageTest {
     assertEquals(0, reports.getNetworkMetrics().size());
     assertEquals(1, reports.getCpuMetrics().size());
     assertEquals(0, reports.getMemoryMetrics().size());
+    assertEquals(0, reports.getDiskMetrics().size());
   }
 
   @Test public void returnsReportInfoBasedOnDropwizardMetricsWithOnlyMemoryMetricsReported() {
@@ -137,6 +143,20 @@ public class ReportsStorageTest {
     assertEquals(0, reports.getNetworkMetrics().size());
     assertEquals(0, reports.getCpuMetrics().size());
     assertEquals(1, reports.getMemoryMetrics().size());
+    assertEquals(0, reports.getDiskMetrics().size());
+  }
+
+  @Test public void returnsReportInfoBasedOnDropwizardMetricsWithOnlyDiskMetricsReported() {
+    SortedMap<String, Gauge> diskMetric = givenADiskMetric();
+    DropwizardReport dropwizardReport = givenADropWizardReport(diskMetric);
+
+    Reports reports = storeAndGet(dropwizardReport);
+
+    assertEquals(0, reports.getUIMetrics().size());
+    assertEquals(0, reports.getNetworkMetrics().size());
+    assertEquals(0, reports.getCpuMetrics().size());
+    assertEquals(0, reports.getMemoryMetrics().size());
+    assertEquals(1, reports.getDiskMetrics().size());
   }
 
   @Test public void joinsSomeReportsIntoOneReportsInstanceWithAllTheMetricsInside() {
@@ -149,6 +169,7 @@ public class ReportsStorageTest {
     assertUIMetricsContainsExpectedValues(numberOfReports, reports);
     assertCPUMetricsContainsExpectedValues(numberOfReports, reports);
     assertMemoryMetricsContainsExpectedValues(numberOfReports, reports);
+    assertDiskMetricsContainsExpectedValues(numberOfReports, reports);
   }
 
   @Test public void deletesTheReportsPreviouslyObtained() {
@@ -205,8 +226,7 @@ public class ReportsStorageTest {
     for (int i = 0; i < iterativeReportsId; i++) {
       reportsIds.add(String.valueOf(i));
     }
-    return new Reports(reportsIds, null, null, null, null, null, null, Collections.EMPTY_LIST,
-        Collections.EMPTY_LIST, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
+    return new Reports(reportsIds);
   }
 
   private void assertNetworkMetricsContainsExpectedValues(int numberOfReports, Reports reports) {
@@ -235,6 +255,16 @@ public class ReportsStorageTest {
     }
   }
 
+
+  private void assertDiskMetricsContainsExpectedValues(int numberOfReports, Reports reports) {
+    List<DiskMetric> diskMetrics = reports.getDiskMetrics();
+    assertEquals(numberOfReports, diskMetrics.size());
+    for (int i = 0; i < numberOfReports; i++) {
+      assertEquals(ANY_INTERNAL_STORAGE_WRITTEN_BYTES, diskMetrics.get(i).getInternalStorageWrittenBytes());
+      assertEquals(ANY_SHARED_PREFS_WRITTEN_BYTES, diskMetrics.get(i).getSharedPreferencesWrittenBytes());
+    }
+  }
+
   private void assertUIMetricsContainsExpectedValues(int numberOfReports, Reports reports) {
     List<UIMetric> uiReports = reports.getUIMetrics();
     assertEquals(numberOfReports, uiReports.size());
@@ -252,10 +282,12 @@ public class ReportsStorageTest {
       SortedMap<String, Timer> frameTimeMetric = givenAFrameTimeMetric();
       SortedMap<String, Gauge> cpuMetrics = givenACPUMetric();
       SortedMap<String, Gauge> memoryMetrics = givenAMemoryMetric();
+      SortedMap<String, Gauge> diskMetrics = givenADiskMetric();
       SortedMap<String, Gauge> gauges = new TreeMap<>();
       gauges.putAll(networkMetrics);
       gauges.putAll(cpuMetrics);
       gauges.putAll(memoryMetrics);
+      gauges.putAll(diskMetrics);
       DropwizardReport dropwizardReport =
           givenADropWizardReport(i, gauges, fpsMetric, frameTimeMetric);
       dropwizardReports.add(dropwizardReport);
@@ -349,6 +381,23 @@ public class ReportsStorageTest {
     SortedMap<String, Gauge> gauges = new TreeMap<>();
     gauges.put(generator.getMemoryUsageMetricName(), memoryUsage);
     gauges.put(generator.getBytesAllocatedMetricName(), bytesAllocated);
+    return gauges;
+  }
+
+  private SortedMap<String, Gauge> givenADiskMetric() {
+    Gauge<Long> internalStorageWrittenBytes = new Gauge<Long>() {
+      @Override public Long getValue() {
+        return ANY_INTERNAL_STORAGE_WRITTEN_BYTES;
+      }
+    };
+    Gauge<Long> sharedPrefsWrittenBytes = new Gauge<Long>() {
+      @Override public Long getValue() {
+        return ANY_SHARED_PREFS_WRITTEN_BYTES;
+      }
+    };
+    SortedMap<String, Gauge> gauges = new TreeMap<>();
+    gauges.put(generator.getInternalStorageWrittenBytes(), internalStorageWrittenBytes);
+    gauges.put(generator.getSharedPreferencesWrittenBytes(), sharedPrefsWrittenBytes);
     return gauges;
   }
 

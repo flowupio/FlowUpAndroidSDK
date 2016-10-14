@@ -1,1 +1,106 @@
-{"appPackage":"io.flowup.example","installationUUID":"123456789","deviceModel":"Nexus 5X","screenDensity":"xxhdpi","screenSize":"800X600","numberOfCores":4,"network":[{"bytesUploaded":1024,"bytesDownloaded":2048,"timestamp":123456789,"appVersionName":"1.0.0","androidOSVersion":"API24","batterySaverOn":true}],"ui":[{"screen":"MainActivity","frameTime":{"count":1,"min":60.0,"max":60.0,"mean":60.0,"standardDev":0.0,"median":60.0,"p5":60.0,"p10":60.0,"p15":60.0,"p20":60.0,"p25":60.0,"p30":60.0,"p40":60.0,"p50":60.0,"p60":60.0,"p70":60.0,"p75":60.0,"p80":60.0,"p85":60.0,"p90":60.0,"p95":60.0,"p98":60.0,"p99":60.0},"framesPerSecond":{"count":1,"min":60.0,"max":60.0,"mean":60.0,"standardDev":0.0,"median":60.0,"p5":60.0,"p10":60.0,"p15":60.0,"p20":60.0,"p25":60.0,"p30":60.0,"p40":60.0,"p50":60.0,"p60":60.0,"p70":60.0,"p75":60.0,"p80":60.0,"p85":60.0,"p90":60.0,"p95":60.0,"p98":60.0,"p99":60.0},"timestamp":123456789,"appVersionName":"1.0.0","androidOSVersion":"API24","batterySaverOn":true}],"cpu":[{"consumption":10,"timestamp":123456789,"appVersionName":"1.0.0","androidOSVersion":"API24","batterySaverOn":true}],"memory":[{"bytesAllocated":1024,"consumption":3,"timestamp":123456789,"appVersionName":"1.0.0","androidOSVersion":"API24","batterySaverOn":true}]}
+{
+  "appPackage": "io.flowup.example",
+  "installationUUID": "123456789",
+  "deviceModel": "Nexus 5X",
+  "screenDensity": "xxhdpi",
+  "screenSize": "800X600",
+  "numberOfCores": 4,
+  "network": [
+    {
+      "bytesUploaded": 1024,
+      "bytesDownloaded": 2048,
+      "timestamp": 123456789,
+      "appVersionName": "1.0.0",
+      "androidOSVersion": "API24",
+      "batterySaverOn": true
+    }
+  ],
+  "ui": [
+    {
+      "screen": "MainActivity",
+      "frameTime": {
+        "count": 1,
+        "min": 60.0,
+        "max": 60.0,
+        "mean": 60.0,
+        "standardDev": 0.0,
+        "median": 60.0,
+        "p5": 60.0,
+        "p10": 60.0,
+        "p15": 60.0,
+        "p20": 60.0,
+        "p25": 60.0,
+        "p30": 60.0,
+        "p40": 60.0,
+        "p50": 60.0,
+        "p60": 60.0,
+        "p70": 60.0,
+        "p75": 60.0,
+        "p80": 60.0,
+        "p85": 60.0,
+        "p90": 60.0,
+        "p95": 60.0,
+        "p98": 60.0,
+        "p99": 60.0
+      },
+      "framesPerSecond": {
+        "count": 1,
+        "min": 60.0,
+        "max": 60.0,
+        "mean": 60.0,
+        "standardDev": 0.0,
+        "median": 60.0,
+        "p5": 60.0,
+        "p10": 60.0,
+        "p15": 60.0,
+        "p20": 60.0,
+        "p25": 60.0,
+        "p30": 60.0,
+        "p40": 60.0,
+        "p50": 60.0,
+        "p60": 60.0,
+        "p70": 60.0,
+        "p75": 60.0,
+        "p80": 60.0,
+        "p85": 60.0,
+        "p90": 60.0,
+        "p95": 60.0,
+        "p98": 60.0,
+        "p99": 60.0
+      },
+      "timestamp": 123456789,
+      "appVersionName": "1.0.0",
+      "androidOSVersion": "API24",
+      "batterySaverOn": true
+    }
+  ],
+  "cpu": [
+    {
+      "consumption": 10,
+      "timestamp": 123456789,
+      "appVersionName": "1.0.0",
+      "androidOSVersion": "API24",
+      "batterySaverOn": true
+    }
+  ],
+  "memory": [
+    {
+      "bytesAllocated": 1024,
+      "consumption": 3,
+      "timestamp": 123456789,
+      "appVersionName": "1.0.0",
+      "androidOSVersion": "API24",
+      "batterySaverOn": true
+    }
+  ],
+  "disk": [
+    {
+      "internalStorageWrittenBytes": 2048,
+      "sharedPreferencesWrittenBytes": 1024,
+      "timestamp": 123456789,
+      "appVersionName": "1.0.0",
+      "androidOSVersion": "API24",
+      "batterySaverOn": true
+    }
+  ]
+}
