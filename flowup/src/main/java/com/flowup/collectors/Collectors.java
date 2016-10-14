@@ -8,6 +8,7 @@ import android.app.Application;
 import com.flowup.android.App;
 import com.flowup.android.CPU;
 import com.flowup.android.Device;
+import com.flowup.android.FileSystem;
 import com.flowup.metricnames.MetricNamesGenerator;
 import com.flowup.utils.Time;
 import java.util.concurrent.TimeUnit;
@@ -34,10 +35,22 @@ public class Collectors {
         timeUnit);
   }
 
-  public static Collector getCPUCollector(Application application, int samplingInterval,
+  public static Collector getCPUUsageCollector(Application application, int samplingInterval,
       TimeUnit samplingTimeUnit, CPU cpu) {
     return new CPUUsageCollector(getMetricNamesGenerator(application), samplingInterval,
         samplingTimeUnit, cpu);
+  }
+
+  public static Collector getMemoryUsageCollector(Application application, int samplingInterval,
+      TimeUnit samplingTimeUnit, App app) {
+    return new MemoryUsageCollector(getMetricNamesGenerator(application), samplingInterval,
+        samplingTimeUnit, app);
+  }
+
+  public static Collector getDiskUsageCollector(Application application, int samplingInterval,
+      TimeUnit samplingTimeUnit, FileSystem fileSystem) {
+    return new DiskUsageCollector(getMetricNamesGenerator(application), samplingInterval,
+        samplingTimeUnit, fileSystem);
   }
 
   private static MetricNamesGenerator getMetricNamesGenerator(Application application) {

@@ -6,6 +6,8 @@ package com.flowup.reporter;
 
 import com.flowup.FlowUp;
 import com.flowup.reporter.model.CPUMetric;
+import com.flowup.reporter.model.DiskMetric;
+import com.flowup.reporter.model.MemoryMetric;
 import com.flowup.reporter.model.NetworkMetric;
 import com.flowup.reporter.model.Reports;
 import com.flowup.reporter.model.StatisticalValue;
@@ -13,24 +15,29 @@ import com.flowup.reporter.model.UIMetric;
 import com.google.gson.Gson;
 import java.util.LinkedList;
 import java.util.List;
+import org.junit.Ignore;
 import org.junit.Test;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
 public class NumberOfReportsPerBatchTest {
+
+  private static final double MAX_REQUEST_SIZE_WITHOUT_COMPRESSION_IN_BYTES = 9.5d * 1024 * 1024;
 
   private static final String ANY_VERSION_NAME = "1.0.0";
   private static final String ANY_OS_VERSION = "API24";
   private static final boolean ANY_BATTERY_SAVER_ON = true;
   private static final long BYTES_UPLOADED = Long.MAX_VALUE;
   private static final long BYTES_DOWNLOADED = Long.MAX_VALUE;
-
-  private static final double MAX_REQUEST_SIZE_WITHOUT_COMPRESSION_IN_BYTES = 9.5d * 1024 * 1024;
   private static final int CPU_USAGE = 100;
+  private static final long BYTES_ALLOCATED = Long.MAX_VALUE;
+  private static final int MEMORY_USAGE = 4;
+  private static final long BYTES_WRITTEN = Long.MAX_VALUE;
 
   private final Gson gson = new Gson();
 
-  @Test public void shouldNotSendMoreThan100KBOfBodyInAReportRequest() throws Exception {
+  @Test public void doesNotSendMoreThan100KBOfBodyInAReportRequest() throws Exception {
     Reports reports = givenAReportsInstanceFullOfData(FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST);
 
     long bytes = toBytes(reports);
@@ -43,6 +50,14 @@ public class NumberOfReportsPerBatchTest {
         bytes <= MAX_REQUEST_SIZE_WITHOUT_COMPRESSION_IN_BYTES);
   }
 
+  @Test
+  @Ignore
+  public void doesNotSendLessThanTheOptimumNumberOfReportsPerRequest() throws Exception {
+    int optimumNumberOfReports = calculateOptimumNumberOfReportsPerRequest();
+
+    assertEquals(optimumNumberOfReports, FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST);
+  }
+
   private int calculateMaxNumberOfReportsPerRequest() throws Exception {
     int newMax;
     for (newMax = FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST; newMax >= 0; newMax--) {
@@ -53,6 +68,20 @@ public class NumberOfReportsPerBatchTest {
       }
     }
     return newMax;
+  }
+
+  private int calculateOptimumNumberOfReportsPerRequest() throws Exception {
+    int optimumNumberOfReports;
+    for (optimumNumberOfReports = FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST - 50;
+        optimumNumberOfReports < FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST;
+        optimumNumberOfReports++) {
+      Reports reports = givenAReportsInstanceFullOfData(optimumNumberOfReports);
+      long bytes = toBytes(reports);
+      if (bytes > MAX_REQUEST_SIZE_WITHOUT_COMPRESSION_IN_BYTES) {
+        break;
+      }
+    }
+    return optimumNumberOfReports;
   }
 
   private long toBytes(Reports reports) throws Exception {
@@ -70,8 +99,10 @@ public class NumberOfReportsPerBatchTest {
     List<NetworkMetric> networkMetrics = givenSomeNetworkMetrics(numberOfReports);
     List<UIMetric> uiMetrics = givenSomeUIMetrics(numberOfReports);
     List<CPUMetric> cpuMetrics = givenSomeCPUMetrics(numberOfReports);
+    List<MemoryMetric> memoryMetrics = givenSomeMemoryMetrics(numberOfReports);
+    List<DiskMetric> diskMetrics = givenSomeDiskMetrics(numberOfReports);
     return new Reports(reportIds, appPackage, uuid, deviceModel, screenDensity, screenSize,
-        numberOfCores, networkMetrics, uiMetrics, cpuMetrics);
+        numberOfCores, networkMetrics, uiMetrics, cpuMetrics, memoryMetrics, diskMetrics);
   }
 
   private List<NetworkMetric> givenSomeNetworkMetrics(int numberOfReports) {
@@ -90,6 +121,24 @@ public class NumberOfReportsPerBatchTest {
       cpuMetrics.add(networkMetric);
     }
     return cpuMetrics;
+  }
+
+  private List<MemoryMetric> givenSomeMemoryMetrics(int numberOfReports) {
+    List<MemoryMetric> memoryMetrics = new LinkedList<>();
+    for (int i = 0; i < numberOfReports; i++) {
+      MemoryMetric memoryMetric = generateAMemoryMetric(i);
+      memoryMetrics.add(memoryMetric);
+    }
+    return memoryMetrics;
+  }
+
+  private List<DiskMetric> givenSomeDiskMetrics(int numberOfReports) {
+    List<DiskMetric> diskMetrics = new LinkedList<>();
+    for (int i = 0; i < numberOfReports; i++) {
+      DiskMetric diskMetric = generateADiskMetric(i);
+      diskMetrics.add(diskMetric);
+    }
+    return diskMetrics;
   }
 
   private List<UIMetric> givenSomeUIMetrics(int numberOfReports) {
@@ -125,6 +174,16 @@ public class NumberOfReportsPerBatchTest {
   private CPUMetric generateAnyCPUMetric(int timestamp) {
     return new CPUMetric(timestamp, ANY_VERSION_NAME, ANY_OS_VERSION, ANY_BATTERY_SAVER_ON,
         CPU_USAGE);
+  }
+
+  private MemoryMetric generateAMemoryMetric(int timestamp) {
+    return new MemoryMetric(timestamp, ANY_VERSION_NAME, ANY_OS_VERSION, ANY_BATTERY_SAVER_ON,
+        BYTES_ALLOCATED, MEMORY_USAGE);
+  }
+
+  private DiskMetric generateADiskMetric(int timestamp) {
+    return new DiskMetric(timestamp, ANY_VERSION_NAME, ANY_OS_VERSION, ANY_BATTERY_SAVER_ON,
+        BYTES_WRITTEN, BYTES_WRITTEN);
   }
 
   private List<String> givenSomeIds(int numberOfReports) {

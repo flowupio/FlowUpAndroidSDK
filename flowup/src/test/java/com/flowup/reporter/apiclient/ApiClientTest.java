@@ -8,6 +8,8 @@ import com.flowup.BuildConfig;
 import com.flowup.MockWebServerTestCase;
 import com.flowup.reporter.ReportResult;
 import com.flowup.reporter.model.CPUMetric;
+import com.flowup.reporter.model.DiskMetric;
+import com.flowup.reporter.model.MemoryMetric;
 import com.flowup.reporter.model.NetworkMetric;
 import com.flowup.reporter.model.Reports;
 import com.flowup.reporter.model.StatisticalValue;
@@ -27,6 +29,11 @@ public class ApiClientTest extends MockWebServerTestCase {
   private static final String ANY_VERSION_NAME = "1.0.0";
   private static final String ANY_OS_VERSION = "API24";
   private static final boolean ANY_BATTERY_SAVER_ON = true;
+  private static final int ANY_CPU_USAGE_PERCENTAGE = 10;
+  private static final int ANY_BYTES_ALLOCATED = 1024;
+  private static final int ANY_MEMORY_PERCENTAGE_USAGE = 3;
+  private static final long ANY_INTERNAL_STORAGE_WRITTEN_BYTES = 2048;
+  private static final long ANY_SHARED_PREFS_WRITTEN_BYTES = 1024;
 
   private ApiClient apiClient;
 
@@ -146,12 +153,25 @@ public class ApiClientTest extends MockWebServerTestCase {
     List<NetworkMetric> networkMetrics = Collections.singletonList(givenANetworkMetric());
     List<UIMetric> uiMetrics = Collections.singletonList(givenAUIMetric());
     List<CPUMetric> cpuMetrics = Collections.singletonList(givenACPUMetric());
+    List<MemoryMetric> memoryMetrics = Collections.singletonList(givenAMemoryMetric());
+    List<DiskMetric> diskMetrics = Collections.singletonList(givenADiskMetric());
     return new Reports(reportIds, appPackage, uuid, deviceModel, screenDensity, screenSize,
-        numberOfCores, networkMetrics, uiMetrics, cpuMetrics);
+        numberOfCores, networkMetrics, uiMetrics, cpuMetrics, memoryMetrics, diskMetrics);
   }
 
   private CPUMetric givenACPUMetric() {
-    return new CPUMetric(ANY_TIMESTAMP, ANY_VERSION_NAME, ANY_OS_VERSION, ANY_BATTERY_SAVER_ON, 10);
+    return new CPUMetric(ANY_TIMESTAMP, ANY_VERSION_NAME, ANY_OS_VERSION, ANY_BATTERY_SAVER_ON,
+        ANY_CPU_USAGE_PERCENTAGE);
+  }
+
+  private MemoryMetric givenAMemoryMetric() {
+    return new MemoryMetric(ANY_TIMESTAMP, ANY_VERSION_NAME, ANY_OS_VERSION, ANY_BATTERY_SAVER_ON,
+        ANY_BYTES_ALLOCATED, ANY_MEMORY_PERCENTAGE_USAGE);
+  }
+
+  private DiskMetric givenADiskMetric() {
+    return new DiskMetric(ANY_TIMESTAMP, ANY_VERSION_NAME, ANY_OS_VERSION, ANY_BATTERY_SAVER_ON,
+        ANY_INTERNAL_STORAGE_WRITTEN_BYTES, ANY_SHARED_PREFS_WRITTEN_BYTES);
   }
 
   private NetworkMetric givenANetworkMetric() {

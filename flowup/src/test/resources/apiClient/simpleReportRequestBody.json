@@ -82,5 +82,25 @@
       "androidOSVersion": "API24",
       "batterySaverOn": true
     }
+  ],
+  "memory": [
+    {
+      "bytesAllocated": 1024,
+      "consumption": 3,
+      "timestamp": 123456789,
+      "appVersionName": "1.0.0",
+      "androidOSVersion": "API24",
+      "batterySaverOn": true
+    }
+  ],
+  "disk": [
+    {
+      "internalStorageWrittenBytes": 2048,
+      "sharedPreferencesWrittenBytes": 1024,
+      "timestamp": 123456789,
+      "appVersionName": "1.0.0",
+      "androidOSVersion": "API24",
+      "batterySaverOn": true
+    }
   ]
 }

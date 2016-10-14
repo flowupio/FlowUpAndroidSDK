@@ -10,6 +10,7 @@ import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.flowup.android.App;
 import com.flowup.android.CPU;
+import com.flowup.android.FileSystem;
 import com.flowup.collectors.Collector;
 import com.flowup.collectors.Collectors;
 import com.flowup.reporter.FlowUpReporter;
@@ -45,6 +46,8 @@ public class FlowUp {
     initializeForegroundCollectors();
     initializeNetworkCollectors();
     initializeCPUCollectors();
+    initializeMemoryCollectors();
+    initializeDiskCollectors();
   }
 
   private void initializeMetrics() {
@@ -117,10 +120,24 @@ public class FlowUp {
   }
 
   private void initializeCPUCollectors() {
-    Collector cpuCollector =
-        Collectors.getCPUCollector(application, SAMPLING_INTERVAL, SAMPLING_TIME_UNIT,
+    Collector cpuUsageCollector =
+        Collectors.getCPUUsageCollector(application, SAMPLING_INTERVAL, SAMPLING_TIME_UNIT,
             new CPU(new App(application), new Terminal()));
-    cpuCollector.initialize(registry);
+    cpuUsageCollector.initialize(registry);
+  }
+
+  private void initializeMemoryCollectors() {
+    Collector memoryUsageCollector =
+        Collectors.getMemoryUsageCollector(application, SAMPLING_INTERVAL, SAMPLING_TIME_UNIT,
+            new App(application));
+    memoryUsageCollector.initialize(registry);
+  }
+
+  private void initializeDiskCollectors() {
+    Collector diskUsageCollector =
+        Collectors.getDiskUsageCollector(application, SAMPLING_INTERVAL, SAMPLING_TIME_UNIT,
+            new FileSystem(application));
+    diskUsageCollector.initialize(registry);
   }
 
   public static class Builder {
