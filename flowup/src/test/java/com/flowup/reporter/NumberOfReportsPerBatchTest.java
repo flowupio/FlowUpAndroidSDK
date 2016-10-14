@@ -15,6 +15,7 @@ import com.flowup.reporter.model.UIMetric;
 import com.google.gson.Gson;
 import java.util.LinkedList;
 import java.util.List;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
@@ -49,7 +50,9 @@ public class NumberOfReportsPerBatchTest {
         bytes <= MAX_REQUEST_SIZE_WITHOUT_COMPRESSION_IN_BYTES);
   }
 
-  @Test public void doesNotSendLessThanTheOptimumNumberOfReportsPerRequest() throws Exception {
+  @Test
+  @Ignore
+  public void doesNotSendLessThanTheOptimumNumberOfReportsPerRequest() throws Exception {
     int optimumNumberOfReports = calculateOptimumNumberOfReportsPerRequest();
 
     assertEquals(optimumNumberOfReports, FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST);
