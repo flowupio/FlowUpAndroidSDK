@@ -6,6 +6,7 @@ package com.flowup.reporter;
 
 import com.flowup.FlowUp;
 import com.flowup.reporter.model.CPUMetric;
+import com.flowup.reporter.model.DiskMetric;
 import com.flowup.reporter.model.MemoryMetric;
 import com.flowup.reporter.model.NetworkMetric;
 import com.flowup.reporter.model.Reports;
@@ -20,16 +21,17 @@ import static junit.framework.Assert.assertTrue;
 
 public class NumberOfReportsPerBatchTest {
 
+  private static final double MAX_REQUEST_SIZE_WITHOUT_COMPRESSION_IN_BYTES = 9.5d * 1024 * 1024;
+
   private static final String ANY_VERSION_NAME = "1.0.0";
   private static final String ANY_OS_VERSION = "API24";
   private static final boolean ANY_BATTERY_SAVER_ON = true;
   private static final long BYTES_UPLOADED = Long.MAX_VALUE;
   private static final long BYTES_DOWNLOADED = Long.MAX_VALUE;
-
-  private static final double MAX_REQUEST_SIZE_WITHOUT_COMPRESSION_IN_BYTES = 9.5d * 1024 * 1024;
   private static final int CPU_USAGE = 100;
-  private static final long BYTES_ALLOCATED = 1024;
+  private static final long BYTES_ALLOCATED = Long.MAX_VALUE;
   private static final int MEMORY_USAGE = 4;
+  private static final long BYTES_WRITTEN = Long.MAX_VALUE;
 
   private final Gson gson = new Gson();
 
@@ -74,8 +76,9 @@ public class NumberOfReportsPerBatchTest {
     List<UIMetric> uiMetrics = givenSomeUIMetrics(numberOfReports);
     List<CPUMetric> cpuMetrics = givenSomeCPUMetrics(numberOfReports);
     List<MemoryMetric> memoryMetrics = givenSomeMemoryMetrics(numberOfReports);
+    List<DiskMetric> diskMetrics = givenSomeDiskMetrics(numberOfReports);
     return new Reports(reportIds, appPackage, uuid, deviceModel, screenDensity, screenSize,
-        numberOfCores, networkMetrics, uiMetrics, cpuMetrics, memoryMetrics);
+        numberOfCores, networkMetrics, uiMetrics, cpuMetrics, memoryMetrics, diskMetrics);
   }
 
   private List<NetworkMetric> givenSomeNetworkMetrics(int numberOfReports) {
@@ -103,6 +106,15 @@ public class NumberOfReportsPerBatchTest {
       memoryMetrics.add(memoryMetric);
     }
     return memoryMetrics;
+  }
+
+  private List<DiskMetric> givenSomeDiskMetrics(int numberOfReports) {
+    List<DiskMetric> diskMetrics = new LinkedList<>();
+    for (int i = 0; i < numberOfReports; i++) {
+      DiskMetric diskMetric = generateADiskMetric(i);
+      diskMetrics.add(diskMetric);
+    }
+    return diskMetrics;
   }
 
   private List<UIMetric> givenSomeUIMetrics(int numberOfReports) {
@@ -143,6 +155,11 @@ public class NumberOfReportsPerBatchTest {
   private MemoryMetric generateAMemoryMetric(int timestamp) {
     return new MemoryMetric(timestamp, ANY_VERSION_NAME, ANY_OS_VERSION, ANY_BATTERY_SAVER_ON,
         BYTES_ALLOCATED, MEMORY_USAGE);
+  }
+
+  private DiskMetric generateADiskMetric(int timestamp) {
+    return new DiskMetric(timestamp, ANY_VERSION_NAME, ANY_OS_VERSION, ANY_BATTERY_SAVER_ON,
+        BYTES_WRITTEN, BYTES_WRITTEN);
   }
 
   private List<String> givenSomeIds(int numberOfReports) {
