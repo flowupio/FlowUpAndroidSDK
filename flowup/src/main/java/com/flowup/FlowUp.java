@@ -63,6 +63,9 @@ public class FlowUp {
   }
 
   private boolean doesSupportGooglePlayServices() {
+    if (debuggable) {
+      return true;
+    }
     GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
     int resultCode = googleApiAvailability.isGooglePlayServicesAvailable(application);
     boolean isGooglePlayServicesSupported = resultCode == ConnectionResult.SUCCESS;
