@@ -6,6 +6,7 @@ package com.flowup.reporter.storage;
 
 import com.flowup.metricnames.MetricNamesExtractor;
 import com.flowup.reporter.model.CPUMetric;
+import com.flowup.reporter.model.DiskMetric;
 import com.flowup.reporter.model.MemoryMetric;
 import com.flowup.reporter.model.NetworkMetric;
 import com.flowup.reporter.model.Reports;
@@ -30,7 +31,7 @@ class RealmReportsToReportsMapper extends Mapper<List<RealmReport>, Reports> {
     RealmList<RealmMetric> metrics = realmReports.get(0).getMetrics();
     List<String> reportsIds = mapReportsIds(realmReports);
     if (metrics.isEmpty()) {
-      return new Reports(reportsIds, null, null, null, null, null, null, null, null, null, null);
+      return new Reports(reportsIds);
     }
     String firstMetricName = metrics.first().getMetricName();
     String appPackage = getAppPackage(firstMetricName);
@@ -43,8 +44,9 @@ class RealmReportsToReportsMapper extends Mapper<List<RealmReport>, Reports> {
     List<UIMetric> uiMetrics = mapUIMetrics(realmReports);
     List<CPUMetric> cpuMetrics = mapCPUMetrics(realmReports);
     List<MemoryMetric> memoryMetrics = mapMemoryMetrics(realmReports);
+    List<DiskMetric> diskMetrics = mapDiskMetrics(realmReports);
     return new Reports(reportsIds, appPackage, uuid, deviceModel, screenDensity, screenSize,
-        numberOfCores, networkMetrics, uiMetrics, cpuMetrics, memoryMetrics);
+        numberOfCores, networkMetrics, uiMetrics, cpuMetrics, memoryMetrics, diskMetrics);
   }
 
   private List<String> mapReportsIds(List<RealmReport> realmReports) {
@@ -163,6 +165,35 @@ class RealmReportsToReportsMapper extends Mapper<List<RealmReport>, Reports> {
       }
     }
     return memoryMetrics;
+  }
+
+  private List<DiskMetric> mapDiskMetrics(List<RealmReport> reports) {
+    List<DiskMetric> diskMetrics = new LinkedList<>();
+    for (int i = 0; i < reports.size(); i++) {
+      RealmReport report = reports.get(i);
+      RealmList<RealmMetric> metrics = report.getMetrics();
+      Long internalStorageBytes = null;
+      Long sharedPrefsBytes = null;
+      for (int j = 0; j < metrics.size(); j++) {
+        RealmMetric metric = metrics.get(j);
+        String metricName = metric.getMetricName();
+        if (extractor.isInternalStorageAllocatedBytesMetric(metricName)) {
+          internalStorageBytes = metric.getStatisticalValue().getValue();
+        } else if (extractor.isSharedPreferencesAllocatedBytesMetric(metricName)) {
+          sharedPrefsBytes = metric.getStatisticalValue().getValue();
+        }
+        if (internalStorageBytes != null && sharedPrefsBytes  != null) {
+          long reportTimestamp = Long.valueOf(report.getReportTimestamp());
+          String osVersion = extractor.getOSVersion(metricName);
+          String versionName = extractor.getVersionName(metricName);
+          boolean batterySaverOn = extractor.getIsBatterSaverOn(metricName);
+          diskMetrics.add(new DiskMetric(reportTimestamp, versionName, osVersion, batterySaverOn,
+              internalStorageBytes, sharedPrefsBytes));
+          break;
+        }
+      }
+    }
+    return diskMetrics;
   }
 
   private List<UIMetric> mapUIMetrics(List<RealmReport> reports) {
