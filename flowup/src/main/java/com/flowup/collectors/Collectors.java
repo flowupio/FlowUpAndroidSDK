@@ -47,8 +47,10 @@ public class Collectors {
         samplingTimeUnit, app);
   }
 
-  public static Collector getDiskUsageCollector(Application application, int samplingInterval, TimeUnit samplingTimeUnit, FileSystem fileSystem) {
-    return new DiskUsageCollector(getMetricNamesGenerator(application), samplingInterval, samplingTimeUnit, fileSystem);
+  public static Collector getDiskUsageCollector(Application application, int samplingInterval,
+      TimeUnit samplingTimeUnit, FileSystem fileSystem) {
+    return new DiskUsageCollector(getMetricNamesGenerator(application), samplingInterval,
+        samplingTimeUnit, fileSystem);
   }
 
   private static MetricNamesGenerator getMetricNamesGenerator(Application application) {

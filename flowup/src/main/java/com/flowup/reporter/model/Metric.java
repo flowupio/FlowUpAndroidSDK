@@ -4,7 +4,6 @@
 
 package com.flowup.reporter.model;
 
-import android.os.StatFs;
 import com.google.gson.annotations.SerializedName;
 
 public class Metric {
@@ -14,8 +13,7 @@ public class Metric {
   @SerializedName("androidOSVersion") private final String osVersion;
   @SerializedName("batterySaverOn") private final boolean batterySaverOn;
 
-  public Metric(long timestamp, String appVersionName, String osVersion,
-      boolean batterySaverOn) {
+  public Metric(long timestamp, String appVersionName, String osVersion, boolean batterySaverOn) {
     this.timestamp = timestamp;
     this.appVersionName = appVersionName;
     this.osVersion = osVersion;

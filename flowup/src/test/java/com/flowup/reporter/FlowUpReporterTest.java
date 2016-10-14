@@ -4,7 +4,6 @@
 
 package com.flowup.reporter;
 
-import android.support.annotation.NonNull;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Histogram;
