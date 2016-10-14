@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.junit.Test;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
 public class NumberOfReportsPerBatchTest {
@@ -35,7 +36,7 @@ public class NumberOfReportsPerBatchTest {
 
   private final Gson gson = new Gson();
 
-  @Test public void shouldNotSendMoreThan100KBOfBodyInAReportRequest() throws Exception {
+  @Test public void doesNotSendMoreThan100KBOfBodyInAReportRequest() throws Exception {
     Reports reports = givenAReportsInstanceFullOfData(FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST);
 
     long bytes = toBytes(reports);
@@ -48,6 +49,12 @@ public class NumberOfReportsPerBatchTest {
         bytes <= MAX_REQUEST_SIZE_WITHOUT_COMPRESSION_IN_BYTES);
   }
 
+  @Test public void doesNotSendLessThanTheOptimumNumberOfReportsPerRequest() throws Exception {
+    int optimumNumberOfReports = calculateOptimumNumberOfReportsPerRequest();
+
+    assertEquals(optimumNumberOfReports, FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST);
+  }
+
   private int calculateMaxNumberOfReportsPerRequest() throws Exception {
     int newMax;
     for (newMax = FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST; newMax >= 0; newMax--) {
@@ -58,6 +65,20 @@ public class NumberOfReportsPerBatchTest {
       }
     }
     return newMax;
+  }
+
+  private int calculateOptimumNumberOfReportsPerRequest() throws Exception {
+    int optimumNumberOfReports;
+    for (optimumNumberOfReports = FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST - 50;
+        optimumNumberOfReports < FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST;
+        optimumNumberOfReports++) {
+      Reports reports = givenAReportsInstanceFullOfData(optimumNumberOfReports);
+      long bytes = toBytes(reports);
+      if (bytes > MAX_REQUEST_SIZE_WITHOUT_COMPRESSION_IN_BYTES) {
+        break;
+      }
+    }
+    return optimumNumberOfReports;
   }
 
   private long toBytes(Reports reports) throws Exception {
