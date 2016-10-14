@@ -69,7 +69,7 @@ public class ApiClientTest extends MockWebServerTestCase {
 
     apiClient.sendReports(reports);
 
-    assertRequestContainsHeader("X-Api-key", "<This will be implemented in the future>");
+    assertRequestContainsHeader("X-Api-key", "15207698c544f617e2c11151ada4972e1e7d6e8e");
   }
 
   @Test public void sendsUserAgentHeader() throws Exception {
