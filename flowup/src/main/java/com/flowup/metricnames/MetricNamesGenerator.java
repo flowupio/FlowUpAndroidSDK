@@ -24,6 +24,10 @@ public class MetricNamesGenerator {
   private static final String NETWORK = "network";
   private static final String SEPARATOR = ".";
   private static final String MEMORY = "memory";
+  private static final String DISK = "disk";
+  private static final String INTERNAL_STORAGE_WRITTEN_BYTES = "internalStorageWrittenBytes";
+  private static final String SHARED_PREFERENCES_WRITTEN_BYTES =
+      "sharedPreferencesStorageWrittenBytes";
 
   private final App app;
   private final Device device;
@@ -65,6 +69,16 @@ public class MetricNamesGenerator {
 
   public String getBytesAllocatedMetricName() {
     return MetricRegistry.name(appendCrossMetricInfo(MEMORY + SEPARATOR + BYTES_ALLOCATED));
+  }
+
+  public String getInternalStorageWrittenBytes() {
+    return MetricRegistry.name(
+        appendCrossMetricInfo(DISK + SEPARATOR + INTERNAL_STORAGE_WRITTEN_BYTES));
+  }
+
+  public String getSharedPreferencesWrittenBytes() {
+    return MetricRegistry.name(
+        appendCrossMetricInfo(DISK + SEPARATOR + SHARED_PREFERENCES_WRITTEN_BYTES));
   }
 
   private String getActivityName(Activity activity) {

@@ -4,46 +4,47 @@
 
 package com.flowup.android;
 
-import android.os.Environment;
-import android.os.StatFs;
+import android.content.Context;
+import java.io.File;
+import java.util.Stack;
 
 public class FileSystem {
 
-  public int getInternalStorageUsage() {
-    StatFs statFs = getInternalStorageStatFs();
-    return getStorageUsage(statFs);
+  private final String internalStoragePath;
+  private final String sharedPreferencesPath;
+
+  public FileSystem(Context context) {
+    this.internalStoragePath = context.getFilesDir().getAbsolutePath();
+    this.sharedPreferencesPath = internalStoragePath.replace("files", "shared_prefs");
   }
 
-  public int getExternalStorageUsage() {
-    StatFs statFs = getExternalStorageStatFs();
-    return getStorageUsage(statFs);
+  public long getInternalStorageWrittenBytes() {
+    File internalStorageFolder = new File(internalStoragePath);
+    return getFolderSize(internalStorageFolder);
   }
 
-  private int getStorageUsage(StatFs statFs) {
-    double total = getTotalSpace(statFs);
-    double busy = getBusySpace(statFs);
-    return (int) ((busy / total) * 100);
+  public long getSharedPreferencesWrittenBytes() {
+    File internalStorageFolder = new File(sharedPreferencesPath);
+    return getFolderSize(internalStorageFolder);
   }
 
-  private long getBusySpace(StatFs statFs) {
-    long total = getTotalSpace(statFs);
-    long free = (statFs.getAvailableBlocks() * statFs.getBlockSize());
-    return total - free;
-  }
+  private long getFolderSize(File dir) {
+    long result = 0;
+    Stack<File> foldersList = new Stack<>();
+    foldersList.clear();
+    foldersList.push(dir);
+    while (!foldersList.isEmpty()) {
+      File currentFolder = foldersList.pop();
+      File[] filesList = currentFolder.listFiles();
+      for (File file : filesList) {
+        if (file.isDirectory()) {
+          foldersList.push(file);
+        } else {
+          result += file.length();
+        }
+      }
+    }
 
-  private long getTotalSpace(StatFs statFs) {
-    return statFs.getBlockCount() * statFs.getBlockSize();
-  }
-
-  private StatFs getInternalStorageStatFs() {
-    return getStatFsForPath(Environment.getRootDirectory().getAbsolutePath());
-  }
-
-  private StatFs getExternalStorageStatFs() {
-    return getStatFsForPath(Environment.getExternalStorageDirectory().getAbsolutePath());
-  }
-
-  private StatFs getStatFsForPath(String path) {
-    return new StatFs(path);
+    return result;
   }
 }
