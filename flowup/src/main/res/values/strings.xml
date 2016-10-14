@@ -4,5 +4,4 @@
   -->
 <resources>
   <string translatable="false" name="app_name">FlowUp</string>
-  <string translatable="false" name="unknown_version_name_cross_metric_name">unknown</string>
 </resources>

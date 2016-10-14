@@ -66,14 +66,18 @@ public class FlowUp {
   }
 
   private void initializeKarumiGrafanaReporter() {
-    String host = application.getString(R.string.karumi_grafana_host);
-    int port = application.getResources().getInteger(R.integer.karumi_grafana_port);
-    StatsDReporter.forRegistry(registry)
-        .convertRatesTo(TimeUnit.NANOSECONDS)
-        .convertDurationsTo(TimeUnit.NANOSECONDS)
-        .filter(MetricFilter.ALL)
-        .build(host, port)
-        .start(SAMPLING_INTERVAL, SAMPLING_TIME_UNIT);
+    new Thread(new Runnable() {
+      @Override public void run() {
+        String host = application.getString(R.string.karumi_graphite_server);
+        int port = application.getResources().getInteger(R.integer.karumi_graphite_port);
+        StatsDReporter.forRegistry(registry)
+            .convertRatesTo(TimeUnit.NANOSECONDS)
+            .convertDurationsTo(TimeUnit.NANOSECONDS)
+            .filter(MetricFilter.ALL)
+            .build(host, port)
+            .start(SAMPLING_INTERVAL, SAMPLING_TIME_UNIT);
+      }
+    }).start();
   }
 
   private void initializeFlowUpReporter() {
