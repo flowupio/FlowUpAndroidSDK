@@ -40,14 +40,10 @@ import static org.mockito.Mockito.when;
   @Mock private WiFiSyncServiceScheduler syncScheduler;
   @Mock private Time time;
 
-  private FlowUpReporter givenAFlowUpReporter() {
-    return givenAFlowUpReporter(false);
-  }
-
-  private FlowUpReporter givenAFlowUpReporter(boolean debuggable) {
+  private FlowUpReporter givenAFlowUpReporter(boolean forceReports) {
     return new FlowUpReporter(new MetricRegistry(), "ReporterName", MetricFilter.ALL,
         TimeUnit.SECONDS, TimeUnit.MILLISECONDS, apiClient, storage, syncScheduler, time,
-        debuggable);
+        forceReports);
   }
 
   @Test public void storesDropwizardReportAndDoesNotInitializeSyncIfDebugIsNotEnabled() {
@@ -71,12 +67,13 @@ import static org.mockito.Mockito.when;
   @Test public void ifTheSyncProcessIsSuccessfulTheReportsShouldBeDeleted() {
     List<String> ids = Collections.singletonList(String.valueOf(ANY_TIMESTAMP));
     Reports reportsSent = givenAReportsInstanceWithId(ids);
+    givenSomeStoredReports(reportsSent);
     givenTheSyncProcessIsSuccess(reportsSent);
-    FlowUpReporter reporter = givenAFlowUpReporter(false);
+    FlowUpReporter reporter = givenAFlowUpReporter(true);
 
     reportSomeMetrics(reporter);
 
-    verify(apiClient, never()).sendReports(reportsSent);
+    verify(storage).deleteReports(reportsSent);
   }
 
   @Test public void sendsReportsInBatches() {
@@ -158,6 +155,27 @@ import static org.mockito.Mockito.when;
     verify(storage, never()).deleteReports(secondBatch);
   }
 
+  @Test public void removesTheStoredReportsIfTheResultOfTheSyncProcessIsUnauthorized() {
+    List<String> ids = Collections.singletonList(String.valueOf(ANY_TIMESTAMP));
+    Reports reportsSent = givenAReportsInstanceWithId(ids);
+    givenSomeStoredReports(reportsSent);
+    givenTheSyncProcessReturnsUnauthorized(reportsSent);
+    FlowUpReporter reporter = givenAFlowUpReporter(true);
+
+    reportSomeMetrics(reporter);
+
+    verify(storage).deleteReports(reportsSent);
+  }
+
+  private void givenSomeStoredReports(Reports reportsSent) {
+    when(storage.getReports(anyInt())).thenReturn(reportsSent, null);
+  }
+
+  private void givenTheSyncProcessReturnsUnauthorized(Reports reports) {
+    when(apiClient.sendReports(reports)).thenReturn(
+        new ReportResult(ReportResult.Error.UNAUTHORIZED));
+  }
+
   private void givenTheSyncProcessIsSuccess(Reports reports) {
     when(apiClient.sendReports(reports)).thenReturn(new ReportResult(reports));
   }
@@ -181,10 +199,7 @@ import static org.mockito.Mockito.when;
   }
 
   private DropwizardReport reportSomeMetrics(FlowUpReporter reporter) {
-    DropwizardReport report = report(reporter);
-    List<String> ids = Collections.singletonList(String.valueOf(ANY_TIMESTAMP));
-    when(storage.getReports(anyInt())).thenReturn(givenAReportsInstanceWithId(ids));
-    return report;
+    return report(reporter);
   }
 
   private Reports givenAReportsInstanceWithId(List<String> ids) {

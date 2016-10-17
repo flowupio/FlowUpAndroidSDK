@@ -108,4 +108,38 @@ public class Reports {
   @Override public int hashCode() {
     return reportsIds.hashCode();
   }
+
+  @Override public String toString() {
+    return "Reports{"
+        + "reportsIds="
+        + reportsIds
+        + ", appPackage='"
+        + appPackage
+        + '\''
+        + ", uuid='"
+        + uuid
+        + '\''
+        + ", deviceModel='"
+        + deviceModel
+        + '\''
+        + ", screenDensity='"
+        + screenDensity
+        + '\''
+        + ", screenSize='"
+        + screenSize
+        + '\''
+        + ", numberOfCores="
+        + numberOfCores
+        + ", networkMetricsReports="
+        + networkMetricsReports
+        + ", uiMetrics="
+        + uiMetrics
+        + ", cpuMetrics="
+        + cpuMetrics
+        + ", memoryMetrics="
+        + memoryMetrics
+        + ", diskMetrics="
+        + diskMetrics
+        + '}';
+  }
 }

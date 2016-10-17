@@ -19,4 +19,8 @@ public class CPUMetric extends Metric {
   public int getCpuUsage() {
     return cpuUsage;
   }
+
+  @Override public String toString() {
+    return "CPUMetric{" + "cpuUsage=" + cpuUsage + '}';
+  }
 }
