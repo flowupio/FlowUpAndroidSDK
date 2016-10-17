@@ -6,6 +6,7 @@ package io.flowup;
 
 import android.app.Application;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.google.android.gms.common.ConnectionResult;
@@ -108,17 +109,24 @@ public class FlowUp {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
       initializeFPSCollector();
       initializeFrameTimeCollector();
+      initializeActivityLifecycleCollector();
     }
   }
 
-  private void initializeFPSCollector() {
+  @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN) private void initializeFPSCollector() {
     Collector fpsCollector = Collectors.getFPSCollector(application);
     fpsCollector.initialize(registry);
   }
 
-  private void initializeFrameTimeCollector() {
+  @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN) private void initializeFrameTimeCollector() {
     Collector frameTimeCollector = Collectors.getFrameTimeCollector(application);
     frameTimeCollector.initialize(registry);
+  }
+
+  @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+  private void initializeActivityLifecycleCollector() {
+    Collector activityLifecycleCollector = Collectors.getActivityLifecycleCollector(application);
+    activityLifecycleCollector.initialize(registry);
   }
 
   private void initializeNetworkCollectors() {
