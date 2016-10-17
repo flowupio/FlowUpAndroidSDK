@@ -12,7 +12,8 @@ public class FlowUpApplication extends Application {
   @Override public void onCreate() {
     FlowUp.Builder
         .with(this)
-        .debuggable(BuildConfig.DEBUG)
+        .forceReports(BuildConfig.DEBUG)
+        .logEnabled(BuildConfig.DEBUG)
         .start();
     super.onCreate();
   }

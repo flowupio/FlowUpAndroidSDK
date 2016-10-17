@@ -6,7 +6,6 @@ package com.flowup;
 
 import android.app.Application;
 import android.util.Log;
-import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.flowup.android.App;
@@ -28,17 +27,17 @@ public class FlowUp {
   private static final String LOGTAG = "FlowUp";
 
   private final Application application;
-  private final boolean debuggable;
+  private final boolean forceReports;
 
   private static MetricRegistry registry;
 
-  FlowUp(Application application, boolean debuggable) {
+  FlowUp(Application application, boolean forceReports) {
     if (application == null) {
       throw new IllegalArgumentException(
           "The application instance used to initialize FlowUp can not be null.");
     }
     this.application = application;
-    this.debuggable = debuggable;
+    this.forceReports = forceReports;
   }
 
   public void start() {
@@ -63,7 +62,7 @@ public class FlowUp {
   }
 
   private boolean doesSupportGooglePlayServices() {
-    if (debuggable) {
+    if (forceReports) {
       return true;
     }
     GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
@@ -74,13 +73,8 @@ public class FlowUp {
   }
 
   private void initializeReporters() {
-    //initializeConsoleReporter();
     initializeKarumiGrafanaReporter();
     initializeFlowUpReporter();
-  }
-
-  private void initializeConsoleReporter() {
-    ConsoleReporter.forRegistry(registry).build().start(10, TimeUnit.SECONDS);
   }
 
   private void initializeKarumiGrafanaReporter() {
@@ -104,7 +98,7 @@ public class FlowUp {
     int port = application.getResources().getInteger(R.integer.flowup_port);
     FlowUpReporter.forRegistry(registry, application)
         .filter(MetricFilter.ALL)
-        .debuggable(debuggable)
+        .forceReports(forceReports)
         .build(scheme, host, port)
         .start(SAMPLING_INTERVAL, TimeUnit.SECONDS);
   }
@@ -158,7 +152,8 @@ public class FlowUp {
   public static class Builder {
 
     Application application;
-    boolean debuggable;
+    boolean forceReports;
+    boolean logEnabled;
 
     Builder() {
     }
@@ -169,13 +164,18 @@ public class FlowUp {
       return builder;
     }
 
-    public Builder debuggable(boolean debuggable) {
-      this.debuggable = debuggable;
+    public Builder forceReports(boolean forceReports) {
+      this.forceReports = forceReports;
+      return this;
+    }
+
+    public Builder logEnabled(boolean logEnabled) {
+      this.logEnabled = logEnabled;
       return this;
     }
 
     public void start() {
-      new FlowUp(application, debuggable).start();
+      new FlowUp(application, forceReports).start();
     }
   }
 }

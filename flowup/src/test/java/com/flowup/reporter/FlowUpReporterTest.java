@@ -40,14 +40,10 @@ import static org.mockito.Mockito.when;
   @Mock private WiFiSyncServiceScheduler syncScheduler;
   @Mock private Time time;
 
-  private FlowUpReporter givenAFlowUpReporter() {
-    return givenAFlowUpReporter(false);
-  }
-
-  private FlowUpReporter givenAFlowUpReporter(boolean debuggable) {
+  private FlowUpReporter givenAFlowUpReporter(boolean forceReports) {
     return new FlowUpReporter(new MetricRegistry(), "ReporterName", MetricFilter.ALL,
         TimeUnit.SECONDS, TimeUnit.MILLISECONDS, apiClient, storage, syncScheduler, time,
-        debuggable);
+        forceReports);
   }
 
   @Test public void storesDropwizardReportAndDoesNotInitializeSyncIfDebugIsNotEnabled() {

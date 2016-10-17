@@ -33,17 +33,17 @@ public class FlowUpReporter extends ScheduledReporter {
   private final ApiClient apiClient;
   private final WiFiSyncServiceScheduler syncScheduler;
   private final Time time;
-  private final boolean debuggable;
+  private final boolean forceReports;
 
   FlowUpReporter(MetricRegistry registry, String name, MetricFilter filter, TimeUnit rateUnit,
       TimeUnit durationUnit, ApiClient apiClient, ReportsStorage reportsStorage,
-      WiFiSyncServiceScheduler syncScheduler, Time time, boolean debuggable) {
+      WiFiSyncServiceScheduler syncScheduler, Time time, boolean forceReports) {
     super(registry, name, filter, rateUnit, durationUnit);
     this.apiClient = apiClient;
     this.reportsStorage = reportsStorage;
     this.syncScheduler = syncScheduler;
     this.time = time;
-    this.debuggable = debuggable;
+    this.forceReports = forceReports;
   }
 
   @Override public void start(long period, TimeUnit unit) {
@@ -57,7 +57,7 @@ public class FlowUpReporter extends ScheduledReporter {
     DropwizardReport dropwizardReport =
         new DropwizardReport(time.now(), gauges, counters, histograms, meters, timers);
     storeReport(dropwizardReport);
-    if (debuggable) {
+    if (forceReports) {
       sendStoredReports();
     }
   }
@@ -88,7 +88,7 @@ public class FlowUpReporter extends ScheduledReporter {
     private MetricFilter filter;
     private TimeUnit rateUnit;
     private TimeUnit durationUnit;
-    private boolean debuggable;
+    private boolean forceReports;
     private Context context;
 
     public Builder(MetricRegistry registry, Context context) {
@@ -97,7 +97,7 @@ public class FlowUpReporter extends ScheduledReporter {
       this.filter = MetricFilter.ALL;
       this.rateUnit = TimeUnit.SECONDS;
       this.durationUnit = TimeUnit.MILLISECONDS;
-      this.debuggable = true;
+      this.forceReports = true;
       this.context = context;
     }
 
@@ -124,11 +124,11 @@ public class FlowUpReporter extends ScheduledReporter {
     public FlowUpReporter build(String scheme, String host, int port) {
       return new FlowUpReporter(registry, name, filter, rateUnit, durationUnit,
           new ApiClient(scheme, host, port), new ReportsStorage(context),
-          new WiFiSyncServiceScheduler(context), new Time(), debuggable);
+          new WiFiSyncServiceScheduler(context), new Time(), forceReports);
     }
 
-    public Builder debuggable(boolean debuggable) {
-      this.debuggable = debuggable;
+    public Builder forceReports(boolean forceReports) {
+      this.forceReports = forceReports;
       return this;
     }
   }
