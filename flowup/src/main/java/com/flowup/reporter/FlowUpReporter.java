@@ -129,10 +129,10 @@ public class FlowUpReporter extends ScheduledReporter {
       return this;
     }
 
-    public FlowUpReporter build(String scheme, String host, int port) {
+    public FlowUpReporter build(String apiKey, String scheme, String host, int port) {
       return new FlowUpReporter(registry, name, filter, TimeUnit.NANOSECONDS, TimeUnit.NANOSECONDS,
-          new ApiClient(scheme, host, port, logEnabled), new ReportsStorage(context),
-          new WiFiSyncServiceScheduler(context), new Time(), forceReports);
+          new ApiClient(apiKey, scheme, host, port, logEnabled), new ReportsStorage(context),
+          new WiFiSyncServiceScheduler(context, apiKey), new Time(), forceReports);
     }
 
     public Builder forceReports(boolean forceReports) {
@@ -141,7 +141,7 @@ public class FlowUpReporter extends ScheduledReporter {
     }
 
     public Builder logEnabled(boolean logEnabled) {
-      this.logEnabled(logEnabled);
+      this.logEnabled = logEnabled;
       return this;
     }
   }

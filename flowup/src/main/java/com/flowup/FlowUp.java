@@ -25,17 +25,16 @@ public class FlowUp {
   private static final TimeUnit SAMPLING_TIME_UNIT = TimeUnit.SECONDS;
 
   private final Application application;
+  private final String apiKey;
   private final boolean forceReports;
   private final boolean logEnabled;
 
   private static MetricRegistry registry;
 
-  FlowUp(Application application, boolean forceReports, boolean logEnabled) {
-    if (application == null) {
-      throw new IllegalArgumentException(
-          "The application instance used to initialize FlowUp can not be null.");
-    }
+  FlowUp(Application application, String apiKey, boolean forceReports, boolean logEnabled) {
+    validateConstructionParams(application, apiKey);
     this.application = application;
+    this.apiKey = apiKey;
     this.forceReports = forceReports;
     this.logEnabled = logEnabled;
   }
@@ -57,6 +56,17 @@ public class FlowUp {
     initializeCPUCollectors();
     initializeMemoryCollectors();
     initializeDiskCollectors();
+  }
+
+  private void validateConstructionParams(Application application, String apiKey) {
+    if (application == null) {
+      throw new IllegalArgumentException(
+          "The application instance used to initialize FlowUp can not be null.");
+    }
+    if (apiKey == null || apiKey.isEmpty()) {
+      throw new IllegalArgumentException(
+          "The apiKey instance used to initialize FlowUp can not be null or empty.");
+    }
   }
 
   private void initializeLogger() {
@@ -89,7 +99,7 @@ public class FlowUp {
         .filter(MetricFilter.ALL)
         .forceReports(forceReports)
         .logEnabled(logEnabled)
-        .build(scheme, host, port)
+        .build(apiKey, scheme, host, port)
         .start(SAMPLING_INTERVAL, TimeUnit.SECONDS);
   }
 
@@ -142,6 +152,7 @@ public class FlowUp {
   public static class Builder {
 
     Application application;
+    String apiKey;
     boolean forceReports;
     boolean logEnabled;
 
@@ -159,13 +170,18 @@ public class FlowUp {
       return this;
     }
 
+    public Builder apiKey(String apiKey) {
+      this.apiKey = apiKey;
+      return this;
+    }
+
     public Builder logEnabled(boolean logEnabled) {
       this.logEnabled = logEnabled;
       return this;
     }
 
     public void start() {
-      new FlowUp(application, forceReports, logEnabled).start();
+      new FlowUp(application, apiKey, forceReports, logEnabled).start();
     }
   }
 }

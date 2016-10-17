@@ -21,15 +21,13 @@ import static com.google.android.gms.gcm.GcmNetworkManager.RESULT_SUCCESS;
 
 public class WiFiSyncService extends GcmTaskService {
 
+  static final String API_KEY_EXTRA = "apiKeyExtra";
+
   private ApiClient apiClient;
   private ReportsStorage reportsStorage;
 
   @Override public void onCreate() {
     super.onCreate();
-    String scheme = getString(R.string.flowup_scheme);
-    String host = getString(R.string.flowup_host);
-    int port = getResources().getInteger(R.integer.flowup_port);
-    apiClient = new ApiClient(scheme, host, port);
     reportsStorage = new ReportsStorage(this);
   }
 
@@ -37,7 +35,11 @@ public class WiFiSyncService extends GcmTaskService {
     if (!isTaskSupported(taskParams)) {
       return RESULT_FAILURE;
     }
-
+    String apiKey = taskParams.getExtras().getString(API_KEY_EXTRA);
+    String scheme = getString(R.string.flowup_scheme);
+    String host = getString(R.string.flowup_host);
+    int port = getResources().getInteger(R.integer.flowup_port);
+    apiClient = new ApiClient(apiKey, scheme, host, port);
     return syncStoredReports();
   }
 

@@ -17,12 +17,11 @@ class ApiClientConfig {
       new OkHttpClient.Builder().connectTimeout(HTTP_TIMEOUT, TimeUnit.SECONDS)
           .readTimeout(HTTP_TIMEOUT, TimeUnit.SECONDS)
           .writeTimeout(HTTP_TIMEOUT, TimeUnit.SECONDS)
-          .addInterceptor(new FlowUpHeadersInterceptor())
           .build();
 
   private static final Gson GSON = new Gson();
 
-  static OkHttpClient getHttpClient(boolean logEnabled, boolean useGzip) {
+  static OkHttpClient getHttpClient(String apiKey, boolean logEnabled, boolean useGzip) {
     OkHttpClient httpClient = HTTP_CLIENT;
     if (logEnabled) {
       HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
@@ -33,7 +32,7 @@ class ApiClientConfig {
       GzipRequestInterceptor gzipInterceptor = new GzipRequestInterceptor();
       httpClient = httpClient.newBuilder().addInterceptor(gzipInterceptor).build();
     }
-    return httpClient;
+    return httpClient.newBuilder().addInterceptor(new FlowUpHeadersInterceptor(apiKey)).build();
   }
 
   static Gson getJsonParser() {

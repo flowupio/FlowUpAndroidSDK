@@ -23,16 +23,16 @@ public class ApiClient {
   private final Gson jsonParser;
   private final HttpUrl baseUrl;
 
-  public ApiClient(String scheme, String host, int port) {
-    this(scheme, host, port, false);
+  public ApiClient(String apiKey, String scheme, String host, int port) {
+    this(apiKey, scheme, host, port, false);
   }
 
-  public ApiClient(String scheme, String host, int port, boolean logEnabled) {
-    this(scheme, host, port, logEnabled, true);
+  public ApiClient(String apiKey, String scheme, String host, int port, boolean logEnabled) {
+    this(apiKey, scheme, host, port, logEnabled, true);
   }
 
-  public ApiClient(String scheme, String host, int port, boolean logEnabled, boolean useGzip) {
-    this.httpClient = ApiClientConfig.getHttpClient(logEnabled, useGzip);
+  public ApiClient(String apiKey, String scheme, String host, int port, boolean logEnabled, boolean useGzip) {
+    this.httpClient = ApiClientConfig.getHttpClient(apiKey, logEnabled, useGzip);
     this.jsonParser = ApiClientConfig.getJsonParser();
     this.baseUrl = ApiClientConfig.buildURL(scheme, host, port);
   }

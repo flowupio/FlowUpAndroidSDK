@@ -34,6 +34,7 @@ public class ApiClientTest extends MockWebServerTestCase {
   private static final int ANY_MEMORY_PERCENTAGE_USAGE = 3;
   private static final long ANY_INTERNAL_STORAGE_WRITTEN_BYTES = 2048;
   private static final long ANY_SHARED_PREFS_WRITTEN_BYTES = 1024;
+  private static final String ANY_API_KEY = "15207698c544f617e2c11151ada4972e1e7d6e8e";
 
   private ApiClient apiClient;
 
@@ -76,7 +77,7 @@ public class ApiClientTest extends MockWebServerTestCase {
 
     apiClient.sendReports(reports);
 
-    assertRequestContainsHeader("X-Api-key", "15207698c544f617e2c11151ada4972e1e7d6e8e");
+    assertRequestContainsHeader("X-Api-key", ANY_API_KEY);
   }
 
   @Test public void sendsUserAgentHeader() throws Exception {
@@ -135,7 +136,7 @@ public class ApiClientTest extends MockWebServerTestCase {
   }
 
   private ApiClient givenAnApiClient(boolean useGzip) {
-    return new ApiClient(getScheme(), getHost(), getPort(), false, useGzip);
+    return new ApiClient(ANY_API_KEY, getScheme(), getHost(), getPort(), false, useGzip);
   }
 
   private Reports givenSomeReports() {
