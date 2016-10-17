@@ -342,11 +342,300 @@ import static org.mockito.Mockito.when;
     assertTrue(extractor.isSharedPreferencesAllocatedBytesMetric(writtenBytes));
   }
 
-
   @Test public void doesNotIdentifyASharedPrefsWrittenBytesMetricAsInternalStorageWrittenBytes() {
     String writtenBytes = generator.getSharedPreferencesWrittenBytes();
 
     assertFalse(extractor.isInternalStorageAllocatedBytesMetric(writtenBytes));
+  }
+
+  @Test public void onActivityCreatedMetricNameShouldContainExactly12FieldsSeparatedByDots() {
+    String name = generator.getOnActivityCreatedMetricName(activity);
+
+    assertEquals(12, MetricNameUtils.split(name).length);
+  }
+
+  @Test public void onActivityCreatedMetricNameShouldContainTheCrossMetricInfoName() {
+    String name = generator.getOnActivityCreatedMetricName(activity);
+
+    assertContainsCrossMetricInfoName(name);
+  }
+
+  @Test public void onActivityCreatedContainsTheMetricNameInTheCorrectPosition() {
+    String name = generator.getOnActivityCreatedMetricName(activity);
+
+    String[] parts = MetricNameUtils.split(name);
+    assertEquals("onActivityCreated", parts[10]);
+  }
+
+  @Test public void identifiesAnOnActivityCreatedMetricProperly() {
+    String name = generator.getOnActivityCreatedMetricName(activity);
+
+    assertTrue(extractor.isOnActivityCreatedMetric(name));
+  }
+
+  @Test public void doesNotIdentifyAnOnActivityResumedMetricAsAnOnActivityCreatedMetric() {
+    String name = generator.getOnActivityResumedMetricName(activity);
+
+    assertFalse(extractor.isOnActivityCreatedMetric(name));
+  }
+
+  @Test public void onActivityCreatedMetricContainsActivityNameAsTheLastParam() {
+    String name = generator.getOnActivityCreatedMetricName(activity);
+
+    String[] parts = MetricNameUtils.split(name);
+    assertEquals(activity.getClass().getSimpleName(), parts[11]);
+  }
+
+  @Test public void onActivityResumedMetricNameShouldContainExactly12FieldsSeparatedByDots() {
+    String name = generator.getOnActivityResumedMetricName(activity);
+
+    assertEquals(12, MetricNameUtils.split(name).length);
+  }
+
+  @Test public void onActivityResumedMetricNameShouldContainTheCrossMetricInfoName() {
+    String name = generator.getOnActivityResumedMetricName(activity);
+
+    assertContainsCrossMetricInfoName(name);
+  }
+
+  @Test public void onActivityResumedContainsTheMetricNameInTheCorrectPosition() {
+    String name = generator.getOnActivityResumedMetricName(activity);
+
+    String[] parts = MetricNameUtils.split(name);
+    assertEquals("onActivityResumed", parts[10]);
+  }
+
+  @Test public void identifiesAnOnActivityResumedMetricProperly() {
+    String name = generator.getOnActivityResumedMetricName(activity);
+
+    assertTrue(extractor.isOnActivityResumedMetric(name));
+  }
+
+  @Test public void doesNotIdentifyAnOnActivityCreatedMetricAsAnOnActivityResumedMetric() {
+    String name = generator.getOnActivityCreatedMetricName(activity);
+
+    assertFalse(extractor.isOnActivityResumedMetric(name));
+  }
+
+  @Test public void onActivityResumedContainsActivityNameAsTheLastParam() {
+    String name = generator.getOnActivityResumedMetricName(activity);
+
+    String[] parts = MetricNameUtils.split(name);
+    assertEquals(activity.getClass().getSimpleName(), parts[11]);
+  }
+
+  @Test public void onActivityStartedMetricNameShouldContainExactly12FieldsSeparatedByDots() {
+    String name = generator.getOnActivityStartedMetricName(activity);
+
+    assertEquals(12, MetricNameUtils.split(name).length);
+  }
+
+  @Test public void onActivityStartedMetricNameShouldContainTheCrossMetricInfoName() {
+    String name = generator.getOnActivityStartedMetricName(activity);
+
+    assertContainsCrossMetricInfoName(name);
+  }
+
+  @Test public void onActivityStartedContainsTheMetricNameInTheCorrectPosition() {
+    String name = generator.getOnActivityStartedMetricName(activity);
+
+    String[] parts = MetricNameUtils.split(name);
+    assertEquals("onActivityStarted", parts[10]);
+  }
+
+  @Test public void identifiesAnOnActivityStartedMetricProperly() {
+    String name = generator.getOnActivityStartedMetricName(activity);
+
+    assertTrue(extractor.isOnActivityStartedMetric(name));
+  }
+
+  @Test public void doesNotIdentifyAnOnActivityCreatedMetricAsAnOnActivityStartedMetric() {
+    String name = generator.getOnActivityStartedMetricName(activity);
+
+    assertFalse(extractor.isOnActivityCreatedMetric(name));
+  }
+
+  @Test public void onActivityStartedContainsActivityNameAsTheLastParam() {
+    String name = generator.getOnActivityStartedMetricName(activity);
+
+    String[] parts = MetricNameUtils.split(name);
+    assertEquals(activity.getClass().getSimpleName(), parts[11]);
+  }
+
+  @Test public void activityVisibleMetricNameShouldContainExactly12FieldsSeparatedByDots() {
+    String name = generator.getActivityVisibleMetricName(activity);
+
+    assertEquals(12, MetricNameUtils.split(name).length);
+  }
+
+  @Test public void activityVisibleMetricNameShouldContainTheCrossMetricInfoName() {
+    String name = generator.getActivityVisibleMetricName(activity);
+
+    assertContainsCrossMetricInfoName(name);
+  }
+
+  @Test public void activityVisibleMetricContainsTheMetricNameInTheCorrectPosition() {
+    String name = generator.getActivityVisibleMetricName(activity);
+
+    String[] parts = MetricNameUtils.split(name);
+    assertEquals("activityVisible", parts[10]);
+  }
+
+  @Test public void identifiesAnActivityVisibleMetricProperly() {
+    String name = generator.getActivityVisibleMetricName(activity);
+
+    assertTrue(extractor.isActivityVisibleMetric(name));
+  }
+
+  @Test public void doesNotIdentifyAnOnActivityCreatedMetricAsAnActivityVisibleMetric() {
+    String name = generator.getOnActivityCreatedMetricName(activity);
+
+    assertFalse(extractor.isActivityVisibleMetric(name));
+  }
+
+  @Test public void activityVisibleContainsActivityNameAsTheLastParam() {
+    String name = generator.getActivityVisibleMetricName(activity);
+
+    String[] parts = MetricNameUtils.split(name);
+    assertEquals(activity.getClass().getSimpleName(), parts[11]);
+  }
+
+  @Test public void onActivityPausedMetricNameShouldContainExactly12FieldsSeparatedByDots() {
+    String name = generator.getOnActivityPausedMetricName(activity);
+
+    assertEquals(12, MetricNameUtils.split(name).length);
+  }
+
+  @Test public void onActivityPausedMetricNameShouldContainTheCrossMetricInfoName() {
+    String name = generator.getOnActivityPausedMetricName(activity);
+
+    assertContainsCrossMetricInfoName(name);
+  }
+
+  @Test public void onActivityPausedMetricContainsTheMetricNameInTheCorrectPosition() {
+    String name = generator.getOnActivityPausedMetricName(activity);
+
+    String[] parts = MetricNameUtils.split(name);
+    assertEquals("onActivityPaused", parts[10]);
+  }
+
+  @Test public void identifiesAnOnActivityPausedMetricProperly() {
+    String name = generator.getOnActivityPausedMetricName(activity);
+
+    assertTrue(extractor.isOnActivityPausedMetric(name));
+  }
+
+  @Test public void doesNotIdentifyAnOnActivityCreatedMetricAsAnOnActivityPaused() {
+    String name = generator.getOnActivityCreatedMetricName(activity);
+
+    assertFalse(extractor.isOnActivityPausedMetric(name));
+  }
+
+  @Test public void onActivityPausedContainsActivityNameAsTheLastParam() {
+    String name = generator.getActivityVisibleMetricName(activity);
+
+    String[] parts = MetricNameUtils.split(name);
+    assertEquals(activity.getClass().getSimpleName(), parts[11]);
+  }
+
+  @Test public void onActivityStoppedMetricNameShouldContainExactly12FieldsSeparatedByDots() {
+    String name = generator.getOnActivityStoppedMetricName(activity);
+
+    assertEquals(12, MetricNameUtils.split(name).length);
+  }
+
+  @Test public void onActivityStoppedMetricNameShouldContainTheCrossMetricInfoName() {
+    String name = generator.getOnActivityStoppedMetricName(activity);
+
+    assertContainsCrossMetricInfoName(name);
+  }
+
+  @Test public void onActivityStoppedMetricContainsTheMetricNameInTheCorrectPosition() {
+    String name = generator.getOnActivityStoppedMetricName(activity);
+
+    String[] parts = MetricNameUtils.split(name);
+    assertEquals("onActivityStopped", parts[10]);
+  }
+
+  @Test public void identifiesAnOnActivityStoppedMetricProperly() {
+    String name = generator.getOnActivityStoppedMetricName(activity);
+
+    assertTrue(extractor.isOnActivityStoppedMetric(name));
+  }
+
+  @Test public void doesNotIdentifyAnOnActivityStoppedMetricAsAnOnActivityPaused() {
+    String name = generator.getOnActivityCreatedMetricName(activity);
+
+    assertFalse(extractor.isOnActivityStoppedMetric(name));
+  }
+
+  @Test public void onActivityStoppedContainsActivityNameAsTheLastParam() {
+    String name = generator.getOnActivityStoppedMetricName(activity);
+
+    String[] parts = MetricNameUtils.split(name);
+    assertEquals(activity.getClass().getSimpleName(), parts[11]);
+  }
+
+  @Test public void onActivityDestroyedMetricNameShouldContainExactly12FieldsSeparatedByDots() {
+    String name = generator.getOnActivityDestroyedMetricName(activity);
+
+    assertEquals(12, MetricNameUtils.split(name).length);
+  }
+
+  @Test public void onActivityDestroyedMetricNameShouldContainTheCrossMetricInfoName() {
+    String name = generator.getOnActivityDestroyedMetricName(activity);
+
+    assertContainsCrossMetricInfoName(name);
+  }
+
+  @Test public void onActivityDestroyedMetricContainsTheMetricNameInTheCorrectPosition() {
+    String name = generator.getOnActivityDestroyedMetricName(activity);
+
+    String[] parts = MetricNameUtils.split(name);
+    assertEquals("onActivityDestroyed", parts[10]);
+  }
+
+  @Test public void identifiesAnOnActivityDestroyedMetricProperly() {
+    String name = generator.getOnActivityDestroyedMetricName(activity);
+
+    assertTrue(extractor.isOnActivityDestroyedMetric(name));
+  }
+
+  @Test public void doesNotIdentifyAnOnActivityStoppedMetricAsAnOnActivityDestroyed() {
+    String name = generator.getOnActivityCreatedMetricName(activity);
+
+    assertFalse(extractor.isOnActivityDestroyedMetric(name));
+  }
+
+  @Test public void onActivityDestroyedContainsActivityNameAsTheLastParam() {
+    String name = generator.getOnActivityDestroyedMetricName(activity);
+
+    String[] parts = MetricNameUtils.split(name);
+    assertEquals(activity.getClass().getSimpleName(), parts[11]);
+  }
+
+  @Test public void returnsTrueJustWithUIMetrics() {
+    String fps = generator.getFPSMetricName(activity);
+    String frameTime = generator.getFPSMetricName(activity);
+    String activityCreated = generator.getFPSMetricName(activity);
+    String activityStarted = generator.getFPSMetricName(activity);
+    String activityResumed = generator.getFPSMetricName(activity);
+    String activityVisible = generator.getFPSMetricName(activity);
+    String activityPaused = generator.getFPSMetricName(activity);
+    String activityStopped = generator.getFPSMetricName(activity);
+    String activityDestroyed = generator.getFPSMetricName(activity);
+    String nonUIMetricName = generator.getBytesAllocatedMetricName();
+
+    assertTrue(extractor.isUIMetric(fps));
+    assertTrue(extractor.isUIMetric(frameTime));
+    assertTrue(extractor.isUIMetric(activityCreated));
+    assertTrue(extractor.isUIMetric(activityStarted));
+    assertTrue(extractor.isUIMetric(activityResumed));
+    assertTrue(extractor.isUIMetric(activityVisible));
+    assertTrue(extractor.isUIMetric(activityPaused));
+    assertTrue(extractor.isUIMetric(activityStopped));
+    assertTrue(extractor.isUIMetric(activityDestroyed));
+    assertFalse(extractor.isUIMetric(nonUIMetricName));
   }
 
   private void assertContainsCrossMetricInfoName(String metricName) {
