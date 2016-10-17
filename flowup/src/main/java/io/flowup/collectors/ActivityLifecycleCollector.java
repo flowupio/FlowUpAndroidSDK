@@ -39,39 +39,45 @@ import io.flowup.metricnames.MetricNamesGenerator;
       private Timer.Context onDestroyTimer;
 
       @Override public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-        onCreateTimer = registry.timer(metricNamesGenerator.getFPSMetricName(activity)).time();
+        onCreateTimer =
+            registry.timer(metricNamesGenerator.getOnActivityCreatedMetricName(activity)).time();
       }
 
       @Override public void onActivityStarted(Activity activity) {
         onCreateTimer.stop();
-        onStartTimer = registry.timer(metricNamesGenerator.getFPSMetricName(activity)).time();
+        onStartTimer =
+            registry.timer(metricNamesGenerator.getOnActivityStartedMetricName(activity)).time();
       }
 
       @Override public void onActivityResumed(Activity activity) {
         onStartTimer.stop();
-        onResumeTimer = registry.timer(metricNamesGenerator.getFPSMetricName(activity)).time();
+        onResumeTimer =
+            registry.timer(metricNamesGenerator.getOnActivityResumedMetricName(activity)).time();
         new Handler(Looper.getMainLooper()).post(new Runnable() {
           @Override public void run() {
             onResumeTimer.stop();
           }
         });
         activityVisibleTimer =
-            registry.timer(metricNamesGenerator.getFPSMetricName(activity)).time();
+            registry.timer(metricNamesGenerator.getActivityVisibleMetricName(activity)).time();
       }
 
       @Override public void onActivityPaused(Activity activity) {
         activityVisibleTimer.stop();
-        onPauseTimer = registry.timer(metricNamesGenerator.getFPSMetricName(activity)).time();
+        onPauseTimer =
+            registry.timer(metricNamesGenerator.getOnActivityPausedMetricName(activity)).time();
       }
 
       @Override public void onActivityStopped(Activity activity) {
         onPauseTimer.stop();
-        onStopTimer = registry.timer(metricNamesGenerator.getFPSMetricName(activity)).time();
+        onStopTimer =
+            registry.timer(metricNamesGenerator.getOnActivityStoppedMetricName(activity)).time();
       }
 
       @Override public void onActivityDestroyed(Activity activity) {
         onStopTimer.stop();
-        onDestroyTimer = registry.timer(metricNamesGenerator.getFPSMetricName(activity)).time();
+        onDestroyTimer =
+            registry.timer(metricNamesGenerator.getOnActivityDestroyedMetricName(activity)).time();
         new Handler(Looper.myLooper()).post(new Runnable() {
           @Override public void run() {
             onDestroyTimer.stop();

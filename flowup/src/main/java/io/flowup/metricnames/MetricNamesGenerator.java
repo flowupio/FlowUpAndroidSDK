@@ -27,6 +27,13 @@ public class MetricNamesGenerator {
   private static final String SEPARATOR = ".";
   private static final String MEMORY = "memory";
   private static final String DISK = "disk";
+  private static final String ON_ACTIVITY_CREATED = "onActivityCreated";
+  private static final String ON_ACTIVITY_STARTED = "onActivityStarted";
+  private static final String ON_ACTIVITY_RESUMED = "onActivityResumed";
+  private static final String ON_ACTIVITY_PAUSED = "onActivityPaused";
+  private static final String ON_ACTIVITY_STOPPED = "onActivityStopped";
+  private static final String ON_ACTIVITY_DESTROYED = "onActivityDestroyed";
+  private static final String ACTIVITY_VISIBLE = "activityVisible";
 
   private final App app;
   private final Device device;
@@ -48,6 +55,53 @@ public class MetricNamesGenerator {
     String activityName = getActivityName(activity);
     return MetricRegistry.name(appendCrossMetricInfo(
         UI + SEPARATOR + FRAME_TIME + SEPARATOR + activityName + SEPARATOR + time.now()));
+  }
+
+  public String getOnActivityCreatedMetricName(Activity activity) {
+    String activityName = getActivityName(activity);
+    return MetricRegistry.name(appendCrossMetricInfo(
+        UI + SEPARATOR + ON_ACTIVITY_CREATED + SEPARATOR + activityName + SEPARATOR + time.now()));
+  }
+
+  public String getOnActivityStartedMetricName(Activity activity) {
+    String activityName = getActivityName(activity);
+    return MetricRegistry.name(appendCrossMetricInfo(
+        UI + SEPARATOR + ON_ACTIVITY_STARTED + SEPARATOR + activityName + SEPARATOR + time.now()));
+  }
+
+  public String getOnActivityResumedMetricName(Activity activity) {
+    String activityName = getActivityName(activity);
+    return MetricRegistry.name(appendCrossMetricInfo(
+        UI + SEPARATOR + ON_ACTIVITY_RESUMED + SEPARATOR + activityName + SEPARATOR + time.now()));
+  }
+
+  public String getActivityVisibleMetricName(Activity activity) {
+    String activityName = getActivityName(activity);
+    return MetricRegistry.name(appendCrossMetricInfo(
+        UI + SEPARATOR + ACTIVITY_VISIBLE + SEPARATOR + activityName + SEPARATOR + time.now()));
+  }
+
+  public String getOnActivityPausedMetricName(Activity activity) {
+    String activityName = getActivityName(activity);
+    return MetricRegistry.name(appendCrossMetricInfo(
+        UI + SEPARATOR + ON_ACTIVITY_PAUSED + SEPARATOR + activityName + SEPARATOR + time.now()));
+  }
+
+  public String getOnActivityStoppedMetricName(Activity activity) {
+    String activityName = getActivityName(activity);
+    return MetricRegistry.name(appendCrossMetricInfo(
+        UI + SEPARATOR + ON_ACTIVITY_STOPPED + SEPARATOR + activityName + SEPARATOR + time.now()));
+  }
+
+  public String getOnActivityDestroyedMetricName(Activity activity) {
+    String activityName = getActivityName(activity);
+    return MetricRegistry.name(appendCrossMetricInfo(UI
+        + SEPARATOR
+        + ON_ACTIVITY_DESTROYED
+        + SEPARATOR
+        + activityName
+        + SEPARATOR
+        + time.now()));
   }
 
   public String getBytesDownloadedMetricName() {
