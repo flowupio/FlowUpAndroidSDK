@@ -2,7 +2,7 @@
  * Copyright (C) 2016 Go Karumi S.L.
  */
 
-package com.flowup.reporter.storage;
+package io.flowup.reporter.storage;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,18 +12,18 @@ import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.Timer;
-import com.flowup.android.App;
-import com.flowup.android.Device;
-import com.flowup.metricnames.MetricNamesGenerator;
-import com.flowup.reporter.DropwizardReport;
-import com.flowup.reporter.doubles.ActivityTwo;
-import com.flowup.reporter.model.CPUMetric;
-import com.flowup.reporter.model.DiskMetric;
-import com.flowup.reporter.model.MemoryMetric;
-import com.flowup.reporter.model.NetworkMetric;
-import com.flowup.reporter.model.Reports;
-import com.flowup.reporter.model.UIMetric;
-import com.flowup.utils.Time;
+import io.flowup.android.App;
+import io.flowup.android.Device;
+import io.flowup.metricnames.MetricNamesGenerator;
+import io.flowup.reporter.DropwizardReport;
+import io.flowup.reporter.doubles.ActivityTwo;
+import io.flowup.reporter.model.CPUMetric;
+import io.flowup.reporter.model.DiskMetric;
+import io.flowup.reporter.model.MemoryMetric;
+import io.flowup.reporter.model.NetworkMetric;
+import io.flowup.reporter.model.Reports;
+import io.flowup.reporter.model.UIMetric;
+import io.flowup.utils.Time;
 import io.realm.Realm;
 import java.util.Collections;
 import java.util.LinkedList;

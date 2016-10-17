@@ -10,7 +10,6 @@ import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import io.flowup.R;
 import io.flowup.android.App;
 import io.flowup.android.CPU;
 import io.flowup.android.FileSystem;

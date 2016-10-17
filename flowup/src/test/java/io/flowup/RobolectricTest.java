@@ -5,7 +5,6 @@
 package io.flowup;
 
 import android.os.Build;
-import io.flowup.BuildConfig;
 import org.robolectric.annotation.Config;
 
 @Config(constants = BuildConfig.class,
