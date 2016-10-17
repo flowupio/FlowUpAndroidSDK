@@ -60,11 +60,14 @@ public class WiFiSyncService extends GcmTaskService {
       Logger.d(reports.getReportsIds().size() + " reports to sync");
       Logger.d(reports.toString());
       result = apiClient.sendReports(reports);
-      if (result.isSuccess() || ReportResult.Error.UNAUTHORIZED == result.getError()) {
+      if (result.isSuccess()) {
         Logger.d("Api response successful");
         reportsStorage.deleteReports(reports);
+      } else if (ReportResult.Error.UNAUTHORIZED == result.getError()) {
+        Logger.e("Api response error: " + result.getError());
+        reportsStorage.deleteReports(reports);
       } else {
-        Logger.d("Api response error");
+        Logger.e("Api response error: " + result.getError());
       }
       reports = reportsStorage.getReports(FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST);
       if (reports != null) {
@@ -75,13 +78,13 @@ public class WiFiSyncService extends GcmTaskService {
       error = result.getError();
     } while (reports != null && result.isSuccess());
     if (error == ReportResult.Error.NETWORK_ERROR) {
-      Logger.d("The last sync failed due to a network error, so let's reschedule a new task");
+      Logger.e("The last sync failed due to a network error, so let's reschedule a new task");
       return RESULT_RESCHEDULE;
     } else if (!result.isSuccess()) {
-      Logger.d("The last sync failed due to an unknown error");
+      Logger.e("The last sync failed due to an unknown error");
       return RESULT_FAILURE;
     } else {
-      Logger.d("Sync process finished with a successful result");
+      Logger.e("Sync process finished with a successful result");
       return RESULT_SUCCESS;
     }
   }

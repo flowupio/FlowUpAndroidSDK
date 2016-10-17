@@ -79,11 +79,14 @@ public class FlowUpReporter extends ScheduledReporter {
     ReportResult result;
     do {
       result = apiClient.sendReports(reports);
-      if (result.isSuccess() || ReportResult.Error.UNAUTHORIZED == result.getError()) {
+      if (result.isSuccess()) {
         Logger.d("Api response successful");
         reportsStorage.deleteReports(reports);
+      } else if (ReportResult.Error.UNAUTHORIZED == result.getError()) {
+        Logger.e("Api response error: " + result.getError());
+        reportsStorage.deleteReports(reports);
       } else {
-        Logger.d("Api response error");
+        Logger.e("Api response error: " + result.getError());
       }
       reports = reportsStorage.getReports(NUMBER_OF_REPORTS_PER_REQUEST);
       if (reports != null && result.isSuccess()) {
@@ -94,11 +97,11 @@ public class FlowUpReporter extends ScheduledReporter {
     } while (reports != null && result.isSuccess());
     ReportResult.Error error = result.getError();
     if (error == ReportResult.Error.NETWORK_ERROR) {
-      Logger.d("The last sync failed due to a network error, so let's reschedule a new task");
+      Logger.e("The last sync failed due to a network error, so let's reschedule a new task");
     } else if (!result.isSuccess()) {
-      Logger.d("The last sync failed due to an unknown error");
+      Logger.e("The last sync failed due to an unknown error");
     } else {
-      Logger.d("Sync process finished with a successful result");
+      Logger.e("Sync process finished with a successful result");
     }
   }
 
