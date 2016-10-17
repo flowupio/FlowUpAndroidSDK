@@ -15,10 +15,7 @@ public class StatisticalValueUtils {
     }
     return new StatisticalValue(realmValue.getCount(), realmValue.getMin(), realmValue.getMax(),
         realmValue.getMean(), realmValue.getStandardDev(), realmValue.getMedian(),
-        realmValue.getP5(), realmValue.getP10(), realmValue.getP15(), realmValue.getP20(),
-        realmValue.getP25(), realmValue.getP30(), realmValue.getP40(), realmValue.getP50(),
-        realmValue.getP60(), realmValue.getP70(), realmValue.getP75(), realmValue.getP80(),
-        realmValue.getP85(), realmValue.getP90(), realmValue.getP95(), realmValue.getP98(),
-        realmValue.getP99());
+        realmValue.getP1(), realmValue.getP2(), realmValue.getP5(), realmValue.getP10(),
+        realmValue.getP80(), realmValue.getP95(), realmValue.getP98(), realmValue.getP99());
   }
 }
