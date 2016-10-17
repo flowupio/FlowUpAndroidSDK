@@ -18,6 +18,8 @@ import okhttp3.Response;
 public class ApiClient {
 
   private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+  private static final int FORBIDDEN_STATUS_CODE = 403;
+  private static final int UNAUTHORIZED_STATUS_CODE = 401;
 
   private final OkHttpClient httpClient;
   private final Gson jsonParser;
@@ -31,7 +33,8 @@ public class ApiClient {
     this(apiKey, scheme, host, port, logEnabled, true);
   }
 
-  public ApiClient(String apiKey, String scheme, String host, int port, boolean logEnabled, boolean useGzip) {
+  public ApiClient(String apiKey, String scheme, String host, int port, boolean logEnabled,
+      boolean useGzip) {
     this.httpClient = ApiClientConfig.getHttpClient(apiKey, logEnabled, useGzip);
     this.jsonParser = ApiClientConfig.getJsonParser();
     this.baseUrl = ApiClientConfig.buildURL(scheme, host, port);
@@ -39,15 +42,27 @@ public class ApiClient {
 
   public ReportResult sendReports(Reports reports) {
     Request request = generateReportRequest(reports);
+    Response response = null;
     try {
-      Response response = httpClient.newCall(request).execute();
+      response = httpClient.newCall(request).execute();
       if (response.isSuccessful()) {
         return new ReportResult(reports);
       }
     } catch (IOException e) {
       return new ReportResult(ReportResult.Error.NETWORK_ERROR);
     }
-    return new ReportResult(ReportResult.Error.UNKNOWN);
+    ReportResult.Error error = mapError(response);
+    return new ReportResult(error);
+  }
+
+  private ReportResult.Error mapError(Response response) {
+    switch (response.code()) {
+      case FORBIDDEN_STATUS_CODE:
+      case UNAUTHORIZED_STATUS_CODE:
+        return ReportResult.Error.UNAUTHORIZED;
+      default:
+        return ReportResult.Error.UNKNOWN;
+    }
   }
 
   private Request generateReportRequest(Reports metrics) {

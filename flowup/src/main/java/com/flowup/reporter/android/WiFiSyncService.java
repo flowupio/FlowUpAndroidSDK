@@ -60,7 +60,7 @@ public class WiFiSyncService extends GcmTaskService {
       Logger.d(reports.getReportsIds().size() + " reports to sync");
       Logger.d(reports.toString());
       result = apiClient.sendReports(reports);
-      if (result.isSuccess()) {
+      if (result.isSuccess() || ReportResult.Error.UNAUTHORIZED == result.getError()) {
         Logger.d("Api response successful");
         reportsStorage.deleteReports(reports);
       } else {

@@ -79,7 +79,7 @@ public class FlowUpReporter extends ScheduledReporter {
     ReportResult result;
     do {
       result = apiClient.sendReports(reports);
-      if (result.isSuccess()) {
+      if (result.isSuccess() || ReportResult.Error.UNAUTHORIZED == result.getError()) {
         Logger.d("Api response successful");
         reportsStorage.deleteReports(reports);
       } else {
