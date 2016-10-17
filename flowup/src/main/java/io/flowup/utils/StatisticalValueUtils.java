@@ -10,6 +10,9 @@ import io.flowup.reporter.storage.RealmStatisticalValue;
 public class StatisticalValueUtils {
 
   public static StatisticalValue fromRealm(RealmStatisticalValue realmValue) {
+    if (realmValue.getCount() == 0) {
+      return null;
+    }
     return new StatisticalValue(realmValue.getCount(), realmValue.getMin(), realmValue.getMax(),
         realmValue.getMean(), realmValue.getStandardDev(), realmValue.getMedian(),
         realmValue.getP5(), realmValue.getP10(), realmValue.getP15(), realmValue.getP20(),

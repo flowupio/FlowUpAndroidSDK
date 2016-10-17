@@ -342,6 +342,7 @@ import static org.mockito.Mockito.when;
     assertTrue(extractor.isSharedPreferencesAllocatedBytesMetric(writtenBytes));
   }
 
+
   @Test public void doesNotIdentifyASharedPrefsWrittenBytesMetricAsInternalStorageWrittenBytes() {
     String writtenBytes = generator.getSharedPreferencesWrittenBytes();
 

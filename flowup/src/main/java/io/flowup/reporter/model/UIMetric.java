@@ -50,15 +50,58 @@ public class UIMetric extends Metric {
     return framesPerSecond;
   }
 
+  public StatisticalValue getOnActivityCreatedTime() {
+    return onActivityCreatedTime;
+  }
+
+  public StatisticalValue getOnActivityStartedTime() {
+    return onActivityStartedTime;
+  }
+
+  public StatisticalValue getOnActivityResumedTime() {
+    return onActivityResumedTime;
+  }
+
+  public StatisticalValue getActivityVisibleTime() {
+    return activityVisibleTime;
+  }
+
+  public StatisticalValue getOnActivityPausedTime() {
+    return onActivityPausedTime;
+  }
+
+  public StatisticalValue getOnActivityStoppedTime() {
+    return onActivityStoppedTime;
+  }
+
+  public StatisticalValue getOnActivityDestroyedTime() {
+    return onActivityDestroyedTime;
+  }
+
   @Override public String toString() {
     return "UIMetric{"
-        + "screen='"
+        +
+        "screen='"
         + screen
         + '\''
         + ", frameTime="
         + frameTime
         + ", framesPerSecond="
         + framesPerSecond
+        + ", onActivityCreatedTime="
+        + onActivityCreatedTime
+        + ", onActivityStartedTime="
+        + onActivityStartedTime
+        + ", onActivityResumedTime="
+        + onActivityResumedTime
+        + ", activityVisibleTime="
+        + activityVisibleTime
+        + ", onActivityPausedTime="
+        + onActivityPausedTime
+        + ", onActivityStoppedTime="
+        + onActivityStoppedTime
+        + ", onActivityDestroyedTime="
+        + onActivityDestroyedTime
         + '}';
   }
 }

@@ -12,8 +12,16 @@ import io.flowup.utils.Time;
 
 public class MetricNamesGenerator {
 
+  static final String UI = "ui";
   static final String FPS = "fps";
   static final String FRAME_TIME = "frameTime";
+  static final String ON_ACTIVITY_CREATED = "onActivityCreated";
+  static final String ON_ACTIVITY_STARTED = "onActivityStarted";
+  static final String ON_ACTIVITY_RESUMED = "onActivityResumed";
+  static final String ON_ACTIVITY_PAUSED = "onActivityPaused";
+  static final String ON_ACTIVITY_STOPPED = "onActivityStopped";
+  static final String ON_ACTIVITY_DESTROYED = "onActivityDestroyed";
+  static final String ACTIVITY_VISIBLE = "activityVisible";
   static final String BYTES_DOWNLOADED = "bytesDownloaded";
   static final String BYTES_UPLOADED = "bytesUploaded";
   static final String CPU_USAGE = "cpuUsage";
@@ -22,18 +30,10 @@ public class MetricNamesGenerator {
   static final String INTERNAL_STORAGE_WRITTEN_BYTES = "internalStorageWrittenBytes";
   static final String SHARED_PREFERENCES_WRITTEN_BYTES = "sharedPreferencesStorageWrittenBytes";
 
-  private static final String UI = "ui";
   private static final String NETWORK = "network";
   private static final String SEPARATOR = ".";
   private static final String MEMORY = "memory";
   private static final String DISK = "disk";
-  private static final String ON_ACTIVITY_CREATED = "onActivityCreated";
-  private static final String ON_ACTIVITY_STARTED = "onActivityStarted";
-  private static final String ON_ACTIVITY_RESUMED = "onActivityResumed";
-  private static final String ON_ACTIVITY_PAUSED = "onActivityPaused";
-  private static final String ON_ACTIVITY_STOPPED = "onActivityStopped";
-  private static final String ON_ACTIVITY_DESTROYED = "onActivityDestroyed";
-  private static final String ACTIVITY_VISIBLE = "activityVisible";
 
   private final App app;
   private final Device device;

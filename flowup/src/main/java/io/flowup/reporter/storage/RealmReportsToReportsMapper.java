@@ -182,7 +182,7 @@ class RealmReportsToReportsMapper extends Mapper<List<RealmReport>, Reports> {
         } else if (extractor.isSharedPreferencesAllocatedBytesMetric(metricName)) {
           sharedPrefsBytes = metric.getStatisticalValue().getValue();
         }
-        if (internalStorageBytes != null && sharedPrefsBytes  != null) {
+        if (internalStorageBytes != null && sharedPrefsBytes != null) {
           long reportTimestamp = Long.valueOf(report.getReportTimestamp());
           String osVersion = extractor.getOSVersion(metricName);
           String versionName = extractor.getVersionName(metricName);
@@ -222,18 +222,28 @@ class RealmReportsToReportsMapper extends Mapper<List<RealmReport>, Reports> {
     Set<String> screenNames = new HashSet<>();
     for (RealmMetric metric : metrics) {
       String screenName = extractor.getScreenName(metric.getMetricName());
-      screenNames.add(screenName);
+      if (screenName != null) {
+        screenNames.add(screenName);
+      }
     }
     return screenNames;
   }
 
   private UIMetric extractUIMetric(String screenName, RealmList<RealmMetric> metrics) {
+    Long timestamp = null;
     StatisticalValue frameTime = null;
     StatisticalValue framesPerSecond = null;
+    StatisticalValue onActivityCreated = null;
+    StatisticalValue onActivityStarted = null;
+    StatisticalValue onActivityResumed = null;
+    StatisticalValue activityVisible = null;
+    StatisticalValue onActivityPaused = null;
+    StatisticalValue onActivityStopped = null;
+    StatisticalValue onActivityDestroyed = null;
     for (int i = 0; i < metrics.size(); i++) {
       RealmMetric metric = metrics.get(i);
       String metricName = metric.getMetricName();
-      if (!extractor.isFPSMetric(metricName) && !extractor.isFrameTimeMetric(metricName)) {
+      if (!extractor.isUIMetric(metricName)) {
         continue;
       }
       String metricScreenName = extractor.getScreenName(metricName);
@@ -241,19 +251,32 @@ class RealmReportsToReportsMapper extends Mapper<List<RealmReport>, Reports> {
         continue;
       }
       if (extractor.isFrameTimeMetric(metricName)) {
+        timestamp = extractor.getTimestamp(metricName);
         frameTime = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
       } else if (extractor.isFPSMetric(metricName)) {
         framesPerSecond = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
-      } else {
-        continue;
+      } else if (extractor.isOnActivityCreatedMetric(metricName)) {
+        onActivityCreated = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
+      } else if (extractor.isOnActivityStartedMetric(metricName)) {
+        onActivityStarted = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
+      } else if (extractor.isOnActivityResumedMetric(metricName)) {
+        onActivityResumed = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
+      } else if (extractor.isActivityVisibleMetric(metricName)) {
+        activityVisible = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
+      } else if (extractor.isOnActivityPausedMetric(metricName)) {
+        onActivityPaused = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
+      } else if (extractor.isOnActivityStoppedMetric(metricName)) {
+        onActivityStopped = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
+      } else if (extractor.isOnActivityDestroyedMetric(metricName)) {
+        onActivityDestroyed = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
       }
       String versionName = extractor.getVersionName(metricName);
       String osVersion = extractor.getOSVersion(metricName);
       boolean batterySaverOne = extractor.getIsBatterSaverOn(metricName);
-      long timestamp = extractor.getTimestamp(metricName);
-      if (frameTime != null && framesPerSecond != null) {
+      if (i == metrics.size() - 1) {
         return new UIMetric(timestamp, versionName, osVersion, batterySaverOne, screenName,
-            frameTime, framesPerSecond);
+            frameTime, framesPerSecond, onActivityCreated, onActivityStarted, onActivityResumed,
+            activityVisible, onActivityPaused, onActivityStopped, onActivityDestroyed);
       }
     }
     return null;
