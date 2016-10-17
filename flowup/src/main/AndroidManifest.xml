@@ -3,7 +3,7 @@
   ~ Copyright (C) 2016 Go Karumi S.L.
   -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.flowup">
+    package="io.flowup">
 
   <application
       android:allowBackup="true"
