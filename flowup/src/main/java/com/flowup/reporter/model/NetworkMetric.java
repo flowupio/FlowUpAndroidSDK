@@ -25,4 +25,13 @@ public class NetworkMetric extends Metric {
   public long getBytesDownloaded() {
     return bytesDownloaded;
   }
+
+  @Override public String toString() {
+    return "NetworkMetric{"
+        + "bytesUploaded="
+        + bytesUploaded
+        + ", bytesDownloaded="
+        + bytesDownloaded
+        + '}';
+  }
 }

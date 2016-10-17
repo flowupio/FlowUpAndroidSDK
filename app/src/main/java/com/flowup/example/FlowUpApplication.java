@@ -12,7 +12,9 @@ public class FlowUpApplication extends Application {
   @Override public void onCreate() {
     FlowUp.Builder
         .with(this)
-        .debuggable(BuildConfig.DEBUG)
+        .apiKey("15207698c544f617e2c11151ada4972e1e7d6e8e")
+        .forceReports(BuildConfig.DEBUG)
+        .logEnabled(BuildConfig.DEBUG)
         .start();
     super.onCreate();
   }

@@ -13,6 +13,7 @@ import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.ScheduledReporter;
 import com.codahale.metrics.Timer;
+import com.flowup.logger.Logger;
 import com.flowup.reporter.android.WiFiSyncServiceScheduler;
 import com.flowup.reporter.apiclient.ApiClient;
 import com.flowup.reporter.model.Reports;
@@ -33,17 +34,17 @@ public class FlowUpReporter extends ScheduledReporter {
   private final ApiClient apiClient;
   private final WiFiSyncServiceScheduler syncScheduler;
   private final Time time;
-  private final boolean debuggable;
+  private final boolean forceReports;
 
   FlowUpReporter(MetricRegistry registry, String name, MetricFilter filter, TimeUnit rateUnit,
       TimeUnit durationUnit, ApiClient apiClient, ReportsStorage reportsStorage,
-      WiFiSyncServiceScheduler syncScheduler, Time time, boolean debuggable) {
+      WiFiSyncServiceScheduler syncScheduler, Time time, boolean forceReports) {
     super(registry, name, filter, rateUnit, durationUnit);
     this.apiClient = apiClient;
     this.reportsStorage = reportsStorage;
     this.syncScheduler = syncScheduler;
     this.time = time;
-    this.debuggable = debuggable;
+    this.forceReports = forceReports;
   }
 
   @Override public void start(long period, TimeUnit unit) {
@@ -57,7 +58,7 @@ public class FlowUpReporter extends ScheduledReporter {
     DropwizardReport dropwizardReport =
         new DropwizardReport(time.now(), gauges, counters, histograms, meters, timers);
     storeReport(dropwizardReport);
-    if (debuggable) {
+    if (forceReports) {
       sendStoredReports();
     }
   }
@@ -67,37 +68,57 @@ public class FlowUpReporter extends ScheduledReporter {
   }
 
   private void sendStoredReports() {
+    Logger.d("Let's start with the sync process");
     Reports reports = reportsStorage.getReports(NUMBER_OF_REPORTS_PER_REQUEST);
     if (reports == null) {
+      Logger.d("There are no reports to sync.");
       return;
     }
+    Logger.d(reports.getReportsIds().size() + " reports to sync");
+    Logger.d(reports.toString());
     ReportResult result;
     do {
       result = apiClient.sendReports(reports);
       if (result.isSuccess()) {
+        Logger.d("Api response successful");
         reportsStorage.deleteReports(reports);
+      } else if (ReportResult.Error.UNAUTHORIZED == result.getError()) {
+        Logger.e("Api response error: " + result.getError());
+        reportsStorage.deleteReports(reports);
+      } else {
+        Logger.e("Api response error: " + result.getError());
       }
       reports = reportsStorage.getReports(NUMBER_OF_REPORTS_PER_REQUEST);
+      if (reports != null && result.isSuccess()) {
+        Logger.d("Let's continue reporting, we have "
+            + reports.getReportsIds().size()
+            + " reports pending");
+      }
     } while (reports != null && result.isSuccess());
+    ReportResult.Error error = result.getError();
+    if (error == ReportResult.Error.NETWORK_ERROR) {
+      Logger.e("The last sync failed due to a network error, so let's reschedule a new task");
+    } else if (!result.isSuccess()) {
+      Logger.e("The last sync failed due to an unknown error");
+    } else {
+      Logger.e("Sync process finished with a successful result");
+    }
   }
 
   public static final class Builder {
 
     private MetricRegistry registry;
+    private Context context;
     private String name;
     private MetricFilter filter;
-    private TimeUnit rateUnit;
-    private TimeUnit durationUnit;
-    private boolean debuggable;
-    private Context context;
+    private boolean forceReports;
+    private boolean logEnabled;
 
     public Builder(MetricRegistry registry, Context context) {
       this.registry = registry;
       this.name = "FlowUp Reporter";
       this.filter = MetricFilter.ALL;
-      this.rateUnit = TimeUnit.SECONDS;
-      this.durationUnit = TimeUnit.MILLISECONDS;
-      this.debuggable = true;
+      this.forceReports = true;
       this.context = context;
     }
 
@@ -111,24 +132,19 @@ public class FlowUpReporter extends ScheduledReporter {
       return this;
     }
 
-    public Builder rateUnit(TimeUnit rateUnit) {
-      this.rateUnit = rateUnit;
+    public FlowUpReporter build(String apiKey, String scheme, String host, int port) {
+      return new FlowUpReporter(registry, name, filter, TimeUnit.NANOSECONDS, TimeUnit.NANOSECONDS,
+          new ApiClient(apiKey, scheme, host, port, logEnabled), new ReportsStorage(context),
+          new WiFiSyncServiceScheduler(context, apiKey), new Time(), forceReports);
+    }
+
+    public Builder forceReports(boolean forceReports) {
+      this.forceReports = forceReports;
       return this;
     }
 
-    public Builder durationUnit(TimeUnit durationUnit) {
-      this.durationUnit = durationUnit;
-      return this;
-    }
-
-    public FlowUpReporter build(String scheme, String host, int port) {
-      return new FlowUpReporter(registry, name, filter, rateUnit, durationUnit,
-          new ApiClient(scheme, host, port), new ReportsStorage(context),
-          new WiFiSyncServiceScheduler(context), new Time(), debuggable);
-    }
-
-    public Builder debuggable(boolean debuggable) {
-      this.debuggable = debuggable;
+    public Builder logEnabled(boolean logEnabled) {
+      this.logEnabled = logEnabled;
       return this;
     }
   }
