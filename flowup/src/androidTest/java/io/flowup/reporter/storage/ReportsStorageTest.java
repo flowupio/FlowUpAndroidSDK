@@ -52,6 +52,7 @@ public class ReportsStorageTest {
   private static final long ANY_BYTES_ALLOCATED = 1024;
   private static final long ANY_INTERNAL_STORAGE_WRITTEN_BYTES = 2048;
   private static final long ANY_SHARED_PREFS_WRITTEN_BYTES = 3072;
+  private static final long ANY_LIFECYCLE_TIME = 11;
 
   private ReportsStorage storage;
   private MetricNamesGenerator generator;
@@ -255,13 +256,14 @@ public class ReportsStorageTest {
     }
   }
 
-
   private void assertDiskMetricsContainsExpectedValues(int numberOfReports, Reports reports) {
     List<DiskMetric> diskMetrics = reports.getDiskMetrics();
     assertEquals(numberOfReports, diskMetrics.size());
     for (int i = 0; i < numberOfReports; i++) {
-      assertEquals(ANY_INTERNAL_STORAGE_WRITTEN_BYTES, diskMetrics.get(i).getInternalStorageWrittenBytes());
-      assertEquals(ANY_SHARED_PREFS_WRITTEN_BYTES, diskMetrics.get(i).getSharedPreferencesWrittenBytes());
+      assertEquals(ANY_INTERNAL_STORAGE_WRITTEN_BYTES,
+          diskMetrics.get(i).getInternalStorageWrittenBytes());
+      assertEquals(ANY_SHARED_PREFS_WRITTEN_BYTES,
+          diskMetrics.get(i).getSharedPreferencesWrittenBytes());
     }
   }
 
@@ -269,8 +271,16 @@ public class ReportsStorageTest {
     List<UIMetric> uiReports = reports.getUIMetrics();
     assertEquals(numberOfReports, uiReports.size());
     for (int i = 0; i < numberOfReports; i++) {
-      assertEquals(1.7E7, uiReports.get(i).getFrameTime().getMean(), DELTA);
-      assertEquals(ANY_FRAMES_PER_SECOND, uiReports.get(i).getFramesPerSecond().getMean(), DELTA);
+      UIMetric uiMetric = uiReports.get(i);
+      assertEquals(1.7E7, uiMetric.getFrameTime().getMean(), DELTA);
+      assertEquals(ANY_FRAMES_PER_SECOND, uiMetric.getFramesPerSecond().getMean(), DELTA);
+      assertEquals(ANY_LIFECYCLE_TIME, uiMetric.getOnActivityCreatedTime().getMean(), DELTA);
+      assertEquals(ANY_LIFECYCLE_TIME, uiMetric.getOnActivityStartedTime().getMean(), DELTA);
+      assertEquals(ANY_LIFECYCLE_TIME, uiMetric.getOnActivityResumedTime().getMean(), DELTA);
+      assertEquals(ANY_LIFECYCLE_TIME, uiMetric.getActivityVisibleTime().getMean(), DELTA);
+      assertEquals(ANY_LIFECYCLE_TIME, uiMetric.getOnActivityPausedTime().getMean(), DELTA);
+      assertEquals(ANY_LIFECYCLE_TIME, uiMetric.getOnActivityStoppedTime().getMean(), DELTA);
+      assertEquals(ANY_LIFECYCLE_TIME, uiMetric.getOnActivityDestroyedTime().getMean(), DELTA);
     }
   }
 
@@ -280,6 +290,13 @@ public class ReportsStorageTest {
       SortedMap<String, Gauge> networkMetrics = givenANetworkMetric();
       SortedMap<String, Histogram> fpsMetric = givenAFPSMetric();
       SortedMap<String, Timer> frameTimeMetric = givenAFrameTimeMetric();
+      SortedMap<String, Timer> onActivityCreatedMetric = givenAnyLifecycleMetric();
+      SortedMap<String, Timer> onActivityStartedMetric = givenAFrameTimeMetric();
+      SortedMap<String, Timer> onActivityResumedMetric = givenAFrameTimeMetric();
+      SortedMap<String, Timer> activityVisible = givenAFrameTimeMetric();
+      SortedMap<String, Timer> onActivityPausedMetric = givenAFrameTimeMetric();
+      SortedMap<String, Timer> onActivityStoppedMetric = givenAFrameTimeMetric();
+      SortedMap<String, Timer> onActivityDestroyedMetric = givenAFrameTimeMetric();
       SortedMap<String, Gauge> cpuMetrics = givenACPUMetric();
       SortedMap<String, Gauge> memoryMetrics = givenAMemoryMetric();
       SortedMap<String, Gauge> diskMetrics = givenADiskMetric();
@@ -288,11 +305,34 @@ public class ReportsStorageTest {
       gauges.putAll(cpuMetrics);
       gauges.putAll(memoryMetrics);
       gauges.putAll(diskMetrics);
-      DropwizardReport dropwizardReport =
-          givenADropWizardReport(i, gauges, fpsMetric, frameTimeMetric);
+      SortedMap<String, Timer> timers = new TreeMap<>();
+      timers.putAll(frameTimeMetric);
+      timers.putAll(onActivityCreatedMetric);
+      timers.putAll(onActivityStartedMetric);
+      timers.putAll(onActivityResumedMetric);
+      timers.putAll(activityVisible);
+      timers.putAll(onActivityPausedMetric);
+      timers.putAll(onActivityStoppedMetric);
+      timers.putAll(onActivityDestroyedMetric);
+      DropwizardReport dropwizardReport = givenADropWizardReport(i, gauges, fpsMetric, timers);
       dropwizardReports.add(dropwizardReport);
     }
     return dropwizardReports;
+  }
+
+  private SortedMap<String, Timer> givenAnyLifecycleMetric() {
+    Activity activity = mock(Activity.class);
+    SortedMap<String, Timer> timers = new TreeMap<>();
+    Timer timer = new Timer();
+    timer.update(ANY_LIFECYCLE_TIME, TimeUnit.NANOSECONDS);
+    timers.put(generator.getOnActivityCreatedMetricName(activity), timer);
+    timers.put(generator.getOnActivityStartedMetricName(activity), timer);
+    timers.put(generator.getOnActivityResumedMetricName(activity), timer);
+    timers.put(generator.getActivityVisibleMetricName(activity), timer);
+    timers.put(generator.getOnActivityPausedMetricName(activity), timer);
+    timers.put(generator.getOnActivityStoppedMetricName(activity), timer);
+    timers.put(generator.getOnActivityDestroyedMetricName(activity), timer);
+    return timers;
   }
 
   private SortedMap<String, Timer> givenAFrameTimeMetric() {

@@ -247,28 +247,27 @@ class RealmReportsToReportsMapper extends Mapper<List<RealmReport>, Reports> {
         continue;
       }
       String metricScreenName = extractor.getScreenName(metricName);
-      if (!metricScreenName.equals(screenName)) {
-        continue;
-      }
-      if (extractor.isFrameTimeMetric(metricName)) {
-        timestamp = extractor.getTimestamp(metricName);
-        frameTime = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
-      } else if (extractor.isFPSMetric(metricName)) {
-        framesPerSecond = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
-      } else if (extractor.isOnActivityCreatedMetric(metricName)) {
-        onActivityCreated = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
-      } else if (extractor.isOnActivityStartedMetric(metricName)) {
-        onActivityStarted = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
-      } else if (extractor.isOnActivityResumedMetric(metricName)) {
-        onActivityResumed = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
-      } else if (extractor.isActivityVisibleMetric(metricName)) {
-        activityVisible = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
-      } else if (extractor.isOnActivityPausedMetric(metricName)) {
-        onActivityPaused = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
-      } else if (extractor.isOnActivityStoppedMetric(metricName)) {
-        onActivityStopped = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
-      } else if (extractor.isOnActivityDestroyedMetric(metricName)) {
-        onActivityDestroyed = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
+      if (metricScreenName.equals(screenName)) {
+        if (extractor.isFrameTimeMetric(metricName)) {
+          timestamp = extractor.getTimestamp(metricName);
+          frameTime = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
+        } else if (extractor.isFPSMetric(metricName)) {
+          framesPerSecond = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
+        } else if (extractor.isOnActivityCreatedMetric(metricName)) {
+          onActivityCreated = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
+        } else if (extractor.isOnActivityStartedMetric(metricName)) {
+          onActivityStarted = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
+        } else if (extractor.isOnActivityResumedMetric(metricName)) {
+          onActivityResumed = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
+        } else if (extractor.isActivityVisibleMetric(metricName)) {
+          activityVisible = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
+        } else if (extractor.isOnActivityPausedMetric(metricName)) {
+          onActivityPaused = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
+        } else if (extractor.isOnActivityStoppedMetric(metricName)) {
+          onActivityStopped = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
+        } else if (extractor.isOnActivityDestroyedMetric(metricName)) {
+          onActivityDestroyed = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
+        }
       }
       String versionName = extractor.getVersionName(metricName);
       String osVersion = extractor.getOSVersion(metricName);
