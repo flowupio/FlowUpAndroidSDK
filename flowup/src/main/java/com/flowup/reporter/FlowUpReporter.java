@@ -13,6 +13,7 @@ import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.ScheduledReporter;
 import com.codahale.metrics.Timer;
+import com.flowup.logger.Logger;
 import com.flowup.reporter.android.WiFiSyncServiceScheduler;
 import com.flowup.reporter.apiclient.ApiClient;
 import com.flowup.reporter.model.Reports;
@@ -67,36 +68,53 @@ public class FlowUpReporter extends ScheduledReporter {
   }
 
   private void sendStoredReports() {
+    Logger.d("Let's start with the sync process");
     Reports reports = reportsStorage.getReports(NUMBER_OF_REPORTS_PER_REQUEST);
     if (reports == null) {
+      Logger.d("There are no reports to sync.");
       return;
     }
+    Logger.d(reports.getReportsIds().size() + " reports to sync");
+    Logger.d(reports.toString());
     ReportResult result;
     do {
       result = apiClient.sendReports(reports);
       if (result.isSuccess()) {
+        Logger.d("Api response successful");
         reportsStorage.deleteReports(reports);
+      } else {
+        Logger.d("Api response error");
       }
       reports = reportsStorage.getReports(NUMBER_OF_REPORTS_PER_REQUEST);
+      if (reports != null && result.isSuccess()) {
+        Logger.d("Let's continue reporting, we have "
+            + reports.getReportsIds().size()
+            + " reports pending");
+      }
     } while (reports != null && result.isSuccess());
+    ReportResult.Error error = result.getError();
+    if (error == ReportResult.Error.NETWORK_ERROR) {
+      Logger.d("The last sync failed due to a network error, so let's reschedule a new task");
+    } else if (!result.isSuccess()) {
+      Logger.d("The last sync failed due to an unknown error");
+    } else {
+      Logger.d("Sync process finished with a successful result");
+    }
   }
 
   public static final class Builder {
 
     private MetricRegistry registry;
+    private Context context;
     private String name;
     private MetricFilter filter;
-    private TimeUnit rateUnit;
-    private TimeUnit durationUnit;
     private boolean forceReports;
-    private Context context;
+    private boolean logEnabled;
 
     public Builder(MetricRegistry registry, Context context) {
       this.registry = registry;
       this.name = "FlowUp Reporter";
       this.filter = MetricFilter.ALL;
-      this.rateUnit = TimeUnit.SECONDS;
-      this.durationUnit = TimeUnit.MILLISECONDS;
       this.forceReports = true;
       this.context = context;
     }
@@ -111,24 +129,19 @@ public class FlowUpReporter extends ScheduledReporter {
       return this;
     }
 
-    public Builder rateUnit(TimeUnit rateUnit) {
-      this.rateUnit = rateUnit;
-      return this;
-    }
-
-    public Builder durationUnit(TimeUnit durationUnit) {
-      this.durationUnit = durationUnit;
-      return this;
-    }
-
     public FlowUpReporter build(String scheme, String host, int port) {
-      return new FlowUpReporter(registry, name, filter, rateUnit, durationUnit,
-          new ApiClient(scheme, host, port), new ReportsStorage(context),
+      return new FlowUpReporter(registry, name, filter, TimeUnit.NANOSECONDS, TimeUnit.NANOSECONDS,
+          new ApiClient(scheme, host, port, logEnabled), new ReportsStorage(context),
           new WiFiSyncServiceScheduler(context), new Time(), forceReports);
     }
 
     public Builder forceReports(boolean forceReports) {
       this.forceReports = forceReports;
+      return this;
+    }
+
+    public Builder logEnabled(boolean logEnabled) {
+      this.logEnabled(logEnabled);
       return this;
     }
   }

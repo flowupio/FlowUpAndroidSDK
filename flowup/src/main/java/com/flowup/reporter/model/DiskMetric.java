@@ -21,4 +21,13 @@ public class DiskMetric extends Metric {
   public long getSharedPreferencesWrittenBytes() {
     return sharedPreferencesWrittenBytes;
   }
+
+  @Override public String toString() {
+    return "DiskMetric{"
+        + "internalStorageWrittenBytes="
+        + internalStorageWrittenBytes
+        + ", sharedPreferencesWrittenBytes="
+        + sharedPreferencesWrittenBytes
+        + '}';
+  }
 }

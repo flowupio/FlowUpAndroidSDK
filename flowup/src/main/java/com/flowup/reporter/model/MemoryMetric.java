@@ -25,4 +25,13 @@ public class MemoryMetric extends Metric {
   public int getMemoryUsage() {
     return memoryUsage;
   }
+
+  @Override public String toString() {
+    return "MemoryMetric{"
+        + "bytesAllocated="
+        + bytesAllocated
+        + ", memoryUsage="
+        + memoryUsage
+        + '}';
+  }
 }

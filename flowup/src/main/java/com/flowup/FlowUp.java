@@ -5,7 +5,6 @@
 package com.flowup;
 
 import android.app.Application;
-import android.util.Log;
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.flowup.android.App;
@@ -13,44 +12,55 @@ import com.flowup.android.CPU;
 import com.flowup.android.FileSystem;
 import com.flowup.collectors.Collector;
 import com.flowup.collectors.Collectors;
+import com.flowup.logger.Logger;
 import com.flowup.reporter.FlowUpReporter;
 import com.flowup.unix.Terminal;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.readytalk.metrics.StatsDReporter;
 import java.util.concurrent.TimeUnit;
 
 public class FlowUp {
 
   public static final int SAMPLING_INTERVAL = 10;
   private static final TimeUnit SAMPLING_TIME_UNIT = TimeUnit.SECONDS;
-  private static final String LOGTAG = "FlowUp";
 
   private final Application application;
   private final boolean forceReports;
+  private final boolean logEnabled;
 
   private static MetricRegistry registry;
 
-  FlowUp(Application application, boolean forceReports) {
+  FlowUp(Application application, boolean forceReports, boolean logEnabled) {
     if (application == null) {
       throw new IllegalArgumentException(
           "The application instance used to initialize FlowUp can not be null.");
     }
     this.application = application;
     this.forceReports = forceReports;
+    this.logEnabled = logEnabled;
   }
 
   public void start() {
-    if (hasBeenInitialized() || !doesSupportGooglePlayServices()) {
+    if (hasBeenInitialized()) {
       return;
     }
+    if (!doesSupportGooglePlayServices()) {
+      Logger.e(
+          "FlowUp hasn't been initialized. Google play services is not supported in this device");
+      return;
+    }
+    initializeLogger();
     initializeMetrics();
-    initializeReporters();
+    initializeFlowUpReporter();
     initializeForegroundCollectors();
     initializeNetworkCollectors();
     initializeCPUCollectors();
     initializeMemoryCollectors();
     initializeDiskCollectors();
+  }
+
+  private void initializeLogger() {
+    Logger.setEnabled(logEnabled);
   }
 
   private void initializeMetrics() {
@@ -68,28 +78,7 @@ public class FlowUp {
     GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
     int resultCode = googleApiAvailability.isGooglePlayServicesAvailable(application);
     boolean isGooglePlayServicesSupported = resultCode == ConnectionResult.SUCCESS;
-    Log.d(LOGTAG, "Google play services supported = " + isGooglePlayServicesSupported);
     return isGooglePlayServicesSupported;
-  }
-
-  private void initializeReporters() {
-    initializeKarumiGrafanaReporter();
-    initializeFlowUpReporter();
-  }
-
-  private void initializeKarumiGrafanaReporter() {
-    new Thread(new Runnable() {
-      @Override public void run() {
-        String host = application.getString(R.string.karumi_graphite_server);
-        int port = application.getResources().getInteger(R.integer.karumi_graphite_port);
-        StatsDReporter.forRegistry(registry)
-            .convertRatesTo(TimeUnit.NANOSECONDS)
-            .convertDurationsTo(TimeUnit.NANOSECONDS)
-            .filter(MetricFilter.ALL)
-            .build(host, port)
-            .start(SAMPLING_INTERVAL, SAMPLING_TIME_UNIT);
-      }
-    }).start();
   }
 
   private void initializeFlowUpReporter() {
@@ -99,6 +88,7 @@ public class FlowUp {
     FlowUpReporter.forRegistry(registry, application)
         .filter(MetricFilter.ALL)
         .forceReports(forceReports)
+        .logEnabled(logEnabled)
         .build(scheme, host, port)
         .start(SAMPLING_INTERVAL, TimeUnit.SECONDS);
   }
@@ -175,7 +165,7 @@ public class FlowUp {
     }
 
     public void start() {
-      new FlowUp(application, forceReports).start();
+      new FlowUp(application, forceReports, logEnabled).start();
     }
   }
 }

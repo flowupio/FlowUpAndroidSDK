@@ -4,13 +4,11 @@
 
 package com.flowup.android;
 
-import android.util.Log;
+import com.flowup.logger.Logger;
 import com.flowup.unix.Terminal;
 import java.io.IOException;
 
 public class CPU {
-
-  private static final String LOGTAG = "FlowUp.CPU";
 
   private final App app;
   private final Terminal terminal;
@@ -26,7 +24,7 @@ public class CPU {
       int cpuUsage = extractCPUUsage(result);
       return cpuUsage;
     } catch (IOException e) {
-      Log.e(LOGTAG, "Exception catch while reading the CPU usage", e);
+      Logger.e("Exception catch while reading the CPU usage", e);
       return 0;
     }
   }

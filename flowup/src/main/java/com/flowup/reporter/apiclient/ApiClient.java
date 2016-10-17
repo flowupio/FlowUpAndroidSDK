@@ -24,11 +24,15 @@ public class ApiClient {
   private final HttpUrl baseUrl;
 
   public ApiClient(String scheme, String host, int port) {
-    this(scheme, host, port, true);
+    this(scheme, host, port, false);
   }
 
-  public ApiClient(String scheme, String host, int port, boolean useGzip) {
-    this.httpClient = ApiClientConfig.getHttpClient(true, useGzip);
+  public ApiClient(String scheme, String host, int port, boolean logEnabled) {
+    this(scheme, host, port, logEnabled, true);
+  }
+
+  public ApiClient(String scheme, String host, int port, boolean logEnabled, boolean useGzip) {
+    this.httpClient = ApiClientConfig.getHttpClient(logEnabled, useGzip);
     this.jsonParser = ApiClientConfig.getJsonParser();
     this.baseUrl = ApiClientConfig.buildURL(scheme, host, port);
   }
@@ -49,7 +53,6 @@ public class ApiClient {
   private Request generateReportRequest(Reports metrics) {
     HttpUrl reportUrl = baseUrl.newBuilder("/report").build();
     RequestBody body = RequestBody.create(JSON, jsonParser.toJson(metrics));
-    return new Request.Builder().url(reportUrl)
-        .post(body).build();
+    return new Request.Builder().url(reportUrl).post(body).build();
   }
 }

@@ -31,4 +31,16 @@ public class UIMetric extends Metric {
   public StatisticalValue getFramesPerSecond() {
     return framesPerSecond;
   }
+
+  @Override public String toString() {
+    return "UIMetric{"
+        + "screen='"
+        + screen
+        + '\''
+        + ", frameTime="
+        + frameTime
+        + ", framesPerSecond="
+        + framesPerSecond
+        + '}';
+  }
 }

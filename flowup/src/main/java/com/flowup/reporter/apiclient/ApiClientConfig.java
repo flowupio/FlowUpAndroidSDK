@@ -22,9 +22,9 @@ class ApiClientConfig {
 
   private static final Gson GSON = new Gson();
 
-  static OkHttpClient getHttpClient(boolean debug, boolean useGzip) {
+  static OkHttpClient getHttpClient(boolean logEnabled, boolean useGzip) {
     OkHttpClient httpClient = HTTP_CLIENT;
-    if (debug) {
+    if (logEnabled) {
       HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
       httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
       httpClient = httpClient.newBuilder().addInterceptor(httpLoggingInterceptor).build();

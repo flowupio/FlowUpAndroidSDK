@@ -150,4 +150,17 @@ public class StatisticalValue {
   public double getP99() {
     return p99;
   }
+
+  @Override public String toString() {
+    return "StatisticalValue{"
+        + "mean="
+        + mean
+        + ", count="
+        + count
+        + ", max="
+        + max
+        + ", min="
+        + min
+        + '}';
+  }
 }
