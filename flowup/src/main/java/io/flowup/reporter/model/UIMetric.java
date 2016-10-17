@@ -11,13 +11,31 @@ public class UIMetric extends Metric {
   @SerializedName("screen") private final String screen;
   @SerializedName("frameTime") private final StatisticalValue frameTime;
   @SerializedName("framesPerSecond") private final StatisticalValue framesPerSecond;
+  @SerializedName("onActivityCreatedTime") private final StatisticalValue onActivityCreatedTime;
+  @SerializedName("onActivityStartedTime") private final StatisticalValue onActivityStartedTime;
+  @SerializedName("onActivityResumedTime") private final StatisticalValue onActivityResumedTime;
+  @SerializedName("activityVisibleTime") private final StatisticalValue activityVisibleTime;
+  @SerializedName("onActivityPausedTime") private final StatisticalValue onActivityPausedTime;
+  @SerializedName("onActivityStoppedTime") private final StatisticalValue onActivityStoppedTime;
+  @SerializedName("onActivityDestroyedTime") private final StatisticalValue onActivityDestroyedTime;
 
   public UIMetric(long timestamp, String appVersionName, String osVersion, boolean batterySaverOn,
-      String screen, StatisticalValue frameTime, StatisticalValue framesPerSecond) {
+      String screen, StatisticalValue frameTime, StatisticalValue framesPerSecond,
+      StatisticalValue onActivityCreatedTime, StatisticalValue onActivityStartedTime,
+      StatisticalValue onActivityResumedTime, StatisticalValue activityVisibleTime,
+      StatisticalValue onActivityPausedTime, StatisticalValue onActivityStoppedTime,
+      StatisticalValue onActivityDestroyedTime) {
     super(timestamp, appVersionName, osVersion, batterySaverOn);
     this.screen = screen;
     this.frameTime = frameTime;
     this.framesPerSecond = framesPerSecond;
+    this.onActivityCreatedTime = onActivityCreatedTime;
+    this.onActivityStartedTime = onActivityStartedTime;
+    this.onActivityResumedTime = onActivityResumedTime;
+    this.activityVisibleTime = activityVisibleTime;
+    this.onActivityPausedTime = onActivityPausedTime;
+    this.onActivityStoppedTime = onActivityStoppedTime;
+    this.onActivityDestroyedTime = onActivityDestroyedTime;
   }
 
   public String getScreen() {
