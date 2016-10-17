@@ -27,7 +27,8 @@ public class Collectors {
     return new FrameTimeCollector(application, getMetricNamesGenerator(application));
   }
 
-  @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN) public static Collector getActivityLifecycleCollector(Application application) {
+  @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+  public static Collector getActivityLifecycleCollector(Application application) {
     return new ActivityLifecycleCollector(application, getMetricNamesGenerator(application));
   }
 
