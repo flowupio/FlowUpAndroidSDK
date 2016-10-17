@@ -2,7 +2,7 @@ User 13%, System 9%, IOW 0%, IRQ 0%
 User 81 + Nice 2 + Sys 56 + Idle 452 + IOW 2 + IRQ 0 + SIRQ 1 = 594
 
   PID PR CPU% S  #THR     VSS     RSS PCY UID      Name
-21339  0   8% S    23 1556212K  56600K  fg u0_a263  com.flowup.example
+21339  0   8% S    23 1556212K  56600K  fg u0_a263  io.flowup.example
  9056  3   4% S    30 1577524K  71860K  bg u0_a262  com.nero.elrubiusomg
   272  3   2% S    17  84692K  11256K  fg system   /system/bin/surfaceflinger
   856  3   1% S   136 1864188K 153560K  fg system   system_server
