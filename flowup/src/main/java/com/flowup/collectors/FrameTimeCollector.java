@@ -6,6 +6,8 @@ package com.flowup.collectors;
 
 import android.app.Activity;
 import android.app.Application;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.view.Choreographer;
 import com.codahale.metrics.Metric;
 import com.codahale.metrics.MetricFilter;
@@ -13,7 +15,8 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import com.flowup.metricnames.MetricNamesGenerator;
 
-class FrameTimeCollector extends ApplicationLifecycleCollector implements Collector {
+@RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN) class FrameTimeCollector
+    extends ApplicationLifecycleCollector implements Collector {
 
   private final MetricNamesGenerator metricNamesGenerator;
   private final Choreographer choreographer;

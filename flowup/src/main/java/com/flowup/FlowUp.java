@@ -5,6 +5,7 @@
 package com.flowup;
 
 import android.app.Application;
+import android.os.Build;
 import android.util.Log;
 import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.MetricFilter;
@@ -110,8 +111,10 @@ public class FlowUp {
   }
 
   private void initializeForegroundCollectors() {
-    initializeFPSCollector();
-    initializeFrameTimeCollector();
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+      initializeFPSCollector();
+      initializeFrameTimeCollector();
+    }
   }
 
   private void initializeFPSCollector() {
