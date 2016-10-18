@@ -51,3 +51,5 @@ dependencies {
     exclude group: 'org.hamcrest', module: 'hamcrest-core'
   }
 }
+
+apply from: '../gradle-mvn-push.gradle'
