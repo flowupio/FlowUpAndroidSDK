@@ -1,1 +1,1 @@
-include ':app', ':flowup'
+include ':app', ':flowup', ':flowup-no-op'

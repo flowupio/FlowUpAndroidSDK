@@ -5,6 +5,46 @@ FlowUp, mobile real time applications performance monitoring solution!
 
 FlowUp helps you to radically improve your mobile applications performance with actionable insight into real-time key reports including frame time, frames per second, bandwidth, memory consumption, CPU/GPU performance, disk usage and much more. Available for Android and iOS soon.
 
+Getting started
+---------------
+
+Add the FlowUp library to your ``build.gradle`:
+
+```groovy
+ dependencies {
+   compile 'io.flowup:android-sdk:<LAST_VERSION_RELEASED>'
+   testCompile 'io.flowup:android-sdk-no-op:<LAST_VERSION_RELEASED>'
+ }
+
+```
+
+Initialize FlowUp in your ``Application`` class:
+
+```java
+@Override public void onCreate() {
+	super.onCreate();
+   FlowUp.Builder.with(this)
+        .apiKey("<YOUR_FLOW_UP_API_KEY>")
+        .forceReports(BuildConfig.DEBUG)
+        .logEnabled(BuildConfig.DEBUG)
+        .start();
+}
+```
+
+**Start a build of your app using DEBUG as build type and you're good to go!** FlowUp will automatically send performance metrics to our servers and you'll be able to see information about your app in our platform.
+
+If for some reason you don't want to distribute FlowUp's artifact in your release builds you can use this dependencies configuration instead of the previous one:
+
+```groovy
+ dependencies {
+   releaseCompile 'io.flowup:android-sdk-no-op:<LAST_VERSION_RELEASED>'
+   debugCompile 'io.flowup:android-sdk:<LAST_VERSION_RELEASED>'
+   testCompile 'io.flowup:android-sdk-no-op:<LAST_VERSION_RELEASED>'
+ }
+```
+
+This configuration will use a no operational version of the library in your release builds. This **no operational** version won't include FlowUp or any related dependency in your release APK.
+
 How to build this project
 -------------------------
 
