@@ -1,17 +1,93 @@
-# Add project specific ProGuard rules here.
-# By default, the flags in this file are appended to flags specified
-# in /Users/Pedro/Development/SDK/android-sdk-macosx/tools/proguard/proguard-android.txt
-# You can edit the include path and order by changing the proguardFiles
-# directive in build.gradle.
 #
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# This ProGuard configuration file illustrates how to process a program
+# library, such that it remains usable as a library.
+# Usage:
+#     java -jar proguard.jar @library.pro
+#
 
-# Add any project specific keep options here:
+# Save the obfuscation mapping to a file, so we can de-obfuscate any stack
+# traces later on. Keep a fixed source file attribute and all line number
+# tables to get line numbers in the stack traces.
+# You can comment this out if you're not interested in stack traces.
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+-printmapping out.map
+-renamesourcefileattribute SourceFile
+
+# Preserve all annotations.
+
+-keepattributes *Annotation*
+
+# Preserve FlowUp and FlowUp.Builder classes.
+
+-keep public class io.flowup.FlowUp {
+    public protected *;
+}
+
+-keep public class io.flowup.FlowUp$Builder {
+    public protected *;
+}
+
+# Preserve FlowUp and FlowUp.Builder method names.
+
+-keepclassmembernames class io.flowup.FlowUp {
+    java.lang.Class class$(java.lang.String);
+    java.lang.Class class$(java.lang.String, boolean);
+}
+
+-keepclassmembernames class io.flowup.FlowUp$Builder {
+    java.lang.Class class$(java.lang.String);
+    java.lang.Class class$(java.lang.String, boolean);
+}
+
+# Preserve FlowUp and FlowUp.Builder native method names and the names of their classes.
+
+-keepclasseswithmembernames class io.flowup.FlowUp {
+    native <methods>;
+}
+
+-keepclasseswithmembernames class io.flowup.FlowUp$Builder {
+    native <methods>;
+}
+
+# Preserve the special static methods that are required in all enumeration
+# classes.
+
+-keepclassmembers class * extends java.lang.Enum {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
+# Explicitly preserve all serialization members. The Serializable interface
+# is only a marker interface, so it wouldn't save them.
+# You can comment this out if your library doesn't use serialization.
+# If your code contains serializable classes that have to be backward
+# compatible, please refer to the manual.
+
+-keepclassmembers class * implements java.io.Serializable {
+    static final long serialVersionUID;
+    static final java.io.ObjectStreamField[] serialPersistentFields;
+    private void writeObject(java.io.ObjectOutputStream);
+    private void readObject(java.io.ObjectInputStream);
+    java.lang.Object writeReplace();
+    java.lang.Object readResolve();
+}
+
+# Realm support configuration
+
+-keep class io.realm.annotations.RealmModule
+-keep @io.realm.annotations.RealmModule class *
+-keep class io.realm.internal.Keep
+-keep @io.realm.internal.Keep class *
+-dontwarn javax.**
+-dontwarn io.realm.**
+
+-keep public class * extends io.realm.RealmObject {
+    *;
+}
+-keepclassmembernames class * extends io.realm.RealmObject {
+    java.lang.Class class$(java.lang.String);
+    java.lang.Class class$(java.lang.String, boolean);
+}
+-keepclasseswithmembernames class * extends io.realm.RealmObject {
+    native <methods>;
+}
