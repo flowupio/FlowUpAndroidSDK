@@ -19,20 +19,11 @@ public class RealmStatisticalValue extends RealmObject {
   private Double mean;
   private Double standardDev;
   private Double median;
+  private Double p1;
+  private Double p2;
   private Double p5;
   private Double p10;
-  private Double p15;
-  private Double p20;
-  private Double p25;
-  private Double p30;
-  private Double p40;
-  private Double p50;
-  private Double p60;
-  private Double p70;
-  private Double p75;
   private Double p80;
-  private Double p85;
-  private Double p90;
   private Double p95;
   private Double p98;
   private Double p99;
@@ -97,6 +88,22 @@ public class RealmStatisticalValue extends RealmObject {
     this.median = median;
   }
 
+  public Double getP1() {
+    return p1;
+  }
+
+  public void setP1(Double p1) {
+    this.p1 = p1;
+  }
+
+  public Double getP2() {
+    return p2;
+  }
+
+  public void setP2(Double p2) {
+    this.p2 = p2;
+  }
+
   public Double getP5() {
     return p5;
   }
@@ -113,100 +120,12 @@ public class RealmStatisticalValue extends RealmObject {
     this.p10 = p10;
   }
 
-  public Double getP15() {
-    return p15;
-  }
-
-  public void setP15(Double p15) {
-    this.p15 = p15;
-  }
-
-  public Double getP20() {
-    return p20;
-  }
-
-  public void setP20(Double p20) {
-    this.p20 = p20;
-  }
-
-  public Double getP25() {
-    return p25;
-  }
-
-  public void setP25(Double p25) {
-    this.p25 = p25;
-  }
-
-  public Double getP30() {
-    return p30;
-  }
-
-  public void setP30(Double p30) {
-    this.p30 = p30;
-  }
-
-  public Double getP40() {
-    return p40;
-  }
-
-  public void setP40(Double p40) {
-    this.p40 = p40;
-  }
-
-  public Double getP50() {
-    return p50;
-  }
-
-  public void setP50(Double p50) {
-    this.p50 = p50;
-  }
-
-  public Double getP60() {
-    return p60;
-  }
-
-  public void setP60(Double p60) {
-    this.p60 = p60;
-  }
-
-  public Double getP70() {
-    return p70;
-  }
-
-  public void setP70(Double p70) {
-    this.p70 = p70;
-  }
-
-  public Double getP75() {
-    return p75;
-  }
-
-  public void setP75(Double p75) {
-    this.p75 = p75;
-  }
-
   public Double getP80() {
     return p80;
   }
 
   public void setP80(Double p80) {
     this.p80 = p80;
-  }
-
-  public Double getP85() {
-    return p85;
-  }
-
-  public void setP85(Double p85) {
-    this.p85 = p85;
-  }
-
-  public Double getP90() {
-    return p90;
-  }
-
-  public void setP90(Double p90) {
-    this.p90 = p90;
   }
 
   public Double getP95() {

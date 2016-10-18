@@ -4,6 +4,7 @@
 
 package io.flowup.reporter;
 
+import com.google.gson.Gson;
 import io.flowup.FlowUp;
 import io.flowup.reporter.model.CPUMetric;
 import io.flowup.reporter.model.DiskMetric;
@@ -12,7 +13,6 @@ import io.flowup.reporter.model.NetworkMetric;
 import io.flowup.reporter.model.Reports;
 import io.flowup.reporter.model.StatisticalValue;
 import io.flowup.reporter.model.UIMetric;
-import com.google.gson.Gson;
 import java.util.LinkedList;
 import java.util.List;
 import org.junit.Ignore;
@@ -51,8 +51,7 @@ public class NumberOfReportsPerBatchTest {
   }
 
   @Test
-  @Ignore
-  public void doesNotSendLessThanTheOptimumNumberOfReportsPerRequest() throws Exception {
+  @Ignore public void doesNotSendLessThanTheOptimumNumberOfReportsPerRequest() throws Exception {
     int optimumNumberOfReports = calculateOptimumNumberOfReportsPerRequest();
 
     assertEquals(optimumNumberOfReports, FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST);
@@ -61,6 +60,7 @@ public class NumberOfReportsPerBatchTest {
   private int calculateMaxNumberOfReportsPerRequest() throws Exception {
     int newMax;
     for (newMax = FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST; newMax >= 0; newMax--) {
+      System.out.println("Trying with a new max value " + newMax);
       Reports reports = givenAReportsInstanceFullOfData(newMax);
       long bytes = toBytes(reports);
       if (bytes <= MAX_REQUEST_SIZE_WITHOUT_COMPRESSION_IN_BYTES) {
@@ -71,16 +71,15 @@ public class NumberOfReportsPerBatchTest {
   }
 
   private int calculateOptimumNumberOfReportsPerRequest() throws Exception {
-    int optimumNumberOfReports;
-    for (optimumNumberOfReports = FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST - 50;
-        optimumNumberOfReports < FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST;
-        optimumNumberOfReports++) {
+    int optimumNumberOfReports = 0;
+    long bytes = 0;
+    while (bytes < MAX_REQUEST_SIZE_WITHOUT_COMPRESSION_IN_BYTES) {
+      System.out.println("Trying with " + optimumNumberOfReports);
       Reports reports = givenAReportsInstanceFullOfData(optimumNumberOfReports);
-      long bytes = toBytes(reports);
-      if (bytes > MAX_REQUEST_SIZE_WITHOUT_COMPRESSION_IN_BYTES) {
-        break;
-      }
+      bytes = toBytes(reports);
+      optimumNumberOfReports++;
     }
+
     return optimumNumberOfReports;
   }
 
@@ -153,17 +152,23 @@ public class NumberOfReportsPerBatchTest {
   private UIMetric generateAnyUIMetric(long timestamp) {
     StatisticalValue frameTime = givenAnyStatisticalValue();
     StatisticalValue fps = givenAnyStatisticalValue();
-    String screenName = "MainActivity";
+    StatisticalValue onActivityCreatedTime = givenAnyStatisticalValue();
+    StatisticalValue onActivityStartedTime = givenAnyStatisticalValue();
+    StatisticalValue onActivityResumedTime = givenAnyStatisticalValue();
+    StatisticalValue activityVisibleTime = givenAnyStatisticalValue();
+    StatisticalValue onActivityPausedTime = givenAnyStatisticalValue();
+    StatisticalValue onActivityStoppedTime = givenAnyStatisticalValue();
+    StatisticalValue onActivityDestroyedTime = givenAnyStatisticalValue();
     return new UIMetric(timestamp, ANY_VERSION_NAME, ANY_OS_VERSION, ANY_BATTERY_SAVER_ON,
-        screenName, frameTime, fps);
+        "MainActivity", frameTime, fps, onActivityCreatedTime, onActivityStartedTime,
+        onActivityResumedTime, activityVisibleTime, onActivityPausedTime, onActivityStoppedTime,
+        onActivityDestroyedTime);
   }
 
   private StatisticalValue givenAnyStatisticalValue() {
-    return new StatisticalValue(1, Long.MAX_VALUE, Long.MAX_VALUE, Long.MAX_VALUE, Long.MAX_VALUE,
-        Long.MAX_VALUE, Long.MAX_VALUE, Long.MAX_VALUE, Long.MAX_VALUE, Long.MAX_VALUE,
-        Long.MAX_VALUE, Long.MAX_VALUE, Long.MAX_VALUE, Long.MAX_VALUE, Long.MAX_VALUE,
-        Long.MAX_VALUE, Long.MAX_VALUE, Long.MAX_VALUE, Long.MAX_VALUE, Long.MAX_VALUE,
-        Long.MAX_VALUE, Long.MAX_VALUE, Long.MAX_VALUE);
+    return new StatisticalValue(1, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE,
+        Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE,
+        Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
   }
 
   private NetworkMetric generateAnyNetworkMetric(long timestamp) {

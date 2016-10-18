@@ -16,8 +16,11 @@ import com.karumi.marvelapiclient.model.MarvelResponse;
 
 public class MainActivity extends AppCompatActivity {
 
+  private static final String LOGTAG = "FlowUpExample";
+
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    Log.d(LOGTAG, "onCreate");
     setContentView(R.layout.main_activity);
     MarvelApiConfig marvelApiConfig = MarvelApiConfig.with("54355f684e1983a183d7bfec96a4bf81",
         "4ad71e7b61e40311545909af0d6ebbd52bbfeae3");
@@ -29,14 +32,39 @@ public class MainActivity extends AppCompatActivity {
           @Override public void run() {
             try {
               MarvelResponse<CharactersDto> characters = characterApiClient.getAll(0, 50);
-              Log.d("FlowUp", characters.getResponse().getCharacters().size()
+              Log.d(LOGTAG, characters.getResponse().getCharacters().size()
                   + " characters obtained from the api");
             } catch (MarvelApiException e) {
-              Log.e("Error", "Error getting marvel characters", e);
+              Log.e(LOGTAG, "Error getting marvel characters", e);
             }
           }
         }).start();
       }
     });
+  }
+
+  @Override protected void onStart() {
+    super.onStart();
+    Log.d(LOGTAG, "onStart");
+  }
+
+  @Override protected void onResume() {
+    super.onResume();
+    Log.d(LOGTAG, "onResume");
+  }
+
+  @Override protected void onPause() {
+    super.onPause();
+    Log.d(LOGTAG, "onPause");
+  }
+
+  @Override protected void onStop() {
+    super.onStop();
+    Log.d(LOGTAG, "onStop");
+  }
+
+  @Override protected void onDestroy() {
+    super.onDestroy();
+    Log.d(LOGTAG, "onDestroy");
   }
 }

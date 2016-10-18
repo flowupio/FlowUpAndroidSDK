@@ -5,6 +5,8 @@
 package io.flowup.collectors;
 
 import android.app.Application;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import io.flowup.android.App;
 import io.flowup.android.CPU;
 import io.flowup.android.Device;
@@ -15,12 +17,19 @@ import java.util.concurrent.TimeUnit;
 
 public class Collectors {
 
+  @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
   public static Collector getFPSCollector(Application application) {
     return new FpsCollector(application, getMetricNamesGenerator(application));
   }
 
+  @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
   public static Collector getFrameTimeCollector(Application application) {
     return new FrameTimeCollector(application, getMetricNamesGenerator(application));
+  }
+
+  @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+  public static Collector getActivityLifecycleCollector(Application application) {
+    return new ActivityLifecycleCollector(application, getMetricNamesGenerator(application));
   }
 
   public static Collector getBytesDownloadedCollector(Application application,

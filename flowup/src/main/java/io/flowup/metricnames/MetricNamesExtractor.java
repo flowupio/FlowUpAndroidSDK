@@ -74,12 +74,44 @@ public class MetricNamesExtractor {
     return metricName.contains(MetricNamesGenerator.BYTES_UPLOADED);
   }
 
+  public boolean isUIMetric(String metricName) {
+    return findCrossMetricInfoAtPosition(9, metricName).equals(MetricNamesGenerator.UI);
+  }
+
   public boolean isFPSMetric(String metricName) {
     return metricName.contains(MetricNamesGenerator.FPS);
   }
 
   public boolean isFrameTimeMetric(String metricName) {
     return metricName.contains(MetricNamesGenerator.FRAME_TIME);
+  }
+
+  public boolean isOnActivityCreatedMetric(String metricName) {
+    return metricName.contains(MetricNamesGenerator.ON_ACTIVITY_CREATED);
+  }
+
+  public boolean isOnActivityStartedMetric(String metricName) {
+    return metricName.contains(MetricNamesGenerator.ON_ACTIVITY_STARTED);
+  }
+
+  public boolean isOnActivityResumedMetric(String metricName) {
+    return metricName.contains(MetricNamesGenerator.ON_ACTIVITY_RESUMED);
+  }
+
+  public boolean isActivityVisibleMetric(String metricName) {
+    return metricName.contains(MetricNamesGenerator.ACTIVITY_VISIBLE);
+  }
+
+  public boolean isOnActivityPausedMetric(String metricName) {
+    return metricName.contains(MetricNamesGenerator.ON_ACTIVITY_PAUSED);
+  }
+
+  public boolean isOnActivityStoppedMetric(String metricName) {
+    return metricName.contains(MetricNamesGenerator.ON_ACTIVITY_STOPPED);
+  }
+
+  public boolean isOnActivityDestroyedMetric(String metricName) {
+    return metricName.contains(MetricNamesGenerator.ON_ACTIVITY_DESTROYED);
   }
 
   public boolean isMemoryUsageMetric(String metricName) {
