@@ -54,7 +54,7 @@ compile ('io.flowup:android-sdk:<LAST_VERSION_RELEASED>') {
     }
 ``` 
 
-* This is just an example, remember to exclude only the dependencies conflicting with your own dependencies.
+*This is just an example, remember to exclude only the dependencies conflicting with your own dependencies.*
 
 Our SDK is using [Realm][realm] as a persistence engine. Realm is really powerful but if you are using Realm in your project, you will have to add our ``FlowUpRealmModule`` to your Realm configuration as follows:
 
@@ -129,6 +129,8 @@ The service will be invoked once per hour in the best case and to be able to kno
 
 * ``adb shell dumpsys activity service GcmService --endpoints``: Shows information about the tasks scheduled for every app in the connected device.
 * ``adb shell dumpsys activity service GcmService --endpoints <APP-PACKAGE-NAME>``: Shows information about the history of tasks executed for the application and the total time the service has been running in seconds since the application was installed.
+
+Copyright 2016 Karumi.
 
 [flowuplogo]: ./art/FlowUpLogo.png
 [realm]: https://realm.io/es/docs/java/latest/
