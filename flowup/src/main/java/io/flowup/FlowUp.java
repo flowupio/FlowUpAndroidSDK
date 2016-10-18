@@ -40,7 +40,7 @@ public class FlowUp {
     this.logEnabled = logEnabled;
   }
 
-  public void start() {
+  void start() {
     if (hasBeenInitialized()) {
       return;
     }
