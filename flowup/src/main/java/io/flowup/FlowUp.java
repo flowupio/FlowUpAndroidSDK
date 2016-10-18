@@ -21,7 +21,7 @@ import io.flowup.reporter.FlowUpReporter;
 import io.flowup.unix.Terminal;
 import java.util.concurrent.TimeUnit;
 
-public class FlowUp {
+public final class FlowUp {
 
   public static final int SAMPLING_INTERVAL = 10;
   private static final TimeUnit SAMPLING_TIME_UNIT = TimeUnit.SECONDS;
@@ -160,7 +160,7 @@ public class FlowUp {
     diskUsageCollector.initialize(registry);
   }
 
-  public static class Builder {
+  public static final class Builder {
 
     Application application;
     String apiKey;

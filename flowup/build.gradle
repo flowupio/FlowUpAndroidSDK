@@ -15,7 +15,7 @@ android {
 
   buildTypes {
     release {
-      minifyEnabled false
+      minifyEnabled true
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
   }
@@ -51,3 +51,5 @@ dependencies {
     exclude group: 'org.hamcrest', module: 'hamcrest-core'
   }
 }
+
+apply from: '../gradle-mvn-push.gradle'
