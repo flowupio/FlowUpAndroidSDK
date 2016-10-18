@@ -45,6 +45,28 @@ If for some reason you don't want to distribute FlowUp's artifact in your releas
 
 This configuration will use a no operational version of the library in your release builds. This **no operational** version won't include FlowUp or any related dependency in your release APK.
 
+**If you are using [Realm][realm]** you might want to exclude the version dependency used by FlowUp. Remember you can easily exclude any dependency included by FlowUp as follows:
+
+```groovy
+compile ('io.flowup:android-sdk:<LAST_VERSION_RELEASED>') {
+        exclude group: 'io.realm'
+        exclude group: 'com.google.android.gms'
+    }
+``` 
+
+* This is just an example, remember to exclude only the dependencies conflicting with your own dependencies.
+
+Our SDK is using [Realm][realm] as a persistence engine. Realm is really powerful but if you are using Realm in your project, you will have to add our ``FlowUpRealmModule`` to your Realm configuration as follows:
+
+```java
+RealmConfiguration config = new RealmConfiguration.Builder()
+  .name("app.realm")
+  .modules(Realm.getDefaultModule(), new FlowUpRealmModule())
+  .build();
+```
+
+You wil find more information [here](https://realm.io/docs/java/latest/#sharing-schemas)
+
 How to build this project
 -------------------------
 
