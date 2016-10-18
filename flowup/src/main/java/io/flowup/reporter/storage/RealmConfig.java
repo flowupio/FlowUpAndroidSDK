@@ -17,6 +17,7 @@ class RealmConfig {
     Realm.init(context);
     RealmConfiguration.Builder builder = new RealmConfiguration.Builder().name(REALM_DB_NAME)
         .schemaVersion(REALM_SCHEMA_VERSION)
+        .modules(new FlowUpRealmModule())
         .deleteRealmIfMigrationNeeded();
     return builder.build();
   }

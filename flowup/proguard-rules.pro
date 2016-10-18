@@ -91,3 +91,7 @@
 -keepclasseswithmembernames class * extends io.realm.RealmObject {
     native <methods>;
 }
+
+-keep class io.flowup.reporter.storage.FlowUpRealmModule {
+  *;
+}
