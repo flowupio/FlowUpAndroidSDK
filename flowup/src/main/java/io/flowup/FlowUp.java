@@ -100,7 +100,6 @@ public final class FlowUp {
     FlowUpReporter.forRegistry(registry, application)
         .filter(MetricFilter.ALL)
         .forceReports(forceReports)
-        .logEnabled(logEnabled)
         .build(apiKey, scheme, host, port)
         .start(SAMPLING_INTERVAL, TimeUnit.SECONDS);
   }

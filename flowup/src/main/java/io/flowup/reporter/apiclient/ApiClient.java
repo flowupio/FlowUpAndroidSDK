@@ -4,6 +4,7 @@
 
 package io.flowup.reporter.apiclient;
 
+import io.flowup.logger.Logger;
 import io.flowup.reporter.ReportResult;
 import io.flowup.reporter.model.Reports;
 import com.google.gson.Gson;
@@ -26,16 +27,12 @@ public class ApiClient {
   private final HttpUrl baseUrl;
 
   public ApiClient(String apiKey, String scheme, String host, int port) {
-    this(apiKey, scheme, host, port, false);
+    this(apiKey, scheme, host, port, true);
   }
 
-  public ApiClient(String apiKey, String scheme, String host, int port, boolean logEnabled) {
-    this(apiKey, scheme, host, port, logEnabled, true);
-  }
-
-  public ApiClient(String apiKey, String scheme, String host, int port, boolean logEnabled,
+  public ApiClient(String apiKey, String scheme, String host, int port,
       boolean useGzip) {
-    this.httpClient = ApiClientConfig.getHttpClient(apiKey, logEnabled, useGzip);
+    this.httpClient = ApiClientConfig.getHttpClient(apiKey, Logger.isLogEnabled(), useGzip);
     this.jsonParser = ApiClientConfig.getJsonParser();
     this.baseUrl = ApiClientConfig.buildURL(scheme, host, port);
   }

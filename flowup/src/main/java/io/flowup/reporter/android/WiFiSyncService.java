@@ -27,11 +27,6 @@ public class WiFiSyncService extends GcmTaskService {
   private ApiClient apiClient;
   private ReportsStorage reportsStorage;
 
-  @Override public void onCreate() {
-    super.onCreate();
-    reportsStorage = new ReportsStorage(this);
-  }
-
   @Override public int onRunTask(TaskParams taskParams) {
     if (!isTaskSupported(taskParams)) {
       return RESULT_FAILURE;
@@ -40,6 +35,7 @@ public class WiFiSyncService extends GcmTaskService {
     String scheme = getString(R.string.flowup_scheme);
     String host = getString(R.string.flowup_host);
     int port = getResources().getInteger(R.integer.flowup_port);
+    reportsStorage = new ReportsStorage(this);
     apiClient = new ApiClient(apiKey, scheme, host, port);
     return syncStoredReports();
   }

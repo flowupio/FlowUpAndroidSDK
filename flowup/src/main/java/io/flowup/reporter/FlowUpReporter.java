@@ -112,7 +112,6 @@ public class FlowUpReporter extends ScheduledReporter {
     private String name;
     private MetricFilter filter;
     private boolean forceReports;
-    private boolean logEnabled;
 
     public Builder(MetricRegistry registry, Context context) {
       this.registry = registry;
@@ -134,17 +133,12 @@ public class FlowUpReporter extends ScheduledReporter {
 
     public FlowUpReporter build(String apiKey, String scheme, String host, int port) {
       return new FlowUpReporter(registry, name, filter, TimeUnit.NANOSECONDS, TimeUnit.NANOSECONDS,
-          new ApiClient(apiKey, scheme, host, port, logEnabled), new ReportsStorage(context),
+          new ApiClient(apiKey, scheme, host, port), new ReportsStorage(context),
           new WiFiSyncServiceScheduler(context, apiKey), new Time(), forceReports);
     }
 
     public Builder forceReports(boolean forceReports) {
       this.forceReports = forceReports;
-      return this;
-    }
-
-    public Builder logEnabled(boolean logEnabled) {
-      this.logEnabled = logEnabled;
       return this;
     }
   }

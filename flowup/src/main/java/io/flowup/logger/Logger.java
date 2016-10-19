@@ -12,6 +12,10 @@ public class Logger {
     Logger.enabled = enabled;
   }
 
+  public static boolean isLogEnabled() {
+    return enabled;
+  }
+
   public static void d(String message) {
     if (!enabled) {
       return;
