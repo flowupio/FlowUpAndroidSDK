@@ -58,7 +58,7 @@ public final class FlowUp {
     initializeCPUCollectors();
     initializeMemoryCollectors();
     initializeDiskCollectors();
-    Logger.e("FlowUp initialized");
+    Logger.d("FlowUp initialized");
   }
 
   private void validateConstructionParams(Application application, String apiKey) {
