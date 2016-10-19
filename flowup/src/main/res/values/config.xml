@@ -3,7 +3,7 @@
   ~ Copyright (C) 2016 Go Karumi S.L.
   -->
 <resources>
-  <string name="flowup_scheme" translatable="false">http</string>
+  <string name="flowup_scheme" translatable="false">https</string>
   <string name="flowup_host" translatable="false">api.flowupapp.com</string>
-  <integer name="flowup_port">80</integer>
+  <integer name="flowup_port">443</integer>
 </resources>
