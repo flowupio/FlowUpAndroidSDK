@@ -272,10 +272,10 @@ class RealmReportsToReportsMapper extends Mapper<List<RealmReport>, Reports> {
       String versionName = extractor.getVersionName(metricName);
       String osVersion = extractor.getOSVersion(metricName);
       boolean batterySaverOne = extractor.getIsBatterSaverOn(metricName);
-      if (i == metrics.size() - 1) {
-        return new UIMetric(timestamp, versionName, osVersion, batterySaverOne, screenName,
-            frameTime, framesPerSecond, onActivityCreated, onActivityStarted, onActivityResumed,
-            activityVisible, onActivityPaused, onActivityStopped, onActivityDestroyed);
+      if (i == metrics.size() - 1 && timestamp != null) {
+        return new UIMetric(timestamp, versionName, osVersion, batterySaverOne, screenName, frameTime,
+                framesPerSecond, onActivityCreated, onActivityStarted, onActivityResumed,
+                activityVisible, onActivityPaused, onActivityStopped, onActivityDestroyed);
       }
     }
     return null;

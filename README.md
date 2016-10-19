@@ -67,6 +67,18 @@ RealmConfiguration config = new RealmConfiguration.Builder()
 
 You wil find more information [here](https://realm.io/docs/java/latest/#sharing-schemas)
 
+If you need to obfuscate your application remember to add the following rules to your ``proguard`` configuration file:
+
+```
+-keep class io.flowup.** { *; }
+-keep class io.realm.annotations.RealmModule
+-keep @io.realm.annotations.RealmModule class *
+-keep class io.realm.internal.Keep
+-keep @io.realm.internal.Keep class *
+-dontwarn javax.**
+-dontwarn io.realm.**
+```
+
 How to build this project
 -------------------------
 

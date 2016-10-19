@@ -81,27 +81,36 @@ public class UIMetric extends Metric {
   @Override public String toString() {
     return "UIMetric{"
         +
-        "screen='"
+        "screen="
         + screen
-        + '\''
-        + ", frameTime="
+        + ", \n"
+        + "frameTime="
         + frameTime
-        + ", framesPerSecond="
+        + ", \n"
+        + "framesPerSecond="
         + framesPerSecond
-        + ", onActivityCreatedTime="
+        + ", \n"
+        + "onActivityCreatedTime="
         + onActivityCreatedTime
-        + ", onActivityStartedTime="
+        + ", \n"
+        + "onActivityStartedTime="
         + onActivityStartedTime
-        + ", onActivityResumedTime="
+        + ", \n"
+        + "onActivityResumedTime="
         + onActivityResumedTime
-        + ", activityVisibleTime="
+        + ", \n"
+        + "activityVisibleTime="
         + activityVisibleTime
-        + ", onActivityPausedTime="
+        + ", \n"
+        + "onActivityPausedTime="
         + onActivityPausedTime
-        + ", onActivityStoppedTime="
+        + ", \n"
+        + "onActivityStoppedTime="
         + onActivityStoppedTime
-        + ", onActivityDestroyedTime="
+        + ", \n"
+        + "onActivityDestroyedTime="
         + onActivityDestroyedTime
+        + "\n"
         + '}';
   }
 }

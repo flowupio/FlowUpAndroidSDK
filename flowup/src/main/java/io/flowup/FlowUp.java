@@ -58,6 +58,7 @@ public final class FlowUp {
     initializeCPUCollectors();
     initializeMemoryCollectors();
     initializeDiskCollectors();
+    Logger.d("FlowUp initialized");
   }
 
   private void validateConstructionParams(Application application, String apiKey) {
@@ -100,7 +101,6 @@ public final class FlowUp {
     FlowUpReporter.forRegistry(registry, application)
         .filter(MetricFilter.ALL)
         .forceReports(forceReports)
-        .logEnabled(logEnabled)
         .build(apiKey, scheme, host, port)
         .start(SAMPLING_INTERVAL, TimeUnit.SECONDS);
   }

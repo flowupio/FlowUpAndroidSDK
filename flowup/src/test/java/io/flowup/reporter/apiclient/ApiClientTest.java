@@ -136,7 +136,7 @@ public class ApiClientTest extends MockWebServerTestCase {
   }
 
   private ApiClient givenAnApiClient(boolean useGzip) {
-    return new ApiClient(ANY_API_KEY, getScheme(), getHost(), getPort(), false, useGzip);
+    return new ApiClient(ANY_API_KEY, getScheme(), getHost(), getPort(), useGzip);
   }
 
   private Reports givenSomeReports() {

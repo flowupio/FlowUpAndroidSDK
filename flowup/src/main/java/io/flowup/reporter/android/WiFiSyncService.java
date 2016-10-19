@@ -4,6 +4,9 @@
 
 package io.flowup.reporter.android;
 
+import android.os.Bundle;
+import com.google.android.gms.gcm.GcmTaskService;
+import com.google.android.gms.gcm.TaskParams;
 import io.flowup.R;
 import io.flowup.logger.Logger;
 import io.flowup.reporter.FlowUpReporter;
@@ -11,13 +14,11 @@ import io.flowup.reporter.ReportResult;
 import io.flowup.reporter.apiclient.ApiClient;
 import io.flowup.reporter.model.Reports;
 import io.flowup.reporter.storage.ReportsStorage;
-import com.google.android.gms.gcm.GcmTaskService;
-import com.google.android.gms.gcm.TaskParams;
 
-import static io.flowup.reporter.android.WiFiSyncServiceScheduler.SYNCHRONIZE_METRICS_REPORT;
 import static com.google.android.gms.gcm.GcmNetworkManager.RESULT_FAILURE;
 import static com.google.android.gms.gcm.GcmNetworkManager.RESULT_RESCHEDULE;
 import static com.google.android.gms.gcm.GcmNetworkManager.RESULT_SUCCESS;
+import static io.flowup.reporter.android.WiFiSyncServiceScheduler.SYNCHRONIZE_METRICS_REPORT;
 
 public class WiFiSyncService extends GcmTaskService {
 
@@ -26,21 +27,26 @@ public class WiFiSyncService extends GcmTaskService {
   private ApiClient apiClient;
   private ReportsStorage reportsStorage;
 
-  @Override public void onCreate() {
-    super.onCreate();
-    reportsStorage = new ReportsStorage(this);
-  }
-
   @Override public int onRunTask(TaskParams taskParams) {
     if (!isTaskSupported(taskParams)) {
       return RESULT_FAILURE;
     }
-    String apiKey = taskParams.getExtras().getString(API_KEY_EXTRA);
+    String apiKey = getApiKey(taskParams);
     String scheme = getString(R.string.flowup_scheme);
     String host = getString(R.string.flowup_host);
     int port = getResources().getInteger(R.integer.flowup_port);
+    reportsStorage = new ReportsStorage(this);
     apiClient = new ApiClient(apiKey, scheme, host, port);
     return syncStoredReports();
+  }
+
+  private String getApiKey(TaskParams taskParams) {
+    String apiKey = "";
+    Bundle extras = taskParams.getExtras();
+    if (extras != null) {
+      return extras.getString(API_KEY_EXTRA);
+    }
+    return apiKey;
   }
 
   private boolean isTaskSupported(TaskParams taskParams) {

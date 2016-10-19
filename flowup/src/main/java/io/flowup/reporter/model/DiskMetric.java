@@ -26,8 +26,10 @@ public class DiskMetric extends Metric {
     return "DiskMetric{"
         + "internalStorageWrittenBytes="
         + internalStorageWrittenBytes
-        + ", sharedPreferencesWrittenBytes="
+        + ", \n"
+        + "sharedPreferencesWrittenBytes="
         + sharedPreferencesWrittenBytes
+        + "\n"
         + '}';
   }
 }
