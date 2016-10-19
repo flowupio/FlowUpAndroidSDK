@@ -249,9 +249,9 @@ class RealmReportsToReportsMapper extends Mapper<List<RealmReport>, Reports> {
       String metricScreenName = extractor.getScreenName(metricName);
       if (metricScreenName.equals(screenName)) {
         if (extractor.isFrameTimeMetric(metricName)) {
+          timestamp = extractor.getTimestamp(metricName);
           frameTime = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
         } else if (extractor.isFPSMetric(metricName)) {
-          timestamp = extractor.getTimestamp(metricName);
           framesPerSecond = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
         } else if (extractor.isOnActivityCreatedMetric(metricName)) {
           onActivityCreated = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
@@ -265,7 +265,8 @@ class RealmReportsToReportsMapper extends Mapper<List<RealmReport>, Reports> {
           onActivityPaused = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
         } else if (extractor.isOnActivityStoppedMetric(metricName)) {
           onActivityStopped = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
-        } else if (extractor.isOnActivityDestroyedMetric(metricName)) {
+        } else if (extractor.isOnActivityDestroyedMetric(metricName))
+        {
           onActivityDestroyed = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
         }
       }
@@ -273,9 +274,9 @@ class RealmReportsToReportsMapper extends Mapper<List<RealmReport>, Reports> {
       String osVersion = extractor.getOSVersion(metricName);
       boolean batterySaverOne = extractor.getIsBatterSaverOn(metricName);
       if (i == metrics.size() - 1) {
-        return new UIMetric(timestamp, versionName, osVersion, batterySaverOne, screenName,
-            frameTime, framesPerSecond, onActivityCreated, onActivityStarted, onActivityResumed,
-            activityVisible, onActivityPaused, onActivityStopped, onActivityDestroyed);
+        return new UIMetric(timestamp, versionName, osVersion, batterySaverOne, screenName, frameTime,
+                framesPerSecond, onActivityCreated, onActivityStarted, onActivityResumed,
+                activityVisible, onActivityPaused, onActivityStopped, onActivityDestroyed);
       }
     }
     return null;
