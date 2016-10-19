@@ -265,8 +265,7 @@ class RealmReportsToReportsMapper extends Mapper<List<RealmReport>, Reports> {
           onActivityPaused = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
         } else if (extractor.isOnActivityStoppedMetric(metricName)) {
           onActivityStopped = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
-        } else if (extractor.isOnActivityDestroyedMetric(metricName))
-        {
+        } else if (extractor.isOnActivityDestroyedMetric(metricName)) {
           onActivityDestroyed = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
         }
       }
