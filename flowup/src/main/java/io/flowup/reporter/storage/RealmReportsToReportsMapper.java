@@ -249,9 +249,9 @@ class RealmReportsToReportsMapper extends Mapper<List<RealmReport>, Reports> {
       String metricScreenName = extractor.getScreenName(metricName);
       if (metricScreenName.equals(screenName)) {
         if (extractor.isFrameTimeMetric(metricName)) {
-          timestamp = extractor.getTimestamp(metricName);
           frameTime = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
         } else if (extractor.isFPSMetric(metricName)) {
+          timestamp = extractor.getTimestamp(metricName);
           framesPerSecond = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
         } else if (extractor.isOnActivityCreatedMetric(metricName)) {
           onActivityCreated = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
