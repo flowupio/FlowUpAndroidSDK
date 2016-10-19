@@ -81,7 +81,7 @@ public class UIMetric extends Metric {
   @Override public String toString() {
     return "UIMetric{"
         +
-        "screen='"
+        "screen="
         + screen
         + ", \n"
         + "frameTime="

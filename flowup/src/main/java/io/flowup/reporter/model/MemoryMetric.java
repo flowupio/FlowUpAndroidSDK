@@ -31,7 +31,7 @@ public class MemoryMetric extends Metric {
         + "bytesAllocated="
         + bytesAllocated
         + "\n"
-        + ", memoryUsage="
+        + "memoryUsage="
         + memoryUsage
         + "\n"
         + '}';

@@ -166,7 +166,7 @@ import java.util.Map;
 
       private Timer.Context initializeTimer(Activity activity, Map<String, Timer.Context> map,
           CreateTimer createTimer) {
-        String activityClassName = activity.getClass().getSimpleName();
+        String activityClassName = activity.getClass().getName();
         Timer.Context context = map.get(activityClassName);
         if (context == null) {
           context = createTimer.create(activity).time();
@@ -176,7 +176,7 @@ import java.util.Map;
       }
 
       private void stopTimer(Activity activity, Map<String, Timer.Context> map) {
-        String activityName = activity.getClass().getSimpleName();
+        String activityName = activity.getClass().getName();
         Timer.Context context = map.get(activityName);
         if (context != null) {
           context.stop();
