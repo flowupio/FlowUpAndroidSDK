@@ -113,37 +113,38 @@ public class Reports {
     return "Reports{"
         + "reportsIds="
         + reportsIds
-        + ", appPackage='"
+        + ", \n"
+        + "appPackage='"
         + appPackage
-        + "\n"
-        + ", uuid='"
+        + ", \n"
+        + "uuid='"
         + uuid
-        + "\n"
-        + ", deviceModel='"
+        + ", \n"
+        + "deviceModel='"
         + deviceModel
-        + "\n"
-        + ", screenDensity='"
+        + ", \n"
+        + "screenDensity='"
         + screenDensity
-        + "\n"
-        + ", screenSize='"
+        + ", \n"
+        + "screenSize='"
         + screenSize
-        + "\n"
-        + ", numberOfCores="
+        + ", \n"
+        + "numberOfCores="
         + numberOfCores
-        + "\n"
-        + ", networkMetricsReports="
+        + ", \n"
+        + "networkMetricsReports="
         + networkMetricsReports
-        + "\n"
-        + ", uiMetrics="
+        + ", \n"
+        + "uiMetrics="
         + uiMetrics
-        + "\n"
-        + ", cpuMetrics="
+        + ", \n"
+        + "cpuMetrics="
         + cpuMetrics
-        + "\n"
-        + ", memoryMetrics="
+        + ", \n"
+        + "memoryMetrics="
         + memoryMetrics
-        + "\n"
-        + ", diskMetrics="
+        + ", \n"
+        + "diskMetrics="
         + diskMetrics
         + "\n"
         + '}';

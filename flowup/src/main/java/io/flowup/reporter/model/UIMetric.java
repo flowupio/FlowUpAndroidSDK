@@ -83,32 +83,32 @@ public class UIMetric extends Metric {
         +
         "screen='"
         + screen
-        + "\n"
-        + ", frameTime="
+        + ", \n"
+        + "frameTime="
         + frameTime
-        + "\n"
-        + ", framesPerSecond="
+        + ", \n"
+        + "framesPerSecond="
         + framesPerSecond
-        + "\n"
-        + ", onActivityCreatedTime="
+        + ", \n"
+        + "onActivityCreatedTime="
         + onActivityCreatedTime
-        + "\n"
-        + ", onActivityStartedTime="
+        + ", \n"
+        + "onActivityStartedTime="
         + onActivityStartedTime
-        + "\n"
-        + ", onActivityResumedTime="
+        + ", \n"
+        + "onActivityResumedTime="
         + onActivityResumedTime
-        + "\n"
-        + ", activityVisibleTime="
+        + ", \n"
+        + "activityVisibleTime="
         + activityVisibleTime
-        + "\n"
-        + ", onActivityPausedTime="
+        + ", \n"
+        + "onActivityPausedTime="
         + onActivityPausedTime
-        + "\n"
-        + ", onActivityStoppedTime="
+        + ", \n"
+        + "onActivityStoppedTime="
         + onActivityStoppedTime
-        + "\n"
-        + ", onActivityDestroyedTime="
+        + ", \n"
+        + "onActivityDestroyedTime="
         + onActivityDestroyedTime
         + "\n"
         + '}';

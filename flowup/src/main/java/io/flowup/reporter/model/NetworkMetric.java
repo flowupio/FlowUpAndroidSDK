@@ -30,8 +30,8 @@ public class NetworkMetric extends Metric {
     return "NetworkMetric{"
         + "bytesUploaded="
         + bytesUploaded
-        + "\n"
-        + ", bytesDownloaded="
+        + ", \n"
+        + "bytesDownloaded="
         + bytesDownloaded
         + "\n"
         + '}';
