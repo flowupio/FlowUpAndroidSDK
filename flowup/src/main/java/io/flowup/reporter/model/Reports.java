@@ -115,31 +115,37 @@ public class Reports {
         + reportsIds
         + ", appPackage='"
         + appPackage
-        + '\''
+        + "\n"
         + ", uuid='"
         + uuid
-        + '\''
+        + "\n"
         + ", deviceModel='"
         + deviceModel
-        + '\''
+        + "\n"
         + ", screenDensity='"
         + screenDensity
-        + '\''
+        + "\n"
         + ", screenSize='"
         + screenSize
-        + '\''
+        + "\n"
         + ", numberOfCores="
         + numberOfCores
+        + "\n"
         + ", networkMetricsReports="
         + networkMetricsReports
+        + "\n"
         + ", uiMetrics="
         + uiMetrics
+        + "\n"
         + ", cpuMetrics="
         + cpuMetrics
+        + "\n"
         + ", memoryMetrics="
         + memoryMetrics
+        + "\n"
         + ", diskMetrics="
         + diskMetrics
+        + "\n"
         + '}';
   }
 }

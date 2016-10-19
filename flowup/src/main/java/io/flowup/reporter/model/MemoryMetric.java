@@ -30,8 +30,10 @@ public class MemoryMetric extends Metric {
     return "MemoryMetric{"
         + "bytesAllocated="
         + bytesAllocated
+        + "\n"
         + ", memoryUsage="
         + memoryUsage
+        + "\n"
         + '}';
   }
 }
