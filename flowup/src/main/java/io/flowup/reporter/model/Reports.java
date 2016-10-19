@@ -114,19 +114,19 @@ public class Reports {
         + "reportsIds="
         + reportsIds
         + ", \n"
-        + "appPackage='"
+        + "appPackage="
         + appPackage
         + ", \n"
         + "uuid='"
         + uuid
         + ", \n"
-        + "deviceModel='"
+        + "deviceModel="
         + deviceModel
         + ", \n"
-        + "screenDensity='"
+        + "screenDensity="
         + screenDensity
         + ", \n"
-        + "screenSize='"
+        + "screenSize="
         + screenSize
         + ", \n"
         + "numberOfCores="
