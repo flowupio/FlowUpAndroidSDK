@@ -167,6 +167,18 @@ import static org.mockito.Mockito.when;
     verify(storage).deleteReports(reportsSent);
   }
 
+  @Test public void removesTheStoredReportsIfTheResultOfTheSyncProcessIsServerError() {
+    List<String> ids = Collections.singletonList(String.valueOf(ANY_TIMESTAMP));
+    Reports reportsSent = givenAReportsInstanceWithId(ids);
+    givenSomeStoredReports(reportsSent);
+    givenTheSyncProcessReturnsServerError(reportsSent);
+    FlowUpReporter reporter = givenAFlowUpReporter(true);
+
+    reportSomeMetrics(reporter);
+
+    verify(storage).deleteReports(reportsSent);
+  }
+
   private void givenSomeStoredReports(Reports reportsSent) {
     when(storage.getReports(anyInt())).thenReturn(reportsSent, null);
   }
@@ -174,6 +186,11 @@ import static org.mockito.Mockito.when;
   private void givenTheSyncProcessReturnsUnauthorized(Reports reports) {
     when(apiClient.sendReports(reports)).thenReturn(
         new ReportResult(ReportResult.Error.UNAUTHORIZED));
+  }
+
+  private void givenTheSyncProcessReturnsServerError(Reports reports) {
+    when(apiClient.sendReports(reports)).thenReturn(
+        new ReportResult(ReportResult.Error.SERVER_ERROR));
   }
 
   private void givenTheSyncProcessIsSuccess(Reports reports) {

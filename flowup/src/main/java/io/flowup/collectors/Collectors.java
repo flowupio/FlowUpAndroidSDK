@@ -18,11 +18,6 @@ import java.util.concurrent.TimeUnit;
 public class Collectors {
 
   @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-  public static Collector getFPSCollector(Application application) {
-    return new FpsCollector(application, getMetricNamesGenerator(application));
-  }
-
-  @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
   public static Collector getFrameTimeCollector(Application application) {
     return new FrameTimeCollector(application, getMetricNamesGenerator(application));
   }

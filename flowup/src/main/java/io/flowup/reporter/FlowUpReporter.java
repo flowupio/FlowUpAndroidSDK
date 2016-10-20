@@ -82,7 +82,7 @@ public class FlowUpReporter extends ScheduledReporter {
       if (result.isSuccess()) {
         Logger.d("Api response successful");
         reportsStorage.deleteReports(reports);
-      } else if (ReportResult.Error.UNAUTHORIZED == result.getError()) {
+      } else if (shouldDeleteReportsOnError(result)) {
         Logger.e("Api response error: " + result.getError());
         reportsStorage.deleteReports(reports);
       } else {
@@ -101,8 +101,12 @@ public class FlowUpReporter extends ScheduledReporter {
     } else if (!result.isSuccess()) {
       Logger.e("The last sync failed due to an unknown error");
     } else {
-      Logger.e("Sync process finished with a successful result");
+      Logger.d("Sync process finished with a successful result");
     }
+  }
+
+  private boolean shouldDeleteReportsOnError(ReportResult result) {
+    return ReportResult.Error.UNAUTHORIZED == result.getError() || ReportResult.Error.SERVER_ERROR == result.getError();
   }
 
   public static final class Builder {
