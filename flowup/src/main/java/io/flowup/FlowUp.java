@@ -107,15 +107,9 @@ public final class FlowUp {
 
   private void initializeForegroundCollectors() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-      initializeFPSCollector();
       initializeFrameTimeCollector();
       initializeActivityLifecycleCollector();
     }
-  }
-
-  @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN) private void initializeFPSCollector() {
-    Collector fpsCollector = Collectors.getFPSCollector(application);
-    fpsCollector.initialize(registry);
   }
 
   @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN) private void initializeFrameTimeCollector() {

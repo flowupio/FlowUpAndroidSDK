@@ -101,7 +101,7 @@ public class FlowUpReporter extends ScheduledReporter {
     } else if (!result.isSuccess()) {
       Logger.e("The last sync failed due to an unknown error");
     } else {
-      Logger.e("Sync process finished with a successful result");
+      Logger.d("Sync process finished with a successful result");
     }
   }
 
