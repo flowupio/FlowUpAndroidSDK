@@ -14,11 +14,14 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.ScheduledReporter;
 import com.codahale.metrics.Timer;
 import io.flowup.logger.Logger;
+import io.flowup.metricnames.MetricNamesExtractor;
 import io.flowup.reporter.android.WiFiSyncServiceScheduler;
 import io.flowup.reporter.apiclient.ApiClient;
 import io.flowup.reporter.model.Reports;
 import io.flowup.reporter.storage.ReportsStorage;
 import io.flowup.utils.Time;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.SortedMap;
 import java.util.concurrent.TimeUnit;
 
@@ -30,6 +33,8 @@ public class FlowUpReporter extends ScheduledReporter {
     return new FlowUpReporter.Builder(registry, context);
   }
 
+  private final MetricRegistry registry;
+  private final MetricNamesExtractor extractor;
   private final ReportsStorage reportsStorage;
   private final ApiClient apiClient;
   private final WiFiSyncServiceScheduler syncScheduler;
@@ -40,6 +45,8 @@ public class FlowUpReporter extends ScheduledReporter {
       TimeUnit durationUnit, ApiClient apiClient, ReportsStorage reportsStorage,
       WiFiSyncServiceScheduler syncScheduler, Time time, boolean forceReports) {
     super(registry, name, filter, rateUnit, durationUnit);
+    this.registry = registry;
+    this.extractor = new MetricNamesExtractor();
     this.apiClient = apiClient;
     this.reportsStorage = reportsStorage;
     this.syncScheduler = syncScheduler;
@@ -58,8 +65,20 @@ public class FlowUpReporter extends ScheduledReporter {
     DropwizardReport dropwizardReport =
         new DropwizardReport(time.now(), gauges, counters, histograms, meters, timers);
     storeReport(dropwizardReport);
+    clearTemporalMetrics(dropwizardReport);
     if (forceReports) {
       sendStoredReports();
+    }
+  }
+
+  private void clearTemporalMetrics(DropwizardReport report) {
+    List<String> metricsToRemoveAfterReport = new LinkedList<>();
+    metricsToRemoveAfterReport.addAll(report.getTimers().keySet());
+    metricsToRemoveAfterReport.addAll(report.getHistograms().keySet());
+    for (String metricName : metricsToRemoveAfterReport) {
+      if (extractor.isUIMetric(metricName)) {
+        registry.remove(metricName);
+      }
     }
   }
 
@@ -106,7 +125,8 @@ public class FlowUpReporter extends ScheduledReporter {
   }
 
   private boolean shouldDeleteReportsOnError(ReportResult result) {
-    return ReportResult.Error.UNAUTHORIZED == result.getError() || ReportResult.Error.SERVER_ERROR == result.getError();
+    return ReportResult.Error.UNAUTHORIZED == result.getError()
+        || ReportResult.Error.SERVER_ERROR == result.getError();
   }
 
   public static final class Builder {
