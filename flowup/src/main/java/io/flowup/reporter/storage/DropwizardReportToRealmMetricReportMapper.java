@@ -92,7 +92,7 @@ class DropwizardReportToRealmMetricReportMapper
     realmValue.setP2(snapshot.getValue(0.2));
     realmValue.setP5(snapshot.getValue(0.5));
     realmValue.setP10(snapshot.getValue(0.10));
-    realmValue.setP80(snapshot.getValue(0.80));
+    realmValue.setP90(snapshot.getValue(0.90));
     realmValue.setP95(snapshot.getValue(0.95));
     realmValue.setP98(snapshot.getValue(0.98));
     realmValue.setP99(snapshot.getValue(0.99));

@@ -16,13 +16,13 @@ public class StatisticalValue {
   private final double p2;
   private final double p5;
   private final double p10;
-  private final double p80;
+  private final double p90;
   private final double p95;
   private final double p98;
   private final double p99;
 
   public StatisticalValue(long count, double min, double max, double mean, double standardDev,
-      double median, double p1, double p2, double p5, double p10, double p80, double p95,
+      double median, double p1, double p2, double p5, double p10, double p90, double p95,
       double p98, double p99) {
     this.count = count;
     this.min = min;
@@ -34,7 +34,7 @@ public class StatisticalValue {
     this.p2 = p2;
     this.p5 = p5;
     this.p10 = p10;
-    this.p80 = p80;
+    this.p90 = p90;
     this.p95 = p95;
     this.p98 = p98;
     this.p99 = p99;
@@ -80,8 +80,8 @@ public class StatisticalValue {
     return p10;
   }
 
-  public double getP80() {
-    return p80;
+  public double getP90() {
+    return p90;
   }
 
   public double getP95() {

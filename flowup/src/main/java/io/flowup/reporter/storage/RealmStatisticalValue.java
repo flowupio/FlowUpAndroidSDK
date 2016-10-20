@@ -23,7 +23,7 @@ public class RealmStatisticalValue extends RealmObject {
   private Double p2;
   private Double p5;
   private Double p10;
-  private Double p80;
+  private Double p90;
   private Double p95;
   private Double p98;
   private Double p99;
@@ -120,12 +120,12 @@ public class RealmStatisticalValue extends RealmObject {
     this.p10 = p10;
   }
 
-  public Double getP80() {
-    return p80;
+  public Double getP90() {
+    return p90;
   }
 
-  public void setP80(Double p80) {
-    this.p80 = p80;
+  public void setP90(Double p90) {
+    this.p90 = p90;
   }
 
   public Double getP95() {

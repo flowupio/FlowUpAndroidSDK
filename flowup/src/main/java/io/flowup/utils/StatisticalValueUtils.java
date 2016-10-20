@@ -16,6 +16,6 @@ public class StatisticalValueUtils {
     return new StatisticalValue(realmValue.getCount(), realmValue.getMin(), realmValue.getMax(),
         realmValue.getMean(), realmValue.getStandardDev(), realmValue.getMedian(),
         realmValue.getP1(), realmValue.getP2(), realmValue.getP5(), realmValue.getP10(),
-        realmValue.getP80(), realmValue.getP95(), realmValue.getP98(), realmValue.getP99());
+        realmValue.getP90(), realmValue.getP95(), realmValue.getP98(), realmValue.getP99());
   }
 }

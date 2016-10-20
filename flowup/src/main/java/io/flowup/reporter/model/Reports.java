@@ -117,7 +117,7 @@ public class Reports {
         + "appPackage="
         + appPackage
         + ", \n"
-        + "uuid='"
+        + "uuid="
         + uuid
         + ", \n"
         + "deviceModel="

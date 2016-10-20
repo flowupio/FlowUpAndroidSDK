@@ -14,6 +14,8 @@ import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import io.flowup.metricnames.MetricNamesGenerator;
+import java.util.HashMap;
+import java.util.Map;
 
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN) class FrameTimeCollector
     extends ApplicationLifecycleCollector implements Collector {
@@ -22,23 +24,34 @@ import io.flowup.metricnames.MetricNamesGenerator;
   private final Choreographer choreographer;
 
   private FrameTimeCallback frameTimeCallback;
-  private Timer timer;
+  private Map<String, Timer> timers;
 
   FrameTimeCollector(Application application, MetricNamesGenerator metricNamesGenerator) {
     super(application);
     this.metricNamesGenerator = metricNamesGenerator;
     this.choreographer = Choreographer.getInstance();
+    this.timers = new HashMap<>();
   }
 
   @Override protected void onApplicationResumed(Activity activity, MetricRegistry registry) {
-    timer = initializeTimer(activity, registry);
+    Timer timer = getTimer(activity, registry);
     frameTimeCallback = new FrameTimeCallback(timer, choreographer);
     choreographer.postFrameCallback(frameTimeCallback);
   }
 
   @Override protected void onApplicationPaused(Activity activity, MetricRegistry registry) {
     choreographer.removeFrameCallback(frameTimeCallback);
-    removeTimer(registry);
+    removeTimer(activity, registry);
+  }
+
+  private Timer getTimer(Activity activity, MetricRegistry registry) {
+    String activityName = activity.getClass().getName();
+    Timer timer = timers.get(activityName);
+    if (timer == null) {
+      timer = initializeTimer(activity, registry);
+      timers.put(activityName, timer);
+    }
+    return timer;
   }
 
   private Timer initializeTimer(Activity activity, MetricRegistry registry) {
@@ -46,9 +59,10 @@ import io.flowup.metricnames.MetricNamesGenerator;
     return registry.timer(fpsMetricName);
   }
 
-  private void removeTimer(MetricRegistry registry) {
+  private void removeTimer(final Activity activity, final MetricRegistry registry) {
     registry.removeMatching(new MetricFilter() {
       @Override public boolean matches(String name, Metric metric) {
+        Timer timer = getTimer(activity, registry);
         return metric.equals(timer);
       }
     });
