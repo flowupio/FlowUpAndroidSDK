@@ -86,6 +86,7 @@ import java.util.Map;
         return metric.equals(timer);
       }
     });
+    timers.remove(activity.getClass().getName());
   }
 
   private void removeHistogram(final Activity activity, final MetricRegistry registry) {
@@ -95,5 +96,6 @@ import java.util.Map;
         return metric.equals(histogram);
       }
     });
+    histograms.remove(activity.getClass().getName());
   }
 }
