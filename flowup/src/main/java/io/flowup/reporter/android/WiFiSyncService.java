@@ -69,7 +69,7 @@ public class WiFiSyncService extends GcmTaskService {
       if (result.isSuccess()) {
         Logger.d("Api response successful");
         reportsStorage.deleteReports(reports);
-      } else if (ReportResult.Error.UNAUTHORIZED == result.getError()) {
+      } else if (shouldDeleteReportsOnError(result)) {
         Logger.e("Api response error: " + result.getError());
         reportsStorage.deleteReports(reports);
       } else {
@@ -93,5 +93,10 @@ public class WiFiSyncService extends GcmTaskService {
       Logger.e("Sync process finished with a successful result");
       return RESULT_SUCCESS;
     }
+  }
+
+  private boolean shouldDeleteReportsOnError(ReportResult result) {
+    ReportResult.Error error = result.getError();
+    return ReportResult.Error.UNAUTHORIZED == error || ReportResult.Error.SERVER_ERROR == error;
   }
 }

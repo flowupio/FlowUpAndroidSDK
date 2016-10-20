@@ -38,6 +38,7 @@ public class ReportResult {
   public enum Error {
     NETWORK_ERROR,
     UNAUTHORIZED,
+    SERVER_ERROR,
     UNKNOWN
   }
 }

@@ -21,6 +21,7 @@ public class ApiClient {
   private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
   private static final int FORBIDDEN_STATUS_CODE = 403;
   private static final int UNAUTHORIZED_STATUS_CODE = 401;
+  private static final int SERVER_ERROR_STATUS_CODE = 500;
 
   private final OkHttpClient httpClient;
   private final Gson jsonParser;
@@ -57,6 +58,8 @@ public class ApiClient {
       case FORBIDDEN_STATUS_CODE:
       case UNAUTHORIZED_STATUS_CODE:
         return ReportResult.Error.UNAUTHORIZED;
+      case SERVER_ERROR_STATUS_CODE:
+        return ReportResult.Error.SERVER_ERROR;
       default:
         return ReportResult.Error.UNKNOWN;
     }
