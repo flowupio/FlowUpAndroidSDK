@@ -35,7 +35,6 @@ class BytesUploadedCollector implements Collector {
             long totalTxBytes = TrafficStats.getUidTxBytes(applicationUid);
             long txBytes = totalTxBytes - lastBytesSample;
             lastBytesSample = totalTxBytes;
-            Log.d("FlowUp", "Collecting http bytes uploaded metric-> " + txBytes);
             return txBytes;
           }
         });

@@ -36,7 +36,6 @@ class BytesDownloadedCollector implements Collector {
             long totalRxBytes = TrafficStats.getUidRxBytes(applicationUid);
             long rxBytes = totalRxBytes - lastBytesSample;
             lastBytesSample = totalRxBytes;
-            Log.d("FlowUp", "Collecting http bytes downloaded metric-> " + rxBytes);
             new Gauge<Long>() {
               @Override public Long getValue() {
                 return null;

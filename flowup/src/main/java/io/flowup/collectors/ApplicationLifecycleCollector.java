@@ -11,8 +11,12 @@ import io.flowup.android.EmptyActivityLifecycleCallback;
 
 abstract class ApplicationLifecycleCollector implements Collector {
 
+  private static boolean isInForeground = false;
+
   private final Application application;
   private MetricRegistry registry;
+  private EmptyActivityLifecycleCallback callback;
+  private boolean isFirstTime = true;
 
   ApplicationLifecycleCollector(Application application) {
     this.application = application;
@@ -24,17 +28,26 @@ abstract class ApplicationLifecycleCollector implements Collector {
   }
 
   private void registerActivityLifecycleCallbacks() {
-    application.registerActivityLifecycleCallbacks(new EmptyActivityLifecycleCallback() {
+    if (callback != null) {
+      application.unregisterActivityLifecycleCallbacks(callback);
+    }
+    callback = new EmptyActivityLifecycleCallback() {
       @Override public void onActivityResumed(Activity activity) {
         super.onActivityResumed(activity);
-        onApplicationResumed(activity, registry);
+        if(isInForeground || isFirstTime) {
+          isFirstTime = false;
+          onApplicationResumed(activity, registry);
+        }
+        isInForeground = true;
       }
 
       @Override public void onActivityPaused(Activity activity) {
         super.onActivityPaused(activity);
+        isInForeground = false;
         onApplicationPaused(activity, registry);
       }
-    });
+    };
+    application.registerActivityLifecycleCallbacks(callback);
   }
 
   protected abstract void onApplicationResumed(Activity activity, MetricRegistry registry);

@@ -4,6 +4,7 @@
 
 package io.flowup.collectors;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Application;
 import android.os.Build;
@@ -21,6 +22,8 @@ import java.util.Map;
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN) class FrameTimeCollector
     extends ApplicationLifecycleCollector implements Collector {
 
+
+
   private final MetricNamesGenerator metricNamesGenerator;
   private final Choreographer choreographer;
 
@@ -28,7 +31,8 @@ import java.util.Map;
   private Map<String, Timer> timers;
   private Map<String, Histogram> histograms;
 
-  FrameTimeCollector(Application application, MetricNamesGenerator metricNamesGenerator) {
+  @TargetApi(Build.VERSION_CODES.JELLY_BEAN) FrameTimeCollector(Application application,
+      MetricNamesGenerator metricNamesGenerator) {
     super(application);
     this.metricNamesGenerator = metricNamesGenerator;
     this.choreographer = Choreographer.getInstance();
@@ -36,14 +40,16 @@ import java.util.Map;
     this.histograms = new HashMap<>();
   }
 
-  @Override protected void onApplicationResumed(Activity activity, MetricRegistry registry) {
+  @TargetApi(Build.VERSION_CODES.JELLY_BEAN) @Override
+  protected void onApplicationResumed(Activity activity, MetricRegistry registry) {
     Timer timer = getTimer(activity, registry);
     Histogram histogram = getHistogram(activity, registry);
     frameTimeCallback = new FrameTimeCallback(timer, histogram, choreographer);
     choreographer.postFrameCallback(frameTimeCallback);
   }
 
-  @Override protected void onApplicationPaused(Activity activity, MetricRegistry registry) {
+  @TargetApi(Build.VERSION_CODES.JELLY_BEAN) @Override
+  protected void onApplicationPaused(Activity activity, MetricRegistry registry) {
     choreographer.removeFrameCallback(frameTimeCallback);
     removeTimer(activity, registry);
     removeHistogram(activity, registry);

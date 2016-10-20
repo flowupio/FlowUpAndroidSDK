@@ -6,6 +6,8 @@ package io.flowup;
 
 import android.app.Application;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.RequiresApi;
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
@@ -18,6 +20,7 @@ import io.flowup.collectors.Collector;
 import io.flowup.collectors.Collectors;
 import io.flowup.logger.Logger;
 import io.flowup.reporter.FlowUpReporter;
+import io.flowup.reporter.FlowUpReporterListener;
 import io.flowup.unix.Terminal;
 import java.util.concurrent.TimeUnit;
 
@@ -101,8 +104,23 @@ public final class FlowUp {
     FlowUpReporter.forRegistry(registry, application)
         .filter(MetricFilter.ALL)
         .forceReports(forceReports)
+        .listener(new FlowUpReporterListener() {
+          @Override public void onReport() {
+            restartFrameTimeCollector();
+          }
+        })
         .build(apiKey, scheme, host, port)
         .start(SAMPLING_INTERVAL, TimeUnit.SECONDS);
+  }
+
+  private void restartFrameTimeCollector() {
+    new Handler(Looper.getMainLooper()).post(new Runnable() {
+      @Override public void run() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+          initializeFrameTimeCollector();
+        }
+      }
+    });
   }
 
   private void initializeForegroundCollectors() {
