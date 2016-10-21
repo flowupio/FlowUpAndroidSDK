@@ -35,7 +35,6 @@ import java.util.Map;
       private Map<String, Timer.Context> onCreateTimers = new HashMap<>();
       private Map<String, Timer.Context> onStartTimers = new HashMap<>();
       private Map<String, Timer.Context> onResumeTimers = new HashMap<>();
-      private Map<String, Timer.Context> activityVisibleTimers = new HashMap<>();
       private Map<String, Timer.Context> onPauseTimers = new HashMap<>();
       private Map<String, Timer.Context> onStopTimers = new HashMap<>();
       private Map<String, Timer.Context> onDestroyTimers = new HashMap<>();
@@ -50,18 +49,16 @@ import java.util.Map;
       }
 
       @Override public void onActivityResumed(final Activity activity) {
-        getOnStartTimer(activity).stop();
+        stopOnStartTimer(activity);
         getOnResumeTimer(activity);
         new Handler(Looper.getMainLooper()).post(new Runnable() {
           @Override public void run() {
             stopOnResumeTimer(activity);
           }
         });
-        getActivityVisibleTimer(activity);
       }
 
       @Override public void onActivityPaused(Activity activity) {
-        stopActivityVisibleTimer(activity);
         getOnPauseTimer(activity);
       }
 
@@ -114,18 +111,6 @@ import java.util.Map;
 
       private void stopOnResumeTimer(Activity activity) {
         stopTimer(activity, onResumeTimers);
-      }
-
-      private Timer.Context getActivityVisibleTimer(Activity activity) {
-        return initializeTimer(activity, activityVisibleTimers, new CreateTimer() {
-          @Override Timer create(Activity activity) {
-            return registry.timer(metricNamesGenerator.getActivityVisibleMetricName(activity));
-          }
-        });
-      }
-
-      private void stopActivityVisibleTimer(Activity activity) {
-        stopTimer(activity, activityVisibleTimers);
       }
 
       private Timer.Context getOnPauseTimer(Activity activity) {

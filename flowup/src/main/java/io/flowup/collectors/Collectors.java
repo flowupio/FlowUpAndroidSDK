@@ -22,7 +22,8 @@ public class Collectors {
   @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
   public static UpdatableCollector getFrameTimeCollector(Application application) {
     if (frameTimeCollector == null) {
-      frameTimeCollector = new FrameTimeCollector(application, getMetricNamesGenerator(application));
+      frameTimeCollector =
+          new FrameTimeCollector(application, getMetricNamesGenerator(application));
     }
     return frameTimeCollector;
   }
@@ -30,6 +31,11 @@ public class Collectors {
   @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
   public static Collector getActivityLifecycleCollector(Application application) {
     return new ActivityLifecycleCollector(application, getMetricNamesGenerator(application));
+  }
+
+  @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+  public static Collector getActivityVisibleCollector(Application application) {
+    return new ActivityVisibleCollector(application, getMetricNamesGenerator(application));
   }
 
   public static Collector getBytesDownloadedCollector(Application application,

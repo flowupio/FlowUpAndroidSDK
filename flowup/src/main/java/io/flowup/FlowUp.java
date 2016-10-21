@@ -153,6 +153,7 @@ public final class FlowUp {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
       initializeFrameTimeCollector();
       initializeActivityLifecycleCollector();
+      initializeActivityVisibleCollector();
     }
   }
 
@@ -169,6 +170,12 @@ public final class FlowUp {
   @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
   private void initializeActivityLifecycleCollector() {
     Collector activityLifecycleCollector = Collectors.getActivityLifecycleCollector(application);
+    activityLifecycleCollector.initialize(registry);
+  }
+
+  @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+  private void initializeActivityVisibleCollector() {
+    Collector activityLifecycleCollector = Collectors.getActivityVisibleCollector(application);
     activityLifecycleCollector.initialize(registry);
   }
 
