@@ -35,6 +35,11 @@ class UUIDGenerator {
     return uuid;
   }
 
+  void clean() {
+    uuid = null;
+    sharedPreferences.edit().clear().commit();
+  }
+
   private String generateAndSaveUUID() {
     String uuid = UUID.randomUUID().toString();
     saveUUID(uuid);
@@ -42,8 +47,8 @@ class UUIDGenerator {
   }
 
   @SuppressLint("CommitPrefEdits") private void saveUUID(String uuid) {
-    sharedPreferences.edit().putString(UUID_KEY, uuid).commit();
     UUIDGenerator.uuid = uuid;
+    sharedPreferences.edit().putString(UUID_KEY, uuid).commit();
   }
 
   private String getUUIDFromSharedPreferences() {
