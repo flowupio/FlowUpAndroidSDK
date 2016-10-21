@@ -15,156 +15,160 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import io.flowup.android.EmptyActivityLifecycleCallback;
 import io.flowup.metricnames.MetricNamesGenerator;
+import io.flowup.utils.Time;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN) class ActivityLifecycleCollector
     implements Collector {
 
   private final Application application;
   private final MetricNamesGenerator metricNamesGenerator;
+  private final Time time;
 
-  ActivityLifecycleCollector(Application application, MetricNamesGenerator metricNamesGenerator) {
+  ActivityLifecycleCollector(Application application, MetricNamesGenerator metricNamesGenerator, Time time) {
     this.application = application;
     this.metricNamesGenerator = metricNamesGenerator;
+    this.time = time;
   }
 
   @Override public void initialize(final MetricRegistry registry) {
     application.registerActivityLifecycleCallbacks(new EmptyActivityLifecycleCallback() {
 
-      private Map<String, Timer.Context> onCreateTimers = new HashMap<>();
-      private Map<String, Timer.Context> onStartTimers = new HashMap<>();
-      private Map<String, Timer.Context> onResumeTimers = new HashMap<>();
-      private Map<String, Timer.Context> onPauseTimers = new HashMap<>();
-      private Map<String, Timer.Context> onStopTimers = new HashMap<>();
-      private Map<String, Timer.Context> onDestroyTimers = new HashMap<>();
+      private Map<String, Long> onCreateTimers = new HashMap<>();
+      private Map<String, Long> onStartTimers = new HashMap<>();
+      private Map<String, Long> onResumeTimers = new HashMap<>();
+      private Map<String, Long> onPauseTimers = new HashMap<>();
+      private Map<String, Long> onStopTimers = new HashMap<>();
+      private Map<String, Long> onDestroyTimers = new HashMap<>();
 
       @Override public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-        getOnCreateTimer(activity);
+        saveOnCreateTimestamp(activity);
       }
 
       @Override public void onActivityStarted(Activity activity) {
-        stopOnCreateTimer(activity);
-        getOnStartTimer(activity);
+        updateOnCreateTimer(activity);
+        saveOnStartTimestamp(activity);
       }
 
       @Override public void onActivityResumed(final Activity activity) {
-        stopOnStartTimer(activity);
-        getOnResumeTimer(activity);
+        updateOnStartTimer(activity);
+        saveOnresumeTimestamp(activity);
         new Handler(Looper.getMainLooper()).post(new Runnable() {
           @Override public void run() {
-            stopOnResumeTimer(activity);
+            updateOnResumeTimer(activity);
           }
         });
       }
 
       @Override public void onActivityPaused(Activity activity) {
-        getOnPauseTimer(activity);
+        saveOnPauseTimestamp(activity);
       }
 
       @Override public void onActivityStopped(Activity activity) {
-        stopOnPauseTimer(activity);
-        getOnStopTimer(activity);
+        updateOnPauseTimer(activity);
+        saveOnStopTimestamp(activity);
       }
 
       @Override public void onActivityDestroyed(final Activity activity) {
-        stopOnStopTimer(activity);
-        getOnDestroyTimer(activity);
+        updateOnStopTimer(activity);
+        saveOnDestroyTimestamp(activity);
         new Handler(Looper.myLooper()).post(new Runnable() {
           @Override public void run() {
-            stopOnDestroyTimer(activity);
+            updateOnDestroyTimer(activity);
           }
         });
       }
 
-      private Timer.Context getOnCreateTimer(Activity activity) {
-        return initializeTimer(activity, onCreateTimers, new CreateTimer() {
+      private Long saveOnCreateTimestamp(Activity activity) {
+        return saveOnStartTimestamp(activity, onCreateTimers);
+      }
+
+      private void updateOnCreateTimer(Activity activity) {
+        updateTimer(activity, onCreateTimers, new CreateTimer() {
           @Override Timer create(Activity activity) {
             return registry.timer(metricNamesGenerator.getOnActivityCreatedMetricName(activity));
           }
         });
       }
 
-      private void stopOnCreateTimer(Activity activity) {
-        stopTimer(activity, onCreateTimers);
+      private Long saveOnStartTimestamp(Activity activity) {
+        return saveOnStartTimestamp(activity, onStartTimers);
       }
 
-      private Timer.Context getOnStartTimer(Activity activity) {
-        return initializeTimer(activity, onStartTimers, new CreateTimer() {
+      private void updateOnStartTimer(Activity activity) {
+        updateTimer(activity, onStartTimers, new CreateTimer() {
           @Override Timer create(Activity activity) {
             return registry.timer(metricNamesGenerator.getOnActivityStartedMetricName(activity));
           }
         });
       }
 
-      private void stopOnStartTimer(Activity activity) {
-        stopTimer(activity, onStartTimers);
+      private Long saveOnresumeTimestamp(Activity activity) {
+        return saveOnStartTimestamp(activity, onResumeTimers);
       }
 
-      private Timer.Context getOnResumeTimer(Activity activity) {
-        return initializeTimer(activity, onResumeTimers, new CreateTimer() {
+      private void updateOnResumeTimer(Activity activity) {
+        updateTimer(activity, onResumeTimers, new CreateTimer() {
           @Override Timer create(Activity activity) {
             return registry.timer(metricNamesGenerator.getOnActivityResumedMetricName(activity));
           }
         });
       }
 
-      private void stopOnResumeTimer(Activity activity) {
-        stopTimer(activity, onResumeTimers);
+      private Long saveOnPauseTimestamp(Activity activity) {
+        return saveOnStartTimestamp(activity, onPauseTimers);
       }
 
-      private Timer.Context getOnPauseTimer(Activity activity) {
-        return initializeTimer(activity, onPauseTimers, new CreateTimer() {
+      private void updateOnPauseTimer(Activity activity) {
+        updateTimer(activity, onPauseTimers, new CreateTimer() {
           @Override Timer create(Activity activity) {
             return registry.timer(metricNamesGenerator.getOnActivityPausedMetricName(activity));
           }
         });
       }
 
-      private void stopOnPauseTimer(Activity activity) {
-        stopTimer(activity, onPauseTimers);
+      private Long saveOnStopTimestamp(Activity activity) {
+        return saveOnStartTimestamp(activity, onStopTimers);
       }
 
-      private Timer.Context getOnStopTimer(Activity activity) {
-        return initializeTimer(activity, onStopTimers, new CreateTimer() {
+      private void updateOnStopTimer(Activity activity) {
+        updateTimer(activity, onStopTimers, new CreateTimer() {
           @Override Timer create(Activity activity) {
             return registry.timer(metricNamesGenerator.getOnActivityStoppedMetricName(activity));
           }
         });
       }
 
-      private void stopOnStopTimer(Activity activity) {
-        stopTimer(activity, onStopTimers);
+      private Long saveOnDestroyTimestamp(Activity activity) {
+        return saveOnStartTimestamp(activity, onDestroyTimers);
       }
 
-      private Timer.Context getOnDestroyTimer(Activity activity) {
-        return initializeTimer(activity, onDestroyTimers, new CreateTimer() {
+      private void updateOnDestroyTimer(Activity activity) {
+        updateTimer(activity, onDestroyTimers, new CreateTimer() {
           @Override Timer create(Activity activity) {
             return registry.timer(metricNamesGenerator.getOnActivityDestroyedMetricName(activity));
           }
         });
       }
 
-      private void stopOnDestroyTimer(Activity activity) {
-        stopTimer(activity, onDestroyTimers);
-      }
-
-      private Timer.Context initializeTimer(Activity activity, Map<String, Timer.Context> map,
-          CreateTimer createTimer) {
+      private Long saveOnStartTimestamp(Activity activity, Map<String, Long> map) {
         String activityClassName = activity.getClass().getName();
-        Timer.Context context = map.get(activityClassName);
+        Long context = map.get(activityClassName);
         if (context == null) {
-          context = createTimer.create(activity).time();
+          context = time.nowInNanos();
           map.put(activityClassName, context);
         }
         return context;
       }
 
-      private void stopTimer(Activity activity, Map<String, Timer.Context> map) {
+      private void updateTimer(Activity activity, Map<String, Long> map, CreateTimer createTimer) {
         String activityName = activity.getClass().getName();
-        Timer.Context context = map.get(activityName);
+        Long context = map.get(activityName);
         if (context != null) {
-          context.close();
+          long duration = time.nowInNanos() - context;
+          createTimer.create(activity).update(duration, TimeUnit.NANOSECONDS);
           map.remove(activityName);
         }
       }
