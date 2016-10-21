@@ -14,14 +14,11 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.ScheduledReporter;
 import com.codahale.metrics.Timer;
 import io.flowup.logger.Logger;
-import io.flowup.metricnames.MetricNamesExtractor;
 import io.flowup.reporter.android.WiFiSyncServiceScheduler;
 import io.flowup.reporter.apiclient.ApiClient;
 import io.flowup.reporter.model.Reports;
 import io.flowup.reporter.storage.ReportsStorage;
 import io.flowup.utils.Time;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.SortedMap;
 import java.util.concurrent.TimeUnit;
 
@@ -69,7 +66,6 @@ public class FlowUpReporter extends ScheduledReporter {
       sendStoredReports();
     }
   }
-
 
   private void notifyReport(DropwizardReport report) {
     if (listener != null) {

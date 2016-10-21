@@ -11,8 +11,6 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.view.Choreographer;
 import com.codahale.metrics.Histogram;
-import com.codahale.metrics.Metric;
-import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import io.flowup.metricnames.MetricNamesGenerator;
