@@ -43,7 +43,7 @@ import static org.mockito.Mockito.when;
   private FlowUpReporter givenAFlowUpReporter(boolean forceReports) {
     return new FlowUpReporter(new MetricRegistry(), "ReporterName", MetricFilter.ALL,
         TimeUnit.SECONDS, TimeUnit.MILLISECONDS, apiClient, storage, syncScheduler, time,
-        forceReports);
+        forceReports, null);
   }
 
   @Test public void storesDropwizardReportAndDoesNotInitializeSyncIfDebugIsNotEnabled() {

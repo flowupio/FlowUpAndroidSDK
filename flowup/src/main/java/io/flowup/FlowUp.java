@@ -11,6 +11,7 @@ import android.os.Looper;
 import android.support.annotation.RequiresApi;
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import io.flowup.android.App;
@@ -18,10 +19,15 @@ import io.flowup.android.CPU;
 import io.flowup.android.FileSystem;
 import io.flowup.collectors.Collector;
 import io.flowup.collectors.Collectors;
+import io.flowup.collectors.UpdatableCollector;
 import io.flowup.logger.Logger;
+import io.flowup.metricnames.MetricNamesExtractor;
+import io.flowup.reporter.DropwizardReport;
 import io.flowup.reporter.FlowUpReporter;
 import io.flowup.reporter.FlowUpReporterListener;
 import io.flowup.unix.Terminal;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public final class FlowUp {
@@ -105,19 +111,39 @@ public final class FlowUp {
         .filter(MetricFilter.ALL)
         .forceReports(forceReports)
         .listener(new FlowUpReporterListener() {
-          @Override public void onReport() {
-            restartFrameTimeCollector();
+          @Override public void onReport(DropwizardReport report) {
+            clearTemporalMetrics(report);
+            restartUpdatableCollectors();
           }
         })
         .build(apiKey, scheme, host, port)
         .start(SAMPLING_INTERVAL, TimeUnit.SECONDS);
   }
 
-  private void restartFrameTimeCollector() {
+  private void clearTemporalMetrics(DropwizardReport report) {
+    MetricNamesExtractor extractor = new MetricNamesExtractor();
+    List<String> metricsToRemoveAfterReport = new LinkedList<>();
+    metricsToRemoveAfterReport.addAll(report.getTimers().keySet());
+    metricsToRemoveAfterReport.addAll(report.getHistograms().keySet());
+    for (String metricName : metricsToRemoveAfterReport) {
+      if (extractor.isUIMetric(metricName)) {
+        if (extractor.isActivityVisibleMetric(metricName)) {
+          Timer timer = registry.getTimers().get(metricName);
+          if (timer.getCount() > 0) {
+            registry.remove(metricName);
+          }
+        } else {
+          registry.remove(metricName);
+        }
+      }
+    }
+  }
+
+  private void restartUpdatableCollectors() {
     new Handler(Looper.getMainLooper()).post(new Runnable() {
       @Override public void run() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-          initializeFrameTimeCollector();
+          restartFrameTimeCollector();
         }
       }
     });
@@ -133,6 +159,11 @@ public final class FlowUp {
   @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN) private void initializeFrameTimeCollector() {
     Collector frameTimeCollector = Collectors.getFrameTimeCollector(application);
     frameTimeCollector.initialize(registry);
+  }
+
+  @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN) private void restartFrameTimeCollector() {
+    UpdatableCollector frameTimeCollector = Collectors.getFrameTimeCollector(application);
+    frameTimeCollector.forceUpdate(registry);
   }
 
   @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)

@@ -20,13 +20,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN) class FrameTimeCollector
-    extends ApplicationLifecycleCollector implements Collector {
-
-
+    extends ApplicationLifecycleCollector {
 
   private final MetricNamesGenerator metricNamesGenerator;
   private final Choreographer choreographer;
 
+  private Activity lastActivityResumed;
   private FrameTimeCallback frameTimeCallback;
   private Map<String, Timer> timers;
   private Map<String, Histogram> histograms;
@@ -40,8 +39,23 @@ import java.util.Map;
     this.histograms = new HashMap<>();
   }
 
+  @Override public void forceUpdate(MetricRegistry registry) {
+    if (lastActivityResumed == null) {
+      return;
+    }
+    timers.clear();
+    histograms.clear();
+    Timer timer = getTimer(lastActivityResumed, registry);
+    Histogram histogram = getHistogram(lastActivityResumed, registry);
+    if (isInForeground) {
+      frameTimeCallback = new FrameTimeCallback(timer, histogram, choreographer);
+      choreographer.postFrameCallback(frameTimeCallback);
+    }
+  }
+
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN) @Override
   protected void onApplicationResumed(Activity activity, MetricRegistry registry) {
+    this.lastActivityResumed = activity;
     Timer timer = getTimer(activity, registry);
     Histogram histogram = getHistogram(activity, registry);
     frameTimeCallback = new FrameTimeCallback(timer, histogram, choreographer);
@@ -50,6 +64,7 @@ import java.util.Map;
 
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN) @Override
   protected void onApplicationPaused(Activity activity, MetricRegistry registry) {
+    this.lastActivityResumed = null;
     choreographer.removeFrameCallback(frameTimeCallback);
     removeTimer(activity, registry);
     removeHistogram(activity, registry);
@@ -86,22 +101,10 @@ import java.util.Map;
   }
 
   private void removeTimer(final Activity activity, final MetricRegistry registry) {
-    registry.removeMatching(new MetricFilter() {
-      @Override public boolean matches(String name, Metric metric) {
-        Timer timer = getTimer(activity, registry);
-        return metric.equals(timer);
-      }
-    });
     timers.remove(activity.getClass().getName());
   }
 
   private void removeHistogram(final Activity activity, final MetricRegistry registry) {
-    registry.removeMatching(new MetricFilter() {
-      @Override public boolean matches(String name, Metric metric) {
-        Histogram histogram = getHistogram(activity, registry);
-        return metric.equals(histogram);
-      }
-    });
     histograms.remove(activity.getClass().getName());
   }
 }

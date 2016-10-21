@@ -9,14 +9,13 @@ import android.app.Application;
 import com.codahale.metrics.MetricRegistry;
 import io.flowup.android.EmptyActivityLifecycleCallback;
 
-abstract class ApplicationLifecycleCollector implements Collector {
+abstract class ApplicationLifecycleCollector implements UpdatableCollector {
 
-  private static boolean isInForeground = false;
+  static boolean isInForeground = false;
 
   private final Application application;
   private MetricRegistry registry;
   private EmptyActivityLifecycleCallback callback;
-  private boolean isFirstTime = true;
 
   ApplicationLifecycleCollector(Application application) {
     this.application = application;
@@ -34,11 +33,8 @@ abstract class ApplicationLifecycleCollector implements Collector {
     callback = new EmptyActivityLifecycleCallback() {
       @Override public void onActivityResumed(Activity activity) {
         super.onActivityResumed(activity);
-        if(isInForeground || isFirstTime) {
-          isFirstTime = false;
-          onApplicationResumed(activity, registry);
-        }
         isInForeground = true;
+        onApplicationResumed(activity, registry);
       }
 
       @Override public void onActivityPaused(Activity activity) {

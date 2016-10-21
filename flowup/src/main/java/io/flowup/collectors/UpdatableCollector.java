@@ -6,10 +6,6 @@ package io.flowup.collectors;
 
 import com.codahale.metrics.MetricRegistry;
 
-public interface Collector {
-
-  void initialize(MetricRegistry registry);
-
-
-
+public interface UpdatableCollector extends Collector {
+  void forceUpdate(MetricRegistry registry);
 }

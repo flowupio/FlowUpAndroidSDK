@@ -2,6 +2,6 @@ package io.flowup.reporter;
 
 public interface FlowUpReporterListener {
 
-  void onReport();
+  void onReport(DropwizardReport report);
 
 }

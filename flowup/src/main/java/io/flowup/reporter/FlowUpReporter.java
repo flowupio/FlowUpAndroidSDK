@@ -33,13 +33,11 @@ public class FlowUpReporter extends ScheduledReporter {
     return new FlowUpReporter.Builder(registry, context);
   }
 
-  private final MetricRegistry registry;
   private final ApiClient apiClient;
   private final ReportsStorage reportsStorage;
   private final WiFiSyncServiceScheduler syncScheduler;
   private final Time time;
   private final boolean forceReports;
-  private final MetricNamesExtractor extractor;
   private final FlowUpReporterListener listener;
 
   FlowUpReporter(MetricRegistry registry, String name, MetricFilter filter, TimeUnit rateUnit,
@@ -47,13 +45,11 @@ public class FlowUpReporter extends ScheduledReporter {
       WiFiSyncServiceScheduler syncScheduler, Time time, boolean forceReports,
       FlowUpReporterListener listener) {
     super(registry, name, filter, rateUnit, durationUnit);
-    this.registry = registry;
     this.apiClient = apiClient;
     this.reportsStorage = reportsStorage;
     this.syncScheduler = syncScheduler;
     this.time = time;
     this.forceReports = forceReports;
-    this.extractor = new MetricNamesExtractor();
     this.listener = listener;
   }
 
@@ -68,27 +64,16 @@ public class FlowUpReporter extends ScheduledReporter {
     DropwizardReport dropwizardReport =
         new DropwizardReport(time.now(), gauges, counters, histograms, meters, timers);
     storeReport(dropwizardReport);
-    clearTemporalMetrics(dropwizardReport);
-    notifyReport();
+    notifyReport(dropwizardReport);
     if (forceReports) {
       sendStoredReports();
     }
   }
 
-  private void clearTemporalMetrics(DropwizardReport report) {
-    List<String> metricsToRemoveAfterReport = new LinkedList<>();
-    metricsToRemoveAfterReport.addAll(report.getTimers().keySet());
-    metricsToRemoveAfterReport.addAll(report.getHistograms().keySet());
-    for (String metricName : metricsToRemoveAfterReport) {
-      if (extractor.isUIMetric(metricName)) {
-        registry.remove(metricName);
-      }
-    }
-  }
 
-  private void notifyReport() {
+  private void notifyReport(DropwizardReport report) {
     if (listener != null) {
-      listener.onReport();
+      listener.onReport(report);
     }
   }
 
