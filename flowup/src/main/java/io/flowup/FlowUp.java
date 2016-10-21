@@ -112,7 +112,7 @@ public final class FlowUp {
         .forceReports(forceReports)
         .listener(new FlowUpReporterListener() {
           @Override public void onReport(DropwizardReport report) {
-            clearTemporalMetrics(report);
+            removeActivityTimers(report);
             restartUpdatableCollectors();
           }
         })
@@ -120,7 +120,7 @@ public final class FlowUp {
         .start(SAMPLING_INTERVAL, TimeUnit.SECONDS);
   }
 
-  private void clearTemporalMetrics(DropwizardReport report) {
+  private void removeActivityTimers(DropwizardReport report) {
     MetricNamesExtractor extractor = new MetricNamesExtractor();
     List<String> metricsToRemoveAfterReport = new LinkedList<>();
     metricsToRemoveAfterReport.addAll(report.getTimers().keySet());
