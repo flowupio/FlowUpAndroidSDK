@@ -64,8 +64,7 @@ import static org.junit.Assert.assertNotNull;
   }
 
   private void clearGeneratorSharedPreferences() {
-    SharedPreferences sharedPreferences = getUUIDGeneratorSharedPreferences();
-    sharedPreferences.edit().clear().commit();
+    givenAGenerator().clean();
   }
 
   private SharedPreferences getUUIDGeneratorSharedPreferences() {

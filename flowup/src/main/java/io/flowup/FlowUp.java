@@ -63,10 +63,14 @@ public final class FlowUp {
     initializeMetrics();
     initializeFlowUpReporter();
     initializeForegroundCollectors();
-    initializeNetworkCollectors();
-    initializeCPUCollectors();
-    initializeMemoryCollectors();
-    initializeDiskCollectors();
+    new Thread(new Runnable() {
+      @Override public void run() {
+        initializeNetworkCollectors();
+        initializeCPUCollectors();
+        initializeMemoryCollectors();
+        initializeDiskCollectors();
+      }
+    }).start();
     Logger.d("FlowUp initialized");
   }
 
