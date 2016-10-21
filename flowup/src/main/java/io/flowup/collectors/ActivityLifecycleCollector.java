@@ -164,7 +164,7 @@ import java.util.Map;
         String activityName = activity.getClass().getName();
         Timer.Context context = map.get(activityName);
         if (context != null) {
-          context.stop();
+          context.close();
           map.remove(activityName);
         }
       }

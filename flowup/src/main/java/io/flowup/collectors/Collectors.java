@@ -35,7 +35,8 @@ public class Collectors {
 
   @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
   public static Collector getActivityVisibleCollector(Application application) {
-    return new ActivityVisibleCollector(application, getMetricNamesGenerator(application));
+    return new ActivityVisibleCollector(application, getMetricNamesGenerator(application),
+        new Time());
   }
 
   public static Collector getBytesDownloadedCollector(Application application,
