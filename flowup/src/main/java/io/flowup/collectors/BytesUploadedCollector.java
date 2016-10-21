@@ -6,7 +6,6 @@ package io.flowup.collectors;
 
 import android.net.TrafficStats;
 import android.os.Process;
-import android.util.Log;
 import com.codahale.metrics.CachedGauge;
 import com.codahale.metrics.MetricRegistry;
 import io.flowup.metricnames.MetricNamesGenerator;
@@ -35,7 +34,6 @@ class BytesUploadedCollector implements Collector {
             long totalTxBytes = TrafficStats.getUidTxBytes(applicationUid);
             long txBytes = totalTxBytes - lastBytesSample;
             lastBytesSample = totalTxBytes;
-            Log.d("FlowUp", "Collecting http bytes uploaded metric-> " + txBytes);
             return txBytes;
           }
         });

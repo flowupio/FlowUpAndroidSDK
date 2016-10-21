@@ -6,7 +6,6 @@ package io.flowup.collectors;
 
 import android.net.TrafficStats;
 import android.os.Process;
-import android.util.Log;
 import com.codahale.metrics.CachedGauge;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.MetricRegistry;
@@ -36,7 +35,6 @@ class BytesDownloadedCollector implements Collector {
             long totalRxBytes = TrafficStats.getUidRxBytes(applicationUid);
             long rxBytes = totalRxBytes - lastBytesSample;
             lastBytesSample = totalRxBytes;
-            Log.d("FlowUp", "Collecting http bytes downloaded metric-> " + rxBytes);
             new Gauge<Long>() {
               @Override public Long getValue() {
                 return null;

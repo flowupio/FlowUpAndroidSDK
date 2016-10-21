@@ -10,4 +10,8 @@ public class Time {
     return System.currentTimeMillis();
   }
 
+  public long nowInNanos() {
+    return System.nanoTime();
+  }
+
 }

@@ -30,21 +30,24 @@ public class FlowUpReporter extends ScheduledReporter {
     return new FlowUpReporter.Builder(registry, context);
   }
 
-  private final ReportsStorage reportsStorage;
   private final ApiClient apiClient;
+  private final ReportsStorage reportsStorage;
   private final WiFiSyncServiceScheduler syncScheduler;
   private final Time time;
   private final boolean forceReports;
+  private final FlowUpReporterListener listener;
 
   FlowUpReporter(MetricRegistry registry, String name, MetricFilter filter, TimeUnit rateUnit,
       TimeUnit durationUnit, ApiClient apiClient, ReportsStorage reportsStorage,
-      WiFiSyncServiceScheduler syncScheduler, Time time, boolean forceReports) {
+      WiFiSyncServiceScheduler syncScheduler, Time time, boolean forceReports,
+      FlowUpReporterListener listener) {
     super(registry, name, filter, rateUnit, durationUnit);
     this.apiClient = apiClient;
     this.reportsStorage = reportsStorage;
     this.syncScheduler = syncScheduler;
     this.time = time;
     this.forceReports = forceReports;
+    this.listener = listener;
   }
 
   @Override public void start(long period, TimeUnit unit) {
@@ -58,8 +61,15 @@ public class FlowUpReporter extends ScheduledReporter {
     DropwizardReport dropwizardReport =
         new DropwizardReport(time.now(), gauges, counters, histograms, meters, timers);
     storeReport(dropwizardReport);
+    notifyReport(dropwizardReport);
     if (forceReports) {
       sendStoredReports();
+    }
+  }
+
+  private void notifyReport(DropwizardReport report) {
+    if (listener != null) {
+      listener.onReport(report);
     }
   }
 
@@ -106,7 +116,8 @@ public class FlowUpReporter extends ScheduledReporter {
   }
 
   private boolean shouldDeleteReportsOnError(ReportResult result) {
-    return ReportResult.Error.UNAUTHORIZED == result.getError() || ReportResult.Error.SERVER_ERROR == result.getError();
+    return ReportResult.Error.UNAUTHORIZED == result.getError()
+        || ReportResult.Error.SERVER_ERROR == result.getError();
   }
 
   public static final class Builder {
@@ -116,6 +127,7 @@ public class FlowUpReporter extends ScheduledReporter {
     private String name;
     private MetricFilter filter;
     private boolean forceReports;
+    private FlowUpReporterListener listener;
 
     public Builder(MetricRegistry registry, Context context) {
       this.registry = registry;
@@ -138,11 +150,16 @@ public class FlowUpReporter extends ScheduledReporter {
     public FlowUpReporter build(String apiKey, String scheme, String host, int port) {
       return new FlowUpReporter(registry, name, filter, TimeUnit.NANOSECONDS, TimeUnit.NANOSECONDS,
           new ApiClient(apiKey, scheme, host, port), new ReportsStorage(context),
-          new WiFiSyncServiceScheduler(context, apiKey), new Time(), forceReports);
+          new WiFiSyncServiceScheduler(context, apiKey), new Time(), forceReports, listener);
     }
 
     public Builder forceReports(boolean forceReports) {
       this.forceReports = forceReports;
+      return this;
+    }
+
+    public Builder listener(FlowUpReporterListener listener) {
+      this.listener = listener;
       return this;
     }
   }

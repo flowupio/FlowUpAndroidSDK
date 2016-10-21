@@ -17,14 +17,27 @@ import java.util.concurrent.TimeUnit;
 
 public class Collectors {
 
+  private static UpdatableCollector frameTimeCollector;
+
   @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-  public static Collector getFrameTimeCollector(Application application) {
-    return new FrameTimeCollector(application, getMetricNamesGenerator(application));
+  public static UpdatableCollector getFrameTimeCollector(Application application) {
+    if (frameTimeCollector == null) {
+      frameTimeCollector =
+          new FrameTimeCollector(application, getMetricNamesGenerator(application));
+    }
+    return frameTimeCollector;
   }
 
   @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
   public static Collector getActivityLifecycleCollector(Application application) {
-    return new ActivityLifecycleCollector(application, getMetricNamesGenerator(application));
+    return new ActivityLifecycleCollector(application, getMetricNamesGenerator(application),
+        new Time());
+  }
+
+  @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+  public static Collector getActivityVisibleCollector(Application application) {
+    return new ActivityVisibleCollector(application, getMetricNamesGenerator(application),
+        new Time());
   }
 
   public static Collector getBytesDownloadedCollector(Application application,
