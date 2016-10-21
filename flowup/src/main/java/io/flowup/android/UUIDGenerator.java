@@ -15,7 +15,9 @@ class UUIDGenerator {
   private static final String UUID_SHARED_PREFS_NAME = "uuid_shared_prefs_name";
   private static final Object GENERATOR_LOCK = new Object();
 
+  private static String uuid;
   private final SharedPreferences sharedPreferences;
+
 
   UUIDGenerator(Context context) {
     this.sharedPreferences =
@@ -41,9 +43,13 @@ class UUIDGenerator {
 
   @SuppressLint("CommitPrefEdits") private void saveUUID(String uuid) {
     sharedPreferences.edit().putString(UUID_KEY, uuid).commit();
+    UUIDGenerator.uuid = uuid;
   }
 
   private String getUUIDFromSharedPreferences() {
-    return sharedPreferences.getString(UUID_KEY, "");
+    if (uuid == null) {
+      uuid = sharedPreferences.getString(UUID_KEY, "");
+    }
+    return uuid;
   }
 }
