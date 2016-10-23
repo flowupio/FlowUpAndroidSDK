@@ -13,6 +13,7 @@ import android.view.Choreographer;
 import com.codahale.metrics.Histogram;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
+import io.flowup.android.MainThread;
 import io.flowup.metricnames.MetricNamesGenerator;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +23,7 @@ import java.util.Map;
 
   private final MetricNamesGenerator metricNamesGenerator;
   private final Choreographer choreographer;
+  private final MainThread mainThread;
 
   private Activity lastActivityResumed;
   private FrameTimeCallback frameTimeCallback;
@@ -29,35 +31,44 @@ import java.util.Map;
   private Map<String, Histogram> histograms;
 
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN) FrameTimeCollector(Application application,
-      MetricNamesGenerator metricNamesGenerator) {
+      MetricNamesGenerator metricNamesGenerator, MainThread mainThread) {
     super(application);
     this.metricNamesGenerator = metricNamesGenerator;
     this.choreographer = Choreographer.getInstance();
+    this.mainThread = mainThread;
     this.timers = new HashMap<>();
     this.histograms = new HashMap<>();
   }
 
-  @Override public void forceUpdate(MetricRegistry registry) {
+  @TargetApi(Build.VERSION_CODES.JELLY_BEAN) @Override public void forceUpdate(MetricRegistry registry) {
     if (lastActivityResumed == null) {
       return;
     }
     timers.clear();
     histograms.clear();
-    Timer timer = getTimer(lastActivityResumed, registry);
-    Histogram histogram = getHistogram(lastActivityResumed, registry);
-    if (isInForeground) {
-      frameTimeCallback = new FrameTimeCallback(timer, histogram, choreographer);
-      choreographer.postFrameCallback(frameTimeCallback);
-    }
+    final Timer timer = getTimer(lastActivityResumed, registry);
+    final Histogram histogram = getHistogram(lastActivityResumed, registry);
+    mainThread.post(new Runnable() {
+      @Override public void run() {
+        if (isInForeground) {
+          frameTimeCallback = new FrameTimeCallback(timer, histogram, choreographer);
+          choreographer.postFrameCallback(frameTimeCallback);
+        }
+      }
+    });
   }
 
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN) @Override
   protected void onApplicationResumed(Activity activity, MetricRegistry registry) {
     this.lastActivityResumed = activity;
-    Timer timer = getTimer(activity, registry);
-    Histogram histogram = getHistogram(activity, registry);
-    frameTimeCallback = new FrameTimeCallback(timer, histogram, choreographer);
-    choreographer.postFrameCallback(frameTimeCallback);
+    final Timer timer = getTimer(activity, registry);
+    final Histogram histogram = getHistogram(activity, registry);
+    mainThread.post(new Runnable() {
+      @Override public void run() {
+        frameTimeCallback = new FrameTimeCallback(timer, histogram, choreographer);
+        choreographer.postFrameCallback(frameTimeCallback);
+      }
+    });
   }
 
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN) @Override
