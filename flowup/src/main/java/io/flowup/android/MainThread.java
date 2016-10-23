@@ -9,11 +9,11 @@ import android.os.Looper;
 
 public class MainThread {
 
-  private static final Handler uiThreadHandler = new Handler(Looper.getMainLooper());
+  private static final Handler UI_THREAD_HANDLER = new Handler(Looper.getMainLooper());
 
   public void post(Runnable runnable) {
     validateRunnable(runnable);
-    uiThreadHandler.post(runnable);
+    UI_THREAD_HANDLER.post(runnable);
   }
 
   private void validateRunnable(Runnable runnable) {
