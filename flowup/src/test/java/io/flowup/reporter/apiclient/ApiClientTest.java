@@ -117,7 +117,7 @@ public class ApiClientTest extends MockWebServerTestCase {
   }
 
   @Test public void returnsErrorIfServerHasAnInternalError() throws Exception {
-    enqueueMockResponse(ANY_SERVER_ERROR_CODE);
+    enqueueMockResponse(SERVER_ERROR_CODE);
     Reports reports = givenSomeReports();
 
     ReportResult result = apiClient.sendReports(reports);
@@ -133,6 +133,36 @@ public class ApiClientTest extends MockWebServerTestCase {
     ReportResult result = apiClient.sendReports(reports);
 
     assertEquals(reports, result.getReports());
+  }
+
+  @Test public void returnsUnauthorizedErrorIfTheServerSideResponseIsA401() throws Exception {
+    enqueueMockResponse(UNAUTHORIZED_ERROR_CODE);
+    Reports reports = givenSomeReports();
+
+    ReportResult result = apiClient.sendReports(reports);
+
+    assertFalse(result.isSuccess());
+    assertEquals(ReportResult.Error.UNAUTHORIZED, result.getError());
+  }
+
+  @Test public void returnsUnauthorizedErrorIfTheServerSideResponseIsA403() throws Exception {
+    enqueueMockResponse(FORBIDDEN_ERROR_CODE);
+    Reports reports = givenSomeReports();
+
+    ReportResult result = apiClient.sendReports(reports);
+
+    assertFalse(result.isSuccess());
+    assertEquals(ReportResult.Error.UNAUTHORIZED, result.getError());
+  }
+
+  @Test public void returnsServerErrorIfTheServerSideResponseIsA500() throws Exception {
+    enqueueMockResponse(SERVER_ERROR_CODE);
+    Reports reports = givenSomeReports();
+
+    ReportResult result = apiClient.sendReports(reports);
+
+    assertFalse(result.isSuccess());
+    assertEquals(ReportResult.Error.SERVER_ERROR, result.getError());
   }
 
   private ApiClient givenAnApiClient(boolean useGzip) {

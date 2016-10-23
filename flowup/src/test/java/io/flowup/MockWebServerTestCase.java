@@ -25,7 +25,9 @@ import static junit.framework.Assert.assertTrue;
 @RunWith(MockitoJUnitRunner.class) public abstract class MockWebServerTestCase {
 
   protected static final int OK_CODE = 200;
-  protected static final int ANY_SERVER_ERROR_CODE = 500;
+  protected static final int SERVER_ERROR_CODE = 500;
+  protected static final int UNAUTHORIZED_ERROR_CODE = 401;
+  protected static final int FORBIDDEN_ERROR_CODE = 403;
 
   private MockWebServer server;
 
