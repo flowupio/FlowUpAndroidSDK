@@ -11,6 +11,7 @@ import io.flowup.android.App;
 import io.flowup.android.CPU;
 import io.flowup.android.Device;
 import io.flowup.android.FileSystem;
+import io.flowup.android.MainThread;
 import io.flowup.metricnames.MetricNamesGenerator;
 import io.flowup.utils.Time;
 import java.util.concurrent.TimeUnit;
@@ -22,8 +23,8 @@ public class Collectors {
   @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
   public static UpdatableCollector getFrameTimeCollector(Application application) {
     if (frameTimeCollector == null) {
-      frameTimeCollector =
-          new FrameTimeCollector(application, getMetricNamesGenerator(application));
+      frameTimeCollector = new FrameTimeCollector(application, getMetricNamesGenerator(application),
+          new MainThread());
     }
     return frameTimeCollector;
   }
@@ -31,7 +32,7 @@ public class Collectors {
   @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
   public static Collector getActivityLifecycleCollector(Application application) {
     return new ActivityLifecycleCollector(application, getMetricNamesGenerator(application),
-        new Time());
+        new MainThread(), new Time());
   }
 
   @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)

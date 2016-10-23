@@ -144,13 +144,9 @@ public final class FlowUp {
   }
 
   private void restartUpdatableCollectors() {
-    new Handler(Looper.getMainLooper()).post(new Runnable() {
-      @Override public void run() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-          restartFrameTimeCollector();
-        }
-      }
-    });
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+      restartFrameTimeCollector();
+    }
   }
 
   private void initializeForegroundCollectors() {
