@@ -16,12 +16,15 @@ class DropwizardReportToRealmMetricReportMapper
     extends Mapper<DropwizardReport, RealmList<RealmMetric>> {
 
   private final Realm realm;
+  private long metricId;
 
   DropwizardReportToRealmMetricReportMapper(Realm realm) {
     this.realm = realm;
+    this.metricId = 0;
   }
 
   @Override public RealmList<RealmMetric> map(DropwizardReport dropwizardReport) {
+    metricId = System.nanoTime();
     RealmList<RealmMetric> realmMetrics = new RealmList<>();
     realmMetrics.addAll(mapGauges(realm, dropwizardReport.getGauges()));
     realmMetrics.addAll(mapCounters(realm, dropwizardReport.getCounters()));
@@ -33,11 +36,12 @@ class DropwizardReportToRealmMetricReportMapper
   private RealmList<RealmMetric> mapGauges(Realm realm, SortedMap<String, Gauge> gauges) {
     RealmList<RealmMetric> realmMetrics = new RealmList<>();
     for (String metricName : gauges.keySet()) {
+      metricId++;
       Gauge gauge = gauges.get(metricName);
       if (gauge.getValue() == null) {
         continue;
       }
-      RealmMetric realmMetric = mapGauge(realm, metricName, gauge);
+      RealmMetric realmMetric = mapGauge(realm, metricName, gauge, String.valueOf(metricId));
       realmMetrics.add(realmMetric);
     }
     return realmMetrics;
@@ -46,8 +50,9 @@ class DropwizardReportToRealmMetricReportMapper
   private RealmList<RealmMetric> mapCounters(Realm realm, SortedMap<String, Counter> counters) {
     RealmList<RealmMetric> realmMetrics = new RealmList<>();
     for (String metricName : counters.keySet()) {
+      metricId++;
       Counter counter = counters.get(metricName);
-      RealmMetric realmMetric = mapCounter(realm, metricName, counter);
+      RealmMetric realmMetric = mapCounter(realm, metricName, counter, String.valueOf(metricId));
       realmMetrics.add(realmMetric);
     }
     return realmMetrics;
@@ -57,8 +62,9 @@ class DropwizardReportToRealmMetricReportMapper
       SortedMap<String, Histogram> histograms) {
     RealmList<RealmMetric> realmMetrics = new RealmList<>();
     for (String metricName : histograms.keySet()) {
+      metricId++;
       Histogram histogram = histograms.get(metricName);
-      RealmMetric realmMetric = mapSampling(realm, metricName, histogram);
+      RealmMetric realmMetric = mapSampling(realm, metricName, histogram, String.valueOf(metricId));
       realmMetrics.add(realmMetric);
     }
     return realmMetrics;
@@ -67,19 +73,18 @@ class DropwizardReportToRealmMetricReportMapper
   private RealmList<RealmMetric> mapTimers(Realm realm, SortedMap<String, Timer> timers) {
     RealmList<RealmMetric> realmMetrics = new RealmList<>();
     for (String metricName : timers.keySet()) {
+      metricId++;
       Timer timer = timers.get(metricName);
-      RealmMetric realmMetric = mapSampling(realm, metricName, timer);
+      RealmMetric realmMetric = mapSampling(realm, metricName, timer, String.valueOf(metricId));
       realmMetrics.add(realmMetric);
     }
     return realmMetrics;
   }
 
-  private RealmMetric mapSampling(Realm realm, String metricName, Sampling sampling) {
-    RealmMetric realmMetric =
-        realm.createObject(RealmMetric.class, String.valueOf(System.nanoTime()));
+  private RealmMetric mapSampling(Realm realm, String metricName, Sampling sampling, String id) {
+    RealmMetric realmMetric = realm.createObject(RealmMetric.class, id);
     realmMetric.setMetricName(metricName);
-    RealmStatisticalValue realmValue =
-        realm.createObject(RealmStatisticalValue.class, String.valueOf(System.nanoTime()));
+    RealmStatisticalValue realmValue = realm.createObject(RealmStatisticalValue.class, id);
 
     Snapshot snapshot = sampling.getSnapshot();
     realmValue.setCount((long) snapshot.getValues().length);
@@ -101,25 +106,21 @@ class DropwizardReportToRealmMetricReportMapper
     return realmMetric;
   }
 
-  private RealmMetric mapGauge(Realm realm, String metricName, Gauge gauge) {
+  private RealmMetric mapGauge(Realm realm, String metricName, Gauge gauge, String id) {
     Long gaugeValue = (Long) gauge.getValue();
-    RealmMetric realmMetric =
-        realm.createObject(RealmMetric.class, String.valueOf(System.nanoTime()));
+    RealmMetric realmMetric = realm.createObject(RealmMetric.class, id);
     realmMetric.setMetricName(metricName);
-    RealmStatisticalValue realmValue =
-        realm.createObject(RealmStatisticalValue.class, String.valueOf(System.nanoTime()));
+    RealmStatisticalValue realmValue = realm.createObject(RealmStatisticalValue.class, id);
     realmValue.setValue(gaugeValue);
     realmMetric.setStatisticalValue(realmValue);
     return realmMetric;
   }
 
-  private RealmMetric mapCounter(Realm realm, String metricName, Counter counter) {
+  private RealmMetric mapCounter(Realm realm, String metricName, Counter counter, String id) {
     Long gaugeValue = counter.getCount();
-    RealmMetric realmMetric =
-        realm.createObject(RealmMetric.class, String.valueOf(System.nanoTime()));
+    RealmMetric realmMetric = realm.createObject(RealmMetric.class, id);
     realmMetric.setMetricName(metricName);
-    RealmStatisticalValue realmValue =
-        realm.createObject(RealmStatisticalValue.class, String.valueOf(System.nanoTime()));
+    RealmStatisticalValue realmValue = realm.createObject(RealmStatisticalValue.class, id);
     realmValue.setValue(gaugeValue);
     realmMetric.setStatisticalValue(realmValue);
     return realmMetric;
