@@ -60,7 +60,7 @@ import static org.mockito.Mockito.when;
 
       boolean result = samplingGroup.isIn();
 
-      if (i < 0.2) {
+      if (i < ANY_CONFIGURED_SAMPLING) {
         assertTrue(result);
       }
     }
