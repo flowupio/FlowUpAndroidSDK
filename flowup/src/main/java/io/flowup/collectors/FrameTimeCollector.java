@@ -40,7 +40,8 @@ import java.util.Map;
     this.histograms = new HashMap<>();
   }
 
-  @TargetApi(Build.VERSION_CODES.JELLY_BEAN) @Override public void forceUpdate(MetricRegistry registry) {
+  @TargetApi(Build.VERSION_CODES.JELLY_BEAN) @Override
+  public void forceUpdate(MetricRegistry registry) {
     if (lastActivityResumed == null) {
       return;
     }
@@ -50,6 +51,7 @@ import java.util.Map;
     final Histogram histogram = getHistogram(lastActivityResumed, registry);
     mainThread.post(new Runnable() {
       @Override public void run() {
+        removeOldFrameTimeCallback();
         if (isInForeground) {
           frameTimeCallback = new FrameTimeCallback(timer, histogram, choreographer);
           choreographer.postFrameCallback(frameTimeCallback);
@@ -74,7 +76,7 @@ import java.util.Map;
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN) @Override
   protected void onApplicationPaused(Activity activity, MetricRegistry registry) {
     this.lastActivityResumed = null;
-    choreographer.removeFrameCallback(frameTimeCallback);
+    removeOldFrameTimeCallback();
     removeTimer(activity, registry);
     removeHistogram(activity, registry);
   }
@@ -115,5 +117,13 @@ import java.util.Map;
 
   private void removeHistogram(final Activity activity, final MetricRegistry registry) {
     histograms.remove(activity.getClass().getName());
+  }
+
+  @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+  private void removeOldFrameTimeCallback() {
+    if (frameTimeCallback != null) {
+      choreographer.removeFrameCallback(frameTimeCallback);
+      frameTimeCallback = null;
+    }
   }
 }
