@@ -4,9 +4,11 @@
 
 package io.flowup.utils;
 
+import android.net.TrafficStats;
+
 public class TrafficStatsUtils {
 
   public static boolean isAPISupported(long totalBytes) {
-    return totalBytes != -1;
+    return totalBytes != TrafficStats.UNSUPPORTED;
   }
 }
