@@ -4,22 +4,24 @@
 
 package io.flowup.reporter.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class StatisticalValue {
 
-  private final long count;
-  private final double min;
-  private final double max;
-  private final double mean;
-  private final double standardDev;
-  private final double median;
-  private final double p1;
-  private final double p2;
-  private final double p5;
-  private final double p10;
-  private final double p90;
-  private final double p95;
-  private final double p98;
-  private final double p99;
+  @SerializedName("count") private final long count;
+  @SerializedName("min") private final double min;
+  @SerializedName("max") private final double max;
+  @SerializedName("mean") private final double mean;
+  @SerializedName("standardDev") private final double standardDev;
+  @SerializedName("median") private final double median;
+  @SerializedName("p1") private final double p1;
+  @SerializedName("p2") private final double p2;
+  @SerializedName("p5") private final double p5;
+  @SerializedName("p10") private final double p10;
+  @SerializedName("p90") private final double p90;
+  @SerializedName("p95") private final double p95;
+  @SerializedName("p98") private final double p98;
+  @SerializedName("p99") private final double p99;
 
   public StatisticalValue(long count, double min, double max, double mean, double standardDev,
       double median, double p1, double p2, double p5, double p10, double p90, double p95,
