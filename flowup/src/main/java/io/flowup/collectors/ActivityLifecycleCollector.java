@@ -14,6 +14,7 @@ import android.support.annotation.RequiresApi;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import io.flowup.android.EmptyActivityLifecycleCallback;
+import io.flowup.android.MainThread;
 import io.flowup.metricnames.MetricNamesGenerator;
 import io.flowup.utils.Time;
 import java.util.HashMap;
@@ -25,11 +26,14 @@ import java.util.concurrent.TimeUnit;
 
   private final Application application;
   private final MetricNamesGenerator metricNamesGenerator;
+  private final MainThread mainThread;
   private final Time time;
 
-  ActivityLifecycleCollector(Application application, MetricNamesGenerator metricNamesGenerator, Time time) {
+  ActivityLifecycleCollector(Application application, MetricNamesGenerator metricNamesGenerator,
+      MainThread mainThread, Time time) {
     this.application = application;
     this.metricNamesGenerator = metricNamesGenerator;
+    this.mainThread = mainThread;
     this.time = time;
   }
 
@@ -55,7 +59,7 @@ import java.util.concurrent.TimeUnit;
       @Override public void onActivityResumed(final Activity activity) {
         updateOnStartTimer(activity);
         saveOnresumeTimestamp(activity);
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
+        mainThread.post(new Runnable() {
           @Override public void run() {
             updateOnResumeTimer(activity);
           }

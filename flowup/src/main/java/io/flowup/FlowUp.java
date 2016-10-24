@@ -6,8 +6,6 @@ package io.flowup;
 
 import android.app.Application;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.RequiresApi;
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
@@ -144,13 +142,9 @@ public final class FlowUp {
   }
 
   private void restartUpdatableCollectors() {
-    new Handler(Looper.getMainLooper()).post(new Runnable() {
-      @Override public void run() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-          restartFrameTimeCollector();
-        }
-      }
-    });
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+      restartFrameTimeCollector();
+    }
   }
 
   private void initializeForegroundCollectors() {
