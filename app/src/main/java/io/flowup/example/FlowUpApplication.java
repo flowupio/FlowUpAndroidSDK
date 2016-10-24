@@ -6,12 +6,14 @@ package io.flowup.example;
 
 import android.app.Application;
 import android.os.StrictMode;
+import com.squareup.leakcanary.LeakCanary;
 import io.flowup.FlowUp;
 
 public class FlowUpApplication extends Application {
 
   @Override public void onCreate() {
     super.onCreate();
+    initializeLeakCanary();
     enableStrictMode();
     FlowUp.Builder.with(this)
         .sampling(1)
@@ -19,6 +21,13 @@ public class FlowUpApplication extends Application {
         .forceReports(BuildConfig.DEBUG)
         .logEnabled(BuildConfig.DEBUG)
         .start();
+  }
+
+  private void initializeLeakCanary() {
+    if (LeakCanary.isInAnalyzerProcess(this)) {
+      return;
+    }
+    LeakCanary.install(this);
   }
 
   private void enableStrictMode() {

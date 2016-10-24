@@ -22,6 +22,7 @@ public abstract class LastFrameTimeCallback implements Choreographer.FrameCallba
       onFrameTimeMeasured(frameTime);
     }
     this.lastFrameTimeNanos = frameTimeNanos;
+    choreographer.removeFrameCallback(this);
     choreographer.postFrameCallback(this);
   }
 
