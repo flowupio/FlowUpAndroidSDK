@@ -31,6 +31,10 @@ public class FlowUp {
       return this;
     }
 
+    public Builder sampling(double sampling) {
+      return this;
+    }
+
     public Builder logEnabled(boolean logEnabled) {
       return this;
     }
