@@ -59,7 +59,6 @@ public final class FlowUp {
     }
     initializeLogger();
     initializeMetrics();
-    initializeFlowUpReporter();
     initializeForegroundCollectors();
     new Thread(new Runnable() {
       @Override public void run() {
@@ -67,6 +66,7 @@ public final class FlowUp {
         initializeCPUCollectors();
         initializeMemoryCollectors();
         initializeDiskCollectors();
+        initializeFlowUpReporter();
       }
     }).start();
     Logger.d("FlowUp initialized");
