@@ -41,15 +41,9 @@ public class Collectors {
         new Time());
   }
 
-  public static Collector getBytesDownloadedCollector(Application application,
-      long samplingInterval, TimeUnit timeUnit) {
-    return new BytesDownloadedCollector(getMetricNamesGenerator(application), samplingInterval,
-        timeUnit);
-  }
-
-  public static Collector getBytesUploadedCollector(Application application, long samplingInterval,
+  public static Collector getNetworkUsageCollector(Application application, long samplingInterval,
       TimeUnit timeUnit) {
-    return new BytesUploadedCollector(getMetricNamesGenerator(application), samplingInterval,
+    return new NetworkUsageCollector(getMetricNamesGenerator(application), samplingInterval,
         timeUnit);
   }
 

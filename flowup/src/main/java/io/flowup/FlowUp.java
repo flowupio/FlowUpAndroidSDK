@@ -178,12 +178,8 @@ public final class FlowUp {
   }
 
   private void initializeNetworkCollectors() {
-    Collector bytesDownloadedCollector =
-        Collectors.getBytesDownloadedCollector(application, SAMPLING_INTERVAL, SAMPLING_TIME_UNIT);
-    bytesDownloadedCollector.initialize(registry);
-
     Collector bytesUploadedCollector =
-        Collectors.getBytesUploadedCollector(application, SAMPLING_INTERVAL, SAMPLING_TIME_UNIT);
+        Collectors.getNetworkUsageCollector(application, SAMPLING_INTERVAL, SAMPLING_TIME_UNIT);
     bytesUploadedCollector.initialize(registry);
   }
 
