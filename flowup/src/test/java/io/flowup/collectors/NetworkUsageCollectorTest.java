@@ -6,6 +6,7 @@ package io.flowup.collectors;
 
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.MetricRegistry;
+import io.flowup.android.AppTrafficStats;
 import io.flowup.doubles.AnyApp;
 import io.flowup.doubles.AnyDevice;
 import io.flowup.metricnames.MetricNamesGenerator;
@@ -26,9 +27,12 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class) public class NetworkUsageCollectorTest {
 
+  private static final int ANY_AMOUNT_OF_BYTES = 1024;
+
   private NetworkUsageCollector collector;
 
   @Mock private MetricRegistry registry;
+  @Mock private AppTrafficStats trafficStats;
   @Captor private ArgumentCaptor<Gauge<Long>> bytesUploadedCaptor;
   @Captor private ArgumentCaptor<Gauge<Long>> bytesDownloadedCaptor;
 
@@ -41,10 +45,12 @@ import static org.mockito.Mockito.when;
         bytesDownloadedCaptor.capture())).thenReturn(mock(Gauge.class));
     TimeUnit anyTimeUnit = TimeUnit.NANOSECONDS;
     int anySamplingInterval = 0;
-    collector = new NetworkUsageCollector(generator, anySamplingInterval, anyTimeUnit);
+    collector =
+        new NetworkUsageCollector(trafficStats, generator, anySamplingInterval, anyTimeUnit);
   }
 
   @Test public void doesNotReportBytesUploadedIfItIsTheFirstTimeTheInfoIsCollected() {
+    givenTheUploadedBytesAre(ANY_AMOUNT_OF_BYTES);
     collector.initialize(registry);
 
     Gauge<Long> gauge = bytesUploadedCaptor.getValue();
@@ -53,10 +59,19 @@ import static org.mockito.Mockito.when;
   }
 
   @Test public void doesNotReportBytesDownloadedIfItIsTheFirstTimeTheInfoIsCollected() {
+    givenTheDownloadedBytesAre(ANY_AMOUNT_OF_BYTES);
     collector.initialize(registry);
 
     Gauge<Long> gauge = bytesDownloadedCaptor.getValue();
 
     assertNull(gauge.getValue());
+  }
+
+  private void givenTheDownloadedBytesAre(long bytes) {
+    when(trafficStats.getRxBytes()).thenReturn(bytes);
+  }
+
+  private void givenTheUploadedBytesAre(long bytes) {
+    when(trafficStats.getTxBytes()).thenReturn(bytes);
   }
 }
