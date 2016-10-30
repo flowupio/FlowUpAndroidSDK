@@ -20,6 +20,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -27,7 +28,9 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class) public class NetworkUsageCollectorTest {
 
-  private static final int ANY_AMOUNT_OF_BYTES = 1024;
+  private static final long ANY_AMOUNT_OF_BYTES = 1024;
+  private static final long ANY_DELTA = 128;
+  private static final double COMPARATION_DELTA = 0.1d;
 
   private NetworkUsageCollector collector;
 
@@ -65,6 +68,30 @@ import static org.mockito.Mockito.when;
     Gauge<Long> gauge = bytesDownloadedCaptor.getValue();
 
     assertNull(gauge.getValue());
+  }
+
+  @Test public void collectsTheDifferenceOfBytesUploadedBetweenTwoGetValueCalls() {
+    givenTheUploadedBytesAre(ANY_AMOUNT_OF_BYTES);
+    collector.initialize(registry);
+
+    Gauge<Long> gauge = bytesUploadedCaptor.getValue();
+    gauge.getValue();
+    givenTheUploadedBytesAre(ANY_AMOUNT_OF_BYTES + ANY_DELTA);
+    Long expectedValue = gauge.getValue();
+
+    assertEquals(ANY_DELTA, expectedValue, COMPARATION_DELTA);
+  }
+
+  @Test public void collectsTheDifferenceOfBytesDownloadedBetweenTwoGetValueCalls() {
+    givenTheDownloadedBytesAre(ANY_AMOUNT_OF_BYTES);
+    collector.initialize(registry);
+
+    Gauge<Long> gauge = bytesDownloadedCaptor.getValue();
+    gauge.getValue();
+    givenTheDownloadedBytesAre(ANY_AMOUNT_OF_BYTES + ANY_DELTA);
+    Long expectedValue = gauge.getValue();
+
+    assertEquals(ANY_DELTA, expectedValue, COMPARATION_DELTA);
   }
 
   private void givenTheDownloadedBytesAre(long bytes) {
