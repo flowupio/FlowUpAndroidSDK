@@ -23,8 +23,8 @@ class NetworkUsageCollector implements Collector {
   private Long lastTxSampleInBytes;
   private Long lastRxSampleInBytes;
 
-  NetworkUsageCollector(AppTrafficStats appTrafficStats, MetricNamesGenerator metricNamesGenerator, long samplingInterval,
-      TimeUnit timeUnit) {
+  NetworkUsageCollector(AppTrafficStats appTrafficStats, MetricNamesGenerator metricNamesGenerator,
+      long samplingInterval, TimeUnit timeUnit) {
     this.appTrafficStats = appTrafficStats;
     this.metricNamesGenerator = metricNamesGenerator;
     this.samplingInterval = samplingInterval;
@@ -39,7 +39,7 @@ class NetworkUsageCollector implements Collector {
         new CachedGauge<Long>(samplingInterval, timeUnit) {
           @Override public Long loadValue() {
             long totalTxBytes = appTrafficStats.getTxBytes();
-            if(lastTxSampleInBytes == null) {
+            if (lastTxSampleInBytes == null) {
               lastTxSampleInBytes = totalTxBytes;
               return null;
             }
@@ -52,7 +52,7 @@ class NetworkUsageCollector implements Collector {
         new CachedGauge<Long>(samplingInterval, timeUnit) {
           @Override public Long loadValue() {
             long totalRxBytes = appTrafficStats.getRxBytes();
-            if(lastRxSampleInBytes == null){
+            if (lastRxSampleInBytes == null) {
               lastRxSampleInBytes = totalRxBytes;
               return null;
             }
