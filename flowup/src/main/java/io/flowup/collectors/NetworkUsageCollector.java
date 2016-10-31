@@ -8,21 +8,24 @@ import android.net.TrafficStats;
 import android.os.Process;
 import com.codahale.metrics.CachedGauge;
 import com.codahale.metrics.MetricRegistry;
+import io.flowup.android.AppTrafficStats;
 import io.flowup.metricnames.MetricNamesGenerator;
 import io.flowup.utils.TrafficStatsUtils;
 import java.util.concurrent.TimeUnit;
 
 class NetworkUsageCollector implements Collector {
 
+  private final AppTrafficStats appTrafficStats;
   private final MetricNamesGenerator metricNamesGenerator;
   private final long samplingInterval;
   private final TimeUnit timeUnit;
 
-  private long lastTxSampleInBytes;
-  private long lastRxSampleInBytes;
+  private Long lastTxSampleInBytes;
+  private Long lastRxSampleInBytes;
 
-  NetworkUsageCollector(MetricNamesGenerator metricNamesGenerator, long samplingInterval,
-      TimeUnit timeUnit) {
+  NetworkUsageCollector(AppTrafficStats appTrafficStats, MetricNamesGenerator metricNamesGenerator,
+      long samplingInterval, TimeUnit timeUnit) {
+    this.appTrafficStats = appTrafficStats;
     this.metricNamesGenerator = metricNamesGenerator;
     this.samplingInterval = samplingInterval;
     this.timeUnit = timeUnit;
@@ -35,8 +38,11 @@ class NetworkUsageCollector implements Collector {
     registry.register(metricNamesGenerator.getBytesUploadedMetricName(),
         new CachedGauge<Long>(samplingInterval, timeUnit) {
           @Override public Long loadValue() {
-            int applicationUid = Process.myUid();
-            long totalTxBytes = TrafficStats.getUidTxBytes(applicationUid);
+            long totalTxBytes = appTrafficStats.getTxBytes();
+            if (lastTxSampleInBytes == null) {
+              lastTxSampleInBytes = totalTxBytes;
+              return null;
+            }
             long txBytes = totalTxBytes - lastTxSampleInBytes;
             lastTxSampleInBytes = totalTxBytes;
             return txBytes;
@@ -45,8 +51,11 @@ class NetworkUsageCollector implements Collector {
     registry.register(metricNamesGenerator.getBytesDownloadedMetricName(),
         new CachedGauge<Long>(samplingInterval, timeUnit) {
           @Override public Long loadValue() {
-            int applicationUid = Process.myUid();
-            long totalRxBytes = TrafficStats.getUidRxBytes(applicationUid);
+            long totalRxBytes = appTrafficStats.getRxBytes();
+            if (lastRxSampleInBytes == null) {
+              lastRxSampleInBytes = totalRxBytes;
+              return null;
+            }
             long rxBytes = totalRxBytes - lastRxSampleInBytes;
             lastRxSampleInBytes = totalRxBytes;
             return rxBytes;

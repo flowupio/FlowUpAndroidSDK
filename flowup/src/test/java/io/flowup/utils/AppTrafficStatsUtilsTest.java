@@ -9,7 +9,7 @@ import org.junit.Test;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
-public class TrafficStatsUtilsTest {
+public class AppTrafficStatsUtilsTest {
 
   @Test public void returnsTrueIfTheValueIsNotMinusOne() {
     assertTrue(TrafficStatsUtils.isAPISupported(1024));

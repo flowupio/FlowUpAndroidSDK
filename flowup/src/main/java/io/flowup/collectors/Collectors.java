@@ -8,6 +8,7 @@ import android.app.Application;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import io.flowup.android.App;
+import io.flowup.android.AppTrafficStats;
 import io.flowup.android.CPU;
 import io.flowup.android.Device;
 import io.flowup.android.FileSystem;
@@ -43,8 +44,8 @@ public class Collectors {
 
   public static Collector getNetworkUsageCollector(Application application, long samplingInterval,
       TimeUnit timeUnit) {
-    return new NetworkUsageCollector(getMetricNamesGenerator(application), samplingInterval,
-        timeUnit);
+    return new NetworkUsageCollector(new AppTrafficStats(), getMetricNamesGenerator(application),
+        samplingInterval, timeUnit);
   }
 
   public static Collector getCPUUsageCollector(Application application, int samplingInterval,
