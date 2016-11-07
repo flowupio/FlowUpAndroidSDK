@@ -28,11 +28,9 @@ import io.flowup.metricnames.MetricNamesExtractor;
 import io.flowup.reporter.DropwizardReport;
 import io.flowup.reporter.FlowUpReporter;
 import io.flowup.reporter.FlowUpReporterListener;
-import io.flowup.sampling.SamplingGroup;
 import io.flowup.unix.Terminal;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public final class FlowUp {
@@ -44,19 +42,16 @@ public final class FlowUp {
   private final String apiKey;
   private final boolean forceReports;
   private final boolean logEnabled;
-  private final SamplingGroup samplingGroup;
 
   private static MetricRegistry registry;
   private static FlowUpReporter reporter;
 
-  FlowUp(Application application, String apiKey, boolean forceReports, boolean logEnabled,
-      SamplingGroup samplingGroup) {
+  FlowUp(Application application, String apiKey, boolean forceReports, boolean logEnabled) {
     validateConstructionParams(application, apiKey);
     this.application = application;
     this.apiKey = apiKey;
     this.forceReports = forceReports;
     this.logEnabled = logEnabled;
-    this.samplingGroup = samplingGroup;
   }
 
   void start() {
@@ -67,10 +62,6 @@ public final class FlowUp {
     if (!doesSupportGooglePlayServices()) {
       Logger.e(
           "FlowUp hasn't been initialized. Google play services is not supported in this device");
-      return;
-    }
-    if (!samplingGroup.isIn()) {
-      Logger.d("This user is not in the sampling group :( ");
       return;
     }
     if (!isFlowUpEnabled()) {
@@ -253,7 +244,6 @@ public final class FlowUp {
     String apiKey;
     boolean forceReports;
     boolean logEnabled;
-    double sampling = 1;
 
     Builder() {
     }
@@ -285,8 +275,7 @@ public final class FlowUp {
     }
 
     public void start() {
-      new FlowUp(application, apiKey, forceReports, logEnabled,
-          new SamplingGroup(new Random(), sampling)).start();
+      new FlowUp(application, apiKey, forceReports, logEnabled).start();
     }
   }
 }
