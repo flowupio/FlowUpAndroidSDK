@@ -7,6 +7,7 @@ package io.flowup;
 import android.app.Application;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import com.codahale.metrics.Metric;
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
@@ -43,6 +44,7 @@ public final class FlowUp {
   private final SamplingGroup samplingGroup;
 
   private static MetricRegistry registry;
+  private static FlowUpReporter reporter;
 
   FlowUp(Application application, String apiKey, boolean forceReports, boolean logEnabled,
       SamplingGroup samplingGroup) {
@@ -120,7 +122,7 @@ public final class FlowUp {
     String scheme = application.getString(R.string.flowup_scheme);
     String host = application.getString(R.string.flowup_host);
     int port = application.getResources().getInteger(R.integer.flowup_port);
-    FlowUpReporter.forRegistry(registry, application)
+    reporter = FlowUpReporter.forRegistry(registry, application)
         .filter(MetricFilter.ALL)
         .forceReports(forceReports)
         .listener(new FlowUpReporterListener() {
@@ -128,9 +130,18 @@ public final class FlowUp {
             removeActivityTimers(report);
             restartUpdatableCollectors();
           }
+
+          @Override public void onFlowUpDisabled() {
+            registry.removeMatching(new MetricFilter() {
+              @Override public boolean matches(String name, Metric metric) {
+                return true;
+              }
+            });
+            reporter.stop();
+          }
         })
-        .build(apiKey, scheme, host, port)
-        .start(SAMPLING_INTERVAL, TimeUnit.SECONDS);
+        .build(apiKey, scheme, host, port);
+    reporter.start(SAMPLING_INTERVAL, TimeUnit.SECONDS);
   }
 
   private void removeActivityTimers(DropwizardReport report) {
