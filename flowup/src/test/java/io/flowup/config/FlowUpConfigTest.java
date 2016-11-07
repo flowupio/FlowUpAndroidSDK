@@ -64,6 +64,12 @@ import static org.mockito.Mockito.when;
     assertEquals(persistedConfig, config);
   }
 
+  @Test public void disableConfigShouldPersistAConfigDisabled() throws Exception {
+    flowUpConfig.disableClient();
+
+    verify(storage).updateConfig(new Config(false));
+  }
+
   private Config givenTheApiReturnsANewConfig() {
     Config config = new Config(false);
     when(apiClient.getConfig()).thenReturn(new ApiClientResult<Config>(config));

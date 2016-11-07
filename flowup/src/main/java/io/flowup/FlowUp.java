@@ -45,6 +45,7 @@ public final class FlowUp {
 
   private static MetricRegistry registry;
   private static FlowUpReporter reporter;
+  private FlowUpConfig flowUpConfig;
 
   FlowUp(Application application, String apiKey, boolean forceReports, boolean logEnabled) {
     validateConstructionParams(application, apiKey);
@@ -120,7 +121,7 @@ public final class FlowUp {
     String scheme = application.getString(R.string.flowup_scheme);
     String host = application.getString(R.string.flowup_host);
     int port = application.getResources().getInteger(R.integer.flowup_port);
-    FlowUpConfig flowUpConfig = new FlowUpConfig(new ConfigStorage(application),
+    flowUpConfig = new FlowUpConfig(new ConfigStorage(application),
         new ConfigApiClient(apiKey, scheme, host, port));
     return flowUpConfig.getConfig().isEnabled();
   }
@@ -145,6 +146,7 @@ public final class FlowUp {
               }
             });
             reporter.stop();
+            flowUpConfig.disableClient();
           }
         })
         .build(apiKey, scheme, host, port);

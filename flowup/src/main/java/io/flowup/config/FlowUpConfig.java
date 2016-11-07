@@ -30,4 +30,10 @@ public class FlowUpConfig {
     }
     return getConfigResult.isSuccess();
   }
+
+  public void disableClient() {
+    Config config = storage.getConfig();
+    config.disable();
+    storage.updateConfig(config);
+  }
 }

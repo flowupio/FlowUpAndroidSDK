@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class Config {
 
-  @SerializedName("enabled") private final boolean enabled;
+  @SerializedName("enabled") private boolean enabled;
 
   public Config() {
     this.enabled = true;
@@ -20,6 +20,10 @@ public class Config {
 
   public boolean isEnabled() {
     return enabled;
+  }
+
+  public void disable() {
+    this.enabled = false;
   }
 
   @Override public boolean equals(Object o) {

@@ -8,9 +8,12 @@ import android.os.Bundle;
 import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;
 import io.flowup.R;
+import io.flowup.apiclient.ApiClientResult;
+import io.flowup.config.FlowUpConfig;
+import io.flowup.config.apiclient.ConfigApiClient;
+import io.flowup.config.storage.ConfigStorage;
 import io.flowup.logger.Logger;
 import io.flowup.reporter.FlowUpReporter;
-import io.flowup.apiclient.ApiClientResult;
 import io.flowup.reporter.apiclient.ReportApiClient;
 import io.flowup.reporter.model.Reports;
 import io.flowup.reporter.storage.ReportsStorage;
@@ -26,18 +29,31 @@ public class WiFiSyncService extends GcmTaskService {
 
   private ReportApiClient reportApiClient;
   private ReportsStorage reportsStorage;
+  private FlowUpConfig flowUpConfig;
 
   @Override public int onRunTask(TaskParams taskParams) {
     if (!isTaskSupported(taskParams)) {
       return RESULT_FAILURE;
     }
     String apiKey = getApiKey(taskParams);
+    if (!isClientEnabled(apiKey)) {
+      return RESULT_FAILURE;
+    }
     String scheme = getString(R.string.flowup_scheme);
     String host = getString(R.string.flowup_host);
     int port = getResources().getInteger(R.integer.flowup_port);
     reportsStorage = new ReportsStorage(this);
     reportApiClient = new ReportApiClient(apiKey, scheme, host, port);
     return syncStoredReports();
+  }
+
+  private boolean isClientEnabled(String apiKey) {
+    String scheme = getString(R.string.flowup_scheme);
+    String host = getString(R.string.flowup_host);
+    int port = getResources().getInteger(R.integer.flowup_port);
+    FlowUpConfig flowUpConfig = new FlowUpConfig(new ConfigStorage(getApplicationContext()),
+        new ConfigApiClient(apiKey, scheme, host, port));
+    return flowUpConfig.getConfig().isEnabled();
   }
 
   private String getApiKey(TaskParams taskParams) {
@@ -71,6 +87,7 @@ public class WiFiSyncService extends GcmTaskService {
         reportsStorage.deleteReports(reports);
       } else if (shouldDeleteReportsOnError(result)) {
         Logger.e("Api response error: " + result.getError());
+        disableFlowUp();
         reportsStorage.deleteReports(reports);
       } else {
         Logger.e("Api response error: " + result.getError());
@@ -99,8 +116,13 @@ public class WiFiSyncService extends GcmTaskService {
     }
   }
 
+  private void disableFlowUp() {
+    flowUpConfig.disableClient();
+  }
+
   private boolean shouldDeleteReportsOnError(ApiClientResult result) {
     ApiClientResult.Error error = result.getError();
-    return ApiClientResult.Error.UNAUTHORIZED == error || ApiClientResult.Error.SERVER_ERROR == error;
+    return ApiClientResult.Error.UNAUTHORIZED == error
+        || ApiClientResult.Error.SERVER_ERROR == error;
   }
 }
