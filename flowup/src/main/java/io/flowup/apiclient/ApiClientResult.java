@@ -21,10 +21,6 @@ public class ApiClientResult<T> {
     return value != null && error == null;
   }
 
-  public boolean hasDataPendingToSync() {
-    return false;
-  }
-
   public T getValue() {
     return value;
   }

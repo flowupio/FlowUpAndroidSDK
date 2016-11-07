@@ -4,11 +4,17 @@
 
 package io.flowup.config;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Config {
 
-  private final boolean enabled;
+  @SerializedName("enabled") private final boolean enabled;
 
   public Config() {
-    this.enabled = true;
+    this.enabled = false;
+  }
+
+  public boolean isEnabled() {
+    return enabled;
   }
 }

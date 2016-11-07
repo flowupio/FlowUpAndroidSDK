@@ -21,11 +21,14 @@ public class ConfigApiClient extends ApiClient {
   }
 
   public ApiClientResult<Config> getConfig() {
-    Request request = new Request.Builder().url(getConfigUrl).build();
+    Request request = new Request.Builder().url(getConfigUrl).get().build();
     Config config = null;
     try {
       Response response = httpClient.newCall(request).execute();
-      config = jsonParser.fromJson(response.body().string(), Config.class);
+      if (response.isSuccessful()) {
+        String jsonBody = response.body().string();
+        config = jsonParser.fromJson(jsonBody, Config.class);
+      }
     } catch (IOException e) {
       return new ApiClientResult<>(ApiClientResult.Error.NETWORK_ERROR);
     }
