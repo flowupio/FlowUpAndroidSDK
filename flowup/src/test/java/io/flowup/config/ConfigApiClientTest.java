@@ -7,6 +7,7 @@ package io.flowup.config;
 import io.flowup.BuildConfig;
 import io.flowup.MockWebServerTestCase;
 import io.flowup.apiclient.ApiClientResult;
+import io.flowup.config.apiclient.ConfigApiClient;
 import org.junit.Before;
 import org.junit.Test;
 

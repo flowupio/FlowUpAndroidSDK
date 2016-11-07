@@ -4,6 +4,9 @@
 
 package io.flowup.config;
 
+import io.flowup.config.apiclient.ConfigApiClient;
+import io.flowup.config.storage.ConfigStorage;
+
 public class FlowUpConfig {
 
   private final ConfigStorage storage;

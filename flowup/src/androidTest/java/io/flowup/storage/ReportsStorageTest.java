@@ -2,7 +2,7 @@
  * Copyright (C) 2016 Go Karumi S.L.
  */
 
-package io.flowup.reporter.storage;
+package io.flowup.storage;
 
 import android.app.Activity;
 import android.content.Context;
@@ -23,6 +23,8 @@ import io.flowup.reporter.model.MemoryMetric;
 import io.flowup.reporter.model.NetworkMetric;
 import io.flowup.reporter.model.Reports;
 import io.flowup.reporter.model.UIMetric;
+import io.flowup.reporter.storage.ReportsStorage;
+import io.flowup.storage.RealmConfig;
 import io.flowup.utils.Time;
 import io.realm.Realm;
 import java.util.Collections;

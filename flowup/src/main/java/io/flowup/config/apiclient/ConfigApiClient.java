@@ -2,10 +2,11 @@
  * Copyright (C) 2016 Go Karumi S.L.
  */
 
-package io.flowup.config;
+package io.flowup.config.apiclient;
 
 import io.flowup.apiclient.ApiClient;
 import io.flowup.apiclient.ApiClientResult;
+import io.flowup.config.Config;
 import java.io.IOException;
 import okhttp3.HttpUrl;
 import okhttp3.Request;

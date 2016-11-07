@@ -7,19 +7,17 @@ package io.flowup.reporter.storage;
 import android.content.Context;
 import io.flowup.reporter.DropwizardReport;
 import io.flowup.reporter.model.Reports;
+import io.flowup.storage.RealmStorage;
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ReportsStorage {
-
-  private final Context context;
+public class ReportsStorage extends RealmStorage {
 
   public ReportsStorage(Context context) {
-    this.context = context;
+    super(context);
   }
 
   public void storeMetrics(final DropwizardReport dropwizardReport) {
@@ -83,11 +81,6 @@ public class ReportsStorage {
         .equalTo(RealmStatisticalValue.ID_FIELD_NAME, statisticalValueToRemove.getId())
         .findAll()
         .deleteAllFromRealm();
-  }
-
-  private Realm getRealm() {
-    RealmConfiguration config = RealmConfig.getRealmConfig(context);
-    return Realm.getInstance(config);
   }
 
   private void storeAsRealmObject(Realm realm, DropwizardReport dropwizardReport) {
