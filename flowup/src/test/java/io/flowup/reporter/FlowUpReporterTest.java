@@ -12,7 +12,7 @@ import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import io.flowup.reporter.android.WiFiSyncServiceScheduler;
-import io.flowup.reporter.apiclient.ApiClient;
+import io.flowup.reporter.apiclient.ReporterApiClient;
 import io.flowup.reporter.model.Reports;
 import io.flowup.reporter.storage.ReportsStorage;
 import io.flowup.utils.Time;
@@ -35,14 +35,14 @@ import static org.mockito.Mockito.when;
 
   private static final long ANY_TIMESTAMP = 0;
 
-  @Mock private ApiClient apiClient;
+  @Mock private ReporterApiClient reporterApiClient;
   @Mock private ReportsStorage storage;
   @Mock private WiFiSyncServiceScheduler syncScheduler;
   @Mock private Time time;
 
   private FlowUpReporter givenAFlowUpReporter(boolean forceReports) {
     return new FlowUpReporter(new MetricRegistry(), "ReporterName", MetricFilter.ALL,
-        TimeUnit.SECONDS, TimeUnit.MILLISECONDS, apiClient, storage, syncScheduler, time,
+        TimeUnit.SECONDS, TimeUnit.MILLISECONDS, reporterApiClient, storage, syncScheduler, time,
         forceReports, null);
   }
 
@@ -52,7 +52,7 @@ import static org.mockito.Mockito.when;
     DropwizardReport report = reportSomeMetrics(reporter);
 
     verify(storage).storeMetrics(report);
-    verify(apiClient, never()).sendReports(any(Reports.class));
+    verify(reporterApiClient, never()).sendReports(any(Reports.class));
   }
 
   @Test public void storesDropwizardReportAndInitializesSynProcessIfDebugIsEnabled() {
@@ -61,7 +61,7 @@ import static org.mockito.Mockito.when;
     reportSomeMetrics(reporter);
 
     List<String> ids = Collections.singletonList(String.valueOf(ANY_TIMESTAMP));
-    verify(apiClient, never()).sendReports(givenAReportsInstanceWithId(ids));
+    verify(reporterApiClient, never()).sendReports(givenAReportsInstanceWithId(ids));
   }
 
   @Test public void ifTheSyncProcessIsSuccessfulTheReportsShouldBeDeleted() {
@@ -88,8 +88,8 @@ import static org.mockito.Mockito.when;
 
     reportSomeMetrics(reporter);
 
-    verify(apiClient).sendReports(firstBatch);
-    verify(apiClient).sendReports(secondBatch);
+    verify(reporterApiClient).sendReports(firstBatch);
+    verify(reporterApiClient).sendReports(secondBatch);
   }
 
   @Test public void deletesEveryReportProperlySent() {
@@ -184,26 +184,26 @@ import static org.mockito.Mockito.when;
   }
 
   private void givenTheSyncProcessReturnsUnauthorized(Reports reports) {
-    when(apiClient.sendReports(reports)).thenReturn(
+    when(reporterApiClient.sendReports(reports)).thenReturn(
         new ReportResult(ReportResult.Error.UNAUTHORIZED));
   }
 
   private void givenTheSyncProcessReturnsServerError(Reports reports) {
-    when(apiClient.sendReports(reports)).thenReturn(
+    when(reporterApiClient.sendReports(reports)).thenReturn(
         new ReportResult(ReportResult.Error.SERVER_ERROR));
   }
 
   private void givenTheSyncProcessIsSuccess(Reports reports) {
-    when(apiClient.sendReports(reports)).thenReturn(new ReportResult(reports));
+    when(reporterApiClient.sendReports(reports)).thenReturn(new ReportResult(reports));
   }
 
   private void givenTheSyncProcessFailsBecauseThereIsNoConnection(Reports reports) {
-    when(apiClient.sendReports(reports)).thenReturn(
+    when(reporterApiClient.sendReports(reports)).thenReturn(
         new ReportResult(ReportResult.Error.NETWORK_ERROR));
   }
 
   private void givenTheSyncProcessFails(Reports reports) {
-    when(apiClient.sendReports(reports)).thenReturn(new ReportResult(ReportResult.Error.UNKNOWN));
+    when(reporterApiClient.sendReports(reports)).thenReturn(new ReportResult(ReportResult.Error.UNKNOWN));
   }
 
   private DropwizardReport report(FlowUpReporter reporter) {
