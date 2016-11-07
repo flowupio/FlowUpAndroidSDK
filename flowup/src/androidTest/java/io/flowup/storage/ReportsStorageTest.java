@@ -24,7 +24,6 @@ import io.flowup.reporter.model.NetworkMetric;
 import io.flowup.reporter.model.Reports;
 import io.flowup.reporter.model.UIMetric;
 import io.flowup.reporter.storage.ReportsStorage;
-import io.flowup.storage.RealmConfig;
 import io.flowup.utils.Time;
 import io.realm.Realm;
 import java.util.Collections;

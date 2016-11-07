@@ -4,6 +4,7 @@
 
 package io.flowup.config;
 
+import io.flowup.apiclient.ApiClientResult;
 import io.flowup.config.apiclient.ConfigApiClient;
 import io.flowup.config.storage.ConfigStorage;
 
@@ -21,9 +22,12 @@ public class FlowUpConfig {
     return storage.getConfig();
   }
 
-  public Config updateConfig() {
-    Config config = apiClient.getConfig().getValue();
-    storage.updateConfig(config);
-    return config;
+  public boolean updateConfig() {
+    ApiClientResult<Config> getConfigResult = apiClient.getConfig();
+    if (getConfigResult.isSuccess()) {
+      Config config = getConfigResult.getValue();
+      storage.updateConfig(config);
+    }
+    return getConfigResult.isSuccess();
   }
 }

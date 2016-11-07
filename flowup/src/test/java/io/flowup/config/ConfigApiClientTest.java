@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ConfigApiClientTest extends MockWebServerTestCase {
 
@@ -87,6 +88,6 @@ public class ConfigApiClientTest extends MockWebServerTestCase {
 
     Config config = apiClient.getConfig().getValue();
 
-    assertFalse(config.isEnabled());
+    assertTrue(config.isEnabled());
   }
 }
