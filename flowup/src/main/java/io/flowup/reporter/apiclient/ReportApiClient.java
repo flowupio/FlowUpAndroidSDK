@@ -13,15 +13,15 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class ReporterApiClient extends ApiClient {
+public class ReportApiClient extends ApiClient {
 
   private HttpUrl reportUrl;
 
-  public ReporterApiClient(String apiKey, String scheme, String host, int port) {
+  public ReportApiClient(String apiKey, String scheme, String host, int port) {
     this(apiKey, scheme, host, port, true);
   }
 
-  public ReporterApiClient(String apiKey, String scheme, String host, int port, boolean useGzip) {
+  public ReportApiClient(String apiKey, String scheme, String host, int port, boolean useGzip) {
     super(apiKey, scheme, host, port, useGzip);
     this.reportUrl = baseUrl.newBuilder("/report").build();
   }

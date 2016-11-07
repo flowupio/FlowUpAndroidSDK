@@ -11,7 +11,7 @@ import io.flowup.R;
 import io.flowup.logger.Logger;
 import io.flowup.reporter.FlowUpReporter;
 import io.flowup.apiclient.ApiClientResult;
-import io.flowup.reporter.apiclient.ReporterApiClient;
+import io.flowup.reporter.apiclient.ReportApiClient;
 import io.flowup.reporter.model.Reports;
 import io.flowup.reporter.storage.ReportsStorage;
 
@@ -24,7 +24,7 @@ public class WiFiSyncService extends GcmTaskService {
 
   static final String API_KEY_EXTRA = "apiKeyExtra";
 
-  private ReporterApiClient reporterApiClient;
+  private ReportApiClient reportApiClient;
   private ReportsStorage reportsStorage;
 
   @Override public int onRunTask(TaskParams taskParams) {
@@ -36,7 +36,7 @@ public class WiFiSyncService extends GcmTaskService {
     String host = getString(R.string.flowup_host);
     int port = getResources().getInteger(R.integer.flowup_port);
     reportsStorage = new ReportsStorage(this);
-    reporterApiClient = new ReporterApiClient(apiKey, scheme, host, port);
+    reportApiClient = new ReportApiClient(apiKey, scheme, host, port);
     return syncStoredReports();
   }
 
@@ -65,7 +65,7 @@ public class WiFiSyncService extends GcmTaskService {
     do {
       Logger.d(reports.getReportsIds().size() + " reports to sync");
       Logger.d(reports.toString());
-      result = reporterApiClient.sendReports(reports);
+      result = reportApiClient.sendReports(reports);
       if (result.isSuccess()) {
         Logger.d("Api response successful");
         reportsStorage.deleteReports(reports);

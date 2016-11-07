@@ -16,7 +16,7 @@ import com.codahale.metrics.Timer;
 import io.flowup.apiclient.ApiClientResult;
 import io.flowup.logger.Logger;
 import io.flowup.reporter.android.WiFiSyncServiceScheduler;
-import io.flowup.reporter.apiclient.ReporterApiClient;
+import io.flowup.reporter.apiclient.ReportApiClient;
 import io.flowup.reporter.model.Reports;
 import io.flowup.reporter.storage.ReportsStorage;
 import io.flowup.utils.Time;
@@ -31,7 +31,7 @@ public class FlowUpReporter extends ScheduledReporter {
     return new FlowUpReporter.Builder(registry, context);
   }
 
-  private final ReporterApiClient reporterApiClient;
+  private final ReportApiClient reportApiClient;
   private final ReportsStorage reportsStorage;
   private final WiFiSyncServiceScheduler syncScheduler;
   private final Time time;
@@ -39,11 +39,11 @@ public class FlowUpReporter extends ScheduledReporter {
   private final FlowUpReporterListener listener;
 
   FlowUpReporter(MetricRegistry registry, String name, MetricFilter filter, TimeUnit rateUnit,
-      TimeUnit durationUnit, ReporterApiClient reporterApiClient, ReportsStorage reportsStorage,
+      TimeUnit durationUnit, ReportApiClient reportApiClient, ReportsStorage reportsStorage,
       WiFiSyncServiceScheduler syncScheduler, Time time, boolean forceReports,
       FlowUpReporterListener listener) {
     super(registry, name, filter, rateUnit, durationUnit);
-    this.reporterApiClient = reporterApiClient;
+    this.reportApiClient = reportApiClient;
     this.reportsStorage = reportsStorage;
     this.syncScheduler = syncScheduler;
     this.time = time;
@@ -89,7 +89,7 @@ public class FlowUpReporter extends ScheduledReporter {
     Logger.d(reports.toString());
     ApiClientResult result;
     do {
-      result = reporterApiClient.sendReports(reports);
+      result = reportApiClient.sendReports(reports);
       if (result.isSuccess()) {
         Logger.d("Api response successful");
         reportsStorage.deleteReports(reports);
@@ -111,8 +111,8 @@ public class FlowUpReporter extends ScheduledReporter {
       Logger.e("The last sync failed due to a network error, so let's reschedule a new task");
     } else if (error == ApiClientResult.Error.CLIENT_DISABLED) {
       Logger.e("The client trying to report data has been disabled");
-      reportsStorage.clear();
       notifyClientDisabled();
+      reportsStorage.clear();
     } else if (!result.isSuccess()) {
       Logger.e("The last sync failed due to an unknown error");
     } else {
@@ -160,7 +160,7 @@ public class FlowUpReporter extends ScheduledReporter {
 
     public FlowUpReporter build(String apiKey, String scheme, String host, int port) {
       return new FlowUpReporter(registry, name, filter, TimeUnit.NANOSECONDS, TimeUnit.NANOSECONDS,
-          new ReporterApiClient(apiKey, scheme, host, port), new ReportsStorage(context),
+          new ReportApiClient(apiKey, scheme, host, port), new ReportsStorage(context),
           new WiFiSyncServiceScheduler(context, apiKey), new Time(), forceReports, listener);
     }
 

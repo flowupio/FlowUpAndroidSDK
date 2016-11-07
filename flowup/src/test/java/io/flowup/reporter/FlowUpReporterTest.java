@@ -13,7 +13,7 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import io.flowup.apiclient.ApiClientResult;
 import io.flowup.reporter.android.WiFiSyncServiceScheduler;
-import io.flowup.reporter.apiclient.ReporterApiClient;
+import io.flowup.reporter.apiclient.ReportApiClient;
 import io.flowup.reporter.model.Reports;
 import io.flowup.reporter.storage.ReportsStorage;
 import io.flowup.utils.Time;
@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
 
   private static final long ANY_TIMESTAMP = 0;
 
-  @Mock private ReporterApiClient reporterApiClient;
+  @Mock private ReportApiClient reportApiClient;
   @Mock private ReportsStorage storage;
   @Mock private WiFiSyncServiceScheduler syncScheduler;
   @Mock private Time time;
@@ -44,7 +44,7 @@ import static org.mockito.Mockito.when;
 
   private FlowUpReporter givenAFlowUpReporter(boolean forceReports) {
     return new FlowUpReporter(new MetricRegistry(), "ReporterName", MetricFilter.ALL,
-        TimeUnit.SECONDS, TimeUnit.MILLISECONDS, reporterApiClient, storage, syncScheduler, time,
+        TimeUnit.SECONDS, TimeUnit.MILLISECONDS, reportApiClient, storage, syncScheduler, time,
         forceReports, listener);
   }
 
@@ -54,7 +54,7 @@ import static org.mockito.Mockito.when;
     DropwizardReport report = reportSomeMetrics(reporter);
 
     verify(storage).storeMetrics(report);
-    verify(reporterApiClient, never()).sendReports(any(Reports.class));
+    verify(reportApiClient, never()).sendReports(any(Reports.class));
   }
 
   @Test public void storesDropwizardReportAndInitializesSynProcessIfDebugIsEnabled() {
@@ -63,7 +63,7 @@ import static org.mockito.Mockito.when;
     reportSomeMetrics(reporter);
 
     List<String> ids = Collections.singletonList(String.valueOf(ANY_TIMESTAMP));
-    verify(reporterApiClient, never()).sendReports(givenAReportsInstanceWithId(ids));
+    verify(reportApiClient, never()).sendReports(givenAReportsInstanceWithId(ids));
   }
 
   @Test public void ifTheSyncProcessIsSuccessfulTheReportsShouldBeDeleted() {
@@ -90,8 +90,8 @@ import static org.mockito.Mockito.when;
 
     reportSomeMetrics(reporter);
 
-    verify(reporterApiClient).sendReports(firstBatch);
-    verify(reporterApiClient).sendReports(secondBatch);
+    verify(reportApiClient).sendReports(firstBatch);
+    verify(reportApiClient).sendReports(secondBatch);
   }
 
   @Test public void deletesEveryReportProperlySent() {
@@ -210,31 +210,31 @@ import static org.mockito.Mockito.when;
   }
 
   private void givenTheSyncProcessReturnsUnauthorized(Reports reports) {
-    when(reporterApiClient.sendReports(reports)).thenReturn(
+    when(reportApiClient.sendReports(reports)).thenReturn(
         new ApiClientResult(ApiClientResult.Error.UNAUTHORIZED));
   }
 
   private void givenTheSyncProcessReturnsServerError(Reports reports) {
-    when(reporterApiClient.sendReports(reports)).thenReturn(
+    when(reportApiClient.sendReports(reports)).thenReturn(
         new ApiClientResult(ApiClientResult.Error.SERVER_ERROR));
   }
 
   private void givenTheServerErrorReturnsAClientDisabledResponse(Reports reports) {
-    when(reporterApiClient.sendReports(reports)).thenReturn(
+    when(reportApiClient.sendReports(reports)).thenReturn(
         new ApiClientResult(ApiClientResult.Error.CLIENT_DISABLED));
   }
 
   private void givenTheSyncProcessIsSuccess(Reports reports) {
-    when(reporterApiClient.sendReports(reports)).thenReturn(new ApiClientResult(reports));
+    when(reportApiClient.sendReports(reports)).thenReturn(new ApiClientResult(reports));
   }
 
   private void givenTheSyncProcessFailsBecauseThereIsNoConnection(Reports reports) {
-    when(reporterApiClient.sendReports(reports)).thenReturn(
+    when(reportApiClient.sendReports(reports)).thenReturn(
         new ApiClientResult(ApiClientResult.Error.NETWORK_ERROR));
   }
 
   private void givenTheSyncProcessFails(Reports reports) {
-    when(reporterApiClient.sendReports(reports)).thenReturn(
+    when(reportApiClient.sendReports(reports)).thenReturn(
         new ApiClientResult(ApiClientResult.Error.UNKNOWN));
   }
 

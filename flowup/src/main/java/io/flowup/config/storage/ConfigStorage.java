@@ -11,6 +11,8 @@ import io.realm.Realm;
 
 public class ConfigStorage extends RealmStorage {
 
+  private static final String CONFIG_UNIQUE_ID = "1";
+
   public ConfigStorage(Context context) {
     super(context);
   }
@@ -39,7 +41,7 @@ public class ConfigStorage extends RealmStorage {
   private void storeAsRealmObject(Realm realm, Config config) {
     RealmConfig realmConfig = realm.where(RealmConfig.class).findFirst();
     if (realmConfig == null) {
-      realmConfig = realm.createObject(RealmConfig.class, "1");
+      realmConfig = realm.createObject(RealmConfig.class, CONFIG_UNIQUE_ID);
     }
     realmConfig.setEnabled(config.isEnabled());
     realm.copyToRealmOrUpdate(realmConfig);

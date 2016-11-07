@@ -264,11 +264,6 @@ public final class FlowUp {
       return this;
     }
 
-    public Builder sampling(double sampling) {
-      this.sampling = sampling;
-      return this;
-    }
-
     public Builder logEnabled(boolean logEnabled) {
       this.logEnabled = logEnabled;
       return this;
