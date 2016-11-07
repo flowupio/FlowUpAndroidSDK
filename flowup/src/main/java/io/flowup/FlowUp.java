@@ -18,6 +18,7 @@ import io.flowup.android.FileSystem;
 import io.flowup.collectors.Collector;
 import io.flowup.collectors.Collectors;
 import io.flowup.collectors.UpdatableCollector;
+import io.flowup.config.android.ConfigSyncServiceScheduler;
 import io.flowup.logger.Logger;
 import io.flowup.metricnames.MetricNamesExtractor;
 import io.flowup.reporter.DropwizardReport;
@@ -71,6 +72,7 @@ public final class FlowUp {
     initializeForegroundCollectors();
     new Thread(new Runnable() {
       @Override public void run() {
+        initializeConfigSystem();
         initializeNetworkCollectors();
         initializeCPUCollectors();
         initializeMemoryCollectors();
@@ -184,6 +186,11 @@ public final class FlowUp {
   private void initializeActivityVisibleCollector() {
     Collector activityLifecycleCollector = Collectors.getActivityVisibleCollector(application);
     activityLifecycleCollector.initialize(registry);
+  }
+
+  private void initializeConfigSystem() {
+    ConfigSyncServiceScheduler scheduler = new ConfigSyncServiceScheduler(application, apiKey);
+    scheduler.scheduleSyncTask();
   }
 
   private void initializeNetworkCollectors() {
