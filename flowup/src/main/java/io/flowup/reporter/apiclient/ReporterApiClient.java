@@ -5,57 +5,55 @@
 package io.flowup.reporter.apiclient;
 
 import io.flowup.apiclient.ApiClient;
-import io.flowup.logger.Logger;
-import io.flowup.reporter.ReportResult;
+import io.flowup.apiclient.ApiClientResult;
 import io.flowup.reporter.model.Reports;
-import com.google.gson.Gson;
 import java.io.IOException;
 import okhttp3.HttpUrl;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class ReporterApiClient extends ApiClient {
 
+  private HttpUrl reportUrl;
+
   public ReporterApiClient(String apiKey, String scheme, String host, int port) {
-    super(apiKey, scheme, host, port);
+    this(apiKey, scheme, host, port, true);
   }
 
   public ReporterApiClient(String apiKey, String scheme, String host, int port, boolean useGzip) {
     super(apiKey, scheme, host, port, useGzip);
+    this.reportUrl = baseUrl.newBuilder("/report").build();
   }
 
-  public ReportResult sendReports(Reports reports) {
+  public ApiClientResult sendReports(Reports reports) {
     Request request = generateReportRequest(reports);
     Response response = null;
     try {
       response = httpClient.newCall(request).execute();
       if (response.isSuccessful()) {
-        return new ReportResult(reports);
+        return new ApiClientResult(reports);
       }
     } catch (IOException e) {
-      return new ReportResult(ReportResult.Error.NETWORK_ERROR);
+      return new ApiClientResult(ApiClientResult.Error.NETWORK_ERROR);
     }
-    ReportResult.Error error = mapError(response);
-    return new ReportResult(error);
+    ApiClientResult.Error error = mapError(response);
+    return new ApiClientResult(error);
   }
 
-  private ReportResult.Error mapError(Response response) {
+  private ApiClientResult.Error mapError(Response response) {
     switch (response.code()) {
       case FORBIDDEN_STATUS_CODE:
       case UNAUTHORIZED_STATUS_CODE:
-        return ReportResult.Error.UNAUTHORIZED;
+        return ApiClientResult.Error.UNAUTHORIZED;
       case SERVER_ERROR_STATUS_CODE:
-        return ReportResult.Error.SERVER_ERROR;
+        return ApiClientResult.Error.SERVER_ERROR;
       default:
-        return ReportResult.Error.UNKNOWN;
+        return ApiClientResult.Error.UNKNOWN;
     }
   }
 
   private Request generateReportRequest(Reports metrics) {
-    HttpUrl reportUrl = baseUrl.newBuilder("/report").build();
     RequestBody body = RequestBody.create(JSON, jsonParser.toJson(metrics));
     return new Request.Builder().url(reportUrl).post(body).build();
   }

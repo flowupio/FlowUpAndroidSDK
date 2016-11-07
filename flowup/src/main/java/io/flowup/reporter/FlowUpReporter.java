@@ -13,6 +13,7 @@ import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.ScheduledReporter;
 import com.codahale.metrics.Timer;
+import io.flowup.apiclient.ApiClientResult;
 import io.flowup.logger.Logger;
 import io.flowup.reporter.android.WiFiSyncServiceScheduler;
 import io.flowup.reporter.apiclient.ReporterApiClient;
@@ -86,7 +87,7 @@ public class FlowUpReporter extends ScheduledReporter {
     }
     Logger.d(reports.getReportsIds().size() + " reports to sync");
     Logger.d(reports.toString());
-    ReportResult result;
+    ApiClientResult result;
     do {
       result = reporterApiClient.sendReports(reports);
       if (result.isSuccess()) {
@@ -105,8 +106,8 @@ public class FlowUpReporter extends ScheduledReporter {
             + " reports pending");
       }
     } while (reports != null && result.isSuccess());
-    ReportResult.Error error = result.getError();
-    if (error == ReportResult.Error.NETWORK_ERROR) {
+    ApiClientResult.Error error = result.getError();
+    if (error == ApiClientResult.Error.NETWORK_ERROR) {
       Logger.e("The last sync failed due to a network error, so let's reschedule a new task");
     } else if (!result.isSuccess()) {
       Logger.e("The last sync failed due to an unknown error");
@@ -115,9 +116,9 @@ public class FlowUpReporter extends ScheduledReporter {
     }
   }
 
-  private boolean shouldDeleteReportsOnError(ReportResult result) {
-    return ReportResult.Error.UNAUTHORIZED == result.getError()
-        || ReportResult.Error.SERVER_ERROR == result.getError();
+  private boolean shouldDeleteReportsOnError(ApiClientResult result) {
+    return ApiClientResult.Error.UNAUTHORIZED == result.getError()
+        || ApiClientResult.Error.SERVER_ERROR == result.getError();
   }
 
   public static final class Builder {

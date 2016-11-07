@@ -6,7 +6,7 @@ package io.flowup.reporter.apiclient;
 
 import io.flowup.BuildConfig;
 import io.flowup.MockWebServerTestCase;
-import io.flowup.reporter.ReportResult;
+import io.flowup.apiclient.ApiClientResult;
 import io.flowup.reporter.model.CPUMetric;
 import io.flowup.reporter.model.DiskMetric;
 import io.flowup.reporter.model.MemoryMetric;
@@ -111,7 +111,7 @@ public class ReporterApiClientTest extends MockWebServerTestCase {
     enqueueMockResponse(OK_CODE);
     Reports reports = givenSomeReports();
 
-    ReportResult result = reporterApiClient.sendReports(reports);
+    ApiClientResult result = reporterApiClient.sendReports(reports);
 
     assertTrue(result.isSuccess());
   }
@@ -120,7 +120,7 @@ public class ReporterApiClientTest extends MockWebServerTestCase {
     enqueueMockResponse(SERVER_ERROR_CODE);
     Reports reports = givenSomeReports();
 
-    ReportResult result = reporterApiClient.sendReports(reports);
+    ApiClientResult result = reporterApiClient.sendReports(reports);
 
     assertFalse(result.isSuccess());
   }
@@ -130,39 +130,39 @@ public class ReporterApiClientTest extends MockWebServerTestCase {
     enqueueMockResponse(OK_CODE);
     Reports reports = givenSomeReports();
 
-    ReportResult result = reporterApiClient.sendReports(reports);
+    ApiClientResult result = reporterApiClient.sendReports(reports);
 
-    assertEquals(reports, result.getReports());
+    assertEquals(reports, result.getValue());
   }
 
   @Test public void returnsUnauthorizedErrorIfTheServerSideResponseIsA401() throws Exception {
     enqueueMockResponse(UNAUTHORIZED_ERROR_CODE);
     Reports reports = givenSomeReports();
 
-    ReportResult result = reporterApiClient.sendReports(reports);
+    ApiClientResult result = reporterApiClient.sendReports(reports);
 
     assertFalse(result.isSuccess());
-    assertEquals(ReportResult.Error.UNAUTHORIZED, result.getError());
+    assertEquals(ApiClientResult.Error.UNAUTHORIZED, result.getError());
   }
 
   @Test public void returnsUnauthorizedErrorIfTheServerSideResponseIsA403() throws Exception {
     enqueueMockResponse(FORBIDDEN_ERROR_CODE);
     Reports reports = givenSomeReports();
 
-    ReportResult result = reporterApiClient.sendReports(reports);
+    ApiClientResult result = reporterApiClient.sendReports(reports);
 
     assertFalse(result.isSuccess());
-    assertEquals(ReportResult.Error.UNAUTHORIZED, result.getError());
+    assertEquals(ApiClientResult.Error.UNAUTHORIZED, result.getError());
   }
 
   @Test public void returnsServerErrorIfTheServerSideResponseIsA500() throws Exception {
     enqueueMockResponse(SERVER_ERROR_CODE);
     Reports reports = givenSomeReports();
 
-    ReportResult result = reporterApiClient.sendReports(reports);
+    ApiClientResult result = reporterApiClient.sendReports(reports);
 
     assertFalse(result.isSuccess());
-    assertEquals(ReportResult.Error.SERVER_ERROR, result.getError());
+    assertEquals(ApiClientResult.Error.SERVER_ERROR, result.getError());
   }
 
   private ReporterApiClient givenAnApiClient(boolean useGzip) {

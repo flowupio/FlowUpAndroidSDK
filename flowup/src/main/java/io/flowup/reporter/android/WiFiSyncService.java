@@ -10,7 +10,7 @@ import com.google.android.gms.gcm.TaskParams;
 import io.flowup.R;
 import io.flowup.logger.Logger;
 import io.flowup.reporter.FlowUpReporter;
-import io.flowup.reporter.ReportResult;
+import io.flowup.apiclient.ApiClientResult;
 import io.flowup.reporter.apiclient.ReporterApiClient;
 import io.flowup.reporter.model.Reports;
 import io.flowup.reporter.storage.ReportsStorage;
@@ -60,8 +60,8 @@ public class WiFiSyncService extends GcmTaskService {
       Logger.d("There are no reports to sync.");
       return RESULT_SUCCESS;
     }
-    ReportResult.Error error;
-    ReportResult result;
+    ApiClientResult.Error error;
+    ApiClientResult result;
     do {
       Logger.d(reports.getReportsIds().size() + " reports to sync");
       Logger.d(reports.toString());
@@ -83,7 +83,7 @@ public class WiFiSyncService extends GcmTaskService {
       }
       error = result.getError();
     } while (reports != null && result.isSuccess());
-    if (error == ReportResult.Error.NETWORK_ERROR) {
+    if (error == ApiClientResult.Error.NETWORK_ERROR) {
       Logger.e("The last sync failed due to a network error, so let's reschedule a new task");
       return RESULT_RESCHEDULE;
     } else if (!result.isSuccess()) {
@@ -95,8 +95,8 @@ public class WiFiSyncService extends GcmTaskService {
     }
   }
 
-  private boolean shouldDeleteReportsOnError(ReportResult result) {
-    ReportResult.Error error = result.getError();
-    return ReportResult.Error.UNAUTHORIZED == error || ReportResult.Error.SERVER_ERROR == error;
+  private boolean shouldDeleteReportsOnError(ApiClientResult result) {
+    ApiClientResult.Error error = result.getError();
+    return ApiClientResult.Error.UNAUTHORIZED == error || ApiClientResult.Error.SERVER_ERROR == error;
   }
 }

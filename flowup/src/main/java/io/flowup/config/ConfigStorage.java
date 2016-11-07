@@ -4,7 +4,7 @@
 
 package io.flowup.config;
 
-class ConfigStorage {
+public class ConfigStorage {
 
   Config getConfig() {
     //Obtain from realm or the shared prefs.

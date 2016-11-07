@@ -11,6 +11,7 @@ import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
+import io.flowup.apiclient.ApiClientResult;
 import io.flowup.reporter.android.WiFiSyncServiceScheduler;
 import io.flowup.reporter.apiclient.ReporterApiClient;
 import io.flowup.reporter.model.Reports;
@@ -185,25 +186,25 @@ import static org.mockito.Mockito.when;
 
   private void givenTheSyncProcessReturnsUnauthorized(Reports reports) {
     when(reporterApiClient.sendReports(reports)).thenReturn(
-        new ReportResult(ReportResult.Error.UNAUTHORIZED));
+        new ApiClientResult(ApiClientResult.Error.UNAUTHORIZED));
   }
 
   private void givenTheSyncProcessReturnsServerError(Reports reports) {
     when(reporterApiClient.sendReports(reports)).thenReturn(
-        new ReportResult(ReportResult.Error.SERVER_ERROR));
+        new ApiClientResult(ApiClientResult.Error.SERVER_ERROR));
   }
 
   private void givenTheSyncProcessIsSuccess(Reports reports) {
-    when(reporterApiClient.sendReports(reports)).thenReturn(new ReportResult(reports));
+    when(reporterApiClient.sendReports(reports)).thenReturn(new ApiClientResult(reports));
   }
 
   private void givenTheSyncProcessFailsBecauseThereIsNoConnection(Reports reports) {
     when(reporterApiClient.sendReports(reports)).thenReturn(
-        new ReportResult(ReportResult.Error.NETWORK_ERROR));
+        new ApiClientResult(ApiClientResult.Error.NETWORK_ERROR));
   }
 
   private void givenTheSyncProcessFails(Reports reports) {
-    when(reporterApiClient.sendReports(reports)).thenReturn(new ReportResult(ReportResult.Error.UNKNOWN));
+    when(reporterApiClient.sendReports(reports)).thenReturn(new ApiClientResult(ApiClientResult.Error.UNKNOWN));
   }
 
   private DropwizardReport report(FlowUpReporter reporter) {

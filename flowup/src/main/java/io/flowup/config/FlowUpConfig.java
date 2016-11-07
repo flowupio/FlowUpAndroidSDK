@@ -19,7 +19,7 @@ public class FlowUpConfig {
   }
 
   public Config updateConfig() {
-    Config config = apiClient.getConfig();
+    Config config = apiClient.getConfig().getValue();
     storage.updateConfig(config);
     return config;
   }

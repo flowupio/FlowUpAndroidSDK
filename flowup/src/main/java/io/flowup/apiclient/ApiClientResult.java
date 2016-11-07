@@ -2,33 +2,31 @@
  * Copyright (C) 2016 Go Karumi S.L.
  */
 
-package io.flowup.reporter;
+package io.flowup.apiclient;
 
-import io.flowup.reporter.model.Reports;
+public class ApiClientResult<T> {
 
-public class ReportResult {
-
-  private Reports reports;
+  private T value;
   private Error error;
 
-  public ReportResult(Reports reports) {
-    this.reports = reports;
+  public ApiClientResult(T value) {
+    this.value = value;
   }
 
-  public ReportResult(Error error) {
+  public ApiClientResult(Error error) {
     this.error = error;
   }
 
   public boolean isSuccess() {
-    return reports != null && error == null;
+    return value != null && error == null;
   }
 
   public boolean hasDataPendingToSync() {
     return false;
   }
 
-  public Reports getReports() {
-    return reports;
+  public T getValue() {
+    return value;
   }
 
   public Error getError() {
