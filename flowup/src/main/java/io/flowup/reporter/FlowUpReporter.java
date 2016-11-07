@@ -14,10 +14,6 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.ScheduledReporter;
 import com.codahale.metrics.Timer;
 import io.flowup.apiclient.ApiClientResult;
-import io.flowup.config.Config;
-import io.flowup.config.FlowUpConfig;
-import io.flowup.config.apiclient.ConfigApiClient;
-import io.flowup.config.storage.ConfigStorage;
 import io.flowup.logger.Logger;
 import io.flowup.reporter.android.WiFiSyncServiceScheduler;
 import io.flowup.reporter.apiclient.ReporterApiClient;
@@ -38,20 +34,18 @@ public class FlowUpReporter extends ScheduledReporter {
   private final ReporterApiClient reporterApiClient;
   private final ReportsStorage reportsStorage;
   private final WiFiSyncServiceScheduler syncScheduler;
-  private final FlowUpConfig flowUpConfig;
   private final Time time;
   private final boolean forceReports;
   private final FlowUpReporterListener listener;
 
   FlowUpReporter(MetricRegistry registry, String name, MetricFilter filter, TimeUnit rateUnit,
       TimeUnit durationUnit, ReporterApiClient reporterApiClient, ReportsStorage reportsStorage,
-      WiFiSyncServiceScheduler syncScheduler, FlowUpConfig flowUpConfig, Time time,
-      boolean forceReports, FlowUpReporterListener listener) {
+      WiFiSyncServiceScheduler syncScheduler, Time time, boolean forceReports,
+      FlowUpReporterListener listener) {
     super(registry, name, filter, rateUnit, durationUnit);
     this.reporterApiClient = reporterApiClient;
     this.reportsStorage = reportsStorage;
     this.syncScheduler = syncScheduler;
-    this.flowUpConfig = flowUpConfig;
     this.time = time;
     this.forceReports = forceReports;
     this.listener = listener;
@@ -69,16 +63,9 @@ public class FlowUpReporter extends ScheduledReporter {
         new DropwizardReport(time.now(), gauges, counters, histograms, meters, timers);
     storeReport(dropwizardReport);
     notifyReport(dropwizardReport);
-    if (isFlowUpDisabled()) {
-      listener.onFlowUpDisabled();
-    } else if (forceReports) {
+    if (forceReports) {
       sendStoredReports();
     }
-  }
-
-  private boolean isFlowUpDisabled() {
-    Config config = flowUpConfig.getConfig();
-    return config.isEnabled();
   }
 
   private void notifyReport(DropwizardReport report) {
@@ -162,12 +149,9 @@ public class FlowUpReporter extends ScheduledReporter {
     }
 
     public FlowUpReporter build(String apiKey, String scheme, String host, int port) {
-      FlowUpConfig flowUpConfig = new FlowUpConfig(new ConfigStorage(context),
-          new ConfigApiClient(apiKey, scheme, host, port));
       return new FlowUpReporter(registry, name, filter, TimeUnit.NANOSECONDS, TimeUnit.NANOSECONDS,
           new ReporterApiClient(apiKey, scheme, host, port), new ReportsStorage(context),
-          new WiFiSyncServiceScheduler(context, apiKey), flowUpConfig, new Time(), forceReports,
-          listener);
+          new WiFiSyncServiceScheduler(context, apiKey), new Time(), forceReports, listener);
     }
 
     public Builder forceReports(boolean forceReports) {

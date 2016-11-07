@@ -19,7 +19,10 @@ import io.flowup.android.FileSystem;
 import io.flowup.collectors.Collector;
 import io.flowup.collectors.Collectors;
 import io.flowup.collectors.UpdatableCollector;
+import io.flowup.config.FlowUpConfig;
 import io.flowup.config.android.ConfigSyncServiceScheduler;
+import io.flowup.config.apiclient.ConfigApiClient;
+import io.flowup.config.storage.ConfigStorage;
 import io.flowup.logger.Logger;
 import io.flowup.metricnames.MetricNamesExtractor;
 import io.flowup.reporter.DropwizardReport;
@@ -70,6 +73,10 @@ public final class FlowUp {
       Logger.d("This user is not in the sampling group :( ");
       return;
     }
+    if (!isFlowUpEnabled()) {
+      Logger.d("FlowUp is disabled for this device");
+      return;
+    }
     initializeMetrics();
     initializeForegroundCollectors();
     new Thread(new Runnable() {
@@ -116,6 +123,15 @@ public final class FlowUp {
     int resultCode = googleApiAvailability.isGooglePlayServicesAvailable(application);
     boolean isGooglePlayServicesSupported = resultCode == ConnectionResult.SUCCESS;
     return isGooglePlayServicesSupported;
+  }
+
+  private boolean isFlowUpEnabled() {
+    String scheme = application.getString(R.string.flowup_scheme);
+    String host = application.getString(R.string.flowup_host);
+    int port = application.getResources().getInteger(R.integer.flowup_port);
+    FlowUpConfig flowUpConfig = new FlowUpConfig(new ConfigStorage(application),
+        new ConfigApiClient(apiKey, scheme, host, port));
+    return flowUpConfig.getConfig().isEnabled();
   }
 
   private void initializeFlowUpReporter() {
