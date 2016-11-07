@@ -14,9 +14,9 @@ import com.codahale.metrics.Meter;
 import com.codahale.metrics.Timer;
 import io.flowup.android.App;
 import io.flowup.android.Device;
+import io.flowup.doubles.ActivityTwo;
 import io.flowup.metricnames.MetricNamesGenerator;
 import io.flowup.reporter.DropwizardReport;
-import io.flowup.reporter.doubles.ActivityTwo;
 import io.flowup.reporter.model.CPUMetric;
 import io.flowup.reporter.model.DiskMetric;
 import io.flowup.reporter.model.MemoryMetric;
@@ -207,6 +207,16 @@ public class ReportsStorageTest {
     Reports reports = storeAndGet(dropwizardReport);
 
     assertEquals(2, reports.getUIMetrics().size());
+  }
+
+  @Test public void clearsTheDataBase() {
+    int numberOfReports = 12;
+    List<DropwizardReport> dropwizardReports = givenSomeEmptyDropwizardReports(numberOfReports);
+    storeAndGet(dropwizardReports);
+
+    storage.clear();
+
+    assertNull(storage.getReports(numberOfReports));
   }
 
   private SortedMap<String, Histogram> givenSomeFPSMetricsFromTwoScreens() {

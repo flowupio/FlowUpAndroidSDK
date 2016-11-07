@@ -33,6 +33,7 @@ public class ApiClientResult<T> {
     NETWORK_ERROR,
     UNAUTHORIZED,
     SERVER_ERROR,
+    CLIENT_DISABLED,
     UNKNOWN
   }
 }

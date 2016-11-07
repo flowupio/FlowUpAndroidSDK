@@ -109,10 +109,20 @@ public class FlowUpReporter extends ScheduledReporter {
     ApiClientResult.Error error = result.getError();
     if (error == ApiClientResult.Error.NETWORK_ERROR) {
       Logger.e("The last sync failed due to a network error, so let's reschedule a new task");
+    } else if (error == ApiClientResult.Error.CLIENT_DISABLED) {
+      Logger.e("The client trying to report data has been disabled");
+      reportsStorage.clear();
+      notifyClientDisabled();
     } else if (!result.isSuccess()) {
       Logger.e("The last sync failed due to an unknown error");
     } else {
       Logger.d("Sync process finished with a successful result");
+    }
+  }
+
+  private void notifyClientDisabled() {
+    if (listener != null) {
+      listener.onFlowUpDisabled();
     }
   }
 

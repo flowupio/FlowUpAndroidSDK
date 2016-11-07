@@ -165,6 +165,16 @@ public class ReporterApiClientTest extends MockWebServerTestCase {
     assertEquals(ApiClientResult.Error.SERVER_ERROR, result.getError());
   }
 
+  @Test public void returnsClientDisabledAserrorIfTheServerSideResponseIsA412() throws Exception {
+    enqueueMockResponse(PRECONDITION_FAILED);
+    Reports reports = givenSomeReports();
+
+    ApiClientResult result = reporterApiClient.sendReports(reports);
+
+    assertFalse(result.isSuccess());
+    assertEquals(ApiClientResult.Error.CLIENT_DISABLED, result.getError());
+  }
+
   private ReporterApiClient givenAnApiClient(boolean useGzip) {
     return new ReporterApiClient(ANY_API_KEY, getScheme(), getHost(), getPort(), useGzip);
   }

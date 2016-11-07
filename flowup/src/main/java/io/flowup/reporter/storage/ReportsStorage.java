@@ -61,6 +61,18 @@ public class ReportsStorage extends RealmStorage {
     realm.close();
   }
 
+  public void clear() {
+    Realm realm = getRealm();
+    realm.executeTransaction(new Realm.Transaction() {
+      @Override public void execute(Realm realm) {
+        realm.where(RealmReport.class).findAll().deleteAllFromRealm();
+        realm.where(RealmMetric.class).findAll().deleteAllFromRealm();
+        realm.where(RealmStatisticalValue.class).findAll().deleteAllFromRealm();
+      }
+    });
+    realm.close();
+  }
+
   private void deleteMetricsReports(Realm realm, RealmList<RealmMetric> metricsToRemove) {
     List<RealmResults<RealmMetric>> metricsReportsToRemove = new LinkedList<>();
     for (RealmMetric metric : metricsToRemove) {

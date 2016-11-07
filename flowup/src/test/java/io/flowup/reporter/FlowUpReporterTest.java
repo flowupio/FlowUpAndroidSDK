@@ -40,11 +40,12 @@ import static org.mockito.Mockito.when;
   @Mock private ReportsStorage storage;
   @Mock private WiFiSyncServiceScheduler syncScheduler;
   @Mock private Time time;
+  @Mock private FlowUpReporterListener listener;
 
   private FlowUpReporter givenAFlowUpReporter(boolean forceReports) {
     return new FlowUpReporter(new MetricRegistry(), "ReporterName", MetricFilter.ALL,
         TimeUnit.SECONDS, TimeUnit.MILLISECONDS, reporterApiClient, storage, syncScheduler, time,
-        forceReports, null);
+        forceReports, listener);
   }
 
   @Test public void storesDropwizardReportAndDoesNotInitializeSyncIfDebugIsNotEnabled() {
@@ -180,6 +181,30 @@ import static org.mockito.Mockito.when;
     verify(storage).deleteReports(reportsSent);
   }
 
+  @Test public void clearsTheReportsStorageOnClientDisabled() {
+    List<String> ids = Collections.singletonList(String.valueOf(ANY_TIMESTAMP));
+    Reports reportsSent = givenAReportsInstanceWithId(ids);
+    givenSomeStoredReports(reportsSent);
+    givenTheServerErrorReturnsAClientDisabledResponse(reportsSent);
+    FlowUpReporter reporter = givenAFlowUpReporter(true);
+
+    reportSomeMetrics(reporter);
+
+    verify(storage).clear();
+  }
+
+  @Test public void notifiesClientDisabledOnClientDisabledResponseObtainedDuringTheReportProcess() {
+    List<String> ids = Collections.singletonList(String.valueOf(ANY_TIMESTAMP));
+    Reports reportsSent = givenAReportsInstanceWithId(ids);
+    givenSomeStoredReports(reportsSent);
+    givenTheServerErrorReturnsAClientDisabledResponse(reportsSent);
+    FlowUpReporter reporter = givenAFlowUpReporter(true);
+
+    reportSomeMetrics(reporter);
+
+    verify(listener).onFlowUpDisabled();
+  }
+
   private void givenSomeStoredReports(Reports reportsSent) {
     when(storage.getReports(anyInt())).thenReturn(reportsSent, null);
   }
@@ -194,6 +219,11 @@ import static org.mockito.Mockito.when;
         new ApiClientResult(ApiClientResult.Error.SERVER_ERROR));
   }
 
+  private void givenTheServerErrorReturnsAClientDisabledResponse(Reports reports) {
+    when(reporterApiClient.sendReports(reports)).thenReturn(
+        new ApiClientResult(ApiClientResult.Error.CLIENT_DISABLED));
+  }
+
   private void givenTheSyncProcessIsSuccess(Reports reports) {
     when(reporterApiClient.sendReports(reports)).thenReturn(new ApiClientResult(reports));
   }
@@ -204,7 +234,8 @@ import static org.mockito.Mockito.when;
   }
 
   private void givenTheSyncProcessFails(Reports reports) {
-    when(reporterApiClient.sendReports(reports)).thenReturn(new ApiClientResult(ApiClientResult.Error.UNKNOWN));
+    when(reporterApiClient.sendReports(reports)).thenReturn(
+        new ApiClientResult(ApiClientResult.Error.UNKNOWN));
   }
 
   private DropwizardReport report(FlowUpReporter reporter) {

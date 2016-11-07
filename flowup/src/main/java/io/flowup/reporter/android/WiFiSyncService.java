@@ -86,6 +86,10 @@ public class WiFiSyncService extends GcmTaskService {
     if (error == ApiClientResult.Error.NETWORK_ERROR) {
       Logger.e("The last sync failed due to a network error, so let's reschedule a new task");
       return RESULT_RESCHEDULE;
+    } else if (error == ApiClientResult.Error.CLIENT_DISABLED) {
+      Logger.e("The client trying to report data has been disabled");
+      reportsStorage.clear();
+      return RESULT_FAILURE;
     } else if (!result.isSuccess()) {
       Logger.e("The last sync failed due to an unknown error");
       return RESULT_FAILURE;

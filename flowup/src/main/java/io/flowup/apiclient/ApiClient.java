@@ -16,6 +16,7 @@ public class ApiClient {
   protected static final int FORBIDDEN_STATUS_CODE = 403;
   protected static final int UNAUTHORIZED_STATUS_CODE = 401;
   protected static final int SERVER_ERROR_STATUS_CODE = 500;
+  protected static final int PRECONDITION_FAILED_STATUS_CODE = 412;
 
   protected final OkHttpClient httpClient;
   protected final Gson jsonParser;

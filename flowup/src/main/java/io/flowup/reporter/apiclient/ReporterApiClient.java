@@ -48,6 +48,8 @@ public class ReporterApiClient extends ApiClient {
         return ApiClientResult.Error.UNAUTHORIZED;
       case SERVER_ERROR_STATUS_CODE:
         return ApiClientResult.Error.SERVER_ERROR;
+      case PRECONDITION_FAILED_STATUS_CODE:
+        return ApiClientResult.Error.CLIENT_DISABLED;
       default:
         return ApiClientResult.Error.UNKNOWN;
     }
