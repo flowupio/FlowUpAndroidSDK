@@ -4,6 +4,7 @@
 
 package io.flowup.reporter.apiclient;
 
+import io.flowup.apiclient.ApiClient;
 import io.flowup.logger.Logger;
 import io.flowup.reporter.ReportResult;
 import io.flowup.reporter.model.Reports;
@@ -16,26 +17,14 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class ReporterApiClient {
-
-  private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-  private static final int FORBIDDEN_STATUS_CODE = 403;
-  private static final int UNAUTHORIZED_STATUS_CODE = 401;
-  private static final int SERVER_ERROR_STATUS_CODE = 500;
-
-  private final OkHttpClient httpClient;
-  private final Gson jsonParser;
-  private final HttpUrl baseUrl;
+public class ReporterApiClient extends ApiClient {
 
   public ReporterApiClient(String apiKey, String scheme, String host, int port) {
-    this(apiKey, scheme, host, port, true);
+    super(apiKey, scheme, host, port);
   }
 
-  public ReporterApiClient(String apiKey, String scheme, String host, int port,
-      boolean useGzip) {
-    this.httpClient = ApiClientConfig.getHttpClient(apiKey, Logger.isLogEnabled(), useGzip);
-    this.jsonParser = ApiClientConfig.getJsonParser();
-    this.baseUrl = ApiClientConfig.buildURL(scheme, host, port);
+  public ReporterApiClient(String apiKey, String scheme, String host, int port, boolean useGzip) {
+    super(apiKey, scheme, host, port, useGzip);
   }
 
   public ReportResult sendReports(Reports reports) {

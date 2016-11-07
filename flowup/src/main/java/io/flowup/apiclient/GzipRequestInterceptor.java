@@ -2,7 +2,7 @@
  * Copyright (C) 2016 Go Karumi S.L.
  */
 
-package io.flowup.reporter.apiclient;
+package io.flowup.apiclient;
 
 import java.io.IOException;
 import okhttp3.Interceptor;
