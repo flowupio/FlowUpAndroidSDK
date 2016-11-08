@@ -44,7 +44,7 @@ public class ConfigStorageTest {
     assertEquals(newConfig, persistedConfig);
   }
 
-  @Test public void thereIsJustOneConfigConfigPersisted() {
+  @Test public void thereIsJustOneConfigObjectPersisted() {
     Config newConfig = new Config(false);
     storage.updateConfig(newConfig);
     storage.updateConfig(newConfig);

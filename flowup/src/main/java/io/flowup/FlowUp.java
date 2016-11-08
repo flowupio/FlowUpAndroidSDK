@@ -73,7 +73,7 @@ public final class FlowUp {
     initializeForegroundCollectors();
     new Thread(new Runnable() {
       @Override public void run() {
-        initializeConfigSystem();
+        initializeConfigScheduler();
         initializeNetworkCollectors();
         initializeCPUCollectors();
         initializeMemoryCollectors();
@@ -208,7 +208,7 @@ public final class FlowUp {
     activityLifecycleCollector.initialize(registry);
   }
 
-  private void initializeConfigSystem() {
+  private void initializeConfigScheduler() {
     ConfigSyncServiceScheduler scheduler = new ConfigSyncServiceScheduler(application, apiKey);
     scheduler.scheduleSyncTask();
   }

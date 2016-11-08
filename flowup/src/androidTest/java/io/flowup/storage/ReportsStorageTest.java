@@ -209,7 +209,7 @@ public class ReportsStorageTest {
     assertEquals(2, reports.getUIMetrics().size());
   }
 
-  @Test public void clearsTheDataBase() {
+  @Test public void clearsTheDatabase() {
     int numberOfReports = 12;
     List<DropwizardReport> dropwizardReports = givenSomeEmptyDropwizardReports(numberOfReports);
     storeAndGet(dropwizardReports);
