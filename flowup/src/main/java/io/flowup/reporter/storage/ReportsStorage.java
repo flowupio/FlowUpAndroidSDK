@@ -7,19 +7,17 @@ package io.flowup.reporter.storage;
 import android.content.Context;
 import io.flowup.reporter.DropwizardReport;
 import io.flowup.reporter.model.Reports;
+import io.flowup.storage.RealmStorage;
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ReportsStorage {
-
-  private final Context context;
+public class ReportsStorage extends RealmStorage {
 
   public ReportsStorage(Context context) {
-    this.context = context;
+    super(context);
   }
 
   public void storeMetrics(final DropwizardReport dropwizardReport) {
@@ -63,6 +61,18 @@ public class ReportsStorage {
     realm.close();
   }
 
+  public void clear() {
+    Realm realm = getRealm();
+    realm.executeTransaction(new Realm.Transaction() {
+      @Override public void execute(Realm realm) {
+        realm.where(RealmReport.class).findAll().deleteAllFromRealm();
+        realm.where(RealmMetric.class).findAll().deleteAllFromRealm();
+        realm.where(RealmStatisticalValue.class).findAll().deleteAllFromRealm();
+      }
+    });
+    realm.close();
+  }
+
   private void deleteMetricsReports(Realm realm, RealmList<RealmMetric> metricsToRemove) {
     List<RealmResults<RealmMetric>> metricsReportsToRemove = new LinkedList<>();
     for (RealmMetric metric : metricsToRemove) {
@@ -83,11 +93,6 @@ public class ReportsStorage {
         .equalTo(RealmStatisticalValue.ID_FIELD_NAME, statisticalValueToRemove.getId())
         .findAll()
         .deleteAllFromRealm();
-  }
-
-  private Realm getRealm() {
-    RealmConfiguration config = RealmConfig.getRealmConfig(context);
-    return Realm.getInstance(config);
   }
 
   private void storeAsRealmObject(Realm realm, DropwizardReport dropwizardReport) {

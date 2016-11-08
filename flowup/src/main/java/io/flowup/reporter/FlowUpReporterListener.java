@@ -4,4 +4,6 @@ public interface FlowUpReporterListener {
 
   void onReport(DropwizardReport report);
 
+  void onFlowUpDisabled();
+
 }

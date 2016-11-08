@@ -7,6 +7,7 @@ package io.flowup;
 import android.app.Application;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import com.codahale.metrics.Metric;
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
@@ -18,16 +19,18 @@ import io.flowup.android.FileSystem;
 import io.flowup.collectors.Collector;
 import io.flowup.collectors.Collectors;
 import io.flowup.collectors.UpdatableCollector;
+import io.flowup.config.FlowUpConfig;
+import io.flowup.config.android.ConfigSyncServiceScheduler;
+import io.flowup.config.apiclient.ConfigApiClient;
+import io.flowup.config.storage.ConfigStorage;
 import io.flowup.logger.Logger;
 import io.flowup.metricnames.MetricNamesExtractor;
 import io.flowup.reporter.DropwizardReport;
 import io.flowup.reporter.FlowUpReporter;
 import io.flowup.reporter.FlowUpReporterListener;
-import io.flowup.sampling.SamplingGroup;
 import io.flowup.unix.Terminal;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public final class FlowUp {
@@ -39,18 +42,17 @@ public final class FlowUp {
   private final String apiKey;
   private final boolean forceReports;
   private final boolean logEnabled;
-  private final SamplingGroup samplingGroup;
 
   private static MetricRegistry registry;
+  private static FlowUpReporter reporter;
+  private FlowUpConfig flowUpConfig;
 
-  FlowUp(Application application, String apiKey, boolean forceReports, boolean logEnabled,
-      SamplingGroup samplingGroup) {
+  FlowUp(Application application, String apiKey, boolean forceReports, boolean logEnabled) {
     validateConstructionParams(application, apiKey);
     this.application = application;
     this.apiKey = apiKey;
     this.forceReports = forceReports;
     this.logEnabled = logEnabled;
-    this.samplingGroup = samplingGroup;
   }
 
   void start() {
@@ -63,14 +65,15 @@ public final class FlowUp {
           "FlowUp hasn't been initialized. Google play services is not supported in this device");
       return;
     }
-    if (!samplingGroup.isIn()) {
-      Logger.d("This user is not in the sampling group :( ");
+    if (!isFlowUpEnabled()) {
+      Logger.d("FlowUp is disabled for this device");
       return;
     }
     initializeMetrics();
     initializeForegroundCollectors();
     new Thread(new Runnable() {
       @Override public void run() {
+        initializeConfigScheduler();
         initializeNetworkCollectors();
         initializeCPUCollectors();
         initializeMemoryCollectors();
@@ -114,11 +117,20 @@ public final class FlowUp {
     return isGooglePlayServicesSupported;
   }
 
+  private boolean isFlowUpEnabled() {
+    String scheme = application.getString(R.string.flowup_scheme);
+    String host = application.getString(R.string.flowup_host);
+    int port = application.getResources().getInteger(R.integer.flowup_port);
+    flowUpConfig = new FlowUpConfig(new ConfigStorage(application),
+        new ConfigApiClient(apiKey, scheme, host, port));
+    return flowUpConfig.getConfig().isEnabled();
+  }
+
   private void initializeFlowUpReporter() {
     String scheme = application.getString(R.string.flowup_scheme);
     String host = application.getString(R.string.flowup_host);
     int port = application.getResources().getInteger(R.integer.flowup_port);
-    FlowUpReporter.forRegistry(registry, application)
+    reporter = FlowUpReporter.forRegistry(registry, application)
         .filter(MetricFilter.ALL)
         .forceReports(forceReports)
         .listener(new FlowUpReporterListener() {
@@ -126,9 +138,19 @@ public final class FlowUp {
             removeActivityTimers(report);
             restartUpdatableCollectors();
           }
+
+          @Override public void onFlowUpDisabled() {
+            registry.removeMatching(new MetricFilter() {
+              @Override public boolean matches(String name, Metric metric) {
+                return true;
+              }
+            });
+            reporter.stop();
+            flowUpConfig.disableClient();
+          }
         })
-        .build(apiKey, scheme, host, port)
-        .start(SAMPLING_INTERVAL, TimeUnit.SECONDS);
+        .build(apiKey, scheme, host, port);
+    reporter.start(SAMPLING_INTERVAL, TimeUnit.SECONDS);
   }
 
   private void removeActivityTimers(DropwizardReport report) {
@@ -186,6 +208,11 @@ public final class FlowUp {
     activityLifecycleCollector.initialize(registry);
   }
 
+  private void initializeConfigScheduler() {
+    ConfigSyncServiceScheduler scheduler = new ConfigSyncServiceScheduler(application, apiKey);
+    scheduler.scheduleSyncTask();
+  }
+
   private void initializeNetworkCollectors() {
     Collector bytesUploadedCollector =
         Collectors.getNetworkUsageCollector(application, SAMPLING_INTERVAL, SAMPLING_TIME_UNIT);
@@ -219,7 +246,6 @@ public final class FlowUp {
     String apiKey;
     boolean forceReports;
     boolean logEnabled;
-    double sampling = 1;
 
     Builder() {
     }
@@ -240,19 +266,13 @@ public final class FlowUp {
       return this;
     }
 
-    public Builder sampling(double sampling) {
-      this.sampling = sampling;
-      return this;
-    }
-
     public Builder logEnabled(boolean logEnabled) {
       this.logEnabled = logEnabled;
       return this;
     }
 
     public void start() {
-      new FlowUp(application, apiKey, forceReports, logEnabled,
-          new SamplingGroup(new Random(), sampling)).start();
+      new FlowUp(application, apiKey, forceReports, logEnabled).start();
     }
   }
 }

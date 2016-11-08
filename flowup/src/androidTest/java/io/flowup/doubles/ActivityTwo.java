@@ -1,4 +1,4 @@
-package io.flowup.reporter.doubles;
+package io.flowup.doubles;
 
 import android.app.Activity;
 

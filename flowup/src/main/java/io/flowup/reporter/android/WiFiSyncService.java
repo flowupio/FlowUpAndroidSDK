@@ -8,10 +8,13 @@ import android.os.Bundle;
 import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;
 import io.flowup.R;
+import io.flowup.apiclient.ApiClientResult;
+import io.flowup.config.FlowUpConfig;
+import io.flowup.config.apiclient.ConfigApiClient;
+import io.flowup.config.storage.ConfigStorage;
 import io.flowup.logger.Logger;
 import io.flowup.reporter.FlowUpReporter;
-import io.flowup.reporter.ReportResult;
-import io.flowup.reporter.apiclient.ApiClient;
+import io.flowup.reporter.apiclient.ReportApiClient;
 import io.flowup.reporter.model.Reports;
 import io.flowup.reporter.storage.ReportsStorage;
 
@@ -24,20 +27,33 @@ public class WiFiSyncService extends GcmTaskService {
 
   static final String API_KEY_EXTRA = "apiKeyExtra";
 
-  private ApiClient apiClient;
+  private ReportApiClient reportApiClient;
   private ReportsStorage reportsStorage;
+  private FlowUpConfig flowUpConfig;
 
   @Override public int onRunTask(TaskParams taskParams) {
     if (!isTaskSupported(taskParams)) {
       return RESULT_FAILURE;
     }
     String apiKey = getApiKey(taskParams);
+    if (!isClientEnabled(apiKey)) {
+      return RESULT_FAILURE;
+    }
     String scheme = getString(R.string.flowup_scheme);
     String host = getString(R.string.flowup_host);
     int port = getResources().getInteger(R.integer.flowup_port);
     reportsStorage = new ReportsStorage(this);
-    apiClient = new ApiClient(apiKey, scheme, host, port);
+    reportApiClient = new ReportApiClient(apiKey, scheme, host, port);
     return syncStoredReports();
+  }
+
+  private boolean isClientEnabled(String apiKey) {
+    String scheme = getString(R.string.flowup_scheme);
+    String host = getString(R.string.flowup_host);
+    int port = getResources().getInteger(R.integer.flowup_port);
+    FlowUpConfig flowUpConfig = new FlowUpConfig(new ConfigStorage(getApplicationContext()),
+        new ConfigApiClient(apiKey, scheme, host, port));
+    return flowUpConfig.getConfig().isEnabled();
   }
 
   private String getApiKey(TaskParams taskParams) {
@@ -60,17 +76,18 @@ public class WiFiSyncService extends GcmTaskService {
       Logger.d("There are no reports to sync.");
       return RESULT_SUCCESS;
     }
-    ReportResult.Error error;
-    ReportResult result;
+    ApiClientResult.Error error;
+    ApiClientResult result;
     do {
       Logger.d(reports.getReportsIds().size() + " reports to sync");
       Logger.d(reports.toString());
-      result = apiClient.sendReports(reports);
+      result = reportApiClient.sendReports(reports);
       if (result.isSuccess()) {
         Logger.d("Api response successful");
         reportsStorage.deleteReports(reports);
       } else if (shouldDeleteReportsOnError(result)) {
         Logger.e("Api response error: " + result.getError());
+        disableFlowUp();
         reportsStorage.deleteReports(reports);
       } else {
         Logger.e("Api response error: " + result.getError());
@@ -83,9 +100,13 @@ public class WiFiSyncService extends GcmTaskService {
       }
       error = result.getError();
     } while (reports != null && result.isSuccess());
-    if (error == ReportResult.Error.NETWORK_ERROR) {
+    if (error == ApiClientResult.Error.NETWORK_ERROR) {
       Logger.e("The last sync failed due to a network error, so let's reschedule a new task");
       return RESULT_RESCHEDULE;
+    } else if (error == ApiClientResult.Error.CLIENT_DISABLED) {
+      Logger.e("The client trying to report data has been disabled");
+      reportsStorage.clear();
+      return RESULT_FAILURE;
     } else if (!result.isSuccess()) {
       Logger.e("The last sync failed due to an unknown error");
       return RESULT_FAILURE;
@@ -95,8 +116,13 @@ public class WiFiSyncService extends GcmTaskService {
     }
   }
 
-  private boolean shouldDeleteReportsOnError(ReportResult result) {
-    ReportResult.Error error = result.getError();
-    return ReportResult.Error.UNAUTHORIZED == error || ReportResult.Error.SERVER_ERROR == error;
+  private void disableFlowUp() {
+    flowUpConfig.disableClient();
+  }
+
+  private boolean shouldDeleteReportsOnError(ApiClientResult result) {
+    ApiClientResult.Error error = result.getError();
+    return ApiClientResult.Error.UNAUTHORIZED == error
+        || ApiClientResult.Error.SERVER_ERROR == error;
   }
 }

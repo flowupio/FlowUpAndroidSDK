@@ -2,7 +2,7 @@
  * Copyright (C) 2016 Go Karumi S.L.
  */
 
-package io.flowup.reporter.storage;
+package io.flowup.storage;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,15 +14,16 @@ import com.codahale.metrics.Meter;
 import com.codahale.metrics.Timer;
 import io.flowup.android.App;
 import io.flowup.android.Device;
+import io.flowup.doubles.ActivityTwo;
 import io.flowup.metricnames.MetricNamesGenerator;
 import io.flowup.reporter.DropwizardReport;
-import io.flowup.reporter.doubles.ActivityTwo;
 import io.flowup.reporter.model.CPUMetric;
 import io.flowup.reporter.model.DiskMetric;
 import io.flowup.reporter.model.MemoryMetric;
 import io.flowup.reporter.model.NetworkMetric;
 import io.flowup.reporter.model.Reports;
 import io.flowup.reporter.model.UIMetric;
+import io.flowup.reporter.storage.ReportsStorage;
 import io.flowup.utils.Time;
 import io.realm.Realm;
 import java.util.Collections;
@@ -206,6 +207,16 @@ public class ReportsStorageTest {
     Reports reports = storeAndGet(dropwizardReport);
 
     assertEquals(2, reports.getUIMetrics().size());
+  }
+
+  @Test public void clearsTheDatabase() {
+    int numberOfReports = 12;
+    List<DropwizardReport> dropwizardReports = givenSomeEmptyDropwizardReports(numberOfReports);
+    storeAndGet(dropwizardReports);
+
+    storage.clear();
+
+    assertNull(storage.getReports(numberOfReports));
   }
 
   private SortedMap<String, Histogram> givenSomeFPSMetricsFromTwoScreens() {

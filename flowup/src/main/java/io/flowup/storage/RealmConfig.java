@@ -2,9 +2,10 @@
  * Copyright (C) 2016 Go Karumi S.L.
  */
 
-package io.flowup.reporter.storage;
+package io.flowup.storage;
 
 import android.content.Context;
+import io.flowup.reporter.storage.FlowUpRealmModule;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 

@@ -6,7 +6,7 @@ package io.flowup.reporter.apiclient;
 
 import io.flowup.BuildConfig;
 import io.flowup.MockWebServerTestCase;
-import io.flowup.reporter.ReportResult;
+import io.flowup.apiclient.ApiClientResult;
 import io.flowup.reporter.model.CPUMetric;
 import io.flowup.reporter.model.DiskMetric;
 import io.flowup.reporter.model.MemoryMetric;
@@ -23,7 +23,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 
-public class ApiClientTest extends MockWebServerTestCase {
+public class ReportApiClientTest extends MockWebServerTestCase {
 
   private static final long ANY_TIMESTAMP = 123456789;
   private static final String ANY_VERSION_NAME = "1.0.0";
@@ -36,19 +36,19 @@ public class ApiClientTest extends MockWebServerTestCase {
   private static final long ANY_SHARED_PREFS_WRITTEN_BYTES = 1024;
   private static final String ANY_API_KEY = "15207698c544f617e2c11151ada4972e1e7d6e8e";
 
-  private ApiClient apiClient;
+  private ReportApiClient reportApiClient;
 
   @Before public void setUp() throws Exception {
     super.setUp();
     boolean useGzip = false;
-    apiClient = givenAnApiClient(useGzip);
+    reportApiClient = givenAnApiClient(useGzip);
   }
 
   @Test public void sendsAcceptApplicationJsonHeader() throws Exception {
     enqueueMockResponse();
     Reports reports = givenSomeReports();
 
-    apiClient.sendReports(reports);
+    reportApiClient.sendReports(reports);
 
     assertRequestContainsHeader("Accept", "application/json");
   }
@@ -57,7 +57,7 @@ public class ApiClientTest extends MockWebServerTestCase {
     enqueueMockResponse();
     Reports reports = givenSomeReports();
 
-    apiClient.sendReports(reports);
+    reportApiClient.sendReports(reports);
 
     assertRequestContainsHeader("Content-Type", "application/json; charset=utf-8");
   }
@@ -75,7 +75,7 @@ public class ApiClientTest extends MockWebServerTestCase {
     enqueueMockResponse();
     Reports reports = givenSomeReports();
 
-    apiClient.sendReports(reports);
+    reportApiClient.sendReports(reports);
 
     assertRequestContainsHeader("X-Api-key", ANY_API_KEY);
   }
@@ -84,7 +84,7 @@ public class ApiClientTest extends MockWebServerTestCase {
     enqueueMockResponse();
     Reports reports = givenSomeReports();
 
-    apiClient.sendReports(reports);
+    reportApiClient.sendReports(reports);
 
     assertRequestContainsHeader("User-Agent", "FlowUpAndroidSDK/" + BuildConfig.VERSION_NAME);
   }
@@ -93,7 +93,7 @@ public class ApiClientTest extends MockWebServerTestCase {
     enqueueMockResponse();
     Reports reports = givenSomeReports();
 
-    apiClient.sendReports(reports);
+    reportApiClient.sendReports(reports);
 
     assertRequestSentTo("/report");
   }
@@ -102,16 +102,16 @@ public class ApiClientTest extends MockWebServerTestCase {
     enqueueMockResponse();
     Reports reports = givenAReportsInstanceBasedOnJustOneReport();
 
-    apiClient.sendReports(reports);
+    reportApiClient.sendReports(reports);
 
-    assertRequestBodyEquals("apiClient/simpleReportRequestBody.json");
+    assertRequestBodyEquals("report/simpleReportRequestBody.json");
   }
 
   @Test public void returnsSuccessResultIfTheHttpStatusCodeIsOk() throws Exception {
     enqueueMockResponse(OK_CODE);
     Reports reports = givenSomeReports();
 
-    ReportResult result = apiClient.sendReports(reports);
+    ApiClientResult result = reportApiClient.sendReports(reports);
 
     assertTrue(result.isSuccess());
   }
@@ -120,7 +120,7 @@ public class ApiClientTest extends MockWebServerTestCase {
     enqueueMockResponse(SERVER_ERROR_CODE);
     Reports reports = givenSomeReports();
 
-    ReportResult result = apiClient.sendReports(reports);
+    ApiClientResult result = reportApiClient.sendReports(reports);
 
     assertFalse(result.isSuccess());
   }
@@ -130,43 +130,53 @@ public class ApiClientTest extends MockWebServerTestCase {
     enqueueMockResponse(OK_CODE);
     Reports reports = givenSomeReports();
 
-    ReportResult result = apiClient.sendReports(reports);
+    ApiClientResult result = reportApiClient.sendReports(reports);
 
-    assertEquals(reports, result.getReports());
+    assertEquals(reports, result.getValue());
   }
 
   @Test public void returnsUnauthorizedErrorIfTheServerSideResponseIsA401() throws Exception {
     enqueueMockResponse(UNAUTHORIZED_ERROR_CODE);
     Reports reports = givenSomeReports();
 
-    ReportResult result = apiClient.sendReports(reports);
+    ApiClientResult result = reportApiClient.sendReports(reports);
 
     assertFalse(result.isSuccess());
-    assertEquals(ReportResult.Error.UNAUTHORIZED, result.getError());
+    assertEquals(ApiClientResult.Error.UNAUTHORIZED, result.getError());
   }
 
   @Test public void returnsUnauthorizedErrorIfTheServerSideResponseIsA403() throws Exception {
     enqueueMockResponse(FORBIDDEN_ERROR_CODE);
     Reports reports = givenSomeReports();
 
-    ReportResult result = apiClient.sendReports(reports);
+    ApiClientResult result = reportApiClient.sendReports(reports);
 
     assertFalse(result.isSuccess());
-    assertEquals(ReportResult.Error.UNAUTHORIZED, result.getError());
+    assertEquals(ApiClientResult.Error.UNAUTHORIZED, result.getError());
   }
 
   @Test public void returnsServerErrorIfTheServerSideResponseIsA500() throws Exception {
     enqueueMockResponse(SERVER_ERROR_CODE);
     Reports reports = givenSomeReports();
 
-    ReportResult result = apiClient.sendReports(reports);
+    ApiClientResult result = reportApiClient.sendReports(reports);
 
     assertFalse(result.isSuccess());
-    assertEquals(ReportResult.Error.SERVER_ERROR, result.getError());
+    assertEquals(ApiClientResult.Error.SERVER_ERROR, result.getError());
   }
 
-  private ApiClient givenAnApiClient(boolean useGzip) {
-    return new ApiClient(ANY_API_KEY, getScheme(), getHost(), getPort(), useGzip);
+  @Test public void returnsClientDisabledAserrorIfTheServerSideResponseIsA412() throws Exception {
+    enqueueMockResponse(PRECONDITION_FAILED);
+    Reports reports = givenSomeReports();
+
+    ApiClientResult result = reportApiClient.sendReports(reports);
+
+    assertFalse(result.isSuccess());
+    assertEquals(ApiClientResult.Error.CLIENT_DISABLED, result.getError());
+  }
+
+  private ReportApiClient givenAnApiClient(boolean useGzip) {
+    return new ReportApiClient(ANY_API_KEY, getScheme(), getHost(), getPort(), useGzip);
   }
 
   private Reports givenSomeReports() {
