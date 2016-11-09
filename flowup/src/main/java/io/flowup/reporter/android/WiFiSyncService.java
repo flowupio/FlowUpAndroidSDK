@@ -18,7 +18,6 @@ import io.flowup.reporter.FlowUpReporter;
 import io.flowup.reporter.apiclient.ReportApiClient;
 import io.flowup.reporter.model.Reports;
 import io.flowup.reporter.storage.ReportsStorage;
-import java.util.UUID;
 
 import static com.google.android.gms.gcm.GcmNetworkManager.RESULT_FAILURE;
 import static com.google.android.gms.gcm.GcmNetworkManager.RESULT_RESCHEDULE;
