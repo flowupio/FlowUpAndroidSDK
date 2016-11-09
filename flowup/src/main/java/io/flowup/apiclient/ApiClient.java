@@ -22,12 +22,13 @@ public class ApiClient {
   protected final Gson jsonParser;
   protected final HttpUrl baseUrl;
 
-  public ApiClient(String apiKey, String scheme, String host, int port) {
-    this(apiKey, scheme, host, port, true);
+  public ApiClient(String apiKey, String uuid, String scheme, String host, int port) {
+    this(apiKey, uuid, scheme, host, port, true);
   }
 
-  public ApiClient(String apiKey, String scheme, String host, int port, boolean useGzip) {
-    this.httpClient = ApiClientConfig.getHttpClient(apiKey, Logger.isLogEnabled(), useGzip);
+  public ApiClient(String apiKey, String uuid, String scheme, String host, int port,
+      boolean useGzip) {
+    this.httpClient = ApiClientConfig.getHttpClient(apiKey, uuid, Logger.isLogEnabled(), useGzip);
     this.jsonParser = ApiClientConfig.getJsonParser();
     this.baseUrl = ApiClientConfig.buildURL(scheme, host, port);
   }

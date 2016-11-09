@@ -35,6 +35,7 @@ public class ReportApiClientTest extends MockWebServerTestCase {
   private static final long ANY_INTERNAL_STORAGE_WRITTEN_BYTES = 2048;
   private static final long ANY_SHARED_PREFS_WRITTEN_BYTES = 1024;
   private static final String ANY_API_KEY = "15207698c544f617e2c11151ada4972e1e7d6e8e";
+  private static final String ANY_UUID = "device123";
 
   private ReportApiClient reportApiClient;
 
@@ -78,6 +79,16 @@ public class ReportApiClientTest extends MockWebServerTestCase {
     reportApiClient.sendReports(reports);
 
     assertRequestContainsHeader("X-Api-key", ANY_API_KEY);
+  }
+
+
+  @Test public void sendsUUIDHeader() throws Exception {
+    enqueueMockResponse();
+    Reports reports = givenSomeReports();
+
+    reportApiClient.sendReports(reports);
+
+    assertRequestContainsHeader("X-UUID", ANY_UUID);
   }
 
   @Test public void sendsUserAgentHeader() throws Exception {
@@ -176,7 +187,7 @@ public class ReportApiClientTest extends MockWebServerTestCase {
   }
 
   private ReportApiClient givenAnApiClient(boolean useGzip) {
-    return new ReportApiClient(ANY_API_KEY, getScheme(), getHost(), getPort(), useGzip);
+    return new ReportApiClient(ANY_API_KEY, ANY_UUID, getScheme(), getHost(), getPort(), useGzip);
   }
 
   private Reports givenSomeReports() {

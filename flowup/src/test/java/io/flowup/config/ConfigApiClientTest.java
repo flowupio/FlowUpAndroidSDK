@@ -18,12 +18,13 @@ import static org.junit.Assert.assertTrue;
 public class ConfigApiClientTest extends MockWebServerTestCase {
 
   private static final String ANY_API_KEY = "123456";
+  private static final String ANY_UUID = "device123";
 
   private ConfigApiClient apiClient;
 
   @Before public void setUp() throws Exception {
     super.setUp();
-    apiClient = new ConfigApiClient(ANY_API_KEY, getScheme(), getHost(), getPort());
+    apiClient = new ConfigApiClient(ANY_API_KEY, ANY_UUID, getScheme(), getHost(), getPort());
   }
 
   @Test public void sendsAcceptApplicationJsonHeader() throws Exception {
@@ -40,6 +41,14 @@ public class ConfigApiClientTest extends MockWebServerTestCase {
     apiClient.getConfig();
 
     assertRequestContainsHeader("X-Api-key", ANY_API_KEY);
+  }
+
+  @Test public void sendsUUIDHeader() throws Exception {
+    enqueueMockResponse();
+
+    apiClient.getConfig();
+
+    assertRequestContainsHeader("X-UUID", ANY_UUID);
   }
 
   @Test public void sendsUserAgentHeader() throws Exception {

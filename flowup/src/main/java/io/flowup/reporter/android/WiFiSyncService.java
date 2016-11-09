@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;
 import io.flowup.R;
+import io.flowup.android.Device;
 import io.flowup.apiclient.ApiClientResult;
 import io.flowup.config.FlowUpConfig;
 import io.flowup.config.apiclient.ConfigApiClient;
@@ -17,6 +18,7 @@ import io.flowup.reporter.FlowUpReporter;
 import io.flowup.reporter.apiclient.ReportApiClient;
 import io.flowup.reporter.model.Reports;
 import io.flowup.reporter.storage.ReportsStorage;
+import java.util.UUID;
 
 import static com.google.android.gms.gcm.GcmNetworkManager.RESULT_FAILURE;
 import static com.google.android.gms.gcm.GcmNetworkManager.RESULT_RESCHEDULE;
@@ -42,8 +44,9 @@ public class WiFiSyncService extends GcmTaskService {
     String scheme = getString(R.string.flowup_scheme);
     String host = getString(R.string.flowup_host);
     int port = getResources().getInteger(R.integer.flowup_port);
+    String uuid = new Device(this).getInstallationUUID();
     reportsStorage = new ReportsStorage(this);
-    reportApiClient = new ReportApiClient(apiKey, scheme, host, port);
+    reportApiClient = new ReportApiClient(apiKey, uuid, scheme, host, port);
     return syncStoredReports();
   }
 
@@ -51,8 +54,9 @@ public class WiFiSyncService extends GcmTaskService {
     String scheme = getString(R.string.flowup_scheme);
     String host = getString(R.string.flowup_host);
     int port = getResources().getInteger(R.integer.flowup_port);
+    String uuid = new Device(this).getInstallationUUID();
     FlowUpConfig flowUpConfig = new FlowUpConfig(new ConfigStorage(getApplicationContext()),
-        new ConfigApiClient(apiKey, scheme, host, port));
+        new ConfigApiClient(apiKey, uuid, scheme, host, port));
     return flowUpConfig.getConfig().isEnabled();
   }
 

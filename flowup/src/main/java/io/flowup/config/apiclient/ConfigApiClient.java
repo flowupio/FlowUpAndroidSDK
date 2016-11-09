@@ -16,8 +16,8 @@ public class ConfigApiClient extends ApiClient {
 
   private final HttpUrl getConfigUrl;
 
-  public ConfigApiClient(String apiKey, String scheme, String host, int port) {
-    super(apiKey, scheme, host, port);
+  public ConfigApiClient(String apiKey, String uuid, String scheme, String host, int port) {
+    super(apiKey, uuid, scheme, host, port);
     getConfigUrl = baseUrl.newBuilder("/config").build();
   }
 

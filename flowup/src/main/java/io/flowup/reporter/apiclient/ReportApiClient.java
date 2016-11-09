@@ -17,12 +17,12 @@ public class ReportApiClient extends ApiClient {
 
   private HttpUrl reportUrl;
 
-  public ReportApiClient(String apiKey, String scheme, String host, int port) {
-    this(apiKey, scheme, host, port, true);
+  public ReportApiClient(String apiKey, String uuid, String scheme, String host, int port) {
+    this(apiKey, uuid, scheme, host, port, true);
   }
 
-  public ReportApiClient(String apiKey, String scheme, String host, int port, boolean useGzip) {
-    super(apiKey, scheme, host, port, useGzip);
+  public ReportApiClient(String apiKey, String uuid, String scheme, String host, int port, boolean useGzip) {
+    super(apiKey, uuid, scheme, host, port, useGzip);
     this.reportUrl = baseUrl.newBuilder("/report").build();
   }
 
