@@ -160,9 +160,9 @@ public class FlowUpReporter extends ScheduledReporter {
     }
 
     public FlowUpReporter build(String apiKey, String scheme, String host, int port) {
-      String uuid = new Device(context).getInstallationUUID();
+      Device device = new Device(context);
       return new FlowUpReporter(registry, name, filter, TimeUnit.NANOSECONDS, TimeUnit.NANOSECONDS,
-          new ReportApiClient(apiKey, uuid, scheme, host, port), new ReportsStorage(context),
+          new ReportApiClient(apiKey, device, scheme, host, port), new ReportsStorage(context),
           new WiFiSyncServiceScheduler(context, apiKey), new Time(), forceReports, listener);
     }
 

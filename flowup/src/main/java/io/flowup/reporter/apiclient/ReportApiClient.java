@@ -4,6 +4,7 @@
 
 package io.flowup.reporter.apiclient;
 
+import io.flowup.android.Device;
 import io.flowup.apiclient.ApiClient;
 import io.flowup.apiclient.ApiClientResult;
 import io.flowup.reporter.model.Reports;
@@ -17,12 +18,12 @@ public class ReportApiClient extends ApiClient {
 
   private HttpUrl reportUrl;
 
-  public ReportApiClient(String apiKey, String uuid, String scheme, String host, int port) {
-    this(apiKey, uuid, scheme, host, port, true);
+  public ReportApiClient(String apiKey, Device device, String scheme, String host, int port) {
+    this(apiKey, device, scheme, host, port, true);
   }
 
-  public ReportApiClient(String apiKey, String uuid, String scheme, String host, int port, boolean useGzip) {
-    super(apiKey, uuid, scheme, host, port, useGzip);
+  public ReportApiClient(String apiKey, Device device, String scheme, String host, int port, boolean useGzip) {
+    super(apiKey, device, scheme, host, port, useGzip);
     this.reportUrl = baseUrl.newBuilder("/report").build();
   }
 

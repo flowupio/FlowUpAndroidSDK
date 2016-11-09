@@ -5,6 +5,7 @@
 package io.flowup.apiclient;
 
 import com.google.gson.Gson;
+import io.flowup.android.Device;
 import java.util.concurrent.TimeUnit;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -21,7 +22,7 @@ class ApiClientConfig {
 
   private static final Gson GSON = new Gson();
 
-  static OkHttpClient getHttpClient(String apiKey, String uuid, boolean logEnabled,
+  static OkHttpClient getHttpClient(String apiKey, Device device, boolean logEnabled,
       boolean useGzip) {
     OkHttpClient httpClient = HTTP_CLIENT;
     if (logEnabled) {
@@ -34,7 +35,7 @@ class ApiClientConfig {
       httpClient = httpClient.newBuilder().addInterceptor(gzipInterceptor).build();
     }
     return httpClient.newBuilder()
-        .addInterceptor(new FlowUpHeadersInterceptor(apiKey, uuid))
+        .addInterceptor(new FlowUpHeadersInterceptor(apiKey, device))
         .build();
   }
 

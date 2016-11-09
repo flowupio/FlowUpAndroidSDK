@@ -36,9 +36,9 @@ public class ConfigSyncService extends GcmTaskService {
     String scheme = getString(R.string.flowup_scheme);
     String host = getString(R.string.flowup_host);
     int port = getResources().getInteger(R.integer.flowup_port);
-    String uuid = new Device(this).getInstallationUUID();
+    Device device = new Device(this);
     FlowUpConfig flowUpConfig = new FlowUpConfig(new ConfigStorage(getApplicationContext()),
-        new ConfigApiClient(apiKey, uuid, scheme, host, port));
+        new ConfigApiClient(apiKey, device, scheme, host, port));
     return flowUpConfig.updateConfig();
   }
 }

@@ -20,12 +20,14 @@ public class ConfigStorage extends RealmStorage {
   public Config getConfig() {
     Realm realm = getRealm();
     RealmConfig realmConfig = realm.where(RealmConfig.class).findFirst();
-    realm.close();
+    Config config = null;
     if (realmConfig == null) {
-      return new Config();
+      config = new Config();
     } else {
-      return new Config(realmConfig.isEnabled());
+      config = new Config(realmConfig.isEnabled());
     }
+    realm.close();
+    return config;
   }
 
   public void updateConfig(final Config config) {

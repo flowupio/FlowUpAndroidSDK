@@ -6,8 +6,10 @@ package io.flowup.config;
 
 import io.flowup.BuildConfig;
 import io.flowup.MockWebServerTestCase;
+import io.flowup.android.Device;
 import io.flowup.apiclient.ApiClientResult;
 import io.flowup.config.apiclient.ConfigApiClient;
+import io.flowup.doubles.AnyDevice;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,13 +20,13 @@ import static org.junit.Assert.assertTrue;
 public class ConfigApiClientTest extends MockWebServerTestCase {
 
   private static final String ANY_API_KEY = "123456";
-  private static final String ANY_UUID = "device123";
 
   private ConfigApiClient apiClient;
+  private Device device = new AnyDevice();
 
   @Before public void setUp() throws Exception {
     super.setUp();
-    apiClient = new ConfigApiClient(ANY_API_KEY, ANY_UUID, getScheme(), getHost(), getPort());
+    apiClient = new ConfigApiClient(ANY_API_KEY, device, getScheme(), getHost(), getPort());
   }
 
   @Test public void sendsAcceptApplicationJsonHeader() throws Exception {
@@ -48,7 +50,7 @@ public class ConfigApiClientTest extends MockWebServerTestCase {
 
     apiClient.getConfig();
 
-    assertRequestContainsHeader("X-UUID", ANY_UUID);
+    assertRequestContainsHeader("X-UUID", device.getInstallationUUID());
   }
 
   @Test public void sendsUserAgentHeader() throws Exception {

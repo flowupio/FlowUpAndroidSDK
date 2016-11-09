@@ -43,9 +43,9 @@ public class WiFiSyncService extends GcmTaskService {
     String scheme = getString(R.string.flowup_scheme);
     String host = getString(R.string.flowup_host);
     int port = getResources().getInteger(R.integer.flowup_port);
-    String uuid = new Device(this).getInstallationUUID();
+    Device device = new Device(this);
     reportsStorage = new ReportsStorage(this);
-    reportApiClient = new ReportApiClient(apiKey, uuid, scheme, host, port);
+    reportApiClient = new ReportApiClient(apiKey, device, scheme, host, port);
     return syncStoredReports();
   }
 
@@ -53,9 +53,9 @@ public class WiFiSyncService extends GcmTaskService {
     String scheme = getString(R.string.flowup_scheme);
     String host = getString(R.string.flowup_host);
     int port = getResources().getInteger(R.integer.flowup_port);
-    String uuid = new Device(this).getInstallationUUID();
-    FlowUpConfig flowUpConfig = new FlowUpConfig(new ConfigStorage(getApplicationContext()),
-        new ConfigApiClient(apiKey, uuid, scheme, host, port));
+    Device device = new Device(this);
+    flowUpConfig = new FlowUpConfig(new ConfigStorage(getApplicationContext()),
+        new ConfigApiClient(apiKey, device, scheme, host, port));
     return flowUpConfig.getConfig().isEnabled();
   }
 

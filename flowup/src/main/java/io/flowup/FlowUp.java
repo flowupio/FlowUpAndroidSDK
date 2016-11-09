@@ -122,9 +122,9 @@ public final class FlowUp {
     String scheme = application.getString(R.string.flowup_scheme);
     String host = application.getString(R.string.flowup_host);
     int port = application.getResources().getInteger(R.integer.flowup_port);
-    String uuid = new Device(application).getInstallationUUID();
+    Device device = new Device(application);
     flowUpConfig = new FlowUpConfig(new ConfigStorage(application),
-        new ConfigApiClient(apiKey, uuid, scheme, host, port));
+        new ConfigApiClient(apiKey, device, scheme, host, port));
     return flowUpConfig.getConfig().isEnabled();
   }
 
