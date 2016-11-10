@@ -15,7 +15,6 @@ Add the FlowUp library to your ``build.gradle`:
    compile 'io.flowup:android-sdk:<LAST_VERSION_RELEASED>'
    testCompile 'io.flowup:android-sdk-no-op:<LAST_VERSION_RELEASED>'
  }
-
 ```
 
 Initialize FlowUp in your ``Application`` class:
