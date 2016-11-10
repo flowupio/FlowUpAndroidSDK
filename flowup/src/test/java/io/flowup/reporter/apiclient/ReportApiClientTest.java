@@ -6,7 +6,9 @@ package io.flowup.reporter.apiclient;
 
 import io.flowup.BuildConfig;
 import io.flowup.MockWebServerTestCase;
+import io.flowup.android.Device;
 import io.flowup.apiclient.ApiClientResult;
+import io.flowup.doubles.AnyDevice;
 import io.flowup.reporter.model.CPUMetric;
 import io.flowup.reporter.model.DiskMetric;
 import io.flowup.reporter.model.MemoryMetric;
@@ -37,6 +39,7 @@ public class ReportApiClientTest extends MockWebServerTestCase {
   private static final String ANY_API_KEY = "15207698c544f617e2c11151ada4972e1e7d6e8e";
 
   private ReportApiClient reportApiClient;
+  private Device device = new AnyDevice();
 
   @Before public void setUp() throws Exception {
     super.setUp();
@@ -78,6 +81,15 @@ public class ReportApiClientTest extends MockWebServerTestCase {
     reportApiClient.sendReports(reports);
 
     assertRequestContainsHeader("X-Api-key", ANY_API_KEY);
+  }
+
+  @Test public void sendsUUIDHeader() throws Exception {
+    enqueueMockResponse();
+    Reports reports = givenSomeReports();
+
+    reportApiClient.sendReports(reports);
+
+    assertRequestContainsHeader("X-UUID", device.getInstallationUUID());
   }
 
   @Test public void sendsUserAgentHeader() throws Exception {
@@ -176,7 +188,8 @@ public class ReportApiClientTest extends MockWebServerTestCase {
   }
 
   private ReportApiClient givenAnApiClient(boolean useGzip) {
-    return new ReportApiClient(ANY_API_KEY, getScheme(), getHost(), getPort(), useGzip);
+    return new ReportApiClient(ANY_API_KEY, device, getScheme(), getHost(),
+        getPort(), useGzip);
   }
 
   private Reports givenSomeReports() {

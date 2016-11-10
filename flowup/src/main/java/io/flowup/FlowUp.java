@@ -15,6 +15,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import io.flowup.android.App;
 import io.flowup.android.CPU;
+import io.flowup.android.Device;
 import io.flowup.android.FileSystem;
 import io.flowup.collectors.Collector;
 import io.flowup.collectors.Collectors;
@@ -121,8 +122,9 @@ public final class FlowUp {
     String scheme = application.getString(R.string.flowup_scheme);
     String host = application.getString(R.string.flowup_host);
     int port = application.getResources().getInteger(R.integer.flowup_port);
+    Device device = new Device(application);
     flowUpConfig = new FlowUpConfig(new ConfigStorage(application),
-        new ConfigApiClient(apiKey, scheme, host, port));
+        new ConfigApiClient(apiKey, device, scheme, host, port));
     return flowUpConfig.getConfig().isEnabled();
   }
 

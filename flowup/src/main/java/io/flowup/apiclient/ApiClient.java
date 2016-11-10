@@ -5,6 +5,7 @@
 package io.flowup.apiclient;
 
 import com.google.gson.Gson;
+import io.flowup.android.Device;
 import io.flowup.logger.Logger;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
@@ -22,12 +23,13 @@ public class ApiClient {
   protected final Gson jsonParser;
   protected final HttpUrl baseUrl;
 
-  public ApiClient(String apiKey, String scheme, String host, int port) {
-    this(apiKey, scheme, host, port, true);
+  public ApiClient(String apiKey, Device device, String scheme, String host, int port) {
+    this(apiKey, device, scheme, host, port, true);
   }
 
-  public ApiClient(String apiKey, String scheme, String host, int port, boolean useGzip) {
-    this.httpClient = ApiClientConfig.getHttpClient(apiKey, Logger.isLogEnabled(), useGzip);
+  public ApiClient(String apiKey, Device device, String scheme, String host, int port,
+      boolean useGzip) {
+    this.httpClient = ApiClientConfig.getHttpClient(apiKey, device, Logger.isLogEnabled(), useGzip);
     this.jsonParser = ApiClientConfig.getJsonParser();
     this.baseUrl = ApiClientConfig.buildURL(scheme, host, port);
   }

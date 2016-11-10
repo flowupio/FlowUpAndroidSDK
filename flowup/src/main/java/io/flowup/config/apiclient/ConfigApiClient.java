@@ -4,6 +4,7 @@
 
 package io.flowup.config.apiclient;
 
+import io.flowup.android.Device;
 import io.flowup.apiclient.ApiClient;
 import io.flowup.apiclient.ApiClientResult;
 import io.flowup.config.Config;
@@ -16,8 +17,8 @@ public class ConfigApiClient extends ApiClient {
 
   private final HttpUrl getConfigUrl;
 
-  public ConfigApiClient(String apiKey, String scheme, String host, int port) {
-    super(apiKey, scheme, host, port);
+  public ConfigApiClient(String apiKey, Device device, String scheme, String host, int port) {
+    super(apiKey, device, scheme, host, port);
     getConfigUrl = baseUrl.newBuilder("/config").build();
   }
 

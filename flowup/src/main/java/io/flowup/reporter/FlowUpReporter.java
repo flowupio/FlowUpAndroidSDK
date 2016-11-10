@@ -13,6 +13,7 @@ import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.ScheduledReporter;
 import com.codahale.metrics.Timer;
+import io.flowup.android.Device;
 import io.flowup.apiclient.ApiClientResult;
 import io.flowup.logger.Logger;
 import io.flowup.reporter.android.WiFiSyncServiceScheduler;
@@ -159,8 +160,9 @@ public class FlowUpReporter extends ScheduledReporter {
     }
 
     public FlowUpReporter build(String apiKey, String scheme, String host, int port) {
+      Device device = new Device(context);
       return new FlowUpReporter(registry, name, filter, TimeUnit.NANOSECONDS, TimeUnit.NANOSECONDS,
-          new ReportApiClient(apiKey, scheme, host, port), new ReportsStorage(context),
+          new ReportApiClient(apiKey, device, scheme, host, port), new ReportsStorage(context),
           new WiFiSyncServiceScheduler(context, apiKey), new Time(), forceReports, listener);
     }
 

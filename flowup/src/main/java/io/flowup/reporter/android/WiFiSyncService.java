@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;
 import io.flowup.R;
+import io.flowup.android.Device;
 import io.flowup.apiclient.ApiClientResult;
 import io.flowup.config.FlowUpConfig;
 import io.flowup.config.apiclient.ConfigApiClient;
@@ -42,8 +43,9 @@ public class WiFiSyncService extends GcmTaskService {
     String scheme = getString(R.string.flowup_scheme);
     String host = getString(R.string.flowup_host);
     int port = getResources().getInteger(R.integer.flowup_port);
+    Device device = new Device(this);
     reportsStorage = new ReportsStorage(this);
-    reportApiClient = new ReportApiClient(apiKey, scheme, host, port);
+    reportApiClient = new ReportApiClient(apiKey, device, scheme, host, port);
     return syncStoredReports();
   }
 
@@ -51,8 +53,9 @@ public class WiFiSyncService extends GcmTaskService {
     String scheme = getString(R.string.flowup_scheme);
     String host = getString(R.string.flowup_host);
     int port = getResources().getInteger(R.integer.flowup_port);
-    FlowUpConfig flowUpConfig = new FlowUpConfig(new ConfigStorage(getApplicationContext()),
-        new ConfigApiClient(apiKey, scheme, host, port));
+    Device device = new Device(this);
+    flowUpConfig = new FlowUpConfig(new ConfigStorage(getApplicationContext()),
+        new ConfigApiClient(apiKey, device, scheme, host, port));
     return flowUpConfig.getConfig().isEnabled();
   }
 
