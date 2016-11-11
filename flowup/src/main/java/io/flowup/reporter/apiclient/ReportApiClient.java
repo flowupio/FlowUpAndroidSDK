@@ -33,6 +33,7 @@ public class ReportApiClient extends ApiClient {
     try {
       response = httpClient.newCall(request).execute();
       if (response.isSuccessful()) {
+        response.close();
         return new ApiClientResult(reports);
       }
     } catch (IOException e) {

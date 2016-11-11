@@ -30,6 +30,7 @@ public class ConfigApiClient extends ApiClient {
       if (response.isSuccessful()) {
         String jsonBody = response.body().string();
         config = jsonParser.fromJson(jsonBody, Config.class);
+        response.close();
       }
     } catch (IOException e) {
       return new ApiClientResult<>(ApiClientResult.Error.NETWORK_ERROR);
