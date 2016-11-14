@@ -10,7 +10,7 @@ import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.PeriodicTask;
 import java.util.concurrent.TimeUnit;
 
-public class CleanOldReportsServiceScheduler {
+public class DeleteOldReportsServiceScheduler {
 
   static final String CLEAN_OLD_REPORTS = "CleanOldReports";
 
@@ -19,13 +19,13 @@ public class CleanOldReportsServiceScheduler {
 
   private final GcmNetworkManager gcmNetworkManager;
 
-  public CleanOldReportsServiceScheduler(Context context) {
+  public DeleteOldReportsServiceScheduler(Context context) {
     this.gcmNetworkManager = GcmNetworkManager.getInstance(context);
   }
 
   public void scheduleCleanTask() {
     Bundle extras = new Bundle();
-    PeriodicTask task = new PeriodicTask.Builder().setService(CleanOldReportsService.class)
+    PeriodicTask task = new PeriodicTask.Builder().setService(DeleteOldReportsService.class)
         .setTag(CLEAN_OLD_REPORTS)
         .setPeriod(SYNC_PERIOD)
         .setFlex(FLEX_PERIOD)

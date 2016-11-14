@@ -40,6 +40,7 @@ import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ReportsStorageTest {
 
@@ -57,10 +58,12 @@ public class ReportsStorageTest {
 
   private ReportsStorage storage;
   private MetricNamesGenerator generator;
+  private Time time;
 
   @Before public void setUp() {
     Context context = getInstrumentation().getContext();
-    storage = new ReportsStorage(context);
+    initializeTimeMock();
+    storage = new ReportsStorage(context, time);
     generator = new MetricNamesGenerator(new App(context), new Device(context), new Time());
     clearRealmDB();
   }
@@ -215,6 +218,45 @@ public class ReportsStorageTest {
     storeAndGet(dropwizardReports);
 
     storage.clear();
+
+    assertNull(storage.getReports(numberOfReports));
+  }
+
+  @Test public void doesNotRemoveReportsIfTheDatabaseIsEmpty() {
+    storage.deleteOldReports();
+
+    assertNull(storage.getReports(1));
+  }
+
+  @Test public void doesNotRemoveAnyReportIfItIsNotOld() {
+    int numberOfReports = 2;
+    List<DropwizardReport> dropwizardReport = givenSomeDropwizardReports(numberOfReports);
+    storeAndGet(dropwizardReport);
+
+    when(time.twoDaysAgo()).thenReturn(0L);
+    storage.deleteOldReports();
+
+    assertEquals(2, storage.getReports(numberOfReports).size());
+  }
+
+  @Test public void removesJustOldReports() {
+    int numberOfReports = 2;
+    List<DropwizardReport> dropwizardReport = givenSomeDropwizardReports(numberOfReports);
+    storeAndGet(dropwizardReport);
+
+    when(time.twoDaysAgo()).thenReturn(1L);
+    storage.deleteOldReports();
+
+    assertEquals(1, storage.getReports(numberOfReports).size());
+  }
+
+  @Test public void removesEveryReportIfAllAreOld() {
+    int numberOfReports = 2;
+    List<DropwizardReport> dropwizardReport = givenSomeDropwizardReports(numberOfReports);
+    storeAndGet(dropwizardReport);
+
+    when(time.twoDaysAgo()).thenReturn(2L);
+    storage.deleteOldReports();
 
     assertNull(storage.getReports(numberOfReports));
   }
@@ -374,13 +416,13 @@ public class ReportsStorageTest {
   }
 
   private DropwizardReport givenADropWizardReport(SortedMap<String, Gauge> gauges) {
-    return givenADropWizardReport(0, gauges, new TreeMap<String, Histogram>(),
+    return givenADropWizardReport(time.now(), gauges, new TreeMap<String, Histogram>(),
         new TreeMap<String, Timer>());
   }
 
   private DropwizardReport givenADropWizardReport(SortedMap<String, Gauge> gauges,
       SortedMap<String, Histogram> histograms, SortedMap<String, Timer> timers) {
-    return givenADropWizardReport(0, gauges, histograms, timers);
+    return givenADropWizardReport(time.now(), gauges, histograms, timers);
   }
 
   private DropwizardReport givenADropWizardReport(long timestamp, SortedMap<String, Gauge> gauges,
@@ -519,5 +561,13 @@ public class ReportsStorageTest {
       }
     });
     realm.close();
+  }
+
+  private void initializeTimeMock() {
+    Time defaultTime = new Time();
+    time = mock(Time.class);
+    when(time.now()).thenReturn(defaultTime.now());
+    when(time.nowInNanos()).thenReturn(defaultTime.nowInNanos());
+    when(time.twoDaysAgo()).thenReturn(defaultTime.twoDaysAgo());
   }
 }

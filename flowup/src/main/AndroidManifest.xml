@@ -36,7 +36,7 @@
     <service
         android:enabled="true"
         android:exported="true"
-        android:name=".reporter.android.CleanOldReportsService"
+        android:name=".reporter.android.DeleteOldReportsService"
         android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE">
       <intent-filter>
         <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY"/>

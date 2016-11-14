@@ -16,7 +16,7 @@ import com.codahale.metrics.Timer;
 import io.flowup.android.Device;
 import io.flowup.apiclient.ApiClientResult;
 import io.flowup.logger.Logger;
-import io.flowup.reporter.android.CleanOldReportsServiceScheduler;
+import io.flowup.reporter.android.DeleteOldReportsServiceScheduler;
 import io.flowup.reporter.android.WiFiSyncServiceScheduler;
 import io.flowup.reporter.apiclient.ReportApiClient;
 import io.flowup.reporter.model.Reports;
@@ -36,14 +36,14 @@ public class FlowUpReporter extends ScheduledReporter {
   private final ReportApiClient reportApiClient;
   private final ReportsStorage reportsStorage;
   private final WiFiSyncServiceScheduler syncScheduler;
-  private final CleanOldReportsServiceScheduler cleanScheduler;
+  private final DeleteOldReportsServiceScheduler cleanScheduler;
   private final Time time;
   private final boolean forceReports;
   private final FlowUpReporterListener listener;
 
   FlowUpReporter(MetricRegistry registry, String name, MetricFilter filter, TimeUnit rateUnit,
       TimeUnit durationUnit, ReportApiClient reportApiClient, ReportsStorage reportsStorage,
-      WiFiSyncServiceScheduler syncScheduler, CleanOldReportsServiceScheduler cleanScheduler,
+      WiFiSyncServiceScheduler syncScheduler, DeleteOldReportsServiceScheduler cleanScheduler,
       Time time, boolean forceReports, FlowUpReporterListener listener) {
     super(registry, name, filter, rateUnit, durationUnit);
     this.reportApiClient = reportApiClient;
@@ -165,10 +165,11 @@ public class FlowUpReporter extends ScheduledReporter {
 
     public FlowUpReporter build(String apiKey, String scheme, String host, int port) {
       Device device = new Device(context);
+      Time time = new Time();
       return new FlowUpReporter(registry, name, filter, TimeUnit.NANOSECONDS, TimeUnit.NANOSECONDS,
-          new ReportApiClient(apiKey, device, scheme, host, port), new ReportsStorage(context),
-          new WiFiSyncServiceScheduler(context, apiKey),
-          new CleanOldReportsServiceScheduler(context), new Time(), forceReports, listener);
+          new ReportApiClient(apiKey, device, scheme, host, port),
+          new ReportsStorage(context, time), new WiFiSyncServiceScheduler(context, apiKey),
+          new DeleteOldReportsServiceScheduler(context), time, forceReports, listener);
     }
 
     public Builder forceReports(boolean forceReports) {

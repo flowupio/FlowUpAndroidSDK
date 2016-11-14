@@ -12,6 +12,7 @@ import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import io.flowup.apiclient.ApiClientResult;
+import io.flowup.reporter.android.DeleteOldReportsServiceScheduler;
 import io.flowup.reporter.android.WiFiSyncServiceScheduler;
 import io.flowup.reporter.apiclient.ReportApiClient;
 import io.flowup.reporter.model.Reports;
@@ -39,13 +40,14 @@ import static org.mockito.Mockito.when;
   @Mock private ReportApiClient reportApiClient;
   @Mock private ReportsStorage storage;
   @Mock private WiFiSyncServiceScheduler syncScheduler;
+  @Mock private DeleteOldReportsServiceScheduler deleteOldReportsScheduler;
   @Mock private Time time;
   @Mock private FlowUpReporterListener listener;
 
   private FlowUpReporter givenAFlowUpReporter(boolean forceReports) {
     return new FlowUpReporter(new MetricRegistry(), "ReporterName", MetricFilter.ALL,
-        TimeUnit.SECONDS, TimeUnit.MILLISECONDS, reportApiClient, storage, syncScheduler, time,
-        forceReports, listener);
+        TimeUnit.SECONDS, TimeUnit.MILLISECONDS, reportApiClient, storage, syncScheduler,
+        deleteOldReportsScheduler, time, forceReports, listener);
   }
 
   @Test public void storesDropwizardReportAndDoesNotInitializeSyncIfDebugIsNotEnabled() {
