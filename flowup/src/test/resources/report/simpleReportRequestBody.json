@@ -34,22 +34,6 @@
         "p98": 60.0,
         "p99": 60.0
       },
-      "framesPerSecond": {
-        "count": 1,
-        "min": 60.0,
-        "max": 60.0,
-        "mean": 60.0,
-        "standardDev": 0.0,
-        "median": 60.0,
-        "p1": 60.0,
-        "p2": 60.0,
-        "p5": 60.0,
-        "p10": 60.0,
-        "p90": 60.0,
-        "p95": 60.0,
-        "p98": 60.0,
-        "p99": 60.0
-      },
       "onActivityCreatedTime": {
         "count": 1,
         "min": 60.0,

@@ -235,7 +235,6 @@ public class ReportApiClientTest extends MockWebServerTestCase {
 
   private UIMetric givenAUIMetric() {
     StatisticalValue frameTime = givenAnyStatisticalValue();
-    StatisticalValue fps = givenAnyStatisticalValue();
     StatisticalValue onActivityCreatedTime = givenAnyStatisticalValue();
     StatisticalValue onActivityStartedTime = givenAnyStatisticalValue();
     StatisticalValue onActivityResumedTime = givenAnyStatisticalValue();
@@ -244,7 +243,7 @@ public class ReportApiClientTest extends MockWebServerTestCase {
     StatisticalValue onActivityStoppedTime = givenAnyStatisticalValue();
     StatisticalValue onActivityDestroyedTime = givenAnyStatisticalValue();
     return new UIMetric(ANY_TIMESTAMP, ANY_VERSION_NAME, ANY_OS_VERSION, ANY_BATTERY_SAVER_ON,
-        "MainActivity", frameTime, fps, onActivityCreatedTime, onActivityStartedTime,
+        "MainActivity", frameTime, onActivityCreatedTime, onActivityStartedTime,
         onActivityResumedTime, activityVisibleTime, onActivityPausedTime, onActivityStoppedTime,
         onActivityDestroyedTime);
   }

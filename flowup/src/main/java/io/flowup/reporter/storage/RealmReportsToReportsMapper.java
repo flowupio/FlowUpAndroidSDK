@@ -232,7 +232,6 @@ class RealmReportsToReportsMapper extends Mapper<List<RealmReport>, Reports> {
   private UIMetric extractUIMetric(String screenName, RealmList<RealmMetric> metrics) {
     Long timestamp = null;
     StatisticalValue frameTime = null;
-    StatisticalValue framesPerSecond = null;
     StatisticalValue onActivityCreated = null;
     StatisticalValue onActivityStarted = null;
     StatisticalValue onActivityResumed = null;
@@ -251,8 +250,6 @@ class RealmReportsToReportsMapper extends Mapper<List<RealmReport>, Reports> {
         if (extractor.isFrameTimeMetric(metricName)) {
           timestamp = extractor.getTimestamp(metricName);
           frameTime = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
-        } else if (extractor.isFPSMetric(metricName)) {
-          framesPerSecond = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
         } else if (extractor.isOnActivityCreatedMetric(metricName)) {
           onActivityCreated = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
         } else if (extractor.isOnActivityStartedMetric(metricName)) {
@@ -273,9 +270,9 @@ class RealmReportsToReportsMapper extends Mapper<List<RealmReport>, Reports> {
       String osVersion = extractor.getOSVersion(metricName);
       boolean batterySaverOne = extractor.getIsBatterSaverOn(metricName);
       if (i == metrics.size() - 1 && timestamp != null) {
-        return new UIMetric(timestamp, versionName, osVersion, batterySaverOne, screenName, frameTime,
-                framesPerSecond, onActivityCreated, onActivityStarted, onActivityResumed,
-                activityVisible, onActivityPaused, onActivityStopped, onActivityDestroyed);
+        return new UIMetric(timestamp, versionName, osVersion, batterySaverOne, screenName,
+            frameTime, onActivityCreated, onActivityStarted, onActivityResumed, activityVisible,
+            onActivityPaused, onActivityStopped, onActivityDestroyed);
       }
     }
     return null;

@@ -7,7 +7,6 @@ package io.flowup.collectors;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.view.Choreographer;
-import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Timer;
 import java.util.concurrent.TimeUnit;
 import org.junit.Before;
@@ -28,10 +27,9 @@ import static org.mockito.Mockito.verify;
   private FrameTimeCallback frameTimeCallback;
   @Mock private Choreographer choreographer;
   @Mock private Timer timer;
-  @Mock private Histogram histogram;
 
   @Before public void setUp() {
-    frameTimeCallback = new FrameTimeCallback(timer, histogram, choreographer);
+    frameTimeCallback = new FrameTimeCallback(timer, choreographer);
   }
 
   @Test public void shouldCalculateTheAverageFrameTime() {
@@ -49,16 +47,6 @@ import static org.mockito.Mockito.verify;
 
     verify(timer, times(doFrameInvocations - 1)).update(PERFECT_FRAME_TIME_NANOSECONDS,
         TimeUnit.NANOSECONDS);
-  }
-
-  @Test
-  public void shouldCalculateFpsBasedOnTheFrameTime() {
-    int doFrameInvocations = ANY_NUMBER_OF_FRAMES;
-    for (int i = 1; i <= doFrameInvocations; i++) {
-      frameTimeCallback.doFrame(SIXTEEN_MILLIS_IN_NANOSECONDS * i);
-    }
-
-    verify(histogram, times(doFrameInvocations - 1)).update(62);
   }
 
   @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN) @Test

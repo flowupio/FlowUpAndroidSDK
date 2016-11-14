@@ -13,7 +13,6 @@ import io.flowup.utils.Time;
 public class MetricNamesGenerator {
 
   static final String UI = "ui";
-  static final String FPS = "fps";
   static final String FRAME_TIME = "frameTime";
   static final String ON_ACTIVITY_CREATED = "onActivityCreated";
   static final String ON_ACTIVITY_STARTED = "onActivityStarted";
@@ -43,12 +42,6 @@ public class MetricNamesGenerator {
     this.app = app;
     this.device = device;
     this.time = time;
-  }
-
-  public String getFPSMetricName(Activity activity) {
-    String activityName = getActivityName(activity);
-    return MetricRegistry.name(appendCrossMetricInfo(
-        UI + SEPARATOR + FPS + SEPARATOR + activityName + SEPARATOR + time.now()));
   }
 
   public String getFrameTimeMetricName(Activity activity) {

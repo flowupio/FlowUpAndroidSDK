@@ -42,43 +42,6 @@ import static org.mockito.Mockito.when;
     extractor = new MetricNamesExtractor();
   }
 
-  @Test public void fpsMetricNameShouldContainExactly13FieldsSeparatedByDots() {
-    String fps = generator.getFPSMetricName(activity);
-
-    assertEquals(13, MetricNameUtils.split(fps).length);
-  }
-
-  @Test public void fpsMetricNameShouldContainTheCrossMetricInfoName() {
-    String fps = generator.getFPSMetricName(activity);
-
-    assertContainsCrossMetricInfoName(fps);
-  }
-
-  @Test public void fpsMetricNameShouldContainActivityNameAsScreenName() {
-    String fps = generator.getFPSMetricName(activity);
-
-    String activityName = extractor.getScreenName(fps);
-
-    assertEquals(activityName, activity.getClass().getSimpleName());
-  }
-
-  @Test public void fpsMetricNameShouldContainTheGenerationTime() {
-    givenNowIs(ANY_TIMESTAMP);
-    String fps = generator.getFPSMetricName(activity);
-
-    long timestamp = extractor.getTimestamp(fps);
-
-    assertEquals(ANY_TIMESTAMP, timestamp);
-  }
-
-  @Test public void fpsContainsTheMetricNameInTheCorrectPosition() {
-    String fps = generator.getFPSMetricName(activity);
-
-    String[] parts = MetricNameUtils.split(fps);
-    assertEquals("ui", parts[9]);
-    assertEquals("fps", parts[10]);
-  }
-
   @Test public void frameTimeMetricNameShouldContainExactly13FieldsSeparatedByDots() {
     String frameTime = generator.getFrameTimeMetricName(activity);
 
@@ -156,28 +119,10 @@ import static org.mockito.Mockito.when;
     assertEquals("bytesUploaded", parts[10]);
   }
 
-  @Test public void identifiesAFPSMetricProperly() {
-    String fps = generator.getFPSMetricName(activity);
-
-    assertTrue(extractor.isFPSMetric(fps));
-  }
-
-  @Test public void doesNotIdentifyAFPSMetricAsAFrameTimeMetric() {
-    String fps = generator.getFPSMetricName(activity);
-
-    assertFalse(extractor.isFrameTimeMetric(fps));
-  }
-
   @Test public void identifiesAFrameTimeMetricProperly() {
     String frameTime = generator.getFrameTimeMetricName(activity);
 
     assertTrue(extractor.isFrameTimeMetric(frameTime));
-  }
-
-  @Test public void doesNotIdentifyAFrameTimeMetricAsAFPSMetric() {
-    String frameTime = generator.getFrameTimeMetricName(activity);
-
-    assertFalse(extractor.isFPSMetric(frameTime));
   }
 
   @Test public void identifiesABytesDownloadedMetricProperly() {
@@ -615,18 +560,16 @@ import static org.mockito.Mockito.when;
   }
 
   @Test public void returnsTrueJustWithUIMetrics() {
-    String fps = generator.getFPSMetricName(activity);
-    String frameTime = generator.getFPSMetricName(activity);
-    String activityCreated = generator.getFPSMetricName(activity);
-    String activityStarted = generator.getFPSMetricName(activity);
-    String activityResumed = generator.getFPSMetricName(activity);
-    String activityVisible = generator.getFPSMetricName(activity);
-    String activityPaused = generator.getFPSMetricName(activity);
-    String activityStopped = generator.getFPSMetricName(activity);
-    String activityDestroyed = generator.getFPSMetricName(activity);
+    String frameTime = generator.getFrameTimeMetricName(activity);
+    String activityCreated = generator.getOnActivityCreatedMetricName(activity);
+    String activityStarted = generator.getOnActivityStartedMetricName(activity);
+    String activityResumed = generator.getOnActivityResumedMetricName(activity);
+    String activityVisible = generator.getActivityVisibleMetricName(activity);
+    String activityPaused = generator.getOnActivityPausedMetricName(activity);
+    String activityStopped = generator.getOnActivityStoppedMetricName(activity);
+    String activityDestroyed = generator.getOnActivityDestroyedMetricName(activity);
     String nonUIMetricName = generator.getBytesAllocatedMetricName();
 
-    assertTrue(extractor.isUIMetric(fps));
     assertTrue(extractor.isUIMetric(frameTime));
     assertTrue(extractor.isUIMetric(activityCreated));
     assertTrue(extractor.isUIMetric(activityStarted));
