@@ -33,6 +33,16 @@
       </intent-filter>
     </service>
 
+    <service
+        android:enabled="true"
+        android:exported="true"
+        android:name=".reporter.android.CleanOldReportsService"
+        android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE">
+      <intent-filter>
+        <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY"/>
+      </intent-filter>
+    </service>
+
   </application>
 
 </manifest>

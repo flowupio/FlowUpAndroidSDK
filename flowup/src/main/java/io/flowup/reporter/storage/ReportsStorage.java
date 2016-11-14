@@ -103,4 +103,8 @@ public class ReportsStorage extends RealmStorage {
     report.setMetrics(realmMetricsReports);
     realm.insertOrUpdate(report);
   }
+
+  public void deleteOldReports() {
+
+  }
 }
