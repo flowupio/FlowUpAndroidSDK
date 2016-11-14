@@ -4,6 +4,9 @@
 
 package io.flowup.reporter.android;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;
@@ -31,22 +34,30 @@ public class WiFiSyncService extends GcmTaskService {
   private ReportApiClient reportApiClient;
   private ReportsStorage reportsStorage;
   private FlowUpConfig flowUpConfig;
+  private ConnectivityManager connectivityManager;
 
   @Override public int onRunTask(TaskParams taskParams) {
-    if (!isTaskSupported(taskParams)) {
+    if (!isScheduledTaskSupported(taskParams)) {
       return RESULT_FAILURE;
     }
+    initializeDependencies(taskParams);
+    return syncStoredReports();
+  }
+
+  private boolean isScheduledTaskSupported(TaskParams taskParams) {
     String apiKey = getApiKey(taskParams);
-    if (!isClientEnabled(apiKey)) {
-      return RESULT_FAILURE;
-    }
+    return (isTaskTagSupported(taskParams) && isClientEnabled(apiKey));
+  }
+
+  private void initializeDependencies(TaskParams taskParams) {
+    String apiKey = getApiKey(taskParams);
     String scheme = getString(R.string.flowup_scheme);
     String host = getString(R.string.flowup_host);
     int port = getResources().getInteger(R.integer.flowup_port);
     Device device = new Device(this);
     reportsStorage = new ReportsStorage(this);
     reportApiClient = new ReportApiClient(apiKey, device, scheme, host, port);
-    return syncStoredReports();
+    connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
   }
 
   private boolean isClientEnabled(String apiKey) {
@@ -68,7 +79,7 @@ public class WiFiSyncService extends GcmTaskService {
     return apiKey;
   }
 
-  private boolean isTaskSupported(TaskParams taskParams) {
+  private boolean isTaskTagSupported(TaskParams taskParams) {
     return taskParams.getTag().equals(SYNCHRONIZE_METRICS_REPORT);
   }
 
@@ -81,6 +92,7 @@ public class WiFiSyncService extends GcmTaskService {
     }
     ApiClientResult.Error error;
     ApiClientResult result;
+    boolean isConnectedToWifi = true;
     do {
       Logger.d(reports.getReportsIds().size() + " reports to sync");
       Logger.d(reports.toString());
@@ -102,8 +114,9 @@ public class WiFiSyncService extends GcmTaskService {
             + " reports pending");
       }
       error = result.getError();
-    } while (reports != null && result.isSuccess());
-    if (error == ApiClientResult.Error.NETWORK_ERROR) {
+      isConnectedToWifi = isConnectedToWifi();
+    } while (reports != null && result.isSuccess() && isConnectedToWifi);
+    if (error == ApiClientResult.Error.NETWORK_ERROR || !isConnectedToWifi) {
       Logger.e("The last sync failed due to a network error, so let's reschedule a new task");
       return RESULT_RESCHEDULE;
     } else if (error == ApiClientResult.Error.CLIENT_DISABLED) {
@@ -127,5 +140,11 @@ public class WiFiSyncService extends GcmTaskService {
     ApiClientResult.Error error = result.getError();
     return ApiClientResult.Error.UNAUTHORIZED == error
         || ApiClientResult.Error.SERVER_ERROR == error;
+  }
+
+  public boolean isConnectedToWifi() {
+    NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+    return activeNetworkInfo.getType() == ConnectivityManager.TYPE_WIFI
+        && activeNetworkInfo.isConnected();
   }
 }
