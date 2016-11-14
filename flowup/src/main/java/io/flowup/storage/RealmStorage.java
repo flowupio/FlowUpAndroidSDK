@@ -16,6 +16,12 @@ public class RealmStorage {
     this.context = context;
   }
 
+  public void executeTransaction(Realm.Transaction transaction) {
+    Realm realm = getRealm();
+    realm.executeTransaction(transaction);
+    realm.close();
+  }
+
   protected Realm getRealm() {
     RealmConfiguration config = RealmConfig.getRealmConfig(context);
     return Realm.getInstance(config);

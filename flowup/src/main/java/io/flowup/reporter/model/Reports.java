@@ -44,6 +44,10 @@ public class Reports {
     this.diskMetrics = diskMetrics;
   }
 
+  public int size() {
+    return getReportsIds().size();
+  }
+
   public List<String> getReportsIds() {
     return reportsIds;
   }

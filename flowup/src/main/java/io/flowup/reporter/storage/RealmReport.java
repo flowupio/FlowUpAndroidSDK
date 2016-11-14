@@ -19,6 +19,14 @@ public class RealmReport extends RealmObject {
     return reportTimestamp;
   }
 
+  public long getTimestamp() {
+    try {
+      return Long.valueOf(getReportTimestamp());
+    } catch (NumberFormatException e) {
+      return 0;
+    }
+  }
+
   public RealmList<RealmMetric> getMetrics() {
     return metrics;
   }

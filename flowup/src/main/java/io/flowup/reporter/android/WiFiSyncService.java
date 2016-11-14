@@ -21,6 +21,7 @@ import io.flowup.reporter.FlowUpReporter;
 import io.flowup.reporter.apiclient.ReportApiClient;
 import io.flowup.reporter.model.Reports;
 import io.flowup.reporter.storage.ReportsStorage;
+import io.flowup.utils.Time;
 
 import static com.google.android.gms.gcm.GcmNetworkManager.RESULT_FAILURE;
 import static com.google.android.gms.gcm.GcmNetworkManager.RESULT_RESCHEDULE;
@@ -55,7 +56,7 @@ public class WiFiSyncService extends GcmTaskService {
     String host = getString(R.string.flowup_host);
     int port = getResources().getInteger(R.integer.flowup_port);
     Device device = new Device(this);
-    reportsStorage = new ReportsStorage(this);
+    reportsStorage = new ReportsStorage(this, new Time());
     reportApiClient = new ReportApiClient(apiKey, device, scheme, host, port);
     connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
   }

@@ -57,23 +57,23 @@ public final class FlowUp {
   }
 
   void start() {
-    initializeLogger();
-    if (hasBeenInitialized()) {
-      return;
-    }
-    if (!doesSupportGooglePlayServices()) {
-      Logger.e(
-          "FlowUp hasn't been initialized. Google play services is not supported in this device");
-      return;
-    }
-    if (!isFlowUpEnabled()) {
-      Logger.d("FlowUp is disabled for this device");
-      return;
-    }
-    initializeMetrics();
-    initializeForegroundCollectors();
     new Thread(new Runnable() {
       @Override public void run() {
+        initializeLogger();
+        if (hasBeenInitialized()) {
+          return;
+        }
+        if (!doesSupportGooglePlayServices()) {
+          Logger.e(
+              "FlowUp hasn't been initialized. Google play services is not supported in this device");
+          return;
+        }
+        if (!isFlowUpEnabled()) {
+          Logger.d("FlowUp is disabled for this device");
+          return;
+        }
+        initializeMetrics();
+        initializeForegroundCollectors();
         initializeConfigScheduler();
         initializeNetworkCollectors();
         initializeCPUCollectors();

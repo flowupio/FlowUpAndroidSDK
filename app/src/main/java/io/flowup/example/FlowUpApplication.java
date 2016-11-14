@@ -16,7 +16,7 @@ public class FlowUpApplication extends Application {
     initializeLeakCanary();
     enableStrictMode();
     FlowUp.Builder.with(this)
-        .apiKey("15207698c544f617e2c11151ada4972e1e7d6e8e")
+        .apiKey("0dd955ff0cdc4148ace2aa8a30f43f96")
         .forceReports(BuildConfig.DEBUG)
         .logEnabled(BuildConfig.DEBUG)
         .start();

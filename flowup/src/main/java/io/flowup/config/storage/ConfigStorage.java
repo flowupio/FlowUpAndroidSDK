@@ -31,13 +31,11 @@ public class ConfigStorage extends RealmStorage {
   }
 
   public void updateConfig(final Config config) {
-    Realm realm = getRealm();
-    realm.executeTransaction(new Realm.Transaction() {
+    executeTransaction(new Realm.Transaction() {
       @Override public void execute(Realm realm) {
         storeAsRealmObject(realm, config);
       }
     });
-    realm.close();
   }
 
   private void storeAsRealmObject(Realm realm, Config config) {

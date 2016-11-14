@@ -21,7 +21,6 @@ import java.util.Map;
     extends ApplicationLifecycleCollector {
 
   private final MetricNamesGenerator metricNamesGenerator;
-  private final Choreographer choreographer;
   private final MainThread mainThread;
 
   private Activity lastActivityResumed;
@@ -32,7 +31,6 @@ import java.util.Map;
       MetricNamesGenerator metricNamesGenerator, MainThread mainThread) {
     super(application);
     this.metricNamesGenerator = metricNamesGenerator;
-    this.choreographer = Choreographer.getInstance();
     this.mainThread = mainThread;
     this.timers = new HashMap<>();
   }
@@ -48,6 +46,7 @@ import java.util.Map;
       @Override public void run() {
         removeOldFrameTimeCallback();
         if (isInForeground) {
+          Choreographer choreographer = Choreographer.getInstance();
           frameTimeCallback = new FrameTimeCallback(timer, choreographer);
           choreographer.postFrameCallback(frameTimeCallback);
         }
@@ -61,6 +60,7 @@ import java.util.Map;
     final Timer timer = getTimer(activity, registry);
     mainThread.post(new Runnable() {
       @Override public void run() {
+        Choreographer choreographer = Choreographer.getInstance();
         frameTimeCallback = new FrameTimeCallback(timer, choreographer);
         choreographer.postFrameCallback(frameTimeCallback);
       }
@@ -95,6 +95,7 @@ import java.util.Map;
 
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN) private void removeOldFrameTimeCallback() {
     if (frameTimeCallback != null) {
+      Choreographer choreographer = Choreographer.getInstance();
       choreographer.removeFrameCallback(frameTimeCallback);
       frameTimeCallback = null;
     }

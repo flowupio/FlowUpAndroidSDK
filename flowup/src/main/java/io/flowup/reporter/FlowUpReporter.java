@@ -16,6 +16,7 @@ import com.codahale.metrics.Timer;
 import io.flowup.android.Device;
 import io.flowup.apiclient.ApiClientResult;
 import io.flowup.logger.Logger;
+import io.flowup.reporter.android.DeleteOldReportsServiceScheduler;
 import io.flowup.reporter.android.WiFiSyncServiceScheduler;
 import io.flowup.reporter.apiclient.ReportApiClient;
 import io.flowup.reporter.model.Reports;
@@ -35,18 +36,20 @@ public class FlowUpReporter extends ScheduledReporter {
   private final ReportApiClient reportApiClient;
   private final ReportsStorage reportsStorage;
   private final WiFiSyncServiceScheduler syncScheduler;
+  private final DeleteOldReportsServiceScheduler cleanScheduler;
   private final Time time;
   private final boolean forceReports;
   private final FlowUpReporterListener listener;
 
   FlowUpReporter(MetricRegistry registry, String name, MetricFilter filter, TimeUnit rateUnit,
       TimeUnit durationUnit, ReportApiClient reportApiClient, ReportsStorage reportsStorage,
-      WiFiSyncServiceScheduler syncScheduler, Time time, boolean forceReports,
-      FlowUpReporterListener listener) {
+      WiFiSyncServiceScheduler syncScheduler, DeleteOldReportsServiceScheduler cleanScheduler,
+      Time time, boolean forceReports, FlowUpReporterListener listener) {
     super(registry, name, filter, rateUnit, durationUnit);
     this.reportApiClient = reportApiClient;
     this.reportsStorage = reportsStorage;
     this.syncScheduler = syncScheduler;
+    this.cleanScheduler = cleanScheduler;
     this.time = time;
     this.forceReports = forceReports;
     this.listener = listener;
@@ -55,6 +58,7 @@ public class FlowUpReporter extends ScheduledReporter {
   @Override public void start(long period, TimeUnit unit) {
     super.start(period, unit);
     syncScheduler.scheduleSyncTask();
+    cleanScheduler.scheduleCleanTask();
   }
 
   @Override public void report(SortedMap<String, Gauge> gauges, SortedMap<String, Counter> counters,
@@ -161,9 +165,11 @@ public class FlowUpReporter extends ScheduledReporter {
 
     public FlowUpReporter build(String apiKey, String scheme, String host, int port) {
       Device device = new Device(context);
+      Time time = new Time();
       return new FlowUpReporter(registry, name, filter, TimeUnit.NANOSECONDS, TimeUnit.NANOSECONDS,
-          new ReportApiClient(apiKey, device, scheme, host, port), new ReportsStorage(context),
-          new WiFiSyncServiceScheduler(context, apiKey), new Time(), forceReports, listener);
+          new ReportApiClient(apiKey, device, scheme, host, port),
+          new ReportsStorage(context, time), new WiFiSyncServiceScheduler(context, apiKey),
+          new DeleteOldReportsServiceScheduler(context), time, forceReports, listener);
     }
 
     public Builder forceReports(boolean forceReports) {
