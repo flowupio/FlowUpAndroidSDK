@@ -90,24 +90,13 @@ By default the project is ready to execute a sample app reporting reports to our
 How to review the persisted data
 --------------------------------
 
-This library has been developed using [Realm][realm] as the persistence motor. FlowUp will store reports reports until the sync process be activated. All this information is persisted inside a Realm data base you can check what's inside following the next steps:
-
-* Get a copy of the Realm database executing: ``adb pull /data/data/<APPLICATION_PACKAGE_WHERE_FLOWUP_IS_BEING_USED>/files/FlowUp.realm .``
-* Download the [Realm Browser][realmbrowser] app.
-* Open the file named ``FlowUp.realm`` using the Realm Browser.
-
-Inside this database you can find all the information persisted by FlowUp which is pending to be synced with our servers. Once this information be synced, it will be removed from the database. **Remember that to be able to inspect the databse the device used has to be an emulator or be rooted**.
-
-How to review the persisted data
---------------------------------
-
 This library has been developed using [Realm][realm] as the persistence engine. FlowUp will store metrics reports until the sync process be activated. All this information is persisted inside a Realm data base you can check what's inside following the next steps:
 
 * Get a copy of the Realm database executing: ``adb pull /data/data/<APPLICATION_PACKAGE_WHERE_FLOWUP_IS_BEING_USED>/files/FlowUp.realm .``
 * Download the [Realm Browser][realmbrowser] app.
 * Open the file named ``FlowUp.realm`` using the Realm Browser.
 
-Inside this database you can find all the information persisted by FlowUp which is pending to be synced with our servers. Once this information be synced, it will be removed from the database.
+Inside this database you can find all the information persisted by FlowUp which is pending to be synced with our servers. Once this information be synced, it will be removed from the database. **Remember that to be able to inspect the databse the device used has to be an emulator or be rooted**.
 
 How to get info about the sync process
 --------------------------------------
