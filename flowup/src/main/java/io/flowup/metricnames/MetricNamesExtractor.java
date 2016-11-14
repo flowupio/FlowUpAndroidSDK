@@ -78,10 +78,6 @@ public class MetricNamesExtractor {
     return findCrossMetricInfoAtPosition(9, metricName).equals(MetricNamesGenerator.UI);
   }
 
-  public boolean isFPSMetric(String metricName) {
-    return metricName.contains(MetricNamesGenerator.FPS);
-  }
-
   public boolean isFrameTimeMetric(String metricName) {
     return metricName.contains(MetricNamesGenerator.FRAME_TIME);
   }

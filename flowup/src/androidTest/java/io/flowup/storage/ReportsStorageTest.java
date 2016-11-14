@@ -7,7 +7,6 @@ package io.flowup.storage;
 import android.app.Activity;
 import android.content.Context;
 import com.codahale.metrics.Counter;
-import com.codahale.metrics.ExponentiallyDecayingReservoir;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Meter;
@@ -108,10 +107,10 @@ public class ReportsStorageTest {
   }
 
   @Test public void returnsReportInfoBasedOnDropwizardMetricsWithOnlyUIMetricsReported() {
-    SortedMap<String, Histogram> fpsMetric = givenAFPSMetric();
     SortedMap<String, Timer> frameTimeMetric = givenAFrameTimeMetric();
     DropwizardReport dropwizardReport =
-        givenADropWizardReport(new TreeMap<String, Gauge>(), fpsMetric, frameTimeMetric);
+        givenADropWizardReport(new TreeMap<String, Gauge>(), new TreeMap<String, Histogram>(),
+            frameTimeMetric);
 
     Reports reports = storeAndGet(dropwizardReport);
 
@@ -199,10 +198,10 @@ public class ReportsStorageTest {
   }
 
   @Test public void savesDataAssociatedToDifferentScreensAsDifferentUIMetricsInsideTheSameReport() {
-    SortedMap<String, Histogram> fpsMetric = givenSomeFPSMetricsFromTwoScreens();
     SortedMap<String, Timer> frameTimeMetric = givenSomeFrameTimeMetricsTwoDifferentScreens();
     DropwizardReport dropwizardReport =
-        givenADropWizardReport(new TreeMap<String, Gauge>(), fpsMetric, frameTimeMetric);
+        givenADropWizardReport(new TreeMap<String, Gauge>(), new TreeMap<String, Histogram>(),
+            frameTimeMetric);
 
     Reports reports = storeAndGet(dropwizardReport);
 
@@ -217,13 +216,6 @@ public class ReportsStorageTest {
     storage.clear();
 
     assertNull(storage.getReports(numberOfReports));
-  }
-
-  private SortedMap<String, Histogram> givenSomeFPSMetricsFromTwoScreens() {
-    SortedMap<String, Histogram> fpsMetrics = new TreeMap<>();
-    fpsMetrics.putAll(givenAFPSMetric(mock(Activity.class)));
-    fpsMetrics.putAll(givenAFPSMetric(mock(ActivityTwo.class)));
-    return fpsMetrics;
   }
 
   private SortedMap<String, Timer> givenSomeFrameTimeMetricsTwoDifferentScreens() {
@@ -284,7 +276,6 @@ public class ReportsStorageTest {
     for (int i = 0; i < numberOfReports; i++) {
       UIMetric uiMetric = uiReports.get(i);
       assertEquals(1.7E7, uiMetric.getFrameTime().getMean(), DELTA);
-      assertEquals(ANY_FRAMES_PER_SECOND, uiMetric.getFramesPerSecond().getMean(), DELTA);
       assertEquals(ANY_LIFECYCLE_TIME, uiMetric.getOnActivityCreatedTime().getMean(), DELTA);
       assertEquals(ANY_LIFECYCLE_TIME, uiMetric.getOnActivityStartedTime().getMean(), DELTA);
       assertEquals(ANY_LIFECYCLE_TIME, uiMetric.getOnActivityResumedTime().getMean(), DELTA);
@@ -299,7 +290,6 @@ public class ReportsStorageTest {
     List<DropwizardReport> dropwizardReports = new LinkedList<>();
     for (int i = 0; i < numberOfReports; i++) {
       SortedMap<String, Gauge> networkMetrics = givenANetworkMetric();
-      SortedMap<String, Histogram> fpsMetric = givenAFPSMetric();
       SortedMap<String, Timer> frameTimeMetric = givenAFrameTimeMetric();
       SortedMap<String, Timer> onActivityCreatedMetric = givenAnyLifecycleMetric();
       SortedMap<String, Timer> onActivityStartedMetric = givenAFrameTimeMetric();
@@ -317,6 +307,7 @@ public class ReportsStorageTest {
       gauges.putAll(memoryMetrics);
       gauges.putAll(diskMetrics);
       SortedMap<String, Timer> timers = new TreeMap<>();
+      SortedMap<String, Histogram> histograms = new TreeMap<>();
       timers.putAll(frameTimeMetric);
       timers.putAll(onActivityCreatedMetric);
       timers.putAll(onActivityStartedMetric);
@@ -325,7 +316,7 @@ public class ReportsStorageTest {
       timers.putAll(onActivityPausedMetric);
       timers.putAll(onActivityStoppedMetric);
       timers.putAll(onActivityDestroyedMetric);
-      DropwizardReport dropwizardReport = givenADropWizardReport(i, gauges, fpsMetric, timers);
+      DropwizardReport dropwizardReport = givenADropWizardReport(i, gauges, histograms, timers);
       dropwizardReports.add(dropwizardReport);
     }
     return dropwizardReports;
@@ -357,20 +348,6 @@ public class ReportsStorageTest {
     timer.update((long) ANY_FRAME_TIME, TimeUnit.MILLISECONDS);
     timers.put(generator.getFrameTimeMetricName(activity), timer);
     return timers;
-  }
-
-  private SortedMap<String, Histogram> givenAFPSMetric() {
-    Activity activity = mock(Activity.class);
-    return givenAFPSMetric(activity);
-  }
-
-  private SortedMap<String, Histogram> givenAFPSMetric(Activity activity) {
-    SortedMap<String, Histogram> histograms = new TreeMap<>();
-    String name = generator.getFPSMetricName(activity);
-    Histogram histogram = new Histogram(new ExponentiallyDecayingReservoir());
-    histogram.update((long) ANY_FRAMES_PER_SECOND);
-    histograms.put(name, histogram);
-    return histograms;
   }
 
   private DropwizardReport givenADropWizardReport(SortedMap<String, Gauge> gauges) {
