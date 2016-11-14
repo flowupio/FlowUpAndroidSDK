@@ -58,7 +58,7 @@ import java.util.concurrent.TimeUnit;
 
       @Override public void onActivityResumed(final Activity activity) {
         updateOnStartTimer(activity);
-        saveOnresumeTimestamp(activity);
+        saveOnResumeTimestamp(activity);
         mainThread.post(new Runnable() {
           @Override public void run() {
             updateOnResumeTimer(activity);
@@ -109,7 +109,7 @@ import java.util.concurrent.TimeUnit;
         });
       }
 
-      private Long saveOnresumeTimestamp(Activity activity) {
+      private Long saveOnResumeTimestamp(Activity activity) {
         return saveOnStartTimestamp(activity, onResumeTimers);
       }
 
@@ -159,22 +159,19 @@ import java.util.concurrent.TimeUnit;
 
       private Long saveOnStartTimestamp(Activity activity, Map<String, Long> map) {
         String activityClassName = activity.getClass().getName();
-        Long context = map.get(activityClassName);
-        if (context == null) {
-          context = time.nowInNanos();
-          map.put(activityClassName, context);
-        }
-        return context;
+        Long startTimestamp = time.nowInNanos();
+        map.put(activityClassName, startTimestamp);
+        return startTimestamp;
       }
 
       private void updateTimer(Activity activity, Map<String, Long> map, CreateTimer createTimer) {
         String activityName = activity.getClass().getName();
-        Long context = map.get(activityName);
-        if (context != null) {
-          long duration = time.nowInNanos() - context;
+        Long startTimestamp = map.get(activityName);
+        if (startTimestamp != null) {
+          long duration = time.nowInNanos() - startTimestamp;
           createTimer.create(activity).update(duration, TimeUnit.NANOSECONDS);
-          map.remove(activityName);
         }
+        map.remove(activityName);
       }
 
       abstract class CreateTimer {
