@@ -116,7 +116,7 @@ public class WiFiSyncService extends GcmTaskService {
       error = result.getError();
       isConnectedToWifi = isConnectedToWifi();
     } while (reports != null && result.isSuccess() && isConnectedToWifi);
-    if (error == ApiClientResult.Error.NETWORK_ERROR || isConnectedToWifi) {
+    if (error == ApiClientResult.Error.NETWORK_ERROR || !isConnectedToWifi) {
       Logger.e("The last sync failed due to a network error, so let's reschedule a new task");
       return RESULT_RESCHEDULE;
     } else if (error == ApiClientResult.Error.CLIENT_DISABLED) {
