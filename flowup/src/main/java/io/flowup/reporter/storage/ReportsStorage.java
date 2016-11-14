@@ -25,13 +25,11 @@ public class ReportsStorage extends RealmStorage {
   }
 
   public void storeMetrics(final DropwizardReport dropwizardReport) {
-    Realm realm = getRealm();
-    realm.executeTransaction(new Realm.Transaction() {
+    executeTransaction(new Realm.Transaction() {
       @Override public void execute(Realm realm) {
         storeAsRealmObject(realm, dropwizardReport);
       }
     });
-    realm.close();
   }
 
   public Reports getReports(int numberOfReports) {
@@ -49,8 +47,7 @@ public class ReportsStorage extends RealmStorage {
   }
 
   public void deleteReports(final Reports reports) {
-    Realm realm = getRealm();
-    realm.executeTransaction(new Realm.Transaction() {
+    executeTransaction(new Realm.Transaction() {
       @Override public void execute(Realm realm) {
         for (String reportId : reports.getReportsIds()) {
           RealmResults<RealmReport> reportsToRemove =
@@ -62,13 +59,11 @@ public class ReportsStorage extends RealmStorage {
         }
       }
     });
-    realm.close();
   }
 
   public int deleteOldReports() {
     final int[] numberOfReportsDeleted = new int[1];
-    Realm realm = getRealm();
-    realm.executeTransaction(new Realm.Transaction() {
+    executeTransaction(new Realm.Transaction() {
       @Override public void execute(Realm realm) {
         RealmResults<RealmReport> oldReports = realm.where(RealmReport.class).findAll();
         for (RealmReport oldReport : oldReports) {
@@ -82,20 +77,17 @@ public class ReportsStorage extends RealmStorage {
         }
       }
     });
-    realm.close();
     return numberOfReportsDeleted[0];
   }
 
   public void clear() {
-    Realm realm = getRealm();
-    realm.executeTransaction(new Realm.Transaction() {
+    executeTransaction(new Realm.Transaction() {
       @Override public void execute(Realm realm) {
         realm.where(RealmReport.class).findAll().deleteAllFromRealm();
         realm.where(RealmMetric.class).findAll().deleteAllFromRealm();
         realm.where(RealmStatisticalValue.class).findAll().deleteAllFromRealm();
       }
     });
-    realm.close();
   }
 
   private void deleteMetricsReports(Realm realm, RealmList<RealmMetric> metricsToRemove) {

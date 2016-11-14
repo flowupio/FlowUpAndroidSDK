@@ -261,6 +261,17 @@ public class ReportsStorageTest {
     assertNull(storage.getReports(numberOfReports));
   }
 
+  @Test public void returnsTheNumberOfReportsDeleted() {
+    int numberOfReports = 2;
+    List<DropwizardReport> dropwizardReport = givenSomeDropwizardReports(numberOfReports);
+    storeAndGet(dropwizardReport);
+
+    when(time.twoDaysAgo()).thenReturn(2L);
+    int numberOfReportsDeleted = storage.deleteOldReports();
+
+    assertEquals(numberOfReports, numberOfReportsDeleted);
+  }
+
   private SortedMap<String, Histogram> givenSomeFPSMetricsFromTwoScreens() {
     SortedMap<String, Histogram> fpsMetrics = new TreeMap<>();
     fpsMetrics.putAll(givenAFPSMetric(mock(Activity.class)));
