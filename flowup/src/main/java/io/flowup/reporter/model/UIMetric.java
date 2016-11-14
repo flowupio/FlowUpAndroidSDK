@@ -10,7 +10,6 @@ public class UIMetric extends Metric {
 
   @SerializedName("screen") private final String screen;
   @SerializedName("frameTime") private final StatisticalValue frameTime;
-  @SerializedName("framesPerSecond") private final StatisticalValue framesPerSecond;
   @SerializedName("onActivityCreatedTime") private final StatisticalValue onActivityCreatedTime;
   @SerializedName("onActivityStartedTime") private final StatisticalValue onActivityStartedTime;
   @SerializedName("onActivityResumedTime") private final StatisticalValue onActivityResumedTime;
@@ -20,7 +19,7 @@ public class UIMetric extends Metric {
   @SerializedName("onActivityDestroyedTime") private final StatisticalValue onActivityDestroyedTime;
 
   public UIMetric(long timestamp, String appVersionName, String osVersion, boolean batterySaverOn,
-      String screen, StatisticalValue frameTime, StatisticalValue framesPerSecond,
+      String screen, StatisticalValue frameTime,
       StatisticalValue onActivityCreatedTime, StatisticalValue onActivityStartedTime,
       StatisticalValue onActivityResumedTime, StatisticalValue activityVisibleTime,
       StatisticalValue onActivityPausedTime, StatisticalValue onActivityStoppedTime,
@@ -28,7 +27,6 @@ public class UIMetric extends Metric {
     super(timestamp, appVersionName, osVersion, batterySaverOn);
     this.screen = screen;
     this.frameTime = frameTime;
-    this.framesPerSecond = framesPerSecond;
     this.onActivityCreatedTime = onActivityCreatedTime;
     this.onActivityStartedTime = onActivityStartedTime;
     this.onActivityResumedTime = onActivityResumedTime;
@@ -44,10 +42,6 @@ public class UIMetric extends Metric {
 
   public StatisticalValue getFrameTime() {
     return frameTime;
-  }
-
-  public StatisticalValue getFramesPerSecond() {
-    return framesPerSecond;
   }
 
   public StatisticalValue getOnActivityCreatedTime() {
@@ -89,9 +83,6 @@ public class UIMetric extends Metric {
         + ", \n"
         + "frameTime="
         + frameTime
-        + ", \n"
-        + "framesPerSecond="
-        + framesPerSecond
         + ", \n"
         + "onActivityCreatedTime="
         + onActivityCreatedTime

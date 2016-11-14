@@ -50,8 +50,8 @@ public class NumberOfReportsPerBatchTest {
         bytes <= MAX_REQUEST_SIZE_WITHOUT_COMPRESSION_IN_BYTES);
   }
 
-  @Test
-  @Ignore public void doesNotSendLessThanTheOptimumNumberOfReportsPerRequest() throws Exception {
+  @Test @Ignore public void doesNotSendLessThanTheOptimumNumberOfReportsPerRequest()
+      throws Exception {
     int optimumNumberOfReports = calculateOptimumNumberOfReportsPerRequest();
 
     assertEquals(optimumNumberOfReports, FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST);
@@ -151,7 +151,6 @@ public class NumberOfReportsPerBatchTest {
 
   private UIMetric generateAnyUIMetric(long timestamp) {
     StatisticalValue frameTime = givenAnyStatisticalValue();
-    StatisticalValue fps = givenAnyStatisticalValue();
     StatisticalValue onActivityCreatedTime = givenAnyStatisticalValue();
     StatisticalValue onActivityStartedTime = givenAnyStatisticalValue();
     StatisticalValue onActivityResumedTime = givenAnyStatisticalValue();
@@ -160,7 +159,7 @@ public class NumberOfReportsPerBatchTest {
     StatisticalValue onActivityStoppedTime = givenAnyStatisticalValue();
     StatisticalValue onActivityDestroyedTime = givenAnyStatisticalValue();
     return new UIMetric(timestamp, ANY_VERSION_NAME, ANY_OS_VERSION, ANY_BATTERY_SAVER_ON,
-        "MainActivity", frameTime, fps, onActivityCreatedTime, onActivityStartedTime,
+        "MainActivity", frameTime, onActivityCreatedTime, onActivityStartedTime,
         onActivityResumedTime, activityVisibleTime, onActivityPausedTime, onActivityStoppedTime,
         onActivityDestroyedTime);
   }
