@@ -37,21 +37,27 @@ public class WiFiSyncService extends GcmTaskService {
   private ConnectivityManager connectivityManager;
 
   @Override public int onRunTask(TaskParams taskParams) {
-    connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-    if (!isTaskSupported(taskParams)) {
+    if (!isScheduledTaskSupported(taskParams)) {
       return RESULT_FAILURE;
     }
+    initializeDependencies(taskParams);
+    return syncStoredReports();
+  }
+
+  private boolean isScheduledTaskSupported(TaskParams taskParams) {
     String apiKey = getApiKey(taskParams);
-    if (!isClientEnabled(apiKey)) {
-      return RESULT_FAILURE;
-    }
+    return (isTaskTagSupported(taskParams) && isClientEnabled(apiKey));
+  }
+
+  private void initializeDependencies(TaskParams taskParams) {
+    String apiKey = getApiKey(taskParams);
     String scheme = getString(R.string.flowup_scheme);
     String host = getString(R.string.flowup_host);
     int port = getResources().getInteger(R.integer.flowup_port);
     Device device = new Device(this);
     reportsStorage = new ReportsStorage(this);
     reportApiClient = new ReportApiClient(apiKey, device, scheme, host, port);
-    return syncStoredReports();
+    connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
   }
 
   private boolean isClientEnabled(String apiKey) {
@@ -73,7 +79,7 @@ public class WiFiSyncService extends GcmTaskService {
     return apiKey;
   }
 
-  private boolean isTaskSupported(TaskParams taskParams) {
+  private boolean isTaskTagSupported(TaskParams taskParams) {
     return taskParams.getTag().equals(SYNCHRONIZE_METRICS_REPORT);
   }
 
