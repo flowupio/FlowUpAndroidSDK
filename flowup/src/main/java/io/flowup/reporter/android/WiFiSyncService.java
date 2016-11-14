@@ -4,6 +4,9 @@
 
 package io.flowup.reporter.android;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;
@@ -31,8 +34,10 @@ public class WiFiSyncService extends GcmTaskService {
   private ReportApiClient reportApiClient;
   private ReportsStorage reportsStorage;
   private FlowUpConfig flowUpConfig;
+  private ConnectivityManager connectivityManager;
 
   @Override public int onRunTask(TaskParams taskParams) {
+    connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
     if (!isTaskSupported(taskParams)) {
       return RESULT_FAILURE;
     }
@@ -81,6 +86,7 @@ public class WiFiSyncService extends GcmTaskService {
     }
     ApiClientResult.Error error;
     ApiClientResult result;
+    boolean isConnectedToWifi = true;
     do {
       Logger.d(reports.getReportsIds().size() + " reports to sync");
       Logger.d(reports.toString());
@@ -102,8 +108,9 @@ public class WiFiSyncService extends GcmTaskService {
             + " reports pending");
       }
       error = result.getError();
-    } while (reports != null && result.isSuccess());
-    if (error == ApiClientResult.Error.NETWORK_ERROR) {
+      isConnectedToWifi = isConnectedToWifi();
+    } while (reports != null && result.isSuccess() && isConnectedToWifi);
+    if (error == ApiClientResult.Error.NETWORK_ERROR || isConnectedToWifi) {
       Logger.e("The last sync failed due to a network error, so let's reschedule a new task");
       return RESULT_RESCHEDULE;
     } else if (error == ApiClientResult.Error.CLIENT_DISABLED) {
@@ -127,5 +134,11 @@ public class WiFiSyncService extends GcmTaskService {
     ApiClientResult.Error error = result.getError();
     return ApiClientResult.Error.UNAUTHORIZED == error
         || ApiClientResult.Error.SERVER_ERROR == error;
+  }
+
+  public boolean isConnectedToWifi() {
+    NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+    return activeNetworkInfo.getType() == ConnectivityManager.TYPE_WIFI
+        && activeNetworkInfo.isConnected();
   }
 }
