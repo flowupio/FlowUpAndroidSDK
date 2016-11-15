@@ -145,7 +145,8 @@ public class WiFiSyncService extends GcmTaskService {
 
   public boolean isConnectedToWifi() {
     NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-    return activeNetworkInfo.getType() == ConnectivityManager.TYPE_WIFI
+    return activeNetworkInfo != null
+        && activeNetworkInfo.getType() == ConnectivityManager.TYPE_WIFI
         && activeNetworkInfo.isConnected();
   }
 }
