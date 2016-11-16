@@ -541,7 +541,6 @@ public class ReportsStorageTest {
 
   private void clearRealmDB() {
     Context context = getInstrumentation().getContext();
-    Realm.init(context);
     Realm realm = Realm.getInstance(RealmConfig.getRealmConfig(context));
     realm.executeTransaction(new Realm.Transaction() {
       @Override public void execute(Realm realm) {

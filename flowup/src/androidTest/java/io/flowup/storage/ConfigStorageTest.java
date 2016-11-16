@@ -65,7 +65,6 @@ public class ConfigStorageTest {
 
   private Realm getRealm() {
     Context context = getInstrumentation().getContext();
-    Realm.init(context);
     return Realm.getInstance(RealmConfig.getRealmConfig(context));
   }
 }
