@@ -8,7 +8,7 @@ android {
     minSdkVersion 14
     targetSdkVersion 23
     versionCode 1006
-    versionName "0.1.6-SNAPSHOT"
+    versionName "0.1.6"
   }
 
   lintOptions {
@@ -16,8 +16,6 @@ android {
   }
 }
 
-dependencies {
-
-}
+dependencies {}
 
 apply from: '../gradle-mvn-push.gradle'
