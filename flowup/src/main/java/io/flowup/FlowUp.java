@@ -29,6 +29,7 @@ import io.flowup.metricnames.MetricNamesExtractor;
 import io.flowup.reporter.DropwizardReport;
 import io.flowup.reporter.FlowUpReporter;
 import io.flowup.reporter.FlowUpReporterListener;
+import io.flowup.storage.SQLDelightfulOpenHelper;
 import io.flowup.unix.Terminal;
 import java.util.LinkedList;
 import java.util.List;
@@ -123,7 +124,8 @@ public final class FlowUp {
     String host = application.getString(R.string.flowup_host);
     int port = application.getResources().getInteger(R.integer.flowup_port);
     Device device = new Device(application);
-    flowUpConfig = new FlowUpConfig(new ConfigStorage(application),
+    SQLDelightfulOpenHelper dbOpenHelper = new SQLDelightfulOpenHelper(application);
+    flowUpConfig = new FlowUpConfig(new ConfigStorage(dbOpenHelper),
         new ConfigApiClient(apiKey, device, scheme, host, port));
     return flowUpConfig.getConfig().isEnabled();
   }

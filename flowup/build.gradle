@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'realm-android'
+apply plugin: 'com.squareup.sqldelight'
 
 android {
   compileSdkVersion 23
@@ -15,7 +16,7 @@ android {
 
   buildTypes {
     release {
-      minifyEnabled true
+      minifyEnabled false
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
   }
@@ -38,6 +39,8 @@ dependencies {
   compile 'com.google.android.gms:play-services-gcm:9.6.1'
   compile 'com.squareup.okhttp3:logging-interceptor:3.4.2'
   compile 'org.slf4j:slf4j-nop:1.7.21'
+  apt 'com.google.auto.value:auto-value:1.3'
+  provided 'com.jakewharton.auto.value:auto-value-annotations:1.3'
   testCompile 'junit:junit:4.12'
   testCompile 'org.mockito:mockito-all:1.10.19'
   testCompile 'org.robolectric:robolectric:3.1.1'

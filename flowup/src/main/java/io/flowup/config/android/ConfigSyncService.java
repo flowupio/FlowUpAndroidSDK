@@ -12,6 +12,8 @@ import io.flowup.android.Device;
 import io.flowup.config.FlowUpConfig;
 import io.flowup.config.apiclient.ConfigApiClient;
 import io.flowup.config.storage.ConfigStorage;
+import io.flowup.logger.Logger;
+import io.flowup.storage.SQLDelightfulOpenHelper;
 
 import static com.google.android.gms.gcm.GcmNetworkManager.RESULT_FAILURE;
 import static com.google.android.gms.gcm.GcmNetworkManager.RESULT_RESCHEDULE;
@@ -28,6 +30,7 @@ public class ConfigSyncService extends GcmTaskService {
         || taskParams.getTag() != ConfigSyncServiceScheduler.SYNCHRONIZE_CONFIG) {
       return RESULT_FAILURE;
     }
+    Logger.d("Let's update the config!");
     boolean result = updateConfig(extras.getString(API_KEY_EXTRA));
     return result ? RESULT_SUCCESS : RESULT_RESCHEDULE;
   }
@@ -37,7 +40,8 @@ public class ConfigSyncService extends GcmTaskService {
     String host = getString(R.string.flowup_host);
     int port = getResources().getInteger(R.integer.flowup_port);
     Device device = new Device(this);
-    FlowUpConfig flowUpConfig = new FlowUpConfig(new ConfigStorage(getApplicationContext()),
+    SQLDelightfulOpenHelper dbOpenHelper = new SQLDelightfulOpenHelper(getApplicationContext());
+    FlowUpConfig flowUpConfig = new FlowUpConfig(new ConfigStorage(dbOpenHelper),
         new ConfigApiClient(apiKey, device, scheme, host, port));
     return flowUpConfig.updateConfig();
   }

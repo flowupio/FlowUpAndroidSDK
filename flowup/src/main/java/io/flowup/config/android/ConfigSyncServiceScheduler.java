@@ -15,8 +15,8 @@ public class ConfigSyncServiceScheduler {
 
   static final String SYNCHRONIZE_CONFIG = "SynchronizeConfig";
 
-  private static final long SYNC_PERIOD = TimeUnit.HOURS.toSeconds(6);
-  private static final long FLEX_PERIOD = TimeUnit.MINUTES.toSeconds(15);
+  private static final long SYNC_PERIOD = TimeUnit.SECONDS.toSeconds(6);
+  private static final long FLEX_PERIOD = TimeUnit.SECONDS.toSeconds(15);
 
   private final GcmNetworkManager gcmNetworkManager;
   private final String apiKey;
