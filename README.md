@@ -1,4 +1,4 @@
-![FlowUp Logo][flowuplogo] FlowUp [![Build Status](https://travis-ci.com/Karumi/FlowUpAndroidSDK.svg?token=Kb2RqPaWxFZ8XPxpqvqz&branch=master)](https://travis-ci.com/Karumi/FlowUpAndroidSDK)
+![FlowUp Logo][flowuplogo] FlowUp [![Build Status](https://travis-ci.com/Karumi/FlowUpAndroidSDK.svg?token=Kb2RqPaWxFZ8XPxpqvqz&branch=master)](https://travis-ci.com/Karumi/FlowUpAndroidSDK) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.flowup/android-sdk/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.flowup/android-sdk)
 ==============================
 
 FlowUp, mobile real time applications performance monitoring solution!
