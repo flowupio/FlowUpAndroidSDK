@@ -188,8 +188,7 @@ public class ReportApiClientTest extends MockWebServerTestCase {
   }
 
   private ReportApiClient givenAnApiClient(boolean useGzip) {
-    return new ReportApiClient(ANY_API_KEY, device, getScheme(), getHost(),
-        getPort(), useGzip);
+    return new ReportApiClient(ANY_API_KEY, device, getScheme(), getHost(), getPort(), useGzip);
   }
 
   private Reports givenSomeReports() {
@@ -249,6 +248,6 @@ public class ReportApiClientTest extends MockWebServerTestCase {
   }
 
   private StatisticalValue givenAnyStatisticalValue() {
-    return new StatisticalValue(1, 60, 60, 60, 0, 60, 60, 60, 60, 60, 60, 60, 60, 60);
+    return new StatisticalValue(60, 60, 60);
   }
 }

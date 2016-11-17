@@ -165,9 +165,7 @@ public class NumberOfReportsPerBatchTest {
   }
 
   private StatisticalValue givenAnyStatisticalValue() {
-    return new StatisticalValue(1, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE,
-        Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE,
-        Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+    return new StatisticalValue(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
   }
 
   private NetworkMetric generateAnyNetworkMetric(long timestamp) {
