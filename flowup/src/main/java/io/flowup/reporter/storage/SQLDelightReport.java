@@ -30,7 +30,7 @@ import java.util.List;
   }
 
   static List<SQLDelightReport> getReports(SQLiteDatabase db, int numberOfReports) {
-    Cursor cursor = db.rawQuery(ReportModel.SELECT_REPORT, new String[] { "" + numberOfReports });
+    Cursor cursor = db.rawQuery(ReportModel.GET_REPORT, new String[] { "" + numberOfReports });
     List<SQLDelightReport> reports = new ArrayList<>(numberOfReports);
     while (cursor.moveToNext()) {
       SQLDelightReport report = SQLDelightReport.REPORT_MAPPER.map(cursor);

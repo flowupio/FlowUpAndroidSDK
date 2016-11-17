@@ -16,6 +16,6 @@ VALUES (?, ?, ?, ?, ?, ?);
 remove_all:
 DELETE FROM metric;
 
-get_metrics_by_report_timestamp:
+get_metrics_by_report_id:
 SELECT * FROM metric
 WHERE report_id = ?;
