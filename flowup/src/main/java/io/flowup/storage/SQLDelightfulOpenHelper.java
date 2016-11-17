@@ -4,8 +4,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import io.flowup.config.storage.ConfigModel;
-import io.flowup.config.storage.MetricModel;
-import io.flowup.config.storage.ReportModel;
+import io.flowup.reporter.storage.MetricModel;
+import io.flowup.reporter.storage.ReportModel;
 
 public class SQLDelightfulOpenHelper extends SQLiteOpenHelper {
 
