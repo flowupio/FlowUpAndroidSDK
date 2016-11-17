@@ -1,24 +1,9 @@
-CREATE TABLE metric (
+CREATE TABLE report (
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-  report_timestamp INTEGER NOT NULL,
-  metric_name TEXT NOT NULL,
-  value REAL,
-  count INTEGER,
-  min REAL,
-  max REAL,
-  mean REAL,
-  standard_dev REAL,
-  median REAL,
-  p1 REAL,
-  p2 REAL,
-  p5 REAL,
-  p10 REAL,
-  p90 REAL,
-  p95 REAL,
-  p98 REAL,
-  p99 REAL
+  report_timestamp INTEGER NOT NULL
 );
 
-create_metric:
-INSERT INTO metric (id, report_timestamp, metric_name, value, count, min, max, mean, standard_dev, median, p1, p2, p5, p10, p90, p95, p98, p99)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+get_report:
+SELECT * FROM report
+ORDER BY report_timestamp DESC
+LIMIT ?;
