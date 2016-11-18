@@ -60,27 +60,3 @@
     java.lang.Object writeReplace();
     java.lang.Object readResolve();
 }
-
-# Realm support configuration
-
--keep class io.realm.annotations.RealmModule
--keep @io.realm.annotations.RealmModule class *
--keep class io.realm.internal.Keep
--keep @io.realm.internal.Keep class *
--dontwarn javax.**
--dontwarn io.realm.**
-
--keep public class * extends io.realm.RealmObject {
-    *;
-}
--keepclassmembernames class * extends io.realm.RealmObject {
-    java.lang.Class class$(java.lang.String);
-    java.lang.Class class$(java.lang.String, boolean);
-}
--keepclasseswithmembernames class * extends io.realm.RealmObject {
-    native <methods>;
-}
-
--keep class io.flowup.reporter.storage.FlowUpRealmModule {
-  *;
-}
