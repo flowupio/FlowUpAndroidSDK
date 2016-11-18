@@ -83,7 +83,7 @@ How to review the persisted data
 
 This library has been developed using SQLite to persist the metrics data. FlowUp will store metrics reports until the sync process be activated. All this information is persisted inside a database you can check what's inside following the next steps:
 
-* Get a copy of the Realm database executing: ``adb pull /data/data/<APPLICATION_PACKAGE_WHERE_FLOWUP_IS_BEING_USED>/databases .``
+* Get a copy of the SQLite database executing: ``adb pull /data/data/<APPLICATION_PACKAGE_WHERE_FLOWUP_IS_BEING_USED>/databases .``
 * Intall the [SQLite Browser](http://sqlitebrowser.org/) app.
 * Open the file named ``flowup.db`` using the SQLite Browser.
 

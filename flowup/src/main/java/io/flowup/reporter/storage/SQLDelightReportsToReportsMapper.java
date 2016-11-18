@@ -43,10 +43,10 @@ class SQLDelightReportsToReportsMapper extends Mapper<SQLDelightReports, Reports
         numberOfCores, networkMetrics, uiMetrics, cpuMetrics, memoryMetrics, diskMetrics);
   }
 
-  private List<String> mapReportsIds(List<SQLDelightReport> realmReports) {
+  private List<String> mapReportsIds(List<SQLDelightReport> reports) {
     List<String> ids = new LinkedList<>();
-    for (int i = 0; i < realmReports.size(); i++) {
-      String id = "" + realmReports.get(i)._id();
+    for (int i = 0; i < reports.size(); i++) {
+      String id = "" + reports.get(i)._id();
       ids.add(id);
     }
     return ids;
