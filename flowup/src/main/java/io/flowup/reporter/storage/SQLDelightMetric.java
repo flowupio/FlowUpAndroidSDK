@@ -48,4 +48,9 @@ import java.util.List;
     cursor.close();
     return metrics;
   }
+
+  static void removeByReportIds(SQLiteDatabase db, long[] reportIds) {
+    SqlDelightStatement remove = SQLDelightMetric.FACTORY.delete_by_report_ids(reportIds);
+    db.execSQL(remove.statement);
+  }
 }

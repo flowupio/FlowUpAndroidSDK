@@ -44,17 +44,6 @@ If for some reason you don't want to distribute FlowUp's artifact in your releas
 
 This configuration will use a no operational version of the library in your release builds. This **no operational** version won't include FlowUp or any related dependency in your release APK.
 
-If you need to obfuscate your application remember to add the following rules to your ``proguard`` configuration file:
-
-```
--keep class io.flowup.** { *; }
--keep class io.realm.annotations.RealmModule
--keep @io.realm.annotations.RealmModule class *
--keep class io.realm.internal.Keep
--keep @io.realm.internal.Keep class *
--dontwarn javax.**
--dontwarn io.realm.**
-```
 
 How to build this project
 -------------------------
@@ -87,21 +76,23 @@ This repository contains an Android project built on top of ``gradlew``, a binar
 
 By default the project is ready to execute a sample app reporting reports to our service. If you start the sample app some reports obtained from your application instalation will be sent to our server.**
 
+If you are using IntelliJ, we strongly recommend you to install [AutoValue](https://plugins.jetbrains.com/plugin/8091) and [SQLDelight](https://plugins.jetbrains.com/plugin/8191)
+
 How to review the persisted data
 --------------------------------
 
-This library has been developed using [Realm][realm] as the persistence engine. FlowUp will store metrics reports until the sync process be activated. All this information is persisted inside a Realm data base you can check what's inside following the next steps:
+This library has been developed using SQLite to persist the metrics data. FlowUp will store metrics reports until the sync process be activated. All this information is persisted inside a database you can check what's inside following the next steps:
 
-* Get a copy of the Realm database executing: ``adb pull /data/data/<APPLICATION_PACKAGE_WHERE_FLOWUP_IS_BEING_USED>/files/FlowUp.realm .``
-* Download the [Realm Browser][realmbrowser] app.
-* Open the file named ``FlowUp.realm`` using the Realm Browser.
+* Get a copy of the Realm database executing: ``adb pull /data/data/<APPLICATION_PACKAGE_WHERE_FLOWUP_IS_BEING_USED>/databases .``
+* Intall the [SQLite Browser](http://sqlitebrowser.org/) app.
+* Open the file named ``flowup.db`` using the SQLite Browser.
 
-Inside this database you can find all the information persisted by FlowUp which is pending to be synced with our servers. Once this information be synced, it will be removed from the database. **Remember that to be able to inspect the databse the device used has to be an emulator or be rooted**.
+Inside this database you can find all the information persisted by FlowUp which is pending to be synced with our servers. Once this information is synced, it will be removed from the database. **Remember that to be able to inspect the databse the device used has to be an emulator or be rooted**.
 
 How to get info about the sync process
 --------------------------------------
 
-This library uses part of the Google Play Services API to implement the reports sync mechanism. This API is named [GcmTaskService][gcmtaskservice] and it's being used to schedule a call to our ``WiFiSyncService`` every hour if the device is connected to an unmetered wifi network. You can review the scheduler configuration in the class ``WiFiSyncServiceScheduler``.
+This library uses part of the Google Play Services API to implement the reports sync mechanism. This API is named [GcmTaskService][https://developers.google.com/cloud-messaging/network-manager] and it's being used to schedule a call to our ``WiFiSyncService`` every hour if the device is connected to an unmetered wifi network. You can review the scheduler configuration in the class ``WiFiSyncServiceScheduler``.
 
 The service will be invoked once per hour in the best case and to be able to know what's going on we've added some log traces. If you want to review the service tasks execution historic you can execute the following commands:
 
@@ -111,7 +102,4 @@ The service will be invoked once per hour in the best case and to be able to kno
 Copyright 2016 Karumi.
 
 [flowuplogo]: ./art/FlowUpLogo.png
-[realm]: https://realm.io/es/docs/java/latest/
-[realmbrowser]: https://itunes.apple.com/es/app/realm-browser/id1007457278?mt=12
-[gcmtaskservice]: https://developers.google.com/cloud-messaging/network-manager
 

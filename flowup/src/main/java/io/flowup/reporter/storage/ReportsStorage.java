@@ -59,6 +59,7 @@ public class ReportsStorage extends SQLDelightStorage {
           ids[i] = Long.valueOf(reportsIds.get(i));
         }
         SQLDelightReport.remove(database, ids);
+        SQLDelightMetric.removeByReportIds(database, ids);
       }
     });
   }

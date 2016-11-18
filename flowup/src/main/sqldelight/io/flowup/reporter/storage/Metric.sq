@@ -6,8 +6,7 @@ CREATE TABLE metric (
   value INTEGER,
   mean REAL,
   p10 REAL,
-  p90 REAL,
-  FOREIGN KEY(report_id) REFERENCES report(_id) ON DELETE CASCADE
+  p90 REAL
 );
 
 create_metric:
@@ -16,4 +15,8 @@ VALUES (?, ?, ?, ?, ?, ?, ?);
 
 get_metrics_by_report_ids:
 SELECT * FROM metric
+WHERE report_id in ?;
+
+delete_by_report_ids:
+DELETE FROM metric
 WHERE report_id in ?;
