@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.google.auto.value.AutoValue;
 import com.squareup.sqldelight.RowMapper;
+import com.squareup.sqldelight.SqlDelightStatement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,8 @@ import java.util.List;
   }
 
   static List<SQLDelightReport> getReports(SQLiteDatabase db, int numberOfReports) {
-    Cursor cursor = db.rawQuery(ReportModel.GET_REPORT, new String[] { "" + numberOfReports });
+    SqlDelightStatement getReport = SQLDelightReport.FACTORY.get_report(numberOfReports);
+    Cursor cursor = db.rawQuery(getReport.statement, new String[0]);
     List<SQLDelightReport> reports = new ArrayList<>(numberOfReports);
     while (cursor.moveToNext()) {
       SQLDelightReport report = SQLDelightReport.REPORT_MAPPER.map(cursor);
@@ -38,5 +40,19 @@ import java.util.List;
     }
     cursor.close();
     return reports;
+  }
+
+  static void removeAll(SQLiteDatabase db) {
+    db.execSQL(ReportModel.REMOVE_ALL);
+  }
+
+  static void remove(SQLiteDatabase db, String[] ids) {
+    db.execSQL(ReportModel.REMOVE, ids);
+  }
+
+  static int removeOld(SQLiteDatabase db, long twoDaysAgoTimestamp) {
+    ReportModel.Remove_old removeOld = new Remove_old(db);
+    removeOld.bind(twoDaysAgoTimestamp);
+    return removeOld.program.executeUpdateDelete();
   }
 }

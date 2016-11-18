@@ -1,6 +1,8 @@
 CREATE TABLE report (
   _id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   report_timestamp INTEGER NOT NULL
+
+
 );
 
 create_report:
@@ -11,3 +13,14 @@ get_report:
 SELECT * FROM report
 ORDER BY report_timestamp DESC
 LIMIT ?;
+
+remove_all:
+DELETE FROM report;
+
+remove:
+DELETE FROM report
+WHERE _id in ?;
+
+remove_old:
+DELETE FROM report
+where report_timestamp < ?;

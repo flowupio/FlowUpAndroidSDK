@@ -57,7 +57,7 @@ public class WiFiSyncService extends GcmTaskService {
     String host = getString(R.string.flowup_host);
     int port = getResources().getInteger(R.integer.flowup_port);
     Device device = new Device(this);
-    reportsStorage = new ReportsStorage(this, new Time());
+    reportsStorage = new ReportsStorage(new SQLDelightfulOpenHelper(this), new Time());
     reportApiClient = new ReportApiClient(apiKey, device, scheme, host, port);
     connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
   }

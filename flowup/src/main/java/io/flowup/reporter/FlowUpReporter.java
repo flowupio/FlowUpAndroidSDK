@@ -21,6 +21,7 @@ import io.flowup.reporter.android.WiFiSyncServiceScheduler;
 import io.flowup.reporter.apiclient.ReportApiClient;
 import io.flowup.reporter.model.Reports;
 import io.flowup.reporter.storage.ReportsStorage;
+import io.flowup.storage.SQLDelightfulOpenHelper;
 import io.flowup.utils.Time;
 import java.util.SortedMap;
 import java.util.concurrent.TimeUnit;
@@ -168,7 +169,7 @@ public class FlowUpReporter extends ScheduledReporter {
       Time time = new Time();
       return new FlowUpReporter(registry, name, filter, TimeUnit.NANOSECONDS, TimeUnit.NANOSECONDS,
           new ReportApiClient(apiKey, device, scheme, host, port),
-          new ReportsStorage(context, time), new WiFiSyncServiceScheduler(context, apiKey),
+          new ReportsStorage(new SQLDelightfulOpenHelper(context), time), new WiFiSyncServiceScheduler(context, apiKey),
           new DeleteOldReportsServiceScheduler(context), time, forceReports, listener);
     }
 
