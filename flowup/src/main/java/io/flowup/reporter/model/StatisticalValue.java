@@ -29,4 +29,8 @@ public class StatisticalValue {
   public double getP90() {
     return p90;
   }
+
+  @Override public String toString() {
+    return "StatisticalValue{" + "mean=" + mean + ", p90=" + p90 + '}';
+  }
 }

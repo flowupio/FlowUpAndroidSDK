@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2016 Go Karumi S.L.
+ */
+
 package io.flowup.reporter.storage;
 
 import java.util.List;
