@@ -46,8 +46,9 @@ import java.util.List;
     db.execSQL(ReportModel.REMOVE_ALL);
   }
 
-  static void remove(SQLiteDatabase db, String[] ids) {
-    db.execSQL(ReportModel.REMOVE, ids);
+  static void remove(SQLiteDatabase db, long[] ids) {
+    SqlDelightStatement remove = SQLDelightReport.FACTORY.remove(ids);
+    db.execSQL(remove.statement);
   }
 
   static int removeOld(SQLiteDatabase db, long twoDaysAgoTimestamp) {

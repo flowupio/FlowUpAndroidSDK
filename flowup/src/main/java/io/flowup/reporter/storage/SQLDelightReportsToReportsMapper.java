@@ -46,7 +46,7 @@ class SQLDelightReportsToReportsMapper extends Mapper<SQLDelightReports, Reports
   private List<String> mapReportsIds(List<SQLDelightReport> realmReports) {
     List<String> ids = new LinkedList<>();
     for (int i = 0; i < realmReports.size(); i++) {
-      String id = "" + realmReports.get(i).report_timestamp();
+      String id = "" + realmReports.get(i)._id();
       ids.add(id);
     }
     return ids;
@@ -86,7 +86,7 @@ class SQLDelightReportsToReportsMapper extends Mapper<SQLDelightReports, Reports
       SQLDelightReport report = reports.get(i);
       for (int j = 0; j < metrics.size(); j++) {
         SQLDelightMetric metric = metrics.get(j);
-        if (metric._id() != report._id()) {
+        if (metric.report_id() != report._id()) {
           continue;
         }
         String metricName = metric.metric_name();
@@ -121,7 +121,7 @@ class SQLDelightReportsToReportsMapper extends Mapper<SQLDelightReports, Reports
       SQLDelightReport report = reports.get(i);
       for (int j = 0; j < metrics.size(); j++) {
         SQLDelightMetric metric = metrics.get(j);
-        if (report._id() != metric._id()) {
+        if (report._id() != metric.report_id()) {
           continue;
         }
         String metricName = metric.metric_name();
@@ -149,7 +149,7 @@ class SQLDelightReportsToReportsMapper extends Mapper<SQLDelightReports, Reports
       Long bytesAllocated = null;
       for (int j = 0; j < metrics.size(); j++) {
         SQLDelightMetric metric = metrics.get(j);
-        if (metric._id() != report._id()) {
+        if (metric.report_id() != report._id()) {
           continue;
         }
         String metricName = metric.metric_name();
@@ -183,7 +183,7 @@ class SQLDelightReportsToReportsMapper extends Mapper<SQLDelightReports, Reports
       Long sharedPrefsBytes = null;
       for (int j = 0; j < metrics.size(); j++) {
         SQLDelightMetric metric = metrics.get(j);
-        if (metric._id() != report._id()) {
+        if (metric.report_id() != report._id()) {
           continue;
         }
         String metricName = metric.metric_name();
@@ -223,7 +223,8 @@ class SQLDelightReportsToReportsMapper extends Mapper<SQLDelightReports, Reports
     List<UIMetric> uiMetrics = new LinkedList<>();
     Set<String> screenNames = extractScreenNames(report, metrics);
     for (String screenName : screenNames) {
-      UIMetric uiMetric = extractUIMetric(screenName, report, metrics);
+      List<SQLDelightMetric> filteredMetrics = filterMetricsByReportId(report, metrics);
+      UIMetric uiMetric = extractUIMetric(screenName, report, filteredMetrics);
       if (uiMetric != null) {
         uiMetrics.add(uiMetric);
       }
@@ -231,10 +232,21 @@ class SQLDelightReportsToReportsMapper extends Mapper<SQLDelightReports, Reports
     return uiMetrics;
   }
 
+  private List<SQLDelightMetric> filterMetricsByReportId(SQLDelightReport report,
+      List<SQLDelightMetric> metrics) {
+    List<SQLDelightMetric> filteredMetrics = new LinkedList<>();
+    for (SQLDelightMetric metric : metrics) {
+      if (metric.report_id() == report._id()) {
+        filteredMetrics.add(metric);
+      }
+    }
+    return filteredMetrics;
+  }
+
   private Set<String> extractScreenNames(SQLDelightReport report, List<SQLDelightMetric> metrics) {
     Set<String> screenNames = new HashSet<>();
     for (SQLDelightMetric metric : metrics) {
-      if (report._id() == metric._id()) {
+      if (report._id() == metric.report_id()) {
         String screenName = extractor.getScreenName(metric.metric_name());
         if (screenName != null) {
           screenNames.add(screenName);

@@ -78,16 +78,17 @@ class DropwizardReportToSQLDelightMetricMapper
     double mean = snapshot.getMean();
     double p10 = snapshot.getValue(0.10);
     double p90 = snapshot.getValue(0.90);
-    return new AutoValue_SQLDelightMetric(0, reportId, metricName, null, mean, p10, p90);
+    long count = snapshot.getValues().length;
+    return new AutoValue_SQLDelightMetric(0, reportId, metricName, count, null, mean, p10, p90);
   }
 
   private SQLDelightMetric mapGauge(String metricName, Gauge gauge) {
     Long gaugeValue = (Long) gauge.getValue();
-    return new AutoValue_SQLDelightMetric(0, reportId, metricName, gaugeValue, null, null, null);
+    return new AutoValue_SQLDelightMetric(0, reportId, metricName, 1L, gaugeValue, null, null, null);
   }
 
   private SQLDelightMetric mapCounter(String metricName, Counter counter) {
     Long counterValue = counter.getCount();
-    return new AutoValue_SQLDelightMetric(0, reportId, metricName, counterValue, null, null, null);
+    return new AutoValue_SQLDelightMetric(0, reportId, metricName, 1L, counterValue, null, null, null);
   }
 }

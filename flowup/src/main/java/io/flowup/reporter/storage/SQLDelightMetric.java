@@ -20,19 +20,20 @@ import java.util.List;
       new MetricModel.Factory<>(new MetricModel.Creator<SQLDelightMetric>() {
 
         @Override public SQLDelightMetric create(long id, long reportId, @NonNull String metricName,
-            @Nullable Long value, @Nullable Double mean, @Nullable Double p10,
+            Long count, @Nullable Long value, @Nullable Double mean, @Nullable Double p10,
             @Nullable Double p90) {
-          return new AutoValue_SQLDelightMetric(id, reportId, metricName, value, mean, p10, p90);
+          return new AutoValue_SQLDelightMetric(id, reportId, metricName, count, value, mean, p10,
+              p90);
         }
       });
 
   private static final RowMapper<SQLDelightMetric> METRIC_MAPPER =
       FACTORY.get_metrics_by_report_idsMapper();
 
-  static void createMetric(SQLiteDatabase db, long reportId, String metricName, Long value,
-      Double mean, Double p10, Double p90) {
+  static void createMetric(SQLiteDatabase db, long reportId, String metricName, Long count,
+      Long value, Double mean, Double p10, Double p90) {
     Create_metric createMetric = new Create_metric(db);
-    createMetric.bind(reportId, metricName, value, mean, p10, p90);
+    createMetric.bind(reportId, metricName, count, value, mean, p10, p90);
     createMetric.program.executeInsert();
   }
 

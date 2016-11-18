@@ -52,7 +52,12 @@ public class ReportsStorage extends SQLDelightStorage {
   public void deleteReports(final Reports reports) {
     executeTransaction(new Transaction() {
       @Override public void execute(SQLiteDatabase database) {
-        String[] ids = (String[]) reports.getReportsIds().toArray();
+        List<String> reportsIds = reports.getReportsIds();
+        int numberOfReports = reportsIds.size();
+        long[] ids = new long[numberOfReports];
+        for (int i = 0; i < numberOfReports; i++) {
+          ids[i] = Long.valueOf(reportsIds.get(i));
+        }
         SQLDelightReport.remove(database, ids);
       }
     });
@@ -82,8 +87,8 @@ public class ReportsStorage extends SQLDelightStorage {
     Long id = SQLDelightReport.createReport(db, report.getReportingTimestamp());
     List<SQLDelightMetric> metrics = new DropwizardReportToSQLDelightMetricMapper(id).map(report);
     for (SQLDelightMetric metric : metrics) {
-      SQLDelightMetric.createMetric(db, metric.report_id(), metric.metric_name(), metric.value(),
-          metric.mean(), metric.p10(), metric.p90());
+      SQLDelightMetric.createMetric(db, metric.report_id(), metric.metric_name(), metric.count(),
+          metric.value(), metric.mean(), metric.p10(), metric.p90());
     }
   }
 }
