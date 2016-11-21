@@ -14,7 +14,7 @@ public class FileSystem {
   private final String sharedPreferencesPath;
 
   public FileSystem(Context context) {
-    this.internalStoragePath = context.getFilesDir().getAbsolutePath();
+    this.internalStoragePath = context.getFilesDir().getAbsolutePath().replace("files", "");
     this.sharedPreferencesPath = internalStoragePath.replace("files", "shared_prefs");
   }
 
