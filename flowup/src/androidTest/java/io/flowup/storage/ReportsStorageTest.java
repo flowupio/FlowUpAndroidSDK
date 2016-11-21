@@ -279,6 +279,7 @@ public class ReportsStorageTest {
     int numberOfReports = 10;
     int numberOfThreads = 10;
     int totalNumberOfReports = numberOfReports * numberOfThreads;
+
     writeABunchOfReports(numberOfReports, numberOfThreads);
     Reports reports = storage.getReports(totalNumberOfReports);
 

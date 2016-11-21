@@ -18,6 +18,8 @@ public class SQLDelightfulOpenHelper extends SQLiteOpenHelper {
   private static final int DB_VERSION = BuildConfig.VERSION_CODE;
   private static final String REPORT_TIMESTAMP_INDEX =
       "CREATE INDEX search_report_timestamp ON report (report_timestamp DESC)";
+  private static final String REPORT_ID_INDEX = "CREATE INDEX report_id ON metric (report_id)";
+
   private static final Object CREATE_DB_CONNECTION_LOCK = new Object();
   private static SQLiteDatabase DB_CONNECTION;
 
@@ -50,6 +52,7 @@ public class SQLDelightfulOpenHelper extends SQLiteOpenHelper {
     db.execSQL(ReportModel.CREATE_TABLE);
     db.execSQL(MetricModel.CREATE_TABLE);
     db.execSQL(REPORT_TIMESTAMP_INDEX);
+    db.execSQL(REPORT_ID_INDEX);
   }
 
   private void dropTables(SQLiteDatabase db) {

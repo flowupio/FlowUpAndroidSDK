@@ -1,8 +1,6 @@
 CREATE TABLE report (
   _id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   report_timestamp INTEGER NOT NULL
-
-
 );
 
 create_report:
