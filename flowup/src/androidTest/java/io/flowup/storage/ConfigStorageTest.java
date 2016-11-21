@@ -62,6 +62,6 @@ public class ConfigStorageTest {
 
   private int getNumberOfConfigs() {
     SQLiteDatabase readableDatabase = openHelper.getReadableDatabase();
-    return readableDatabase.rawQuery("SELECT COUNT(id) FROM config", new String[0]).getCount();
+    return readableDatabase.rawQuery("SELECT * FROM config", new String[0]).getCount();
   }
 }
