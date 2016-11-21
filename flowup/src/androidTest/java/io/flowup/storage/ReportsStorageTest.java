@@ -29,6 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
@@ -272,6 +273,31 @@ public class ReportsStorageTest {
     int numberOfReportsDeleted = storage.deleteOldReports();
 
     assertEquals(numberOfReports, numberOfReportsDeleted);
+  }
+
+  @Test public void supportsNThreadsWritingAtTheSameTime() throws Exception {
+    int numberOfReports = 10;
+    int numberOfThreads = 10;
+    int totalNumberOfReports = numberOfReports * numberOfThreads;
+    writeABunchOfReports(numberOfReports, numberOfThreads);
+    Reports reports = storage.getReports(totalNumberOfReports);
+
+    assertEquals(totalNumberOfReports, reports.size());
+  }
+
+  private void writeABunchOfReports(final int numberOfReports, int numberOfThreads)
+      throws Exception {
+    final CountDownLatch latch = new CountDownLatch(numberOfThreads);
+    for (int i = 0; i < numberOfThreads; i++) {
+      new Thread(new Runnable() {
+        @Override public void run() {
+          List<DropwizardReport> dropwizardReport = givenSomeDropwizardReports(numberOfReports);
+          storeAndGet(dropwizardReport);
+          latch.countDown();
+        }
+      }).start();
+    }
+    latch.await();
   }
 
   private SortedMap<String, Timer> givenSomeFrameTimeMetricsTwoDifferentScreens() {

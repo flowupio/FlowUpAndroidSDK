@@ -23,14 +23,12 @@ public class SQLDelightStorage {
       database.setTransactionSuccessful();
     } finally {
       database.endTransaction();
-      database.close();
     }
   }
 
   protected <T> T read(Read<T> read) {
     SQLiteDatabase database = openHelper.getReadableDatabase();
     T result = read.read(database);
-    database.close();
     return result;
   }
 

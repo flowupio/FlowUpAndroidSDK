@@ -60,7 +60,6 @@ public class NumberOfReportsPerBatchTest {
   private int calculateMaxNumberOfReportsPerRequest() throws Exception {
     int newMax;
     for (newMax = FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST; newMax >= 0; newMax--) {
-      System.out.println("Trying with a new max value " + newMax);
       Reports reports = givenAReportsInstanceFullOfData(newMax);
       long bytes = toBytes(reports);
       if (bytes <= MAX_REQUEST_SIZE_WITHOUT_COMPRESSION_IN_BYTES) {

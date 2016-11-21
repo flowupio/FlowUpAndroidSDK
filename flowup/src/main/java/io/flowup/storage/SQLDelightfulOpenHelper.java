@@ -18,6 +18,8 @@ public class SQLDelightfulOpenHelper extends SQLiteOpenHelper {
   private static final int DB_VERSION = BuildConfig.VERSION_CODE;
   private static final String REPORT_TIMESTAMP_INDEX =
       "CREATE INDEX search_report_timestamp ON report (report_timestamp DESC)";
+  private static final Object CREATE_DB_CONNECTION_LOCK = new Object();
+  private static SQLiteDatabase DB_CONNECTION;
 
   public SQLDelightfulOpenHelper(Context context) {
     super(context, DB_NAME, null, DB_VERSION);
@@ -31,6 +33,15 @@ public class SQLDelightfulOpenHelper extends SQLiteOpenHelper {
     if (oldVersion != newVersion) {
       dropTables(db);
       createTables(db);
+    }
+  }
+
+  @Override public SQLiteDatabase getWritableDatabase() {
+    synchronized (CREATE_DB_CONNECTION_LOCK) {
+      if (DB_CONNECTION == null) {
+        DB_CONNECTION = super.getWritableDatabase();
+      }
+      return DB_CONNECTION;
     }
   }
 
