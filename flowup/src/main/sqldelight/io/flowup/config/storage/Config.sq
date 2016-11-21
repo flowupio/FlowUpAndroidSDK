@@ -1,0 +1,16 @@
+CREATE TABLE config (
+  id TEXT NOT NULL PRIMARY KEY DEFAULT 'UNIQUE_ID',
+  enabled INTEGER AS Boolean DEFAULT 1
+);
+
+select_config:
+SELECT *
+FROM config;
+
+update_config:
+INSERT OR REPLACE INTO config (id, enabled)
+VALUES ('UNIQUE_ID', ?);
+
+delete_config:
+DELETE FROM config
+WHERE id = 'UNIQUE_ID';

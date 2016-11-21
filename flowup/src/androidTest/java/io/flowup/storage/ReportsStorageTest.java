@@ -24,12 +24,12 @@ import io.flowup.reporter.model.Reports;
 import io.flowup.reporter.model.UIMetric;
 import io.flowup.reporter.storage.ReportsStorage;
 import io.flowup.utils.Time;
-import io.realm.Realm;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
@@ -44,7 +44,6 @@ import static org.mockito.Mockito.when;
 public class ReportsStorageTest {
 
   private static final double ANY_FRAME_TIME = 17;
-  private static final double ANY_FRAMES_PER_SECOND = 62;
   private static final long ANY_BYTES_UPLOADED = 1024L;
   private static final long ANY_BYTES_DOWNLOADED = 1024L;
   private static final double DELTA = 0.1d;
@@ -61,14 +60,15 @@ public class ReportsStorageTest {
 
   @Before public void setUp() {
     Context context = getInstrumentation().getContext();
+    SQLDelightfulOpenHelper openHelper = new SQLDelightfulOpenHelper(context);
     initializeTimeMock();
-    storage = new ReportsStorage(context, time);
+    storage = new ReportsStorage(openHelper, time);
     generator = new MetricNamesGenerator(new App(context), new Device(context), new Time());
-    clearRealmDB();
+    clearDatabase();
   }
 
   @After public void tearDown() {
-    clearRealmDB();
+    clearDatabase();
   }
 
   @Test public void storesOneReport() {
@@ -190,10 +190,14 @@ public class ReportsStorageTest {
   @Test public void deletesTheReportsMatchingWithTheReportId() {
     int numberOfReports = 10;
     List<DropwizardReport> dropwizardReports = givenSomeDropwizardReports(numberOfReports);
-    storeAndGet(dropwizardReports);
+    Reports reports = storeAndGet(dropwizardReports);
 
+    List<String> idsToRemove = new LinkedList<>();
     int numberOfReportsToRemove = numberOfReports / 2;
-    Reports reportsToRemove = givenReportsWithId(numberOfReportsToRemove);
+    for (int i = 0; i < numberOfReportsToRemove; i++) {
+      idsToRemove.add(reports.getReportsIds().get(i));
+    }
+    Reports reportsToRemove = new Reports(idsToRemove);
     storage.deleteReports(reportsToRemove);
     Reports restOfReports = storage.getReports(numberOfReports);
 
@@ -271,19 +275,37 @@ public class ReportsStorageTest {
     assertEquals(numberOfReports, numberOfReportsDeleted);
   }
 
+  @Test public void supportsNThreadsWritingAtTheSameTime() throws Exception {
+    int numberOfReports = 10;
+    int numberOfThreads = 10;
+    int totalNumberOfReports = numberOfReports * numberOfThreads;
+
+    writeABunchOfReports(numberOfReports, numberOfThreads);
+    Reports reports = storage.getReports(totalNumberOfReports);
+
+    assertEquals(totalNumberOfReports, reports.size());
+  }
+
+  private void writeABunchOfReports(final int numberOfReports, int numberOfThreads)
+      throws Exception {
+    final CountDownLatch latch = new CountDownLatch(numberOfThreads);
+    for (int i = 0; i < numberOfThreads; i++) {
+      new Thread(new Runnable() {
+        @Override public void run() {
+          List<DropwizardReport> dropwizardReport = givenSomeDropwizardReports(numberOfReports);
+          storeAndGet(dropwizardReport);
+          latch.countDown();
+        }
+      }).start();
+    }
+    latch.await();
+  }
+
   private SortedMap<String, Timer> givenSomeFrameTimeMetricsTwoDifferentScreens() {
     SortedMap<String, Timer> frameTimeMetrics = new TreeMap<>();
     frameTimeMetrics.putAll(givenAFrameTimeMetric(mock(Activity.class)));
     frameTimeMetrics.putAll(givenAFrameTimeMetric(mock(ActivityTwo.class)));
     return frameTimeMetrics;
-  }
-
-  private Reports givenReportsWithId(int iterativeReportsId) {
-    List<String> reportsIds = new LinkedList<>();
-    for (int i = 0; i < iterativeReportsId; i++) {
-      reportsIds.add(String.valueOf(i));
-    }
-    return new Reports(reportsIds);
   }
 
   private void assertNetworkMetricsContainsExpectedValues(int numberOfReports, Reports reports) {
@@ -539,15 +561,8 @@ public class ReportsStorageTest {
     return new TreeMap<>();
   }
 
-  private void clearRealmDB() {
-    Context context = getInstrumentation().getContext();
-    Realm realm = Realm.getInstance(RealmConfig.getRealmConfig(context));
-    realm.executeTransaction(new Realm.Transaction() {
-      @Override public void execute(Realm realm) {
-        realm.deleteAll();
-      }
-    });
-    realm.close();
+  private void clearDatabase() {
+    storage.clear();
   }
 
   private void initializeTimeMock() {

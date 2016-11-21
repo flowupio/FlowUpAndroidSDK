@@ -1,0 +1,22 @@
+CREATE TABLE metric (
+  _id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  report_id INTEGER NOT NULL,
+  metric_name TEXT NOT NULL,
+  count INTEGER,
+  value INTEGER,
+  mean REAL,
+  p10 REAL,
+  p90 REAL
+);
+
+create_metric:
+INSERT INTO metric(report_id, metric_name, count, value, mean, p10, p90)
+VALUES (?, ?, ?, ?, ?, ?, ?);
+
+get_metrics_by_report_ids:
+SELECT * FROM metric
+WHERE report_id in ?;
+
+delete_by_report_ids:
+DELETE FROM metric
+WHERE report_id in ?;

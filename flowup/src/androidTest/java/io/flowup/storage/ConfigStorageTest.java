@@ -5,9 +5,9 @@
 package io.flowup.storage;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import io.flowup.config.Config;
 import io.flowup.config.storage.ConfigStorage;
-import io.realm.Realm;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,15 +18,17 @@ import static org.junit.Assert.assertEquals;
 public class ConfigStorageTest {
 
   private ConfigStorage storage;
+  private SQLDelightfulOpenHelper openHelper;
 
   @Before public void setUp() {
     Context context = getInstrumentation().getContext();
-    storage = new ConfigStorage(context);
-    clearRealmDB();
+    openHelper = new SQLDelightfulOpenHelper(context);
+    storage = new ConfigStorage(openHelper);
+    clearDatabase();
   }
 
   @After public void tearDown() {
-    clearRealmDB();
+    clearDatabase();
   }
 
   @Test public void returnsEnabledIfThereIsNoConfigPersisted() {
@@ -49,22 +51,17 @@ public class ConfigStorageTest {
     storage.updateConfig(newConfig);
     storage.updateConfig(newConfig);
 
-    long numberOfConfigs = getRealm().where(io.flowup.config.storage.RealmConfig.class).count();
+    long numberOfConfigs = getNumberOfConfigs();
+
     assertEquals(1, numberOfConfigs);
   }
 
-  private void clearRealmDB() {
-    Realm realm = getRealm();
-    realm.executeTransaction(new Realm.Transaction() {
-      @Override public void execute(Realm realm) {
-        realm.deleteAll();
-      }
-    });
-    realm.close();
+  private void clearDatabase() {
+    storage.clearConfig();
   }
 
-  private Realm getRealm() {
-    Context context = getInstrumentation().getContext();
-    return Realm.getInstance(RealmConfig.getRealmConfig(context));
+  private int getNumberOfConfigs() {
+    SQLiteDatabase readableDatabase = openHelper.getReadableDatabase();
+    return readableDatabase.rawQuery("SELECT * FROM config", new String[0]).getCount();
   }
 }

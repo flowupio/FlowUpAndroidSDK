@@ -9,6 +9,7 @@ import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;
 import io.flowup.logger.Logger;
 import io.flowup.reporter.storage.ReportsStorage;
+import io.flowup.storage.SQLDelightfulOpenHelper;
 import io.flowup.utils.Time;
 
 import static com.google.android.gms.gcm.GcmNetworkManager.RESULT_FAILURE;
@@ -29,7 +30,7 @@ public class DeleteOldReportsService extends GcmTaskService {
 
   private int deleteOldReports() {
     Context context = getApplicationContext();
-    ReportsStorage storage = new ReportsStorage(context, new Time());
+    ReportsStorage storage = new ReportsStorage(new SQLDelightfulOpenHelper(context), new Time());
     return storage.deleteOldReports();
   }
 

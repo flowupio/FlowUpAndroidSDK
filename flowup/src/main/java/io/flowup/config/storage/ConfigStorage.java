@@ -4,46 +4,39 @@
 
 package io.flowup.config.storage;
 
-import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import io.flowup.config.Config;
-import io.flowup.storage.RealmStorage;
-import io.realm.Realm;
+import io.flowup.storage.SQLDelightStorage;
 
-public class ConfigStorage extends RealmStorage {
+public class ConfigStorage extends SQLDelightStorage {
 
-  private static final String CONFIG_UNIQUE_ID = "1";
-
-  public ConfigStorage(Context context) {
-    super(context);
+  public ConfigStorage(SQLiteOpenHelper openHelper) {
+    super(openHelper);
   }
 
   public Config getConfig() {
-    Realm realm = getRealm();
-    RealmConfig realmConfig = realm.where(RealmConfig.class).findFirst();
-    Config config = null;
-    if (realmConfig == null) {
-      config = new Config();
-    } else {
-      config = new Config(realmConfig.isEnabled());
-    }
-    realm.close();
-    return config;
+    SQLDelightConfig sqlDelightConfig = read(new SQLDelightStorage.Read<SQLDelightConfig>() {
+      @Override public SQLDelightConfig read(SQLiteDatabase database) {
+        return SQLDelightConfig.getConfig(database);
+      }
+    });
+    return sqlDelightConfig == null ? new Config() : new Config(sqlDelightConfig.enabled());
   }
 
   public void updateConfig(final Config config) {
-    executeTransaction(new Realm.Transaction() {
-      @Override public void execute(Realm realm) {
-        storeAsRealmObject(realm, config);
+    executeTransaction(new Transaction() {
+      @Override public void execute(SQLiteDatabase database) {
+        SQLDelightConfig.updateConfig(database, config);
       }
     });
   }
 
-  private void storeAsRealmObject(Realm realm, Config config) {
-    RealmConfig realmConfig = realm.where(RealmConfig.class).findFirst();
-    if (realmConfig == null) {
-      realmConfig = realm.createObject(RealmConfig.class, CONFIG_UNIQUE_ID);
-    }
-    realmConfig.setEnabled(config.isEnabled());
-    realm.copyToRealmOrUpdate(realmConfig);
+  public void clearConfig() {
+    executeTransaction(new Transaction() {
+      @Override public void execute(SQLiteDatabase database) {
+        SQLDelightConfig.deleteConfig(database);
+      }
+    });
   }
 }

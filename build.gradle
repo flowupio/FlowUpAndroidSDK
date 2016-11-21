@@ -6,7 +6,8 @@ buildscript {
   }
   dependencies {
     classpath 'com.android.tools.build:gradle:2.2.2'
-    classpath "io.realm:realm-gradle-plugin:1.2.0"
+    classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+    classpath 'com.squareup.sqldelight:gradle-plugin:0.5.1'
   }
 }
 

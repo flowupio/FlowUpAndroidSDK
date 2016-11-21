@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2016 Go Karumi S.L.
- */
-
 package io.flowup.reporter.storage;
 
 import io.flowup.metricnames.MetricNamesExtractor;
@@ -13,46 +9,44 @@ import io.flowup.reporter.model.Reports;
 import io.flowup.reporter.model.StatisticalValue;
 import io.flowup.reporter.model.UIMetric;
 import io.flowup.utils.Mapper;
-import io.flowup.utils.StatisticalValueUtils;
-import io.realm.RealmList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-class RealmReportsToReportsMapper extends Mapper<List<RealmReport>, Reports> {
+class SQLDelightReportsToReportsMapper extends Mapper<SQLDelightReports, Reports> {
 
   private final MetricNamesExtractor extractor = new MetricNamesExtractor();
 
-  @Override public Reports map(List<RealmReport> realmReports) {
-    if (realmReports.size() == 0) {
+  @Override public Reports map(SQLDelightReports sqlDelightReports) {
+    if (sqlDelightReports.getReports().size() == 0) {
       return null;
     }
-    RealmList<RealmMetric> metrics = realmReports.get(0).getMetrics();
-    List<String> reportsIds = mapReportsIds(realmReports);
+    List<String> reportsIds = mapReportsIds(sqlDelightReports.getReports());
+    List<SQLDelightMetric> metrics = sqlDelightReports.getMetrics();
     if (metrics.isEmpty()) {
       return new Reports(reportsIds);
     }
-    String firstMetricName = metrics.first().getMetricName();
+    String firstMetricName = metrics.get(0).metric_name();
     String appPackage = getAppPackage(firstMetricName);
     String uuid = getUUID(firstMetricName);
     String deviceModel = getDeviceModel(firstMetricName);
     String screenDensity = getScreenDensity(firstMetricName);
     String screenSize = getScreenSize(firstMetricName);
     int numberOfCores = getNumberOfCores(firstMetricName);
-    List<NetworkMetric> networkMetrics = mapNetworkMetrics(realmReports);
-    List<UIMetric> uiMetrics = mapUIMetrics(realmReports);
-    List<CPUMetric> cpuMetrics = mapCPUMetrics(realmReports);
-    List<MemoryMetric> memoryMetrics = mapMemoryMetrics(realmReports);
-    List<DiskMetric> diskMetrics = mapDiskMetrics(realmReports);
+    List<NetworkMetric> networkMetrics = mapNetworkMetrics(sqlDelightReports);
+    List<UIMetric> uiMetrics = mapUIMetrics(sqlDelightReports);
+    List<CPUMetric> cpuMetrics = mapCPUMetrics(sqlDelightReports);
+    List<MemoryMetric> memoryMetrics = mapMemoryMetrics(sqlDelightReports);
+    List<DiskMetric> diskMetrics = mapDiskMetrics(sqlDelightReports);
     return new Reports(reportsIds, appPackage, uuid, deviceModel, screenDensity, screenSize,
         numberOfCores, networkMetrics, uiMetrics, cpuMetrics, memoryMetrics, diskMetrics);
   }
 
-  private List<String> mapReportsIds(List<RealmReport> realmReports) {
+  private List<String> mapReportsIds(List<SQLDelightReport> reports) {
     List<String> ids = new LinkedList<>();
-    for (int i = 0; i < realmReports.size(); i++) {
-      String id = realmReports.get(i).getReportTimestamp();
+    for (int i = 0; i < reports.size(); i++) {
+      String id = "" + reports.get(i)._id();
       ids.add(id);
     }
     return ids;
@@ -82,20 +76,24 @@ class RealmReportsToReportsMapper extends Mapper<List<RealmReport>, Reports> {
     return extractor.getScreenSize(metricName);
   }
 
-  private List<NetworkMetric> mapNetworkMetrics(List<RealmReport> reports) {
+  private List<NetworkMetric> mapNetworkMetrics(SQLDelightReports sqlDelightReports) {
+    List<SQLDelightReport> reports = sqlDelightReports.getReports();
+    List<SQLDelightMetric> metrics = sqlDelightReports.getMetrics();
     List<NetworkMetric> networkMetricsReports = new LinkedList<>();
     Long bytesDownloaded = null;
     Long bytesUploaded = null;
     for (int i = 0; i < reports.size(); i++) {
-      RealmReport report = reports.get(i);
-      RealmList<RealmMetric> metrics = report.getMetrics();
+      SQLDelightReport report = reports.get(i);
       for (int j = 0; j < metrics.size(); j++) {
-        RealmMetric metric = metrics.get(j);
-        String metricName = metric.getMetricName();
+        SQLDelightMetric metric = metrics.get(j);
+        if (metric.report_id() != report._id()) {
+          continue;
+        }
+        String metricName = metric.metric_name();
         if (extractor.isBytesDownloadedMetric(metricName)) {
-          bytesDownloaded = metric.getStatisticalValue().getValue();
+          bytesDownloaded = metric.value().longValue();
         } else if (extractor.isBytesUploadedMetric(metricName)) {
-          bytesUploaded = metric.getStatisticalValue().getValue();
+          bytesUploaded = metric.value().longValue();
         } else {
           continue;
         }
@@ -104,7 +102,7 @@ class RealmReportsToReportsMapper extends Mapper<List<RealmReport>, Reports> {
 
         boolean batterySaverOn = extractor.getIsBatterSaverOn(metricName);
         if (bytesDownloaded != null && bytesUploaded != null) {
-          long reportTimestamp = Long.valueOf(report.getReportTimestamp());
+          long reportTimestamp = Long.valueOf(report.report_timestamp());
           networkMetricsReports.add(
               new NetworkMetric(reportTimestamp, versionName, osVersion, batterySaverOn,
                   bytesUploaded, bytesDownloaded));
@@ -115,20 +113,24 @@ class RealmReportsToReportsMapper extends Mapper<List<RealmReport>, Reports> {
     return networkMetricsReports;
   }
 
-  private List<CPUMetric> mapCPUMetrics(List<RealmReport> reports) {
+  private List<CPUMetric> mapCPUMetrics(SQLDelightReports sqlDelightReports) {
+    List<SQLDelightReport> reports = sqlDelightReports.getReports();
+    List<SQLDelightMetric> metrics = sqlDelightReports.getMetrics();
     List<CPUMetric> cpuMetrics = new LinkedList<>();
     for (int i = 0; i < reports.size(); i++) {
-      RealmReport report = reports.get(i);
-      RealmList<RealmMetric> metrics = report.getMetrics();
+      SQLDelightReport report = reports.get(i);
       for (int j = 0; j < metrics.size(); j++) {
-        RealmMetric metric = metrics.get(j);
-        String metricName = metric.getMetricName();
+        SQLDelightMetric metric = metrics.get(j);
+        if (report._id() != metric.report_id()) {
+          continue;
+        }
+        String metricName = metric.metric_name();
         if (extractor.isCPUUsageMetric(metricName)) {
-          long reportTimestamp = Long.valueOf(report.getReportTimestamp());
+          long reportTimestamp = Long.valueOf(report.report_timestamp());
           String osVersion = extractor.getOSVersion(metricName);
           String versionName = extractor.getVersionName(metricName);
           boolean batterySaverOn = extractor.getIsBatterSaverOn(metricName);
-          int cpuUsage = metric.getStatisticalValue().getValue().intValue();
+          int cpuUsage = metric.value().intValue();
           cpuMetrics.add(
               new CPUMetric(reportTimestamp, versionName, osVersion, batterySaverOn, cpuUsage));
         }
@@ -137,23 +139,27 @@ class RealmReportsToReportsMapper extends Mapper<List<RealmReport>, Reports> {
     return cpuMetrics;
   }
 
-  private List<MemoryMetric> mapMemoryMetrics(List<RealmReport> reports) {
+  private List<MemoryMetric> mapMemoryMetrics(SQLDelightReports sqlDelightReports) {
+    List<SQLDelightReport> reports = sqlDelightReports.getReports();
+    List<SQLDelightMetric> metrics = sqlDelightReports.getMetrics();
     List<MemoryMetric> memoryMetrics = new LinkedList<>();
     for (int i = 0; i < reports.size(); i++) {
-      RealmReport report = reports.get(i);
-      RealmList<RealmMetric> metrics = report.getMetrics();
+      SQLDelightReport report = reports.get(i);
       Integer memoryUsage = null;
       Long bytesAllocated = null;
       for (int j = 0; j < metrics.size(); j++) {
-        RealmMetric metric = metrics.get(j);
-        String metricName = metric.getMetricName();
+        SQLDelightMetric metric = metrics.get(j);
+        if (metric.report_id() != report._id()) {
+          continue;
+        }
+        String metricName = metric.metric_name();
         if (extractor.isMemoryUsageMetric(metricName)) {
-          memoryUsage = metric.getStatisticalValue().getValue().intValue();
+          memoryUsage = metric.value().intValue();
         } else if (extractor.isBytesAllocatedMetric(metricName)) {
-          bytesAllocated = metric.getStatisticalValue().getValue();
+          bytesAllocated = metric.value().longValue();
         }
         if (memoryUsage != null && bytesAllocated != null) {
-          long reportTimestamp = Long.valueOf(report.getReportTimestamp());
+          long reportTimestamp = Long.valueOf(report.report_timestamp());
           String osVersion = extractor.getOSVersion(metricName);
           String versionName = extractor.getVersionName(metricName);
           boolean batterySaverOn = extractor.getIsBatterSaverOn(metricName);
@@ -167,23 +173,27 @@ class RealmReportsToReportsMapper extends Mapper<List<RealmReport>, Reports> {
     return memoryMetrics;
   }
 
-  private List<DiskMetric> mapDiskMetrics(List<RealmReport> reports) {
+  private List<DiskMetric> mapDiskMetrics(SQLDelightReports sqlDelightReports) {
+    List<SQLDelightReport> reports = sqlDelightReports.getReports();
+    List<SQLDelightMetric> metrics = sqlDelightReports.getMetrics();
     List<DiskMetric> diskMetrics = new LinkedList<>();
     for (int i = 0; i < reports.size(); i++) {
-      RealmReport report = reports.get(i);
-      RealmList<RealmMetric> metrics = report.getMetrics();
+      SQLDelightReport report = reports.get(i);
       Long internalStorageBytes = null;
       Long sharedPrefsBytes = null;
       for (int j = 0; j < metrics.size(); j++) {
-        RealmMetric metric = metrics.get(j);
-        String metricName = metric.getMetricName();
+        SQLDelightMetric metric = metrics.get(j);
+        if (metric.report_id() != report._id()) {
+          continue;
+        }
+        String metricName = metric.metric_name();
         if (extractor.isInternalStorageAllocatedBytesMetric(metricName)) {
-          internalStorageBytes = metric.getStatisticalValue().getValue();
+          internalStorageBytes = metric.value().longValue();
         } else if (extractor.isSharedPreferencesAllocatedBytesMetric(metricName)) {
-          sharedPrefsBytes = metric.getStatisticalValue().getValue();
+          sharedPrefsBytes = metric.value().longValue();
         }
         if (internalStorageBytes != null && sharedPrefsBytes != null) {
-          long reportTimestamp = Long.valueOf(report.getReportTimestamp());
+          long reportTimestamp = Long.valueOf(report.report_timestamp());
           String osVersion = extractor.getOSVersion(metricName);
           String versionName = extractor.getVersionName(metricName);
           boolean batterySaverOn = extractor.getIsBatterSaverOn(metricName);
@@ -196,21 +206,25 @@ class RealmReportsToReportsMapper extends Mapper<List<RealmReport>, Reports> {
     return diskMetrics;
   }
 
-  private List<UIMetric> mapUIMetrics(List<RealmReport> reports) {
+  private List<UIMetric> mapUIMetrics(SQLDelightReports sqlDelightReports) {
+    List<SQLDelightReport> reports = sqlDelightReports.getReports();
+    List<SQLDelightMetric> metrics = sqlDelightReports.getMetrics();
     List<UIMetric> uiMetricsReports = new LinkedList<>();
     for (int i = 0; i < reports.size(); i++) {
-      RealmList<RealmMetric> metrics = reports.get(i).getMetrics();
-      List<UIMetric> uiMetricsPerReport = extractUIMetricsForReport(metrics);
+      SQLDelightReport report = reports.get(i);
+      List<UIMetric> uiMetricsPerReport = extractUIMetricsForReport(report, metrics);
       uiMetricsReports.addAll(uiMetricsPerReport);
     }
     return uiMetricsReports;
   }
 
-  private List<UIMetric> extractUIMetricsForReport(RealmList<RealmMetric> metrics) {
+  private List<UIMetric> extractUIMetricsForReport(SQLDelightReport report,
+      List<SQLDelightMetric> metrics) {
     List<UIMetric> uiMetrics = new LinkedList<>();
-    Set<String> screenNames = extractScreenNames(metrics);
+    Set<String> screenNames = extractScreenNames(report, metrics);
     for (String screenName : screenNames) {
-      UIMetric uiMetric = extractUIMetric(screenName, metrics);
+      List<SQLDelightMetric> filteredMetrics = filterMetricsByReportId(report, metrics);
+      UIMetric uiMetric = extractUIMetric(screenName, report, filteredMetrics);
       if (uiMetric != null) {
         uiMetrics.add(uiMetric);
       }
@@ -218,18 +232,32 @@ class RealmReportsToReportsMapper extends Mapper<List<RealmReport>, Reports> {
     return uiMetrics;
   }
 
-  private Set<String> extractScreenNames(RealmList<RealmMetric> metrics) {
+  private List<SQLDelightMetric> filterMetricsByReportId(SQLDelightReport report,
+      List<SQLDelightMetric> metrics) {
+    List<SQLDelightMetric> filteredMetrics = new LinkedList<>();
+    for (SQLDelightMetric metric : metrics) {
+      if (metric.report_id() == report._id()) {
+        filteredMetrics.add(metric);
+      }
+    }
+    return filteredMetrics;
+  }
+
+  private Set<String> extractScreenNames(SQLDelightReport report, List<SQLDelightMetric> metrics) {
     Set<String> screenNames = new HashSet<>();
-    for (RealmMetric metric : metrics) {
-      String screenName = extractor.getScreenName(metric.getMetricName());
-      if (screenName != null) {
-        screenNames.add(screenName);
+    for (SQLDelightMetric metric : metrics) {
+      if (report._id() == metric.report_id()) {
+        String screenName = extractor.getScreenName(metric.metric_name());
+        if (screenName != null) {
+          screenNames.add(screenName);
+        }
       }
     }
     return screenNames;
   }
 
-  private UIMetric extractUIMetric(String screenName, RealmList<RealmMetric> metrics) {
+  private UIMetric extractUIMetric(String screenName, SQLDelightReport report,
+      List<SQLDelightMetric> metrics) {
     Long timestamp = null;
     StatisticalValue frameTime = null;
     StatisticalValue onActivityCreated = null;
@@ -240,8 +268,11 @@ class RealmReportsToReportsMapper extends Mapper<List<RealmReport>, Reports> {
     StatisticalValue onActivityStopped = null;
     StatisticalValue onActivityDestroyed = null;
     for (int i = 0; i < metrics.size(); i++) {
-      RealmMetric metric = metrics.get(i);
-      String metricName = metric.getMetricName();
+      SQLDelightMetric metric = metrics.get(i);
+      if (report._id() != metric.report_id()) {
+        continue;
+      }
+      String metricName = metric.metric_name();
       if (!extractor.isUIMetric(metricName)) {
         continue;
       }
@@ -249,21 +280,21 @@ class RealmReportsToReportsMapper extends Mapper<List<RealmReport>, Reports> {
       if (metricScreenName.equals(screenName)) {
         if (extractor.isFrameTimeMetric(metricName)) {
           timestamp = extractor.getTimestamp(metricName);
-          frameTime = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
+          frameTime = StatisticalValueUtils.fromSQLDelightMetric(metric);
         } else if (extractor.isOnActivityCreatedMetric(metricName)) {
-          onActivityCreated = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
+          onActivityCreated = StatisticalValueUtils.fromSQLDelightMetric(metric);
         } else if (extractor.isOnActivityStartedMetric(metricName)) {
-          onActivityStarted = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
+          onActivityStarted = StatisticalValueUtils.fromSQLDelightMetric(metric);
         } else if (extractor.isOnActivityResumedMetric(metricName)) {
-          onActivityResumed = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
+          onActivityResumed = StatisticalValueUtils.fromSQLDelightMetric(metric);
         } else if (extractor.isActivityVisibleMetric(metricName)) {
-          activityVisible = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
+          activityVisible = StatisticalValueUtils.fromSQLDelightMetric(metric);
         } else if (extractor.isOnActivityPausedMetric(metricName)) {
-          onActivityPaused = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
+          onActivityPaused = StatisticalValueUtils.fromSQLDelightMetric(metric);
         } else if (extractor.isOnActivityStoppedMetric(metricName)) {
-          onActivityStopped = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
+          onActivityStopped = StatisticalValueUtils.fromSQLDelightMetric(metric);
         } else if (extractor.isOnActivityDestroyedMetric(metricName)) {
-          onActivityDestroyed = StatisticalValueUtils.fromRealm(metric.getStatisticalValue());
+          onActivityDestroyed = StatisticalValueUtils.fromSQLDelightMetric(metric);
         }
       }
       String versionName = extractor.getVersionName(metricName);

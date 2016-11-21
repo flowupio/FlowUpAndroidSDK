@@ -40,4 +40,8 @@ public class Config {
   @Override public int hashCode() {
     return (enabled ? 1 : 0);
   }
+
+  @Override public String toString() {
+    return "Config{" + "enabled=" + enabled + '}';
+  }
 }

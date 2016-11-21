@@ -7,6 +7,7 @@ package io.flowup.config;
 import io.flowup.apiclient.ApiClientResult;
 import io.flowup.config.apiclient.ConfigApiClient;
 import io.flowup.config.storage.ConfigStorage;
+import io.flowup.logger.Logger;
 
 public class FlowUpConfig {
 
@@ -26,6 +27,7 @@ public class FlowUpConfig {
     ApiClientResult<Config> getConfigResult = apiClient.getConfig();
     if (getConfigResult.isSuccess()) {
       Config config = getConfigResult.getValue();
+      Logger.d("New config value: " + config);
       storage.updateConfig(config);
     }
     return getConfigResult.isSuccess();
