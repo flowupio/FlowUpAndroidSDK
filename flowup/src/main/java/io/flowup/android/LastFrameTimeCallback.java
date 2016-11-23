@@ -4,8 +4,10 @@
 
 package io.flowup.android;
 
+import android.annotation.SuppressLint;
 import android.view.Choreographer;
 
+@SuppressLint("NewApi")
 public abstract class LastFrameTimeCallback implements Choreographer.FrameCallback {
 
   private final Choreographer choreographer;
