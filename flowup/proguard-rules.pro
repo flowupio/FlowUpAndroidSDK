@@ -60,3 +60,9 @@
     java.lang.Object writeReplace();
     java.lang.Object readResolve();
 }
+
+-keep class com.codahale.** { *; }
+-dontwarn okio.**
+-dontwarn sun.misc.**
+-dontwarn javax.management.**
+-dontwarn java.lang.management.**
