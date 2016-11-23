@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class SQLDelightStorage {
 
+  private static final Object WRITE_LOCK = new Object();
+
   private final SQLiteOpenHelper openHelper;
 
   public SQLDelightStorage(SQLiteOpenHelper openHelper) {
@@ -16,13 +18,15 @@ public class SQLDelightStorage {
   }
 
   protected void executeTransaction(Transaction transaction) {
-    SQLiteDatabase database = openHelper.getWritableDatabase();
-    try {
-      database.beginTransaction();
-      transaction.execute(database);
-      database.setTransactionSuccessful();
-    } finally {
-      database.endTransaction();
+    synchronized (WRITE_LOCK) {
+      SQLiteDatabase database = openHelper.getWritableDatabase();
+      try {
+        database.beginTransaction();
+        transaction.execute(database);
+        database.setTransactionSuccessful();
+      } finally {
+        database.endTransaction();
+      }
     }
   }
 
