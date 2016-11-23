@@ -1,9 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.karumi.flowup_no_op">
 
-  <application android:allowBackup="true"
-      android:supportsRtl="true"
-  >
+  <application android:allowBackup="true">
 
   </application>
 
