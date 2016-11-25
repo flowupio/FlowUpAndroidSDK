@@ -29,6 +29,14 @@ public class FileSystem {
     return getFolderSize(sharedPreferencesStorage);
   }
 
+  String getInternalStoragePath() {
+    return internalStoragePath;
+  }
+
+  String getSharedPreferencesPath() {
+    return sharedPreferencesPath;
+  }
+
   private long getFolderSize(File dir) {
     long result = 0;
     Stack<File> foldersList = new Stack<>();
