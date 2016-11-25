@@ -14,8 +14,9 @@ public class FileSystem {
   private final String sharedPreferencesPath;
 
   public FileSystem(Context context) {
-    this.internalStoragePath = context.getFilesDir().getAbsolutePath().replace("files", "");
-    this.sharedPreferencesPath = internalStoragePath.replace("files", "shared_prefs");
+    String absolutePath = context.getFilesDir().getAbsolutePath();
+    this.internalStoragePath = absolutePath.replace("files", "");
+    this.sharedPreferencesPath = absolutePath.replace("files", "shared_prefs");
   }
 
   public long getInternalStorageWrittenBytes() {
@@ -24,8 +25,8 @@ public class FileSystem {
   }
 
   public long getSharedPreferencesWrittenBytes() {
-    File internalStorageFolder = new File(sharedPreferencesPath);
-    return getFolderSize(internalStorageFolder);
+    File sharedPreferencesStorage = new File(sharedPreferencesPath);
+    return getFolderSize(sharedPreferencesStorage);
   }
 
   private long getFolderSize(File dir) {
