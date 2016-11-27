@@ -81,7 +81,9 @@ public class FlowUpReporter extends ScheduledReporter {
   }
 
   private void storeReport(DropwizardReport dropwizardReport) {
-    reportsStorage.storeMetrics(dropwizardReport);
+    if(!dropwizardReport.isEmpty()) {
+      reportsStorage.storeMetrics(dropwizardReport);
+    }
   }
 
   private void sendStoredReports() {

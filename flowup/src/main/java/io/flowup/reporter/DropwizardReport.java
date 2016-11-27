@@ -55,6 +55,14 @@ public class DropwizardReport {
     return timers;
   }
 
+  public boolean isEmpty() {
+    return getGauges().isEmpty()
+        && getCounters().isEmpty()
+        && getHistograms().isEmpty()
+        && getMeters().isEmpty()
+        && getTimers().isEmpty();
+  }
+
   @Override public boolean equals(Object o) {
     if (this == o) {
       return true;
