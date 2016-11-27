@@ -54,6 +54,7 @@ public class ReportsStorageTest {
   private static final long ANY_SHARED_PREFS_WRITTEN_BYTES = 3072;
   private static final long ANY_LIFECYCLE_TIME = 11;
   private static final int ANY_NUMBER_OF_REPORTS = 10;
+  private static final long ANY_TIMESTAMP = Long.MAX_VALUE;
 
   private ReportsStorage storage;
   private MetricNamesGenerator generator;
@@ -287,11 +288,33 @@ public class ReportsStorageTest {
     assertEquals(totalNumberOfReports, reports.size());
   }
 
-  @Test
-  public void returnsANullInstanceIfThereAreNoReports() throws Exception {
+  @Test public void returnsANullInstanceIfThereAreNoReports() throws Exception {
     Reports reports = storage.getReports(ANY_NUMBER_OF_REPORTS);
 
     assertNull(reports);
+  }
+
+  @Test public void doesNotReturnNullIfThereIsJustOneReportPersistedWithoutMetrics() throws Exception {
+    DropwizardReport reportWithoutMetrics =
+        new DropwizardReport(ANY_TIMESTAMP, new TreeMap<String, Gauge>(),
+            new TreeMap<String, Counter>(), new TreeMap<String, Histogram>(),
+            new TreeMap<String, Meter>(), new TreeMap<String, Timer>());
+    storage.storeMetrics(reportWithoutMetrics);
+
+    Reports reports = storage.getReports(ANY_NUMBER_OF_REPORTS);
+
+    assertEquals(1, reports.size());
+    assertNull(reports.getAppPackage());
+    assertNull(reports.getCpuMetrics());
+    assertNull(reports.getDeviceModel());
+    assertNull(reports.getDiskMetrics());
+    assertNull(reports.getMemoryMetrics());
+    assertNull(reports.getNetworkMetrics());
+    assertNull(reports.getNumberOfCores());
+    assertNull(reports.getScreenDensity());
+    assertNull(reports.getScreenSize());
+    assertNull(reports.getUIMetrics());
+    assertNull(reports.getUUID());
   }
 
   private void writeABunchOfReports(final int numberOfReports, int numberOfThreads)
