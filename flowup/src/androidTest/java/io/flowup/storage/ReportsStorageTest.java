@@ -276,7 +276,7 @@ public class ReportsStorageTest {
   }
 
   @Test public void supportsNThreadsWritingAtTheSameTime() throws Exception {
-    int numberOfReports = 10;
+    int numberOfReports = 20;
     int numberOfThreads = 10;
     int totalNumberOfReports = numberOfReports * numberOfThreads;
 
