@@ -81,7 +81,7 @@ public class FlowUpReporter extends ScheduledReporter {
   }
 
   private void storeReport(DropwizardReport dropwizardReport) {
-    if(!dropwizardReport.isEmpty()) {
+    if (!dropwizardReport.isEmpty()) {
       reportsStorage.storeMetrics(dropwizardReport);
     }
   }
@@ -171,7 +171,8 @@ public class FlowUpReporter extends ScheduledReporter {
       Time time = new Time();
       return new FlowUpReporter(registry, name, filter, TimeUnit.NANOSECONDS, TimeUnit.NANOSECONDS,
           new ReportApiClient(apiKey, device, scheme, host, port),
-          new ReportsStorage(new SQLDelightfulOpenHelper(context), time), new WiFiSyncServiceScheduler(context, apiKey),
+          new ReportsStorage(new SQLDelightfulOpenHelper(context), time),
+          new WiFiSyncServiceScheduler(context, apiKey),
           new DeleteOldReportsServiceScheduler(context), time, forceReports, listener);
     }
 
