@@ -89,13 +89,13 @@ public class WiFiSyncService extends GcmTaskService {
   private int syncStoredReports() {
     Logger.d("Let's start with the sync process");
     Reports reports = reportsStorage.getReports(FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST);
-    if (reports == null) {
+    if (reports == null || reports.size() == 0) {
       Logger.d("There are no reports to sync.");
       return RESULT_SUCCESS;
     }
     ApiClientResult.Error error;
     ApiClientResult result;
-    boolean isConnectedToWifi = true;
+    boolean isConnectedToWifi;
     do {
       Logger.d(reports.getReportsIds().size() + " reports to sync");
       Logger.d(reports.toString());

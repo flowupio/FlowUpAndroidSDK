@@ -53,6 +53,7 @@ public class ReportsStorageTest {
   private static final long ANY_INTERNAL_STORAGE_WRITTEN_BYTES = 2048;
   private static final long ANY_SHARED_PREFS_WRITTEN_BYTES = 3072;
   private static final long ANY_LIFECYCLE_TIME = 11;
+  private static final int ANY_NUMBER_OF_REPORTS = 10;
 
   private ReportsStorage storage;
   private MetricNamesGenerator generator;
@@ -284,6 +285,13 @@ public class ReportsStorageTest {
     Reports reports = storage.getReports(totalNumberOfReports);
 
     assertEquals(totalNumberOfReports, reports.size());
+  }
+
+  @Test
+  public void returnsANullInstanceIfThereAreNoReports() throws Exception {
+    Reports reports = storage.getReports(ANY_NUMBER_OF_REPORTS);
+
+    assertNull(reports);
   }
 
   private void writeABunchOfReports(final int numberOfReports, int numberOfThreads)

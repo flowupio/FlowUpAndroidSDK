@@ -87,11 +87,11 @@ public class FlowUpReporter extends ScheduledReporter {
   private void sendStoredReports() {
     Logger.d("Let's start with the sync process");
     Reports reports = reportsStorage.getReports(NUMBER_OF_REPORTS_PER_REQUEST);
-    if (reports == null) {
+    if (reports == null || reports.size() == 0) {
       Logger.d("There are no reports to sync.");
       return;
     }
-    Logger.d(reports.getReportsIds().size() + " reports to sync");
+    Logger.d(reports.size() + " reports to sync");
     Logger.d(reports.toString());
     ApiClientResult result;
     do {
