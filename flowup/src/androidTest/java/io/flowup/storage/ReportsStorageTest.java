@@ -284,11 +284,12 @@ public class ReportsStorageTest {
   }
 
   @Test public void supportsNThreadsWritingAtTheSameTime() throws Exception {
-    int numberOfReports = 20;
+    int numberOfReports = 10;
     int numberOfThreads = 10;
     int totalNumberOfReports = numberOfReports * numberOfThreads;
 
     writeABunchOfReports(numberOfReports, numberOfThreads);
+    readABunchOfReports(numberOfReports, numberOfThreads);
     updateAndDisableConfig(numberOfThreads);
     Reports reports = storage.getReports(totalNumberOfReports);
 
@@ -322,6 +323,20 @@ public class ReportsStorageTest {
     assertNull(reports.getScreenSize());
     assertNull(reports.getUIMetrics());
     assertNull(reports.getUUID());
+  }
+
+  private void readABunchOfReports(final int numberOfReports, int numberOfThreads)
+      throws Exception {
+    final CountDownLatch latch = new CountDownLatch(numberOfThreads);
+    for (int i = 0; i < numberOfThreads; i++) {
+      new Thread(new Runnable() {
+        @Override public void run() {
+          storage.getReports(numberOfReports);
+          latch.countDown();
+        }
+      }).start();
+    }
+    latch.await();
   }
 
   private void writeABunchOfReports(final int numberOfReports, int numberOfThreads)
