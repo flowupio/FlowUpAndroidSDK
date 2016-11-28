@@ -7,8 +7,6 @@ package io.flowup.storage;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import io.flowup.logger.Logger;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class SQLDelightStorage {
 
