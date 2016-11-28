@@ -38,6 +38,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static android.support.test.InstrumentationRegistry.getContext;
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
@@ -331,6 +332,10 @@ public class ReportsStorageTest {
     for (int i = 0; i < numberOfThreads; i++) {
       new Thread(new Runnable() {
         @Override public void run() {
+          Context context = getContext();
+          SQLDelightfulOpenHelper openHelper = new SQLDelightfulOpenHelper(context);
+          initializeTimeMock();
+          storage = new ReportsStorage(openHelper, time);
           storage.getReports(numberOfReports);
           latch.countDown();
         }
@@ -345,6 +350,10 @@ public class ReportsStorageTest {
     for (int i = 0; i < numberOfThreads; i++) {
       new Thread(new Runnable() {
         @Override public void run() {
+          Context context = getContext();
+          SQLDelightfulOpenHelper openHelper = new SQLDelightfulOpenHelper(context);
+          initializeTimeMock();
+          storage = new ReportsStorage(openHelper, time);
           List<DropwizardReport> dropwizardReport = givenSomeDropwizardReports(numberOfReports);
           storeAndGet(dropwizardReport);
           latch.countDown();
@@ -359,6 +368,10 @@ public class ReportsStorageTest {
     for (int i = 0; i < numberOfThreads; i++) {
       new Thread(new Runnable() {
         @Override public void run() {
+          Context context = getContext();
+          SQLDelightfulOpenHelper openHelper = new SQLDelightfulOpenHelper(context);
+          initializeTimeMock();
+          configStorage = new ConfigStorage(openHelper);
           Config currentConig = configStorage.getConfig();
           configStorage.updateConfig(new Config(!currentConig.isEnabled()));
           configStorage.clearConfig();
