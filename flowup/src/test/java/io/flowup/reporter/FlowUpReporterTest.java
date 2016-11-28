@@ -29,6 +29,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -36,6 +37,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class) public class FlowUpReporterTest {
 
   private static final long ANY_TIMESTAMP = 0;
+  private static final String ANY_METRIC_NAME = "anyMetricaName";
 
   @Mock private ReportApiClient reportApiClient;
   @Mock private ReportsStorage storage;
@@ -43,12 +45,6 @@ import static org.mockito.Mockito.when;
   @Mock private DeleteOldReportsServiceScheduler deleteOldReportsScheduler;
   @Mock private Time time;
   @Mock private FlowUpReporterListener listener;
-
-  private FlowUpReporter givenAFlowUpReporter(boolean forceReports) {
-    return new FlowUpReporter(new MetricRegistry(), "ReporterName", MetricFilter.ALL,
-        TimeUnit.SECONDS, TimeUnit.MILLISECONDS, reportApiClient, storage, syncScheduler,
-        deleteOldReportsScheduler, time, forceReports, listener);
-  }
 
   @Test public void storesDropwizardReportAndDoesNotInitializeSyncIfDebugIsNotEnabled() {
     FlowUpReporter reporter = givenAFlowUpReporter(false);
@@ -207,6 +203,16 @@ import static org.mockito.Mockito.when;
     verify(listener).onFlowUpDisabled();
   }
 
+  @Test public void shouldNotStoreReportIfThereAreNoMetricsAssociated() {
+    FlowUpReporter reporter = givenAFlowUpReporter();
+
+    reporter.report(new TreeMap<String, Gauge>(), new TreeMap<String, Counter>(),
+        new TreeMap<String, Histogram>(), new TreeMap<String, Meter>(),
+        new TreeMap<String, Timer>());
+
+    verify(storage, never()).storeMetrics(any(DropwizardReport.class));
+  }
+
   private void givenSomeStoredReports(Reports reportsSent) {
     when(storage.getReports(anyInt())).thenReturn(reportsSent, null);
   }
@@ -241,9 +247,15 @@ import static org.mockito.Mockito.when;
   }
 
   private DropwizardReport report(FlowUpReporter reporter) {
-    DropwizardReport report = new DropwizardReport(ANY_TIMESTAMP, new TreeMap<String, Gauge>(),
-        new TreeMap<String, Counter>(), new TreeMap<String, Histogram>(),
-        new TreeMap<String, Meter>(), new TreeMap<String, Timer>());
+    TreeMap<String, Gauge> anyGaugeMetrics = new TreeMap<>();
+    Gauge<Long> anyGauge = mock(Gauge.class);
+    when(anyGauge.getValue()).thenReturn(Long.MAX_VALUE);
+
+    anyGaugeMetrics.put(ANY_METRIC_NAME, anyGauge);
+    DropwizardReport report =
+        new DropwizardReport(ANY_TIMESTAMP, anyGaugeMetrics, new TreeMap<String, Counter>(),
+            new TreeMap<String, Histogram>(), new TreeMap<String, Meter>(),
+            new TreeMap<String, Timer>());
     reporter.report(report.getGauges(), report.getCounters(), report.getHistograms(),
         report.getMeters(), report.getTimers());
     return report;
@@ -255,5 +267,15 @@ import static org.mockito.Mockito.when;
 
   private Reports givenAReportsInstanceWithId(List<String> ids) {
     return new Reports(ids);
+  }
+
+  private FlowUpReporter givenAFlowUpReporter() {
+    return givenAFlowUpReporter(false);
+  }
+
+  private FlowUpReporter givenAFlowUpReporter(boolean forceReports) {
+    return new FlowUpReporter(new MetricRegistry(), "ReporterName", MetricFilter.ALL,
+        TimeUnit.SECONDS, TimeUnit.MILLISECONDS, reportApiClient, storage, syncScheduler,
+        deleteOldReportsScheduler, time, forceReports, listener);
   }
 }
