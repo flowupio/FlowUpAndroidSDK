@@ -13,7 +13,10 @@ import com.codahale.metrics.Meter;
 import com.codahale.metrics.Timer;
 import io.flowup.android.App;
 import io.flowup.android.Device;
+import io.flowup.config.Config;
+import io.flowup.config.storage.ConfigStorage;
 import io.flowup.doubles.ActivityTwo;
+import io.flowup.logger.Logger;
 import io.flowup.metricnames.MetricNamesGenerator;
 import io.flowup.reporter.DropwizardReport;
 import io.flowup.reporter.model.CPUMetric;
@@ -57,6 +60,7 @@ public class ReportsStorageTest {
   private static final long ANY_TIMESTAMP = Long.MAX_VALUE;
 
   private ReportsStorage storage;
+  private ConfigStorage configStorage;
   private MetricNamesGenerator generator;
   private Time time;
 
@@ -66,6 +70,7 @@ public class ReportsStorageTest {
     initializeTimeMock();
     storage = new ReportsStorage(openHelper, time);
     generator = new MetricNamesGenerator(new App(context), new Device(context), new Time());
+    configStorage = new ConfigStorage(new SQLDelightfulOpenHelper(context));
     clearDatabase();
   }
 
@@ -278,11 +283,13 @@ public class ReportsStorageTest {
   }
 
   @Test public void supportsNThreadsWritingAtTheSameTime() throws Exception {
+    Logger.setEnabled(true);
     int numberOfReports = 20;
     int numberOfThreads = 10;
     int totalNumberOfReports = numberOfReports * numberOfThreads;
 
     writeABunchOfReports(numberOfReports, numberOfThreads);
+    updateAndDisableConfig(numberOfThreads);
     Reports reports = storage.getReports(totalNumberOfReports);
 
     assertEquals(totalNumberOfReports, reports.size());
@@ -325,6 +332,21 @@ public class ReportsStorageTest {
         @Override public void run() {
           List<DropwizardReport> dropwizardReport = givenSomeDropwizardReports(numberOfReports);
           storeAndGet(dropwizardReport);
+          latch.countDown();
+        }
+      }).start();
+    }
+    latch.await();
+  }
+
+  private void updateAndDisableConfig(int numberOfThreads) throws Exception {
+    final CountDownLatch latch = new CountDownLatch(numberOfThreads);
+    for (int i = 0; i < numberOfThreads; i++) {
+      new Thread(new Runnable() {
+        @Override public void run() {
+          Config currentConig = configStorage.getConfig();
+          configStorage.updateConfig(new Config(!currentConig.isEnabled()));
+          configStorage.clearConfig();
           latch.countDown();
         }
       }).start();

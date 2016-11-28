@@ -6,6 +6,7 @@ package io.flowup.storage;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import io.flowup.logger.Logger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -23,6 +24,7 @@ public class SQLDelightStorage {
 
   protected void executeTransaction(Transaction transaction) {
     WRITE_LOCK.lock();
+    Logger.d("Start writing a DB transaction");
     SQLiteDatabase database = openHelper.getWritableDatabase();
     try {
       database.beginTransaction();
@@ -30,17 +32,20 @@ public class SQLDelightStorage {
       database.setTransactionSuccessful();
     } finally {
       database.endTransaction();
+      Logger.d("Write DB transaction finished");
       WRITE_LOCK.unlock();
     }
   }
 
   protected <T> T read(Read<T> read) {
     READ_LOCK.lock();
+    Logger.d("Start reading from DB");
     T result = null;
     try {
       SQLiteDatabase database = openHelper.getReadableDatabase();
       result = read.read(database);
     } finally {
+      Logger.d("End reading from DB");
       READ_LOCK.unlock();
     }
     return result;
