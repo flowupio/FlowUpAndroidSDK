@@ -5,7 +5,6 @@
 package io.flowup.example;
 
 import android.app.Application;
-import android.os.Build;
 import android.os.StrictMode;
 import com.squareup.leakcanary.LeakCanary;
 import io.flowup.FlowUp;
