@@ -65,6 +65,7 @@ public class ReportsStorageTest {
   private Time time;
 
   @Before public void setUp() {
+    Logger.setEnabled(true);
     Context context = getInstrumentation().getContext();
     SQLDelightfulOpenHelper openHelper = new SQLDelightfulOpenHelper(context);
     initializeTimeMock();
@@ -283,7 +284,6 @@ public class ReportsStorageTest {
   }
 
   @Test public void supportsNThreadsWritingAtTheSameTime() throws Exception {
-    Logger.setEnabled(true);
     int numberOfReports = 20;
     int numberOfThreads = 10;
     int totalNumberOfReports = numberOfReports * numberOfThreads;

@@ -25,13 +25,17 @@ public class SQLDelightStorage {
   protected void executeTransaction(Transaction transaction) {
     WRITE_LOCK.lock();
     Logger.d("Start writing a DB transaction");
-    SQLiteDatabase database = openHelper.getWritableDatabase();
+    SQLiteDatabase database = null;
     try {
+      database = openHelper.getWritableDatabase();
       database.beginTransaction();
       transaction.execute(database);
       database.setTransactionSuccessful();
     } finally {
-      database.endTransaction();
+      if (database != null) {
+        database.endTransaction();
+        database.close();
+      }
       Logger.d("Write DB transaction finished");
       WRITE_LOCK.unlock();
     }
@@ -41,11 +45,15 @@ public class SQLDelightStorage {
     READ_LOCK.lock();
     Logger.d("Start reading from DB");
     T result = null;
+    SQLiteDatabase database = null;
     try {
-      SQLiteDatabase database = openHelper.getReadableDatabase();
+      database = openHelper.getReadableDatabase();
       result = read.read(database);
     } finally {
       Logger.d("End reading from DB");
+      if (database != null) {
+        database.close();
+      }
       READ_LOCK.unlock();
     }
     return result;
