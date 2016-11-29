@@ -27,7 +27,7 @@ public class ConfigSyncService extends GcmTaskService {
     Bundle extras = taskParams.getExtras();
     if (extras == null
         || extras.getString(API_KEY_EXTRA) == null
-        || taskParams.getTag() != ConfigSyncServiceScheduler.SYNCHRONIZE_CONFIG) {
+        || !taskParams.getTag().equals(ConfigSyncServiceScheduler.SYNCHRONIZE_CONFIG)) {
       return RESULT_FAILURE;
     }
     Logger.d("Let's update the config!");
