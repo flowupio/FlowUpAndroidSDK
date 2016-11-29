@@ -8,7 +8,7 @@ android {
     minSdkVersion 14
     targetSdkVersion 23
     versionCode 2003
-    versionName "0.2.3-SNAPSHOT"
+    versionName "0.2.3"
   }
 
   lintOptions {
