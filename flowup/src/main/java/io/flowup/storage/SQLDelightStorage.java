@@ -6,14 +6,11 @@ package io.flowup.storage;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import io.flowup.logger.Logger;
 
 public class SQLDelightStorage {
 
-  private static final ReentrantReadWriteLock DB_LOCK = new ReentrantReadWriteLock();
-  private static final Lock READ_LOCK = DB_LOCK.readLock();
-  private static final Lock WRITE_LOCK = DB_LOCK.writeLock();
+  private static final Object DB_LOCK = new Object();
 
   private final SQLiteOpenHelper openHelper;
 
@@ -22,28 +19,40 @@ public class SQLDelightStorage {
   }
 
   protected void executeTransaction(Transaction transaction) {
-    WRITE_LOCK.lock();
-    SQLiteDatabase database = openHelper.getWritableDatabase();
-    try {
-      database.beginTransaction();
-      transaction.execute(database);
-      database.setTransactionSuccessful();
-    } finally {
-      database.endTransaction();
-      WRITE_LOCK.unlock();
+    synchronized (DB_LOCK) {
+      Logger.d("Start writing a DB transaction");
+      SQLiteDatabase database = null;
+      try {
+        database = openHelper.getWritableDatabase();
+        database.beginTransaction();
+        transaction.execute(database);
+        database.setTransactionSuccessful();
+      } finally {
+        if (database != null) {
+          database.endTransaction();
+          database.close();
+        }
+        Logger.d("Write DB transaction finished");
+      }
     }
   }
 
   protected <T> T read(Read<T> read) {
-    READ_LOCK.lock();
-    T result = null;
-    try {
-      SQLiteDatabase database = openHelper.getReadableDatabase();
-      result = read.read(database);
-    } finally {
-      READ_LOCK.unlock();
+    synchronized (DB_LOCK) {
+      Logger.d("Start reading from DB");
+      T result = null;
+      SQLiteDatabase database = null;
+      try {
+        database = openHelper.getReadableDatabase();
+        result = read.read(database);
+      } finally {
+        Logger.d("End reading from DB");
+        if (database != null) {
+          database.close();
+        }
+      }
+      return result;
     }
-    return result;
   }
 
   public interface Read<T> {

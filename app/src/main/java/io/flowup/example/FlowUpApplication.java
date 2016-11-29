@@ -5,7 +5,6 @@
 package io.flowup.example;
 
 import android.app.Application;
-import android.os.Build;
 import android.os.StrictMode;
 import com.squareup.leakcanary.LeakCanary;
 import io.flowup.FlowUp;
@@ -31,26 +30,9 @@ public class FlowUpApplication extends Application {
   }
 
   private void enableStrictMode() {
-    StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-        .detectAll()
-        .penaltyLog()
-        .penaltyDeath()
-        .build());
-    StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder()
-        .detectLeakedClosableObjects()
-        .detectActivityLeaks();
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      builder.detectCleartextNetwork();
-    }
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-      builder.detectFileUriExposure();
-    }
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-      builder.detectLeakedRegistrationObjects();
-    }
-    StrictMode.setVmPolicy(builder
-        .penaltyLog()
-        .penaltyDeath()
-        .build());
+    StrictMode.setThreadPolicy(
+        new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().penaltyDeath().build());
+    StrictMode.setVmPolicy(
+        new StrictMode.VmPolicy.Builder().detectAll().penaltyLog().penaltyDeath().build());
   }
 }

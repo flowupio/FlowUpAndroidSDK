@@ -6,14 +6,31 @@ package io.flowup.storage;
 
 import android.app.Activity;
 import android.content.Context;
+
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.Timer;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import io.flowup.android.App;
 import io.flowup.android.Device;
+import io.flowup.config.Config;
+import io.flowup.config.storage.ConfigStorage;
 import io.flowup.doubles.ActivityTwo;
+import io.flowup.logger.Logger;
 import io.flowup.metricnames.MetricNamesGenerator;
 import io.flowup.reporter.DropwizardReport;
 import io.flowup.reporter.model.CPUMetric;
@@ -24,17 +41,8 @@ import io.flowup.reporter.model.Reports;
 import io.flowup.reporter.model.UIMetric;
 import io.flowup.reporter.storage.ReportsStorage;
 import io.flowup.utils.Time;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
+import static android.support.test.InstrumentationRegistry.getContext;
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
@@ -57,15 +65,18 @@ public class ReportsStorageTest {
   private static final long ANY_TIMESTAMP = Long.MAX_VALUE;
 
   private ReportsStorage storage;
+  private ConfigStorage configStorage;
   private MetricNamesGenerator generator;
   private Time time;
 
   @Before public void setUp() {
+    Logger.setEnabled(true);
     Context context = getInstrumentation().getContext();
     SQLDelightfulOpenHelper openHelper = new SQLDelightfulOpenHelper(context);
     initializeTimeMock();
     storage = new ReportsStorage(openHelper, time);
     generator = new MetricNamesGenerator(new App(context), new Device(context), new Time());
+    configStorage = new ConfigStorage(new SQLDelightfulOpenHelper(context));
     clearDatabase();
   }
 
@@ -278,11 +289,14 @@ public class ReportsStorageTest {
   }
 
   @Test public void supportsNThreadsWritingAtTheSameTime() throws Exception {
-    int numberOfReports = 20;
+    int numberOfReports = 10;
     int numberOfThreads = 10;
     int totalNumberOfReports = numberOfReports * numberOfThreads;
 
-    writeABunchOfReports(numberOfReports, numberOfThreads);
+    CountDownLatch writeLatch = writeABunchOfReports(numberOfReports, numberOfThreads);
+    CountDownLatch readLatch = readABunchOfReports(numberOfReports, numberOfThreads);
+    CountDownLatch updateLatch = updateAndDisableConfig(numberOfThreads);
+    waitForLatches(writeLatch, readLatch, updateLatch);
     Reports reports = storage.getReports(totalNumberOfReports);
 
     assertEquals(totalNumberOfReports, reports.size());
@@ -317,19 +331,66 @@ public class ReportsStorageTest {
     assertNull(reports.getUUID());
   }
 
-  private void writeABunchOfReports(final int numberOfReports, int numberOfThreads)
+  private CountDownLatch readABunchOfReports(final int numberOfReports, int numberOfThreads)
       throws Exception {
     final CountDownLatch latch = new CountDownLatch(numberOfThreads);
     for (int i = 0; i < numberOfThreads; i++) {
       new Thread(new Runnable() {
         @Override public void run() {
+          Context context = getContext();
+          SQLDelightfulOpenHelper openHelper = new SQLDelightfulOpenHelper(context);
+          initializeTimeMock();
+          storage = new ReportsStorage(openHelper, time);
+          storage.getReports(numberOfReports);
+          latch.countDown();
+        }
+      }).start();
+    }
+    return latch;
+  }
+
+  private CountDownLatch writeABunchOfReports(final int numberOfReports, int numberOfThreads)
+      throws Exception {
+    final CountDownLatch latch = new CountDownLatch(numberOfThreads);
+    for (int i = 0; i < numberOfThreads; i++) {
+      new Thread(new Runnable() {
+        @Override public void run() {
+          Context context = getContext();
+          SQLDelightfulOpenHelper openHelper = new SQLDelightfulOpenHelper(context);
+          initializeTimeMock();
+          storage = new ReportsStorage(openHelper, time);
           List<DropwizardReport> dropwizardReport = givenSomeDropwizardReports(numberOfReports);
           storeAndGet(dropwizardReport);
           latch.countDown();
         }
       }).start();
     }
-    latch.await();
+    return latch;
+  }
+
+  private CountDownLatch updateAndDisableConfig(int numberOfThreads) throws Exception {
+    final CountDownLatch latch = new CountDownLatch(numberOfThreads);
+    for (int i = 0; i < numberOfThreads; i++) {
+      new Thread(new Runnable() {
+        @Override public void run() {
+          Context context = getContext();
+          SQLDelightfulOpenHelper openHelper = new SQLDelightfulOpenHelper(context);
+          initializeTimeMock();
+          configStorage = new ConfigStorage(openHelper);
+          Config currentConfig = configStorage.getConfig();
+          configStorage.updateConfig(new Config(!currentConfig.isEnabled()));
+          configStorage.clearConfig();
+          latch.countDown();
+        }
+      }).start();
+    }
+    return latch;
+  }
+
+  private void waitForLatches(CountDownLatch... latches) throws Exception {
+    for (CountDownLatch latch : latches) {
+      latch.await();
+    }
   }
 
   private SortedMap<String, Timer> givenSomeFrameTimeMetricsTwoDifferentScreens() {
