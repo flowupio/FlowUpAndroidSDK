@@ -69,13 +69,13 @@ public final class FlowUp {
               "FlowUp hasn't been initialized. Google play services is not supported in this device");
           return;
         }
+        initializeConfigScheduler();
         if (!isFlowUpEnabled()) {
           Logger.d("FlowUp is disabled for this device");
           return;
         }
         initializeMetrics();
         initializeForegroundCollectors();
-        initializeConfigScheduler();
         initializeNetworkCollectors();
         initializeCPUCollectors();
         initializeMemoryCollectors();
