@@ -124,6 +124,7 @@ public class WiFiSyncService extends GcmTaskService {
       return RESULT_RESCHEDULE;
     } else if (error == ApiClientResult.Error.CLIENT_DISABLED) {
       Logger.e("The client trying to report data has been disabled");
+      disableFlowUp();
       reportsStorage.clear();
       return RESULT_FAILURE;
     } else if (!result.isSuccess()) {
