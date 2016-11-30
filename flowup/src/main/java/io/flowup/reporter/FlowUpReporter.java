@@ -103,6 +103,7 @@ public class FlowUpReporter extends ScheduledReporter {
         reportsStorage.deleteReports(reports);
       } else if (shouldDeleteReportsOnError(result)) {
         Logger.e("Api response error: " + result.getError());
+        notifyClientDisabled();
         reportsStorage.deleteReports(reports);
       } else {
         Logger.e("Api response error: " + result.getError());
