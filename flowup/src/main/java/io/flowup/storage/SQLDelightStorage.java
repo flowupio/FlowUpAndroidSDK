@@ -43,7 +43,7 @@ public class SQLDelightStorage {
       T result = null;
       SQLiteDatabase database = null;
       try {
-        database = openHelper.getReadableDatabase();
+        database = openHelper.getWritableDatabase();
         result = read.read(database);
       } finally {
         Logger.d("End reading from DB");

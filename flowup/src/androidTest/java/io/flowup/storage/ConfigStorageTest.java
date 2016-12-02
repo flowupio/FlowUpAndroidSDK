@@ -8,7 +8,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import io.flowup.config.Config;
 import io.flowup.config.storage.ConfigStorage;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,13 +21,9 @@ public class ConfigStorageTest {
 
   @Before public void setUp() {
     Context context = getInstrumentation().getContext();
-    openHelper = new SQLDelightfulOpenHelper(context);
+    openHelper = SQLDelightfulOpenHelper.getInstance(context);
     storage = new ConfigStorage(openHelper);
-    clearDatabase();
-  }
-
-  @After public void tearDown() {
-    clearDatabase();
+    deleteDatabase(context);
   }
 
   @Test public void returnsEnabledIfThereIsNoConfigPersisted() {
@@ -56,14 +51,14 @@ public class ConfigStorageTest {
     assertEquals(1, numberOfConfigs);
   }
 
-  private void clearDatabase() {
-    storage.clearConfig();
-  }
-
   private int getNumberOfConfigs() {
     SQLiteDatabase readableDatabase = openHelper.getReadableDatabase();
     int count = readableDatabase.rawQuery("SELECT * FROM config", new String[0]).getCount();
     readableDatabase.close();
     return count;
+  }
+
+  private void deleteDatabase(Context context) {
+    context.deleteDatabase("flowup.db");
   }
 }

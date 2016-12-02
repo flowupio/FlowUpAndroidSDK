@@ -30,7 +30,8 @@ public class DeleteOldReportsService extends GcmTaskService {
 
   private int deleteOldReports() {
     Context context = getApplicationContext();
-    ReportsStorage storage = new ReportsStorage(new SQLDelightfulOpenHelper(context), new Time());
+    ReportsStorage storage =
+        new ReportsStorage(SQLDelightfulOpenHelper.getInstance(context), new Time());
     return storage.deleteOldReports();
   }
 

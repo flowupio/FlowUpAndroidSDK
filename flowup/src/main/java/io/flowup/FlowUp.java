@@ -124,7 +124,7 @@ public final class FlowUp {
     String host = application.getString(R.string.flowup_host);
     int port = application.getResources().getInteger(R.integer.flowup_port);
     Device device = new Device(application);
-    SQLDelightfulOpenHelper dbOpenHelper = new SQLDelightfulOpenHelper(application);
+    SQLDelightfulOpenHelper dbOpenHelper = SQLDelightfulOpenHelper.getInstance(application);
     flowUpConfig = new FlowUpConfig(new ConfigStorage(dbOpenHelper),
         new ConfigApiClient(apiKey, device, scheme, host, port));
     return flowUpConfig.getConfig().isEnabled();

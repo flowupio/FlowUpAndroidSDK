@@ -40,7 +40,7 @@ public class ConfigSyncService extends GcmTaskService {
     String host = getString(R.string.flowup_host);
     int port = getResources().getInteger(R.integer.flowup_port);
     Device device = new Device(this);
-    SQLDelightfulOpenHelper dbOpenHelper = new SQLDelightfulOpenHelper(getApplicationContext());
+    SQLDelightfulOpenHelper dbOpenHelper = SQLDelightfulOpenHelper.getInstance(getApplicationContext());
     FlowUpConfig flowUpConfig = new FlowUpConfig(new ConfigStorage(dbOpenHelper),
         new ConfigApiClient(apiKey, device, scheme, host, port));
     return flowUpConfig.updateConfig();
