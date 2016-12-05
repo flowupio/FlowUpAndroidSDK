@@ -57,7 +57,7 @@ public class WiFiSyncService extends GcmTaskService {
     String host = getString(R.string.flowup_host);
     int port = getResources().getInteger(R.integer.flowup_port);
     Device device = new Device(this);
-    reportsStorage = new ReportsStorage(new SQLDelightfulOpenHelper(this), new Time());
+    reportsStorage = new ReportsStorage(SQLDelightfulOpenHelper.getInstance(this), new Time());
     reportApiClient = new ReportApiClient(apiKey, device, scheme, host, port);
     connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
   }
@@ -67,7 +67,8 @@ public class WiFiSyncService extends GcmTaskService {
     String host = getString(R.string.flowup_host);
     int port = getResources().getInteger(R.integer.flowup_port);
     Device device = new Device(this);
-    SQLDelightfulOpenHelper dbOpenHelper = new SQLDelightfulOpenHelper(getApplicationContext());
+    SQLDelightfulOpenHelper dbOpenHelper =
+        SQLDelightfulOpenHelper.getInstance(getApplicationContext());
     flowUpConfig = new FlowUpConfig(new ConfigStorage(dbOpenHelper),
         new ConfigApiClient(apiKey, device, scheme, host, port));
     return flowUpConfig.getConfig().isEnabled();

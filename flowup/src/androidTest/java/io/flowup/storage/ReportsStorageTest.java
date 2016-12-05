@@ -6,25 +6,11 @@ package io.flowup.storage;
 
 import android.app.Activity;
 import android.content.Context;
-
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.Timer;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
 import io.flowup.android.App;
 import io.flowup.android.Device;
 import io.flowup.config.Config;
@@ -41,6 +27,15 @@ import io.flowup.reporter.model.Reports;
 import io.flowup.reporter.model.UIMetric;
 import io.flowup.reporter.storage.ReportsStorage;
 import io.flowup.utils.Time;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import org.junit.Before;
+import org.junit.Test;
 
 import static android.support.test.InstrumentationRegistry.getContext;
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
@@ -72,16 +67,12 @@ public class ReportsStorageTest {
   @Before public void setUp() {
     Logger.setEnabled(true);
     Context context = getInstrumentation().getContext();
-    SQLDelightfulOpenHelper openHelper = new SQLDelightfulOpenHelper(context);
+    SQLDelightfulOpenHelper openHelper = SQLDelightfulOpenHelper.getInstance(context);
     initializeTimeMock();
     storage = new ReportsStorage(openHelper, time);
     generator = new MetricNamesGenerator(new App(context), new Device(context), new Time());
-    configStorage = new ConfigStorage(new SQLDelightfulOpenHelper(context));
-    clearDatabase();
-  }
-
-  @After public void tearDown() {
-    clearDatabase();
+    configStorage = new ConfigStorage(SQLDelightfulOpenHelper.getInstance(context));
+    deleteDatabaseIfExists();
   }
 
   @Test public void storesOneReport() {
@@ -308,7 +299,8 @@ public class ReportsStorageTest {
     assertNull(reports);
   }
 
-  @Test public void doesNotReturnNullIfThereIsJustOneReportPersistedWithoutMetrics() throws Exception {
+  @Test public void doesNotReturnNullIfThereIsJustOneReportPersistedWithoutMetrics()
+      throws Exception {
     DropwizardReport reportWithoutMetrics =
         new DropwizardReport(ANY_TIMESTAMP, new TreeMap<String, Gauge>(),
             new TreeMap<String, Counter>(), new TreeMap<String, Histogram>(),
@@ -331,6 +323,41 @@ public class ReportsStorageTest {
     assertNull(reports.getUUID());
   }
 
+  @Test public void createDatabaseConnectionsInParallelShouldNotCrash() throws Exception {
+    deleteDatabaseIfExists();
+
+    CountDownLatch createDBLatch = createOpenDBHelperInstancesInParallel(20);
+    CountDownLatch writeSomeReportsLatch = writeABunchOfReports(10, 10);
+    CountDownLatch readConfigLatch = readABunchOfReports(10, 10);
+    CountDownLatch updateConfigLatch = updateAndDisableConfig(10);
+
+    createDBLatch.await();
+    writeSomeReportsLatch.await();
+    readConfigLatch.await();
+    updateConfigLatch.await();
+  }
+
+  private CountDownLatch createOpenDBHelperInstancesInParallel(int numberOfThreads)
+      throws Exception {
+    final CountDownLatch latch = new CountDownLatch(numberOfThreads);
+    for (int i = 0; i < numberOfThreads; i++) {
+      new Thread(new Runnable() {
+        @Override public void run() {
+          SQLDelightfulOpenHelper openHelper =
+              SQLDelightfulOpenHelper.getInstance(getInstrumentation().getContext());
+          openHelper.getWritableDatabase();
+          latch.countDown();
+        }
+      }).start();
+    }
+    return latch;
+  }
+
+  private void deleteDatabaseIfExists() {
+    boolean databaseDeleted = getInstrumentation().getContext().deleteDatabase("flowup.db");
+    Logger.d("Database deleted before test execution = " + databaseDeleted);
+  }
+
   private CountDownLatch readABunchOfReports(final int numberOfReports, int numberOfThreads)
       throws Exception {
     final CountDownLatch latch = new CountDownLatch(numberOfThreads);
@@ -338,7 +365,7 @@ public class ReportsStorageTest {
       new Thread(new Runnable() {
         @Override public void run() {
           Context context = getContext();
-          SQLDelightfulOpenHelper openHelper = new SQLDelightfulOpenHelper(context);
+          SQLDelightfulOpenHelper openHelper = SQLDelightfulOpenHelper.getInstance(context);
           initializeTimeMock();
           storage = new ReportsStorage(openHelper, time);
           storage.getReports(numberOfReports);
@@ -356,7 +383,7 @@ public class ReportsStorageTest {
       new Thread(new Runnable() {
         @Override public void run() {
           Context context = getContext();
-          SQLDelightfulOpenHelper openHelper = new SQLDelightfulOpenHelper(context);
+          SQLDelightfulOpenHelper openHelper = SQLDelightfulOpenHelper.getInstance(context);
           initializeTimeMock();
           storage = new ReportsStorage(openHelper, time);
           List<DropwizardReport> dropwizardReport = givenSomeDropwizardReports(numberOfReports);
@@ -374,7 +401,7 @@ public class ReportsStorageTest {
       new Thread(new Runnable() {
         @Override public void run() {
           Context context = getContext();
-          SQLDelightfulOpenHelper openHelper = new SQLDelightfulOpenHelper(context);
+          SQLDelightfulOpenHelper openHelper = SQLDelightfulOpenHelper.getInstance(context);
           initializeTimeMock();
           configStorage = new ConfigStorage(openHelper);
           Config currentConfig = configStorage.getConfig();
@@ -651,10 +678,6 @@ public class ReportsStorageTest {
 
   private SortedMap<String, Timer> generateTimers() {
     return new TreeMap<>();
-  }
-
-  private void clearDatabase() {
-    storage.clear();
   }
 
   private void initializeTimeMock() {
