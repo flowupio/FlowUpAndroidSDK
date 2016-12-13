@@ -145,6 +145,8 @@ public class MetricNamesGenerator {
         + SEPARATOR
         + device.isBatterySaverOn()
         + SEPARATOR
+        + app.isApplicationInBackground()
+        + SEPARATOR
         + metricName;
   }
 }

@@ -17,6 +17,7 @@ import io.flowup.android.App;
 import io.flowup.android.CPU;
 import io.flowup.android.Device;
 import io.flowup.android.FileSystem;
+import io.flowup.android.UIStateWatcher;
 import io.flowup.collectors.Collector;
 import io.flowup.collectors.Collectors;
 import io.flowup.collectors.UpdatableCollector;
@@ -80,6 +81,7 @@ public final class FlowUp {
         initializeCPUCollectors();
         initializeMemoryCollectors();
         initializeDiskCollectors();
+        initializeUIWatcher();
         initializeFlowUpReporter();
       }
     }).start();
@@ -242,6 +244,11 @@ public final class FlowUp {
         Collectors.getDiskUsageCollector(application, SAMPLING_INTERVAL, SAMPLING_TIME_UNIT,
             new FileSystem(application));
     diskUsageCollector.initialize(registry);
+  }
+
+  private void initializeUIWatcher() {
+    App app = new App(application);
+    application.registerActivityLifecycleCallbacks(new UIStateWatcher(app));
   }
 
   public static final class Builder {

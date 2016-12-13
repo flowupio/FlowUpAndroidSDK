@@ -50,13 +50,17 @@ public class MetricNamesExtractor {
     return Boolean.valueOf(findCrossMetricInfoAtPosition(8, metricName));
   }
 
+  public boolean getIsApplicationInBackground(String metricName) {
+    return Boolean.valueOf(findCrossMetricInfoAtPosition(9, metricName));
+  }
+
   public String getScreenName(String metricName) {
-    return findCrossMetricInfoAtPosition(11, metricName);
+    return findCrossMetricInfoAtPosition(12, metricName);
   }
 
   public long getTimestamp(String metricName) {
     try {
-      return Long.valueOf(findCrossMetricInfoAtPosition(12, metricName));
+      return Long.valueOf(findCrossMetricInfoAtPosition(13, metricName));
     } catch (NumberFormatException e) {
       return 0;
     }
@@ -75,7 +79,7 @@ public class MetricNamesExtractor {
   }
 
   public boolean isUIMetric(String metricName) {
-    return findCrossMetricInfoAtPosition(9, metricName).equals(MetricNamesGenerator.UI);
+    return findCrossMetricInfoAtPosition(10, metricName).equals(MetricNamesGenerator.UI);
   }
 
   public boolean isFrameTimeMetric(String metricName) {
@@ -133,4 +137,5 @@ public class MetricNamesExtractor {
     }
     return null;
   }
+
 }

@@ -7,11 +7,14 @@ package io.flowup.android;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.util.Log;
 import io.flowup.BuildConfig;
 
 import static io.flowup.utils.MetricNameUtils.replaceDots;
 
 public class App {
+
+  private static boolean isApplicationInBackground;
 
   private final Context context;
 
@@ -57,5 +60,18 @@ public class App {
     double totalMemory = runtime.totalMemory();
     double usedMemoryPercentage = (totalMemory / maxMemory) * 100;
     return (long) usedMemoryPercentage;
+  }
+
+  public boolean isApplicationInBackground() {
+    Log.e("DEPURAR", "IS APPLICATION IN BACKGROUND = " + isApplicationInBackground);
+    return isApplicationInBackground;
+  }
+
+  public void goToBackground() {
+    isApplicationInBackground = true;
+  }
+
+  public void goToForeground() {
+    isApplicationInBackground = false;
   }
 }

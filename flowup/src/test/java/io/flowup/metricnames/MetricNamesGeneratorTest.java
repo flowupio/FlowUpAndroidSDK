@@ -45,7 +45,7 @@ import static org.mockito.Mockito.when;
   @Test public void frameTimeMetricNameShouldContainExactly13FieldsSeparatedByDots() {
     String frameTime = generator.getFrameTimeMetricName(activity);
 
-    assertEquals(13, MetricNameUtils.split(frameTime).length);
+    assertEquals(14, MetricNameUtils.split(frameTime).length);
   }
 
   @Test public void frameTimeMetricNameShouldContainTheCrossMetricInfoName() {
@@ -75,14 +75,14 @@ import static org.mockito.Mockito.when;
     String frameTime = generator.getFrameTimeMetricName(activity);
 
     String[] parts = MetricNameUtils.split(frameTime);
-    assertEquals("ui", parts[9]);
-    assertEquals("frameTime", parts[10]);
+    assertEquals("ui", parts[10]);
+    assertEquals("frameTime", parts[11]);
   }
 
   @Test public void bytesDownloadedMetricShouldContainExactly11FieldsSeparatedByDots() {
     String bytesDownloaded = generator.getBytesDownloadedMetricName();
 
-    assertEquals(11, MetricNameUtils.split(bytesDownloaded).length);
+    assertEquals(12, MetricNameUtils.split(bytesDownloaded).length);
   }
 
   @Test public void bytesDownloadedShouldContainTheCrossMetricInfoInTheName() {
@@ -95,14 +95,14 @@ import static org.mockito.Mockito.when;
     String bytesDownloaded = generator.getBytesDownloadedMetricName();
 
     String[] parts = MetricNameUtils.split(bytesDownloaded);
-    assertEquals("network", parts[9]);
-    assertEquals("bytesDownloaded", parts[10]);
+    assertEquals("network", parts[10]);
+    assertEquals("bytesDownloaded", parts[11]);
   }
 
   @Test public void bytesUploadedMetricShouldContainExactly11FieldsSeparatedByDots() {
     String bytesUploaded = generator.getBytesUploadedMetricName();
 
-    assertEquals(11, MetricNameUtils.split(bytesUploaded).length);
+    assertEquals(12, MetricNameUtils.split(bytesUploaded).length);
   }
 
   @Test public void bytesUploadedShouldContainTheCrossMetricInfoInTheName() {
@@ -115,8 +115,8 @@ import static org.mockito.Mockito.when;
     String bytesUploaded = generator.getBytesUploadedMetricName();
 
     String[] parts = MetricNameUtils.split(bytesUploaded);
-    assertEquals("network", parts[9]);
-    assertEquals("bytesUploaded", parts[10]);
+    assertEquals("network", parts[10]);
+    assertEquals("bytesUploaded", parts[11]);
   }
 
   @Test public void identifiesAFrameTimeMetricProperly() {
@@ -152,7 +152,7 @@ import static org.mockito.Mockito.when;
   @Test public void cpuUsageMetricNameShouldContainExactly10FieldsSeparatedByDots() {
     String cpuUsage = generator.getCPUUsageMetricName();
 
-    assertEquals(10, MetricNameUtils.split(cpuUsage).length);
+    assertEquals(11, MetricNameUtils.split(cpuUsage).length);
   }
 
   @Test public void cpuUsageMetricNameShouldContainTheCrossMetricInfoName() {
@@ -165,13 +165,13 @@ import static org.mockito.Mockito.when;
     String cpuUsage = generator.getCPUUsageMetricName();
 
     String[] parts = MetricNameUtils.split(cpuUsage);
-    assertEquals("cpuUsage", parts[9]);
+    assertEquals("cpuUsage", parts[10]);
   }
 
   @Test public void memoryUsageMetricNameShouldContainExactly11FieldsSeparatedByDots() {
     String memoryUsage = generator.getMemoryUsageMetricName();
 
-    assertEquals(11, MetricNameUtils.split(memoryUsage).length);
+    assertEquals(12, MetricNameUtils.split(memoryUsage).length);
   }
 
   @Test public void memoryUsageUsageMetricNameShouldContainTheCrossMetricInfoName() {
@@ -184,7 +184,7 @@ import static org.mockito.Mockito.when;
     String memoryUsage = generator.getMemoryUsageMetricName();
 
     String[] parts = MetricNameUtils.split(memoryUsage);
-    assertEquals("memoryUsage", parts[10]);
+    assertEquals("memoryUsage", parts[11]);
   }
 
   @Test public void identifiesAMemoryUsageMetricProperly() {
@@ -202,7 +202,7 @@ import static org.mockito.Mockito.when;
   @Test public void bytesAllocatedMetricNameShouldContainExactly11FieldsSeparatedByDots() {
     String bytesAllocated = generator.getBytesAllocatedMetricName();
 
-    assertEquals(11, MetricNameUtils.split(bytesAllocated).length);
+    assertEquals(12, MetricNameUtils.split(bytesAllocated).length);
   }
 
   @Test public void bytesAllocatedUsageUsageMetricNameShouldContainTheCrossMetricInfoName() {
@@ -215,7 +215,7 @@ import static org.mockito.Mockito.when;
     String bytesAllocated = generator.getBytesAllocatedMetricName();
 
     String[] parts = MetricNameUtils.split(bytesAllocated);
-    assertEquals("bytesAllocated", parts[10]);
+    assertEquals("bytesAllocated", parts[11]);
   }
 
   @Test public void identifiesABytesAllocatedMetricProperly() {
@@ -234,7 +234,7 @@ import static org.mockito.Mockito.when;
   public void internalStorageWrittenBytesMetricNameShouldContainExactly11FieldsSeparatedByDots() {
     String writtenBytes = generator.getInternalStorageWrittenBytes();
 
-    assertEquals(11, MetricNameUtils.split(writtenBytes).length);
+    assertEquals(12, MetricNameUtils.split(writtenBytes).length);
   }
 
   @Test public void internalStorageWrittenBytesMetricNameShouldContainTheCrossMetricInfoName() {
@@ -247,7 +247,7 @@ import static org.mockito.Mockito.when;
     String writtenBytes = generator.getInternalStorageWrittenBytes();
 
     String[] parts = MetricNameUtils.split(writtenBytes);
-    assertEquals("internalStorageWrittenBytes", parts[10]);
+    assertEquals("internalStorageWrittenBytes", parts[11]);
   }
 
   @Test public void identifiesAInternalStorageWrittenBytesMetricProperly() {
@@ -265,7 +265,7 @@ import static org.mockito.Mockito.when;
   @Test public void sharedPrefsWrittenBytesMetricNameShouldContainExactly11FieldsSeparatedByDots() {
     String writtenBytes = generator.getSharedPreferencesWrittenBytes();
 
-    assertEquals(11, MetricNameUtils.split(writtenBytes).length);
+    assertEquals(12, MetricNameUtils.split(writtenBytes).length);
   }
 
   @Test public void sharedPrefsWrittenBytesMetricNameShouldContainTheCrossMetricInfoName() {
@@ -278,7 +278,7 @@ import static org.mockito.Mockito.when;
     String writtenBytes = generator.getSharedPreferencesWrittenBytes();
 
     String[] parts = MetricNameUtils.split(writtenBytes);
-    assertEquals("sharedPreferencesStorageWrittenBytes", parts[10]);
+    assertEquals("sharedPreferencesStorageWrittenBytes", parts[11]);
   }
 
   @Test public void identifiesASharedPrefsWrittenBytesMetricProperly() {
@@ -296,7 +296,7 @@ import static org.mockito.Mockito.when;
   @Test public void onActivityCreatedMetricNameShouldContainExactly12FieldsSeparatedByDots() {
     String name = generator.getOnActivityCreatedMetricName(activity);
 
-    assertEquals(12, MetricNameUtils.split(name).length);
+    assertEquals(13, MetricNameUtils.split(name).length);
   }
 
   @Test public void onActivityCreatedMetricNameShouldContainTheCrossMetricInfoName() {
@@ -309,7 +309,7 @@ import static org.mockito.Mockito.when;
     String name = generator.getOnActivityCreatedMetricName(activity);
 
     String[] parts = MetricNameUtils.split(name);
-    assertEquals("onActivityCreated", parts[10]);
+    assertEquals("onActivityCreated", parts[11]);
   }
 
   @Test public void identifiesAnOnActivityCreatedMetricProperly() {
@@ -328,13 +328,13 @@ import static org.mockito.Mockito.when;
     String name = generator.getOnActivityCreatedMetricName(activity);
 
     String[] parts = MetricNameUtils.split(name);
-    assertEquals(activity.getClass().getSimpleName(), parts[11]);
+    assertEquals(activity.getClass().getSimpleName(), parts[12]);
   }
 
   @Test public void onActivityResumedMetricNameShouldContainExactly12FieldsSeparatedByDots() {
     String name = generator.getOnActivityResumedMetricName(activity);
 
-    assertEquals(12, MetricNameUtils.split(name).length);
+    assertEquals(13, MetricNameUtils.split(name).length);
   }
 
   @Test public void onActivityResumedMetricNameShouldContainTheCrossMetricInfoName() {
@@ -347,7 +347,7 @@ import static org.mockito.Mockito.when;
     String name = generator.getOnActivityResumedMetricName(activity);
 
     String[] parts = MetricNameUtils.split(name);
-    assertEquals("onActivityResumed", parts[10]);
+    assertEquals("onActivityResumed", parts[11]);
   }
 
   @Test public void identifiesAnOnActivityResumedMetricProperly() {
@@ -366,13 +366,13 @@ import static org.mockito.Mockito.when;
     String name = generator.getOnActivityResumedMetricName(activity);
 
     String[] parts = MetricNameUtils.split(name);
-    assertEquals(activity.getClass().getSimpleName(), parts[11]);
+    assertEquals(activity.getClass().getSimpleName(), parts[12]);
   }
 
   @Test public void onActivityStartedMetricNameShouldContainExactly12FieldsSeparatedByDots() {
     String name = generator.getOnActivityStartedMetricName(activity);
 
-    assertEquals(12, MetricNameUtils.split(name).length);
+    assertEquals(13, MetricNameUtils.split(name).length);
   }
 
   @Test public void onActivityStartedMetricNameShouldContainTheCrossMetricInfoName() {
@@ -385,7 +385,7 @@ import static org.mockito.Mockito.when;
     String name = generator.getOnActivityStartedMetricName(activity);
 
     String[] parts = MetricNameUtils.split(name);
-    assertEquals("onActivityStarted", parts[10]);
+    assertEquals("onActivityStarted", parts[11]);
   }
 
   @Test public void identifiesAnOnActivityStartedMetricProperly() {
@@ -404,13 +404,13 @@ import static org.mockito.Mockito.when;
     String name = generator.getOnActivityStartedMetricName(activity);
 
     String[] parts = MetricNameUtils.split(name);
-    assertEquals(activity.getClass().getSimpleName(), parts[11]);
+    assertEquals(activity.getClass().getSimpleName(), parts[12]);
   }
 
   @Test public void activityVisibleMetricNameShouldContainExactly12FieldsSeparatedByDots() {
     String name = generator.getActivityVisibleMetricName(activity);
 
-    assertEquals(12, MetricNameUtils.split(name).length);
+    assertEquals(13, MetricNameUtils.split(name).length);
   }
 
   @Test public void activityVisibleMetricNameShouldContainTheCrossMetricInfoName() {
@@ -423,7 +423,7 @@ import static org.mockito.Mockito.when;
     String name = generator.getActivityVisibleMetricName(activity);
 
     String[] parts = MetricNameUtils.split(name);
-    assertEquals("activityVisible", parts[10]);
+    assertEquals("activityVisible", parts[11]);
   }
 
   @Test public void identifiesAnActivityVisibleMetricProperly() {
@@ -442,13 +442,13 @@ import static org.mockito.Mockito.when;
     String name = generator.getActivityVisibleMetricName(activity);
 
     String[] parts = MetricNameUtils.split(name);
-    assertEquals(activity.getClass().getSimpleName(), parts[11]);
+    assertEquals(activity.getClass().getSimpleName(), parts[12]);
   }
 
   @Test public void onActivityPausedMetricNameShouldContainExactly12FieldsSeparatedByDots() {
     String name = generator.getOnActivityPausedMetricName(activity);
 
-    assertEquals(12, MetricNameUtils.split(name).length);
+    assertEquals(13, MetricNameUtils.split(name).length);
   }
 
   @Test public void onActivityPausedMetricNameShouldContainTheCrossMetricInfoName() {
@@ -461,7 +461,7 @@ import static org.mockito.Mockito.when;
     String name = generator.getOnActivityPausedMetricName(activity);
 
     String[] parts = MetricNameUtils.split(name);
-    assertEquals("onActivityPaused", parts[10]);
+    assertEquals("onActivityPaused", parts[11]);
   }
 
   @Test public void identifiesAnOnActivityPausedMetricProperly() {
@@ -480,13 +480,13 @@ import static org.mockito.Mockito.when;
     String name = generator.getActivityVisibleMetricName(activity);
 
     String[] parts = MetricNameUtils.split(name);
-    assertEquals(activity.getClass().getSimpleName(), parts[11]);
+    assertEquals(activity.getClass().getSimpleName(), parts[12]);
   }
 
   @Test public void onActivityStoppedMetricNameShouldContainExactly12FieldsSeparatedByDots() {
     String name = generator.getOnActivityStoppedMetricName(activity);
 
-    assertEquals(12, MetricNameUtils.split(name).length);
+    assertEquals(13, MetricNameUtils.split(name).length);
   }
 
   @Test public void onActivityStoppedMetricNameShouldContainTheCrossMetricInfoName() {
@@ -499,7 +499,7 @@ import static org.mockito.Mockito.when;
     String name = generator.getOnActivityStoppedMetricName(activity);
 
     String[] parts = MetricNameUtils.split(name);
-    assertEquals("onActivityStopped", parts[10]);
+    assertEquals("onActivityStopped", parts[11]);
   }
 
   @Test public void identifiesAnOnActivityStoppedMetricProperly() {
@@ -518,13 +518,13 @@ import static org.mockito.Mockito.when;
     String name = generator.getOnActivityStoppedMetricName(activity);
 
     String[] parts = MetricNameUtils.split(name);
-    assertEquals(activity.getClass().getSimpleName(), parts[11]);
+    assertEquals(activity.getClass().getSimpleName(), parts[12]);
   }
 
   @Test public void onActivityDestroyedMetricNameShouldContainExactly12FieldsSeparatedByDots() {
     String name = generator.getOnActivityDestroyedMetricName(activity);
 
-    assertEquals(12, MetricNameUtils.split(name).length);
+    assertEquals(13, MetricNameUtils.split(name).length);
   }
 
   @Test public void onActivityDestroyedMetricNameShouldContainTheCrossMetricInfoName() {
@@ -537,7 +537,7 @@ import static org.mockito.Mockito.when;
     String name = generator.getOnActivityDestroyedMetricName(activity);
 
     String[] parts = MetricNameUtils.split(name);
-    assertEquals("onActivityDestroyed", parts[10]);
+    assertEquals("onActivityDestroyed", parts[11]);
   }
 
   @Test public void identifiesAnOnActivityDestroyedMetricProperly() {
@@ -556,7 +556,7 @@ import static org.mockito.Mockito.when;
     String name = generator.getOnActivityDestroyedMetricName(activity);
 
     String[] parts = MetricNameUtils.split(name);
-    assertEquals(activity.getClass().getSimpleName(), parts[11]);
+    assertEquals(activity.getClass().getSimpleName(), parts[12]);
   }
 
   @Test public void returnsTrueJustWithUIMetrics() {
@@ -590,6 +590,8 @@ import static org.mockito.Mockito.when;
     assertEquals(device.getOSVersion(), extractor.getOSVersion(metricName));
     assertEquals(replaceDashes(app.getVersionName()), extractor.getVersionName(metricName));
     assertEquals(device.isBatterySaverOn(), extractor.getIsBatterSaverOn(metricName));
+    assertEquals(app.isApplicationInBackground(),
+        extractor.getIsApplicationInBackground(metricName));
   }
 
   private void givenNowIs(long timestamp) {
