@@ -45,7 +45,7 @@ public class ReportApiClientTest extends MockWebServerTestCase {
   @Before public void setUp() throws Exception {
     super.setUp();
     boolean useGzip = false;
-    reportApiClient = givenAnApiClient(useGzip);
+    reportApiClient = givenAnApiClient(false, useGzip);
   }
 
   @Test public void sendsAcceptApplicationJsonHeader() throws Exception {
@@ -70,7 +70,7 @@ public class ReportApiClientTest extends MockWebServerTestCase {
     enqueueMockResponse();
     Reports reports = givenSomeReports();
 
-    givenAnApiClient(true).sendReports(reports);
+    givenAnApiClient(false, true).sendReports(reports);
 
     assertRequestContainsHeader("Content-Encoding", "gzip");
   }
@@ -100,6 +100,36 @@ public class ReportApiClientTest extends MockWebServerTestCase {
     reportApiClient.sendReports(reports);
 
     assertRequestContainsHeader("User-Agent", "FlowUpAndroidSDK/" + BuildConfig.VERSION_NAME);
+  }
+
+  @Test public void sendsUserAgentHeaderIncludingTheDebugInformation() throws Exception {
+    enqueueMockResponse();
+    reportApiClient = givenAnApiClient(true, false);
+
+    reportApiClient.sendReports(givenSomeReports());
+
+    assertRequestContainsHeader("User-Agent",
+        "FlowUpAndroidSDK/" + BuildConfig.VERSION_NAME + "-DEBUG");
+  }
+
+  @Test public void sendsDebugHeaderUsingTheForceReportInformationIfIsDisabled() throws Exception {
+    enqueueMockResponse();
+    boolean forceReportsEnabled = false;
+    reportApiClient = givenAnApiClient(forceReportsEnabled, false);
+
+    reportApiClient.sendReports(givenSomeReports());
+
+    assertRequestContainsHeader("X-Debug-Mode", String.valueOf(forceReportsEnabled));
+  }
+
+  @Test public void sendsDebugHeaderUsingTheForceReportInformationIfIsEnabled() throws Exception {
+    enqueueMockResponse();
+    boolean forceReportsEnabled = true;
+    reportApiClient = givenAnApiClient(forceReportsEnabled, false);
+
+    reportApiClient.sendReports(givenSomeReports());
+
+    assertRequestContainsHeader("X-Debug-Mode", String.valueOf(forceReportsEnabled));
   }
 
   @Test public void sendsReportRequestToTheCorrectPath() throws Exception {
@@ -188,8 +218,9 @@ public class ReportApiClientTest extends MockWebServerTestCase {
     assertEquals(ApiClientResult.Error.CLIENT_DISABLED, result.getError());
   }
 
-  private ReportApiClient givenAnApiClient(boolean useGzip) {
-    return new ReportApiClient(ANY_API_KEY, device, getScheme(), getHost(), getPort(), useGzip);
+  private ReportApiClient givenAnApiClient(boolean forceReportsEnabled, boolean useGzip) {
+    return new ReportApiClient(ANY_API_KEY, device, getScheme(), getHost(), getPort(),
+        forceReportsEnabled, useGzip);
   }
 
   private Reports givenSomeReports() {

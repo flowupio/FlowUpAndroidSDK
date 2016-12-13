@@ -22,27 +22,29 @@ import static com.google.android.gms.gcm.GcmNetworkManager.RESULT_SUCCESS;
 public class ConfigSyncService extends GcmTaskService {
 
   static final String API_KEY_EXTRA = "apiKeyExtra";
+  static final String FORCE_REPORTS_EXTRA = "forceReportsExtra";
 
   @Override public int onRunTask(TaskParams taskParams) {
     Bundle extras = taskParams.getExtras();
-    if (extras == null
-        || extras.getString(API_KEY_EXTRA) == null
-        || !taskParams.getTag().equals(ConfigSyncServiceScheduler.SYNCHRONIZE_CONFIG)) {
+    if (extras == null || extras.getString(API_KEY_EXTRA) == null || !taskParams.getTag()
+        .equals(ConfigSyncServiceScheduler.SYNCHRONIZE_CONFIG)) {
       return RESULT_FAILURE;
     }
     Logger.d("Let's update the config!");
-    boolean result = updateConfig(extras.getString(API_KEY_EXTRA));
+    boolean result =
+        updateConfig(extras.getString(API_KEY_EXTRA), extras.getBoolean(FORCE_REPORTS_EXTRA));
     return result ? RESULT_SUCCESS : RESULT_RESCHEDULE;
   }
 
-  private boolean updateConfig(String apiKey) {
+  private boolean updateConfig(String apiKey, boolean forceReportsEnabled) {
     String scheme = getString(R.string.flowup_scheme);
     String host = getString(R.string.flowup_host);
     int port = getResources().getInteger(R.integer.flowup_port);
     Device device = new Device(this);
-    SQLDelightfulOpenHelper dbOpenHelper = SQLDelightfulOpenHelper.getInstance(getApplicationContext());
+    SQLDelightfulOpenHelper dbOpenHelper =
+        SQLDelightfulOpenHelper.getInstance(getApplicationContext());
     FlowUpConfig flowUpConfig = new FlowUpConfig(new ConfigStorage(dbOpenHelper),
-        new ConfigApiClient(apiKey, device, scheme, host, port));
+        new ConfigApiClient(apiKey, device, scheme, host, port, forceReportsEnabled));
     return flowUpConfig.updateConfig();
   }
 }

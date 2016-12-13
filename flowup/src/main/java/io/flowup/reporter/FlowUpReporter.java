@@ -171,9 +171,9 @@ public class FlowUpReporter extends ScheduledReporter {
       Device device = new Device(context);
       Time time = new Time();
       return new FlowUpReporter(registry, name, filter, TimeUnit.NANOSECONDS, TimeUnit.NANOSECONDS,
-          new ReportApiClient(apiKey, device, scheme, host, port),
+          new ReportApiClient(apiKey, device, scheme, host, port, forceReports),
           new ReportsStorage(SQLDelightfulOpenHelper.getInstance(context), time),
-          new WiFiSyncServiceScheduler(context, apiKey),
+          new WiFiSyncServiceScheduler(context, apiKey, forceReports),
           new DeleteOldReportsServiceScheduler(context), time, forceReports, listener);
     }
 

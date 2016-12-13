@@ -23,13 +23,16 @@ public class ApiClient {
   protected final Gson jsonParser;
   protected final HttpUrl baseUrl;
 
-  public ApiClient(String apiKey, Device device, String scheme, String host, int port) {
-    this(apiKey, device, scheme, host, port, true);
+  public ApiClient(String apiKey, Device device, String scheme, String host, int port,
+      boolean forceReportsEnabled) {
+    this(apiKey, device, scheme, host, port, forceReportsEnabled, true);
   }
 
   public ApiClient(String apiKey, Device device, String scheme, String host, int port,
-      boolean useGzip) {
-    this.httpClient = ApiClientConfig.getHttpClient(apiKey, device, Logger.isLogEnabled(), useGzip);
+      boolean forceReportsEnabled, boolean useGzip) {
+    this.httpClient =
+        ApiClientConfig.getHttpClient(apiKey, device, forceReportsEnabled, Logger.isLogEnabled(),
+            useGzip);
     this.jsonParser = ApiClientConfig.getJsonParser();
     this.baseUrl = ApiClientConfig.buildURL(scheme, host, port);
   }

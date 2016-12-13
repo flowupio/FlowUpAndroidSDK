@@ -12,6 +12,7 @@ import com.google.android.gms.gcm.Task;
 import java.util.concurrent.TimeUnit;
 
 import static io.flowup.reporter.android.WiFiSyncService.API_KEY_EXTRA;
+import static io.flowup.reporter.android.WiFiSyncService.FORCE_REPORTS_EXTRA;
 
 public class WiFiSyncServiceScheduler {
 
@@ -22,15 +23,18 @@ public class WiFiSyncServiceScheduler {
 
   private final GcmNetworkManager gcmNetworkManager;
   private final String apiKey;
+  private final boolean forceReportsEnabled;
 
-  public WiFiSyncServiceScheduler(Context context, String apiKey) {
+  public WiFiSyncServiceScheduler(Context context, String apiKey, boolean forceReportsEnabled) {
     this.gcmNetworkManager = GcmNetworkManager.getInstance(context);
     this.apiKey = apiKey;
+    this.forceReportsEnabled = forceReportsEnabled;
   }
 
   public void scheduleSyncTask() {
     Bundle extras = new Bundle();
     extras.putString(API_KEY_EXTRA, apiKey);
+    extras.putBoolean(FORCE_REPORTS_EXTRA, forceReportsEnabled);
     PeriodicTask task = new PeriodicTask.Builder().setService(WiFiSyncService.class)
         .setTag(SYNCHRONIZE_METRICS_REPORT)
         .setPeriod(SYNC_PERIOD)
