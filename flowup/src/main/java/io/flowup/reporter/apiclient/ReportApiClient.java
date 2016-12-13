@@ -18,12 +18,14 @@ public class ReportApiClient extends ApiClient {
 
   private HttpUrl reportUrl;
 
-  public ReportApiClient(String apiKey, Device device, String scheme, String host, int port) {
-    this(apiKey, device, scheme, host, port, true);
+  public ReportApiClient(String apiKey, Device device, String scheme, String host, int port,
+      boolean forceReportsEnabled) {
+    this(apiKey, device, scheme, host, port, forceReportsEnabled, true);
   }
 
-  public ReportApiClient(String apiKey, Device device, String scheme, String host, int port, boolean useGzip) {
-    super(apiKey, device, scheme, host, port, useGzip);
+  public ReportApiClient(String apiKey, Device device, String scheme, String host, int port,
+      boolean forceReportsEnabled, boolean useGzip) {
+    super(apiKey, device, scheme, host, port, forceReportsEnabled, useGzip);
     this.reportUrl = baseUrl.newBuilder("/report").build();
   }
 

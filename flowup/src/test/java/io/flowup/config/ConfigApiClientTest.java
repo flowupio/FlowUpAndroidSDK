@@ -26,7 +26,12 @@ public class ConfigApiClientTest extends MockWebServerTestCase {
 
   @Before public void setUp() throws Exception {
     super.setUp();
-    apiClient = new ConfigApiClient(ANY_API_KEY, device, getScheme(), getHost(), getPort());
+    apiClient = givenAnApiClient(false);
+  }
+
+  private ConfigApiClient givenAnApiClient(boolean forceReportsEnabled) {
+    return new ConfigApiClient(ANY_API_KEY, device, getScheme(), getHost(), getPort(),
+        forceReportsEnabled);
   }
 
   @Test public void sendsAcceptApplicationJsonHeader() throws Exception {
@@ -59,6 +64,36 @@ public class ConfigApiClientTest extends MockWebServerTestCase {
     apiClient.getConfig();
 
     assertRequestContainsHeader("User-Agent", "FlowUpAndroidSDK/" + BuildConfig.VERSION_NAME);
+  }
+
+  @Test public void sendsUserAgentHeaderIncludingTheDebugInformation() throws Exception {
+    enqueueMockResponse();
+    apiClient = givenAnApiClient(true);
+
+    apiClient.getConfig();
+
+    assertRequestContainsHeader("User-Agent",
+        "FlowUpAndroidSDK/" + BuildConfig.VERSION_NAME + "-DEBUG");
+  }
+
+  @Test public void sendsDebugHeaderUsingTheForceReportInformationIfIsDisabled() throws Exception {
+    enqueueMockResponse();
+    boolean forceReportsEnabled = false;
+    apiClient = givenAnApiClient(forceReportsEnabled);
+
+    apiClient.getConfig();
+
+    assertRequestContainsHeader("X-Debug-Mode", String.valueOf(forceReportsEnabled));
+  }
+
+  @Test public void sendsDebugHeaderUsingTheForceReportInformationIfIsEnabled() throws Exception {
+    enqueueMockResponse();
+    boolean forceReportsEnabled = true;
+    apiClient = givenAnApiClient(forceReportsEnabled);
+
+    apiClient.getConfig();
+
+    assertRequestContainsHeader("X-Debug-Mode", String.valueOf(forceReportsEnabled));
   }
 
   @Test public void sendsGetConfigRequestToTheCorrectPath() throws Exception {

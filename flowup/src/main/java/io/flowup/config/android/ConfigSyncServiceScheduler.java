@@ -20,15 +20,18 @@ public class ConfigSyncServiceScheduler {
 
   private final GcmNetworkManager gcmNetworkManager;
   private final String apiKey;
+  private final boolean forceReportsEnabled;
 
-  public ConfigSyncServiceScheduler(Context context, String apiKey) {
+  public ConfigSyncServiceScheduler(Context context, String apiKey, boolean forceReportsEnabled) {
     this.gcmNetworkManager = GcmNetworkManager.getInstance(context);
     this.apiKey = apiKey;
+    this.forceReportsEnabled = forceReportsEnabled;
   }
 
   public void scheduleSyncTask() {
     Bundle extras = new Bundle();
     extras.putString(ConfigSyncService.API_KEY_EXTRA, apiKey);
+    extras.putBoolean(ConfigSyncService.FORCE_REPORTS_EXTRA, forceReportsEnabled);
     PeriodicTask task = new PeriodicTask.Builder().setService(ConfigSyncService.class)
         .setTag(SYNCHRONIZE_CONFIG)
         .setPeriod(SYNC_PERIOD)

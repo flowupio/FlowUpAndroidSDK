@@ -32,6 +32,7 @@ import static io.flowup.reporter.android.WiFiSyncServiceScheduler.SYNCHRONIZE_ME
 public class WiFiSyncService extends GcmTaskService {
 
   static final String API_KEY_EXTRA = "apiKeyExtra";
+  static final String FORCE_REPORTS_EXTRA = "forceReportsExtra";
 
   private ReportApiClient reportApiClient;
   private ReportsStorage reportsStorage;
@@ -48,21 +49,23 @@ public class WiFiSyncService extends GcmTaskService {
 
   private boolean isScheduledTaskSupported(TaskParams taskParams) {
     String apiKey = getApiKey(taskParams);
-    return (isTaskTagSupported(taskParams) && isClientEnabled(apiKey));
+    boolean forceReportsEnabled = isForceReportsEnabled(taskParams);
+    return (isTaskTagSupported(taskParams) && isClientEnabled(apiKey, forceReportsEnabled));
   }
 
   private void initializeDependencies(TaskParams taskParams) {
     String apiKey = getApiKey(taskParams);
+    boolean forceReportsEnabled = isForceReportsEnabled(taskParams);
     String scheme = getString(R.string.flowup_scheme);
     String host = getString(R.string.flowup_host);
     int port = getResources().getInteger(R.integer.flowup_port);
     Device device = new Device(this);
     reportsStorage = new ReportsStorage(SQLDelightfulOpenHelper.getInstance(this), new Time());
-    reportApiClient = new ReportApiClient(apiKey, device, scheme, host, port);
+    reportApiClient = new ReportApiClient(apiKey, device, scheme, host, port, forceReportsEnabled);
     connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
   }
 
-  private boolean isClientEnabled(String apiKey) {
+  private boolean isClientEnabled(String apiKey, boolean forceReportsEnabled) {
     String scheme = getString(R.string.flowup_scheme);
     String host = getString(R.string.flowup_host);
     int port = getResources().getInteger(R.integer.flowup_port);
@@ -70,7 +73,7 @@ public class WiFiSyncService extends GcmTaskService {
     SQLDelightfulOpenHelper dbOpenHelper =
         SQLDelightfulOpenHelper.getInstance(getApplicationContext());
     flowUpConfig = new FlowUpConfig(new ConfigStorage(dbOpenHelper),
-        new ConfigApiClient(apiKey, device, scheme, host, port));
+        new ConfigApiClient(apiKey, device, scheme, host, port, forceReportsEnabled));
     return flowUpConfig.getConfig().isEnabled();
   }
 
@@ -81,6 +84,11 @@ public class WiFiSyncService extends GcmTaskService {
       return extras.getString(API_KEY_EXTRA);
     }
     return apiKey;
+  }
+
+  private boolean isForceReportsEnabled(TaskParams taskParams) {
+    Bundle extras = taskParams.getExtras();
+    return extras != null && extras.getBoolean(FORCE_REPORTS_EXTRA);
   }
 
   private boolean isTaskTagSupported(TaskParams taskParams) {

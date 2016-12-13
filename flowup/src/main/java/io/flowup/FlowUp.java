@@ -126,7 +126,7 @@ public final class FlowUp {
     Device device = new Device(application);
     SQLDelightfulOpenHelper dbOpenHelper = SQLDelightfulOpenHelper.getInstance(application);
     flowUpConfig = new FlowUpConfig(new ConfigStorage(dbOpenHelper),
-        new ConfigApiClient(apiKey, device, scheme, host, port));
+        new ConfigApiClient(apiKey, device, scheme, host, port, forceReports));
     return flowUpConfig.getConfig().isEnabled();
   }
 
@@ -213,7 +213,8 @@ public final class FlowUp {
   }
 
   private void initializeConfigScheduler() {
-    ConfigSyncServiceScheduler scheduler = new ConfigSyncServiceScheduler(application, apiKey);
+    ConfigSyncServiceScheduler scheduler =
+        new ConfigSyncServiceScheduler(application, apiKey, forceReports);
     scheduler.scheduleSyncTask();
   }
 

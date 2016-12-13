@@ -22,8 +22,8 @@ class ApiClientConfig {
 
   private static final Gson GSON = new Gson();
 
-  static OkHttpClient getHttpClient(String apiKey, Device device, boolean logEnabled,
-      boolean useGzip) {
+  static OkHttpClient getHttpClient(String apiKey, Device device, boolean forceReportsEnabled,
+      boolean logEnabled, boolean useGzip) {
     OkHttpClient httpClient = HTTP_CLIENT;
     if (logEnabled) {
       HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
@@ -35,7 +35,7 @@ class ApiClientConfig {
       httpClient = httpClient.newBuilder().addInterceptor(gzipInterceptor).build();
     }
     return httpClient.newBuilder()
-        .addInterceptor(new FlowUpHeadersInterceptor(apiKey, device))
+        .addInterceptor(new FlowUpHeadersInterceptor(apiKey, device, forceReportsEnabled))
         .build();
   }
 
