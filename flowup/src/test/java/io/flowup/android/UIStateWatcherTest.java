@@ -15,18 +15,21 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class) public class UIStateWatcherTest {
 
   @Mock private Activity activity;
+  @Mock private UIStateWatcher.Listener listener;
   private UIStateWatcher uiStateWatcher;
   private App app;
 
   @Before public void setUp() {
     app = new App(activity);
     app.goToBackground();
-    uiStateWatcher = new UIStateWatcher(app);
+    uiStateWatcher = new UIStateWatcher(app, listener);
   }
 
   @After public void tearDown() {
@@ -57,6 +60,28 @@ import static org.mockito.Mockito.when;
     dismissActivity(false);
 
     assertFalse(app.isApplicationInBackground());
+  }
+
+  @Test public void notifiesListenerWhenGoingToForeground() {
+    showActivity();
+
+    verify(listener).onGoToForeground();
+  }
+
+  @Test public void doesNotNotifiesTheListenerWhenGoingToBackgroundWithANonRootActivity() {
+    showActivity();
+
+    dismissActivity(false);
+
+    verify(listener, never()).onGoToBackground();
+  }
+
+  @Test public void notifiesGoingToBackgroundIfTheActivityIsRoot() {
+    showActivity();
+
+    dismissActivity(true);
+
+    verify(listener).onGoToBackground();
   }
 
   private void showActivity() {
