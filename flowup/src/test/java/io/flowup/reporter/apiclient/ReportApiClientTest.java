@@ -31,6 +31,7 @@ public class ReportApiClientTest extends MockWebServerTestCase {
   private static final String ANY_VERSION_NAME = "1.0.0";
   private static final String ANY_OS_VERSION = "API24";
   private static final boolean ANY_BATTERY_SAVER_ON = true;
+  private static final boolean ANY_IS_IN_BACKGROUND = false;
   private static final int ANY_CPU_USAGE_PERCENTAGE = 10;
   private static final int ANY_BYTES_ALLOCATED = 1024;
   private static final int ANY_MEMORY_PERCENTAGE_USAGE = 3;
@@ -214,22 +215,22 @@ public class ReportApiClientTest extends MockWebServerTestCase {
 
   private CPUMetric givenACPUMetric() {
     return new CPUMetric(ANY_TIMESTAMP, ANY_VERSION_NAME, ANY_OS_VERSION, ANY_BATTERY_SAVER_ON,
-        ANY_CPU_USAGE_PERCENTAGE);
+        ANY_IS_IN_BACKGROUND, ANY_CPU_USAGE_PERCENTAGE);
   }
 
   private MemoryMetric givenAMemoryMetric() {
     return new MemoryMetric(ANY_TIMESTAMP, ANY_VERSION_NAME, ANY_OS_VERSION, ANY_BATTERY_SAVER_ON,
-        ANY_BYTES_ALLOCATED, ANY_MEMORY_PERCENTAGE_USAGE);
+        ANY_IS_IN_BACKGROUND, ANY_BYTES_ALLOCATED, ANY_MEMORY_PERCENTAGE_USAGE);
   }
 
   private DiskMetric givenADiskMetric() {
     return new DiskMetric(ANY_TIMESTAMP, ANY_VERSION_NAME, ANY_OS_VERSION, ANY_BATTERY_SAVER_ON,
-        ANY_INTERNAL_STORAGE_WRITTEN_BYTES, ANY_SHARED_PREFS_WRITTEN_BYTES);
+        ANY_IS_IN_BACKGROUND, ANY_INTERNAL_STORAGE_WRITTEN_BYTES, ANY_SHARED_PREFS_WRITTEN_BYTES);
   }
 
   private NetworkMetric givenANetworkMetric() {
     return new NetworkMetric(ANY_TIMESTAMP, ANY_VERSION_NAME, ANY_OS_VERSION, ANY_BATTERY_SAVER_ON,
-        1024, 2048);
+        ANY_IS_IN_BACKGROUND, 1024, 2048);
   }
 
   private UIMetric givenAUIMetric() {
@@ -242,9 +243,9 @@ public class ReportApiClientTest extends MockWebServerTestCase {
     StatisticalValue onActivityStoppedTime = givenAnyStatisticalValue();
     StatisticalValue onActivityDestroyedTime = givenAnyStatisticalValue();
     return new UIMetric(ANY_TIMESTAMP, ANY_VERSION_NAME, ANY_OS_VERSION, ANY_BATTERY_SAVER_ON,
-        "MainActivity", frameTime, onActivityCreatedTime, onActivityStartedTime,
-        onActivityResumedTime, activityVisibleTime, onActivityPausedTime, onActivityStoppedTime,
-        onActivityDestroyedTime);
+        ANY_IS_IN_BACKGROUND, "MainActivity", frameTime, onActivityCreatedTime,
+        onActivityStartedTime, onActivityResumedTime, activityVisibleTime, onActivityPausedTime,
+        onActivityStoppedTime, onActivityDestroyedTime);
   }
 
   private StatisticalValue givenAnyStatisticalValue() {

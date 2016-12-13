@@ -12,8 +12,8 @@ public class NetworkMetric extends Metric {
   @SerializedName("bytesDownloaded") private final long bytesDownloaded;
 
   public NetworkMetric(long timestamp, String appVersionName, String osVersion,
-      boolean batterySaverOn, long bytesUploaded, long bytesDownloaded) {
-    super(timestamp, appVersionName, osVersion, batterySaverOn);
+      boolean batterySaverOn, boolean isInBackground, long bytesUploaded, long bytesDownloaded) {
+    super(timestamp, appVersionName, osVersion, batterySaverOn, isInBackground);
     this.bytesUploaded = bytesUploaded;
     this.bytesDownloaded = bytesDownloaded;
   }

@@ -101,11 +101,12 @@ class SQLDelightReportsToReportsMapper extends Mapper<SQLDelightReports, Reports
         String versionName = extractor.getVersionName(metricName);
 
         boolean batterySaverOn = extractor.getIsBatterSaverOn(metricName);
+        boolean isInBackground = extractor.getIsApplicationInBackground(metricName);
         if (bytesDownloaded != null && bytesUploaded != null) {
           long reportTimestamp = Long.valueOf(report.report_timestamp());
           networkMetricsReports.add(
               new NetworkMetric(reportTimestamp, versionName, osVersion, batterySaverOn,
-                  bytesUploaded, bytesDownloaded));
+                  isInBackground, bytesUploaded, bytesDownloaded));
           break;
         }
       }
@@ -130,9 +131,11 @@ class SQLDelightReportsToReportsMapper extends Mapper<SQLDelightReports, Reports
           String osVersion = extractor.getOSVersion(metricName);
           String versionName = extractor.getVersionName(metricName);
           boolean batterySaverOn = extractor.getIsBatterSaverOn(metricName);
+          boolean isInBackground = extractor.getIsApplicationInBackground(metricName);
           int cpuUsage = metric.value().intValue();
           cpuMetrics.add(
-              new CPUMetric(reportTimestamp, versionName, osVersion, batterySaverOn, cpuUsage));
+              new CPUMetric(reportTimestamp, versionName, osVersion, batterySaverOn, isInBackground,
+                  cpuUsage));
         }
       }
     }
@@ -163,9 +166,10 @@ class SQLDelightReportsToReportsMapper extends Mapper<SQLDelightReports, Reports
           String osVersion = extractor.getOSVersion(metricName);
           String versionName = extractor.getVersionName(metricName);
           boolean batterySaverOn = extractor.getIsBatterSaverOn(metricName);
+          boolean isInBackground = extractor.getIsApplicationInBackground(metricName);
           memoryMetrics.add(
               new MemoryMetric(reportTimestamp, versionName, osVersion, batterySaverOn,
-                  bytesAllocated, memoryUsage));
+                  isInBackground, bytesAllocated, memoryUsage));
           break;
         }
       }
@@ -197,8 +201,9 @@ class SQLDelightReportsToReportsMapper extends Mapper<SQLDelightReports, Reports
           String osVersion = extractor.getOSVersion(metricName);
           String versionName = extractor.getVersionName(metricName);
           boolean batterySaverOn = extractor.getIsBatterSaverOn(metricName);
+          boolean isInBackground = extractor.getIsApplicationInBackground(metricName);
           diskMetrics.add(new DiskMetric(reportTimestamp, versionName, osVersion, batterySaverOn,
-              internalStorageBytes, sharedPrefsBytes));
+              isInBackground, internalStorageBytes, sharedPrefsBytes));
           break;
         }
       }
@@ -300,10 +305,11 @@ class SQLDelightReportsToReportsMapper extends Mapper<SQLDelightReports, Reports
       String versionName = extractor.getVersionName(metricName);
       String osVersion = extractor.getOSVersion(metricName);
       boolean batterySaverOne = extractor.getIsBatterSaverOn(metricName);
+      boolean isInBackground = extractor.getIsApplicationInBackground(metricName);
       if (i == metrics.size() - 1 && timestamp != null) {
-        return new UIMetric(timestamp, versionName, osVersion, batterySaverOne, screenName,
-            frameTime, onActivityCreated, onActivityStarted, onActivityResumed, activityVisible,
-            onActivityPaused, onActivityStopped, onActivityDestroyed);
+        return new UIMetric(timestamp, versionName, osVersion, batterySaverOne, isInBackground,
+            screenName, frameTime, onActivityCreated, onActivityStarted, onActivityResumed,
+            activityVisible, onActivityPaused, onActivityStopped, onActivityDestroyed);
       }
     }
     return null;

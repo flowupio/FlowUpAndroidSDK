@@ -12,8 +12,8 @@ public class MemoryMetric extends Metric {
   @SerializedName("consumption") private final int memoryUsage;
 
   public MemoryMetric(long timestamp, String appVersionName, String osVersion,
-      boolean batterySaverOn, long bytesAllocated, int memoryUsage) {
-    super(timestamp, appVersionName, osVersion, batterySaverOn);
+      boolean batterySaverOn, boolean isInBackground, long bytesAllocated, int memoryUsage) {
+    super(timestamp, appVersionName, osVersion, batterySaverOn, isInBackground);
     this.bytesAllocated = bytesAllocated;
     this.memoryUsage = memoryUsage;
   }

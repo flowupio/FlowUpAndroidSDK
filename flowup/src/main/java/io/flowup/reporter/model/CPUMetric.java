@@ -11,8 +11,8 @@ public class CPUMetric extends Metric {
   @SerializedName("consumption") private final int cpuUsage;
 
   public CPUMetric(long timestamp, String appVersionName, String osVersion, boolean batterySaverOn,
-      int cpuUsage) {
-    super(timestamp, appVersionName, osVersion, batterySaverOn);
+      boolean isInBackground, int cpuUsage) {
+    super(timestamp, appVersionName, osVersion, batterySaverOn, isInBackground);
     this.cpuUsage = cpuUsage;
   }
 
