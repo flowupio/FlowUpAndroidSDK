@@ -34,6 +34,7 @@ public class NumberOfReportsPerBatchTest {
   private static final long BYTES_ALLOCATED = Long.MAX_VALUE;
   private static final int MEMORY_USAGE = 4;
   private static final long BYTES_WRITTEN = Long.MAX_VALUE;
+  private static final boolean ANY_IS_IN_BACKGROUND = true;
 
   private final Gson gson = new Gson();
 
@@ -158,9 +159,9 @@ public class NumberOfReportsPerBatchTest {
     StatisticalValue onActivityStoppedTime = givenAnyStatisticalValue();
     StatisticalValue onActivityDestroyedTime = givenAnyStatisticalValue();
     return new UIMetric(timestamp, ANY_VERSION_NAME, ANY_OS_VERSION, ANY_BATTERY_SAVER_ON,
-        "MainActivity", frameTime, onActivityCreatedTime, onActivityStartedTime,
-        onActivityResumedTime, activityVisibleTime, onActivityPausedTime, onActivityStoppedTime,
-        onActivityDestroyedTime);
+        ANY_IS_IN_BACKGROUND, "MainActivity", frameTime, onActivityCreatedTime,
+        onActivityStartedTime, onActivityResumedTime, activityVisibleTime, onActivityPausedTime,
+        onActivityStoppedTime, onActivityDestroyedTime);
   }
 
   private StatisticalValue givenAnyStatisticalValue() {
@@ -169,22 +170,22 @@ public class NumberOfReportsPerBatchTest {
 
   private NetworkMetric generateAnyNetworkMetric(long timestamp) {
     return new NetworkMetric(timestamp, ANY_VERSION_NAME, ANY_OS_VERSION, ANY_BATTERY_SAVER_ON,
-        BYTES_UPLOADED, BYTES_DOWNLOADED);
+        ANY_IS_IN_BACKGROUND, BYTES_UPLOADED, BYTES_DOWNLOADED);
   }
 
   private CPUMetric generateAnyCPUMetric(int timestamp) {
     return new CPUMetric(timestamp, ANY_VERSION_NAME, ANY_OS_VERSION, ANY_BATTERY_SAVER_ON,
-        CPU_USAGE);
+        ANY_IS_IN_BACKGROUND, CPU_USAGE);
   }
 
   private MemoryMetric generateAMemoryMetric(int timestamp) {
     return new MemoryMetric(timestamp, ANY_VERSION_NAME, ANY_OS_VERSION, ANY_BATTERY_SAVER_ON,
-        BYTES_ALLOCATED, MEMORY_USAGE);
+        ANY_IS_IN_BACKGROUND, BYTES_ALLOCATED, MEMORY_USAGE);
   }
 
   private DiskMetric generateADiskMetric(int timestamp) {
     return new DiskMetric(timestamp, ANY_VERSION_NAME, ANY_OS_VERSION, ANY_BATTERY_SAVER_ON,
-        BYTES_WRITTEN, BYTES_WRITTEN);
+        ANY_IS_IN_BACKGROUND, BYTES_WRITTEN, BYTES_WRITTEN);
   }
 
   private List<String> givenSomeIds(int numberOfReports) {

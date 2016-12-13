@@ -8,8 +8,9 @@ public class DiskMetric extends Metric {
   @SerializedName("sharedPreferencesWrittenBytes") private final long sharedPreferencesWrittenBytes;
 
   public DiskMetric(long timestamp, String appVersionName, String osVersion, boolean batterySaverOn,
-      long internalStorageWrittenBytes, long sharedPreferencesWrittenBytes) {
-    super(timestamp, appVersionName, osVersion, batterySaverOn);
+      boolean isInBackground, long internalStorageWrittenBytes,
+      long sharedPreferencesWrittenBytes) {
+    super(timestamp, appVersionName, osVersion, batterySaverOn, isInBackground);
     this.internalStorageWrittenBytes = internalStorageWrittenBytes;
     this.sharedPreferencesWrittenBytes = sharedPreferencesWrittenBytes;
   }

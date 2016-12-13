@@ -1,96 +1,101 @@
 {
-  "appPackage": "io.flowup.example",
-  "installationUUID": "123456789",
-  "deviceModel": "Nexus 5X",
-  "screenDensity": "xxhdpi",
-  "screenSize": "800X600",
-  "numberOfCores": 4,
-  "network": [
+  "appPackage":"io.flowup.example",
+  "installationUUID":"123456789",
+  "deviceModel":"Nexus 5X",
+  "screenDensity":"xxhdpi",
+  "screenSize":"800X600",
+  "numberOfCores":4,
+  "network":[
     {
-      "bytesUploaded": 1024,
-      "bytesDownloaded": 2048,
-      "timestamp": 123456789,
-      "appVersionName": "1.0.0",
-      "androidOSVersion": "API24",
-      "batterySaverOn": true
+      "bytesUploaded":1024,
+      "bytesDownloaded":2048,
+      "timestamp":123456789,
+      "appVersionName":"1.0.0",
+      "androidOSVersion":"API24",
+      "batterySaverOn":true,
+      "isInBackground":false
     }
   ],
-  "ui": [
+  "ui":[
     {
-      "screen": "MainActivity",
-      "frameTime": {
-        "mean": 60.0,
-        "p10": 60.0,
-        "p90": 60.0
+      "screen":"MainActivity",
+      "frameTime":{
+        "mean":60.0,
+        "p10":60.0,
+        "p90":60.0
       },
-      "onActivityCreatedTime": {
-        "mean": 60.0,
-        "p10": 60.0,
-        "p90": 60.0
+      "onActivityCreatedTime":{
+        "mean":60.0,
+        "p10":60.0,
+        "p90":60.0
       },
-      "onActivityStartedTime": {
-        "mean": 60.0,
-        "p10": 60.0,
-        "p90": 60.0
+      "onActivityStartedTime":{
+        "mean":60.0,
+        "p10":60.0,
+        "p90":60.0
       },
-      "onActivityResumedTime": {
-        "mean": 60.0,
-        "p10": 60.0,
-        "p90": 60.0
+      "onActivityResumedTime":{
+        "mean":60.0,
+        "p10":60.0,
+        "p90":60.0
       },
-      "activityVisibleTime": {
-        "mean": 60.0,
-        "p10": 60.0,
-        "p90": 60.0
+      "activityVisibleTime":{
+        "mean":60.0,
+        "p10":60.0,
+        "p90":60.0
       },
-      "onActivityPausedTime": {
-        "mean": 60.0,
-        "p10": 60.0,
-        "p90": 60.0
+      "onActivityPausedTime":{
+        "mean":60.0,
+        "p10":60.0,
+        "p90":60.0
       },
-      "onActivityStoppedTime": {
-        "mean": 60.0,
-        "p10": 60.0,
-        "p90": 60.0
+      "onActivityStoppedTime":{
+        "mean":60.0,
+        "p10":60.0,
+        "p90":60.0
       },
-      "onActivityDestroyedTime": {
-        "mean": 60.0,
-        "p10": 60.0,
-        "p90": 60.0
+      "onActivityDestroyedTime":{
+        "mean":60.0,
+        "p10":60.0,
+        "p90":60.0
       },
-      "timestamp": 123456789,
-      "appVersionName": "1.0.0",
-      "androidOSVersion": "API24",
-      "batterySaverOn": true
+      "timestamp":123456789,
+      "appVersionName":"1.0.0",
+      "androidOSVersion":"API24",
+      "batterySaverOn":true,
+      "isInBackground":false
     }
   ],
-  "cpu": [
+  "cpu":[
     {
-      "consumption": 10,
-      "timestamp": 123456789,
-      "appVersionName": "1.0.0",
-      "androidOSVersion": "API24",
-      "batterySaverOn": true
+      "consumption":10,
+      "timestamp":123456789,
+      "appVersionName":"1.0.0",
+      "androidOSVersion":"API24",
+      "batterySaverOn":true,
+      "isInBackground":false
     }
   ],
-  "memory": [
+  "memory":[
     {
-      "bytesAllocated": 1024,
-      "consumption": 3,
-      "timestamp": 123456789,
-      "appVersionName": "1.0.0",
-      "androidOSVersion": "API24",
-      "batterySaverOn": true
+      "bytesAllocated":1024,
+      "consumption":3,
+      "timestamp":123456789,
+      "appVersionName":"1.0.0",
+      "androidOSVersion":"API24",
+      "batterySaverOn":true,
+      "isInBackground":false
     }
   ],
-  "disk": [
+  "disk":[
     {
-      "internalStorageWrittenBytes": 2048,
-      "sharedPreferencesWrittenBytes": 1024,
-      "timestamp": 123456789,
-      "appVersionName": "1.0.0",
-      "androidOSVersion": "API24",
-      "batterySaverOn": true
+      "internalStorageWrittenBytes":2048,
+      "sharedPreferencesWrittenBytes":1024,
+      "timestamp":123456789,
+      "appVersionName":"1.0.0",
+      "androidOSVersion":"API24",
+      "batterySaverOn":true,
+      "isInBackground":false
     }
   ]
 }

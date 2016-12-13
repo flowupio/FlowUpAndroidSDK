@@ -12,12 +12,15 @@ public class Metric {
   @SerializedName("appVersionName") private final String appVersionName;
   @SerializedName("androidOSVersion") private final String osVersion;
   @SerializedName("batterySaverOn") private final boolean batterySaverOn;
+  @SerializedName("isInBackground") private final boolean isInBackground;
 
-  public Metric(long timestamp, String appVersionName, String osVersion, boolean batterySaverOn) {
+  public Metric(long timestamp, String appVersionName, String osVersion, boolean batterySaverOn,
+      boolean isInBackground) {
     this.timestamp = timestamp;
     this.appVersionName = appVersionName;
     this.osVersion = osVersion;
     this.batterySaverOn = batterySaverOn;
+    this.isInBackground = isInBackground;
   }
 
   public long getTimestamp() {

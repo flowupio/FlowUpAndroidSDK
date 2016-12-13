@@ -19,12 +19,12 @@ public class UIMetric extends Metric {
   @SerializedName("onActivityDestroyedTime") private final StatisticalValue onActivityDestroyedTime;
 
   public UIMetric(long timestamp, String appVersionName, String osVersion, boolean batterySaverOn,
-      String screen, StatisticalValue frameTime,
+      boolean isInBackground, String screen, StatisticalValue frameTime,
       StatisticalValue onActivityCreatedTime, StatisticalValue onActivityStartedTime,
       StatisticalValue onActivityResumedTime, StatisticalValue activityVisibleTime,
       StatisticalValue onActivityPausedTime, StatisticalValue onActivityStoppedTime,
       StatisticalValue onActivityDestroyedTime) {
-    super(timestamp, appVersionName, osVersion, batterySaverOn);
+    super(timestamp, appVersionName, osVersion, batterySaverOn, isInBackground);
     this.screen = screen;
     this.frameTime = frameTime;
     this.onActivityCreatedTime = onActivityCreatedTime;

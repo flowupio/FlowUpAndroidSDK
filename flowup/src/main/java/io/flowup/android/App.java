@@ -13,6 +13,8 @@ import static io.flowup.utils.MetricNameUtils.replaceDots;
 
 public class App {
 
+  private static boolean isApplicationInBackground;
+
   private final Context context;
 
   public App(Context context) {
@@ -57,5 +59,17 @@ public class App {
     double totalMemory = runtime.totalMemory();
     double usedMemoryPercentage = (totalMemory / maxMemory) * 100;
     return (long) usedMemoryPercentage;
+  }
+
+  public boolean isApplicationInBackground() {
+    return isApplicationInBackground;
+  }
+
+  public void goToBackground() {
+    isApplicationInBackground = true;
+  }
+
+  public void goToForeground() {
+    isApplicationInBackground = false;
   }
 }
