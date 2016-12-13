@@ -4,7 +4,6 @@
 
 package io.flowup.apiclient;
 
-import android.support.annotation.NonNull;
 import io.flowup.BuildConfig;
 import io.flowup.android.Device;
 import java.io.IOException;
@@ -36,7 +35,7 @@ class FlowUpHeadersInterceptor implements Interceptor {
     return chain.proceed(request);
   }
 
-  @NonNull private String getUserAgent() {
+  private String getUserAgent() {
     String debugTag = forceReportsEnabled ? ("-DEBUG") : "";
     return "FlowUpAndroidSDK/" + BuildConfig.VERSION_NAME + debugTag;
   }

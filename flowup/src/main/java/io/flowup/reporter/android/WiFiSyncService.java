@@ -50,7 +50,7 @@ public class WiFiSyncService extends GcmTaskService {
   private boolean isScheduledTaskSupported(TaskParams taskParams) {
     String apiKey = getApiKey(taskParams);
     boolean forceReportsEnabled = isForceReportsEnabled(taskParams);
-    return (isTaskTagSupported(taskParams) && isClientEnabled(apiKey, forceReportsEnabled));
+    return isTaskTagSupported(taskParams) && isClientEnabled(apiKey, forceReportsEnabled);
   }
 
   private void initializeDependencies(TaskParams taskParams) {
