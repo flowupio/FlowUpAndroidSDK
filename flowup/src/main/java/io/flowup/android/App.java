@@ -7,7 +7,6 @@ package io.flowup.android;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.util.Log;
 import io.flowup.BuildConfig;
 
 import static io.flowup.utils.MetricNameUtils.replaceDots;
@@ -63,7 +62,6 @@ public class App {
   }
 
   public boolean isApplicationInBackground() {
-    Log.e("DEPURAR", "IS APPLICATION IN BACKGROUND = " + isApplicationInBackground);
     return isApplicationInBackground;
   }
 
