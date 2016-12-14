@@ -58,6 +58,7 @@ public class ReportsStorageTest {
   private static final long ANY_LIFECYCLE_TIME = 11;
   private static final int ANY_NUMBER_OF_REPORTS = 10;
   private static final long ANY_TIMESTAMP = Long.MAX_VALUE;
+  private static final boolean ANY_IN_BACKGROUND_VALUE = true;
 
   private ReportsStorage storage;
   private ConfigStorage configStorage;
@@ -573,8 +574,8 @@ public class ReportsStorageTest {
       }
     };
     SortedMap<String, Gauge> gauges = new TreeMap<>();
-    gauges.put(generator.getBytesDownloadedMetricName(), bytesUploaded);
-    gauges.put(generator.getBytesUploadedMetricName(), bytesDownloaded);
+    gauges.put(generator.getBytesDownloadedMetricName(ANY_IN_BACKGROUND_VALUE), bytesUploaded);
+    gauges.put(generator.getBytesUploadedMetricName(ANY_IN_BACKGROUND_VALUE), bytesDownloaded);
     return gauges;
   }
 
@@ -585,7 +586,7 @@ public class ReportsStorageTest {
       }
     };
     SortedMap<String, Gauge> gauges = new TreeMap<>();
-    gauges.put(generator.getCPUUsageMetricName(), cpuUsage);
+    gauges.put(generator.getCPUUsageMetricName(ANY_IN_BACKGROUND_VALUE), cpuUsage);
     return gauges;
   }
 
@@ -601,8 +602,8 @@ public class ReportsStorageTest {
       }
     };
     SortedMap<String, Gauge> gauges = new TreeMap<>();
-    gauges.put(generator.getMemoryUsageMetricName(), memoryUsage);
-    gauges.put(generator.getBytesAllocatedMetricName(), bytesAllocated);
+    gauges.put(generator.getMemoryUsageMetricName(ANY_IN_BACKGROUND_VALUE), memoryUsage);
+    gauges.put(generator.getBytesAllocatedMetricName(ANY_IN_BACKGROUND_VALUE), bytesAllocated);
     return gauges;
   }
 
@@ -618,8 +619,10 @@ public class ReportsStorageTest {
       }
     };
     SortedMap<String, Gauge> gauges = new TreeMap<>();
-    gauges.put(generator.getInternalStorageWrittenBytes(), internalStorageWrittenBytes);
-    gauges.put(generator.getSharedPreferencesWrittenBytes(), sharedPrefsWrittenBytes);
+    gauges.put(generator.getInternalStorageWrittenBytes(ANY_IN_BACKGROUND_VALUE),
+        internalStorageWrittenBytes);
+    gauges.put(generator.getSharedPreferencesWrittenBytes(ANY_IN_BACKGROUND_VALUE),
+        sharedPrefsWrittenBytes);
     return gauges;
   }
 

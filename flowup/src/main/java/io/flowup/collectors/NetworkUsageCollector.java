@@ -8,6 +8,7 @@ import android.net.TrafficStats;
 import android.os.Process;
 import com.codahale.metrics.CachedGauge;
 import com.codahale.metrics.MetricRegistry;
+import io.flowup.android.App;
 import io.flowup.android.AppTrafficStats;
 import io.flowup.metricnames.MetricNamesGenerator;
 import io.flowup.utils.TrafficStatsUtils;
@@ -19,25 +20,38 @@ class NetworkUsageCollector implements Collector {
   private final MetricNamesGenerator metricNamesGenerator;
   private final long samplingInterval;
   private final TimeUnit timeUnit;
-
-  private Long lastTxSampleInBytes;
-  private Long lastRxSampleInBytes;
+  private final App app;
 
   NetworkUsageCollector(AppTrafficStats appTrafficStats, MetricNamesGenerator metricNamesGenerator,
-      long samplingInterval, TimeUnit timeUnit) {
+      long samplingInterval, TimeUnit timeUnit, App app) {
     this.appTrafficStats = appTrafficStats;
     this.metricNamesGenerator = metricNamesGenerator;
     this.samplingInterval = samplingInterval;
     this.timeUnit = timeUnit;
+    this.app = app;
   }
 
   @Override public void initialize(MetricRegistry registry) {
     if (!isTrafficStatsAPISupported()) {
       return;
     }
-    registry.register(metricNamesGenerator.getBytesUploadedMetricName(),
+    registerCachedGaugesForUploadedBytes(registry, false);
+    registerCachedGaugeForDownloadedBytes(registry, false);
+    registerCachedGaugesForUploadedBytes(registry, true);
+    registerCachedGaugeForDownloadedBytes(registry, true);
+  }
+
+  private void registerCachedGaugesForUploadedBytes(MetricRegistry registry,
+      final boolean isInBackground) {
+    registry.register(metricNamesGenerator.getBytesUploadedMetricName(isInBackground),
         new CachedGauge<Long>(samplingInterval, timeUnit) {
+          private Long lastTxSampleInBytes;
+
           @Override public Long loadValue() {
+            if ((isInBackground && app.isApplicaitonInForeground()) || (!isInBackground
+                && app.isApplicationInBackground())) {
+              return null;
+            }
             long totalTxBytes = appTrafficStats.getTxBytes();
             if (lastTxSampleInBytes == null) {
               lastTxSampleInBytes = totalTxBytes;
@@ -48,9 +62,19 @@ class NetworkUsageCollector implements Collector {
             return txBytes;
           }
         });
-    registry.register(metricNamesGenerator.getBytesDownloadedMetricName(),
+  }
+
+  private void registerCachedGaugeForDownloadedBytes(MetricRegistry registry,
+      final boolean isInBackground) {
+    registry.register(metricNamesGenerator.getBytesDownloadedMetricName(isInBackground),
         new CachedGauge<Long>(samplingInterval, timeUnit) {
+          private Long lastRxSampleInBytes;
+
           @Override public Long loadValue() {
+            if ((isInBackground && app.isApplicaitonInForeground()) || (!isInBackground
+                && app.isApplicationInBackground())) {
+              return null;
+            }
             long totalRxBytes = appTrafficStats.getRxBytes();
             if (lastRxSampleInBytes == null) {
               lastRxSampleInBytes = totalRxBytes;

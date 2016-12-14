@@ -34,6 +34,9 @@ public class MemoryMetric extends Metric {
         + "memoryUsage="
         + memoryUsage
         + "\n"
+        + "isInBackground="
+        + isInBackground()
+        + "\n"
         + '}';
   }
 }

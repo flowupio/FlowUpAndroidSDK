@@ -92,34 +92,38 @@ public class MetricNamesGenerator {
         appendCrossMetricInfo(UI + SEPARATOR + ON_ACTIVITY_DESTROYED + SEPARATOR + activityName));
   }
 
-  public String getBytesDownloadedMetricName() {
-    return MetricRegistry.name(appendCrossMetricInfo(NETWORK + SEPARATOR + BYTES_DOWNLOADED));
-  }
-
-  public String getBytesUploadedMetricName() {
-    return MetricRegistry.name(appendCrossMetricInfo(NETWORK + SEPARATOR + BYTES_UPLOADED));
-  }
-
-  public String getCPUUsageMetricName() {
-    return MetricRegistry.name(appendCrossMetricInfo(CPU_USAGE));
-  }
-
-  public String getMemoryUsageMetricName() {
-    return MetricRegistry.name(appendCrossMetricInfo(MEMORY + SEPARATOR + MEMORY_USAGE));
-  }
-
-  public String getBytesAllocatedMetricName() {
-    return MetricRegistry.name(appendCrossMetricInfo(MEMORY + SEPARATOR + BYTES_ALLOCATED));
-  }
-
-  public String getInternalStorageWrittenBytes() {
+  public String getBytesDownloadedMetricName(boolean isInBackground) {
     return MetricRegistry.name(
-        appendCrossMetricInfo(DISK + SEPARATOR + INTERNAL_STORAGE_WRITTEN_BYTES));
+        appendCrossMetricInfo(NETWORK + SEPARATOR + BYTES_DOWNLOADED, isInBackground));
   }
 
-  public String getSharedPreferencesWrittenBytes() {
+  public String getBytesUploadedMetricName(boolean isInBackground) {
     return MetricRegistry.name(
-        appendCrossMetricInfo(DISK + SEPARATOR + SHARED_PREFERENCES_WRITTEN_BYTES));
+        appendCrossMetricInfo(NETWORK + SEPARATOR + BYTES_UPLOADED, isInBackground));
+  }
+
+  public String getCPUUsageMetricName(boolean isInBackground) {
+    return MetricRegistry.name(appendCrossMetricInfo(CPU_USAGE, isInBackground));
+  }
+
+  public String getMemoryUsageMetricName(boolean forBackground) {
+    return MetricRegistry.name(
+        appendCrossMetricInfo(MEMORY + SEPARATOR + MEMORY_USAGE, forBackground));
+  }
+
+  public String getBytesAllocatedMetricName(boolean forBackground) {
+    return MetricRegistry.name(
+        appendCrossMetricInfo(MEMORY + SEPARATOR + BYTES_ALLOCATED, forBackground));
+  }
+
+  public String getInternalStorageWrittenBytes(boolean isInBackground) {
+    return MetricRegistry.name(
+        appendCrossMetricInfo(DISK + SEPARATOR + INTERNAL_STORAGE_WRITTEN_BYTES, isInBackground));
+  }
+
+  public String getSharedPreferencesWrittenBytes(boolean isInBackground) {
+    return MetricRegistry.name(
+        appendCrossMetricInfo(DISK + SEPARATOR + SHARED_PREFERENCES_WRITTEN_BYTES, isInBackground));
   }
 
   private String getActivityName(Activity activity) {
@@ -127,6 +131,10 @@ public class MetricNamesGenerator {
   }
 
   private String appendCrossMetricInfo(String metricName) {
+    return appendCrossMetricInfo(metricName, false);
+  }
+
+  private String appendCrossMetricInfo(String metricName, boolean isInBackground) {
     return app.getAppPackageName()
         + SEPARATOR
         + device.getInstallationUUID()
@@ -145,7 +153,7 @@ public class MetricNamesGenerator {
         + SEPARATOR
         + device.isBatterySaverOn()
         + SEPARATOR
-        + app.isApplicationInBackground()
+        + isInBackground
         + SEPARATOR
         + metricName;
   }

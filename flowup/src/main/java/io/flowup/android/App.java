@@ -65,6 +65,10 @@ public class App {
     return isApplicationInBackground;
   }
 
+  public boolean isApplicaitonInForeground() {
+    return !isApplicationInBackground;
+  }
+
   public void goToBackground() {
     isApplicationInBackground = true;
   }
