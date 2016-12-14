@@ -1,4 +1,3 @@
--printmapping out.map
 -renamesourcefileattribute SourceFile
 
 # Preserve all annotations.
