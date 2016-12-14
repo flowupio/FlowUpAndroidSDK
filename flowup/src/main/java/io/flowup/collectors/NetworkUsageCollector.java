@@ -22,9 +22,6 @@ class NetworkUsageCollector implements Collector {
   private final TimeUnit timeUnit;
   private final App app;
 
-  private Long lastTxSampleInBytes;
-  private Long lastRxSampleInBytes;
-
   NetworkUsageCollector(AppTrafficStats appTrafficStats, MetricNamesGenerator metricNamesGenerator,
       long samplingInterval, TimeUnit timeUnit, App app) {
     this.appTrafficStats = appTrafficStats;
@@ -48,6 +45,8 @@ class NetworkUsageCollector implements Collector {
       final boolean isInBackground) {
     registry.register(metricNamesGenerator.getBytesUploadedMetricName(isInBackground),
         new CachedGauge<Long>(samplingInterval, timeUnit) {
+          private Long lastTxSampleInBytes;
+
           @Override public Long loadValue() {
             if ((isInBackground && app.isApplicaitonInForeground()) || (!isInBackground
                 && app.isApplicationInBackground())) {
@@ -69,6 +68,8 @@ class NetworkUsageCollector implements Collector {
       final boolean isInBackground) {
     registry.register(metricNamesGenerator.getBytesDownloadedMetricName(isInBackground),
         new CachedGauge<Long>(samplingInterval, timeUnit) {
+          private Long lastRxSampleInBytes;
+
           @Override public Long loadValue() {
             if ((isInBackground && app.isApplicaitonInForeground()) || (!isInBackground
                 && app.isApplicationInBackground())) {
