@@ -49,7 +49,7 @@ import static org.mockito.Mockito.when;
     TimeUnit anyTimeUnit = TimeUnit.NANOSECONDS;
     int anySamplingInterval = 0;
     collector =
-        new NetworkUsageCollector(trafficStats, generator, anySamplingInterval, anyTimeUnit);
+        new NetworkUsageCollector(trafficStats, generator, anySamplingInterval, anyTimeUnit, app);
   }
 
   @Test public void doesNotReportBytesUploadedIfItIsTheFirstTimeTheInfoIsCollected() {

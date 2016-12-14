@@ -45,13 +45,13 @@ public class Collectors {
   public static Collector getNetworkUsageCollector(Application application, long samplingInterval,
       TimeUnit timeUnit) {
     return new NetworkUsageCollector(new AppTrafficStats(), getMetricNamesGenerator(application),
-        samplingInterval, timeUnit);
+        samplingInterval, timeUnit, new App(application));
   }
 
   public static Collector getCPUUsageCollector(Application application, int samplingInterval,
       TimeUnit samplingTimeUnit, CPU cpu) {
     return new CPUUsageCollector(getMetricNamesGenerator(application), samplingInterval,
-        samplingTimeUnit, cpu);
+        samplingTimeUnit, cpu, new App(application));
   }
 
   public static Collector getMemoryUsageCollector(Application application, int samplingInterval,
@@ -63,7 +63,7 @@ public class Collectors {
   public static Collector getDiskUsageCollector(Application application, int samplingInterval,
       TimeUnit samplingTimeUnit, FileSystem fileSystem) {
     return new DiskUsageCollector(getMetricNamesGenerator(application), samplingInterval,
-        samplingTimeUnit, fileSystem);
+        samplingTimeUnit, fileSystem, new App(application));
   }
 
   private static MetricNamesGenerator getMetricNamesGenerator(Application application) {
