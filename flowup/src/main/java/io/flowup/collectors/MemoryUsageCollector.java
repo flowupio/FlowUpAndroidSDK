@@ -22,37 +22,33 @@ class MemoryUsageCollector implements Collector {
   }
 
   @Override public void initialize(MetricRegistry registry) {
-    registry.register(metricNamesGenerator.getMemoryUsageMetricName(false),
+    registerMemoryUsageCachedGauge(registry, false);
+    registerBytesAllocatedCachedGauge(registry, false);
+    registerMemoryUsageCachedGauge(registry, true);
+    registerBytesAllocatedCachedGauge(registry, true);
+  }
+
+  private void registerMemoryUsageCachedGauge(MetricRegistry registry,
+      final boolean isInBackground) {
+    registry.register(metricNamesGenerator.getMemoryUsageMetricName(isInBackground),
         new CachedGauge<Long>(samplingInterval, timeUnit) {
           @Override protected Long loadValue() {
-            if (app.isApplicationInBackground()) {
+            if ((isInBackground && app.isApplicaitonInForeground()) || (!isInBackground
+                && app.isApplicationInBackground())) {
               return null;
             }
             return app.getMemoryUsage();
           }
         });
-    registry.register(metricNamesGenerator.getBytesAllocatedMetricName(false),
+  }
+
+  private void registerBytesAllocatedCachedGauge(MetricRegistry registry,
+      final boolean isInBackground) {
+    registry.register(metricNamesGenerator.getBytesAllocatedMetricName(isInBackground),
         new CachedGauge<Long>(samplingInterval, timeUnit) {
           @Override protected Long loadValue() {
-            if (app.isApplicationInBackground()) {
-              return null;
-            }
-            return app.getBytesAllocated();
-          }
-        });
-    registry.register(metricNamesGenerator.getMemoryUsageMetricName(true),
-        new CachedGauge<Long>(samplingInterval, timeUnit) {
-          @Override protected Long loadValue() {
-            if (app.isApplicaitonInForeground()) {
-              return null;
-            }
-            return app.getMemoryUsage();
-          }
-        });
-    registry.register(metricNamesGenerator.getBytesAllocatedMetricName(true),
-        new CachedGauge<Long>(samplingInterval, timeUnit) {
-          @Override protected Long loadValue() {
-            if (app.isApplicaitonInForeground()) {
+            if ((isInBackground && app.isApplicaitonInForeground()) || (!isInBackground
+                && app.isApplicationInBackground())) {
               return null;
             }
             return app.getBytesAllocated();

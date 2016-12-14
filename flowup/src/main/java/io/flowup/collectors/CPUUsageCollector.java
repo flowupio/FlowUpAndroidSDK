@@ -33,11 +33,11 @@ class CPUUsageCollector implements Collector {
     registerCachedGauge(registry, true);
   }
 
-  private void registerCachedGauge(MetricRegistry registry, final boolean isInBackground1) {
-    registry.register(metricNamesGenerator.getCPUUsageMetricName(isInBackground1),
+  private void registerCachedGauge(MetricRegistry registry, final boolean isInBackground) {
+    registry.register(metricNamesGenerator.getCPUUsageMetricName(isInBackground),
         new CachedGauge<Long>(samplingInterval, timeUnit) {
           @Override protected Long loadValue() {
-            if ((isInBackground1 && app.isApplicaitonInForeground()) || (!isInBackground1
+            if ((isInBackground && app.isApplicaitonInForeground()) || (!isInBackground
                 && app.isApplicationInBackground())) {
               return null;
             }
