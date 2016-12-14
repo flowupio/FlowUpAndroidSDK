@@ -6,6 +6,7 @@ package io.flowup.collectors;
 
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.MetricRegistry;
+import io.flowup.android.App;
 import io.flowup.android.AppTrafficStats;
 import io.flowup.doubles.AnyApp;
 import io.flowup.doubles.AnyDevice;
@@ -38,13 +39,18 @@ import static org.mockito.Mockito.when;
   @Mock private AppTrafficStats trafficStats;
   @Captor private ArgumentCaptor<Gauge<Long>> bytesUploadedCaptor;
   @Captor private ArgumentCaptor<Gauge<Long>> bytesDownloadedCaptor;
+  @Mock private App app;
 
   @Before public void setUp() {
     MetricNamesGenerator generator =
         new MetricNamesGenerator(new AnyApp(), new AnyDevice(), new Time());
-    when(registry.register(eq(generator.getBytesUploadedMetricName()),
+    when(registry.register(eq(generator.getBytesUploadedMetricName(false)),
         bytesUploadedCaptor.capture())).thenReturn(mock(Gauge.class));
-    when(registry.register(eq(generator.getBytesDownloadedMetricName()),
+    when(registry.register(eq(generator.getBytesUploadedMetricName(true)),
+        bytesUploadedCaptor.capture())).thenReturn(mock(Gauge.class));
+    when(registry.register(eq(generator.getBytesDownloadedMetricName(false)),
+        bytesDownloadedCaptor.capture())).thenReturn(mock(Gauge.class));
+    when(registry.register(eq(generator.getBytesDownloadedMetricName(true)),
         bytesDownloadedCaptor.capture())).thenReturn(mock(Gauge.class));
     TimeUnit anyTimeUnit = TimeUnit.NANOSECONDS;
     int anySamplingInterval = 0;
