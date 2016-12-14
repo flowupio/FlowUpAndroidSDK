@@ -10,6 +10,7 @@ android {
     targetSdkVersion 23
     versionCode 1
     versionName "1.0"
+    testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
   }
   buildTypes {
     debug {
@@ -36,4 +37,22 @@ dependencies {
   compile 'com.android.support:appcompat-v7:23.2.1'
   compile 'com.karumi:marvelapiclient:0.0.4'
   testCompile project(':flowup-no-op')
+  testCompile 'junit:junit:4.12'
+  androidTestCompile 'com.android.support.test:runner:0.4.1'
+  androidTestCompile 'com.android.support.test:rules:0.4.1'
+  androidTestCompile 'org.mockito:mockito-core:1.10.19'
+  androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.1') {
+    exclude group: 'javax.inject', module: 'javax.inject'
+    exclude group: 'com.squareup', module: 'javawriter'
+  }
+  androidTestCompile('com.android.support.test.espresso:espresso-contrib:2.2.1') {
+    exclude module: 'support-annotations'
+    exclude module: 'recyclerview-v7'
+    exclude module: 'support-v4'
+  }
+  androidTestCompile('com.android.support.test.espresso:espresso-intents:2.2.1')
+}
+
+configurations.all {
+  resolutionStrategy.force 'com.android.support:support-annotations:23.0.1'
 }
