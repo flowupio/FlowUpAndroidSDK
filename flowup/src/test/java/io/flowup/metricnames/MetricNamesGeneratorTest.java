@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class) public class MetricNamesGeneratorTest {
 
   private static final long ANY_TIMESTAMP = 12345678;
+  private static final boolean ANY_IN_IN_BACKGROUND_VALUE = false;
 
   @Mock private Time time;
   @Mock private Activity activity;
@@ -80,19 +81,19 @@ import static org.mockito.Mockito.when;
   }
 
   @Test public void bytesDownloadedMetricShouldContainExactly11FieldsSeparatedByDots() {
-    String bytesDownloaded = generator.getBytesDownloadedMetricName();
+    String bytesDownloaded = generator.getBytesDownloadedMetricName(ANY_IN_IN_BACKGROUND_VALUE);
 
     assertEquals(12, MetricNameUtils.split(bytesDownloaded).length);
   }
 
   @Test public void bytesDownloadedShouldContainTheCrossMetricInfoInTheName() {
-    String bytesDownloaded = generator.getBytesDownloadedMetricName();
+    String bytesDownloaded = generator.getBytesDownloadedMetricName(ANY_IN_IN_BACKGROUND_VALUE);
 
     assertContainsCrossMetricInfoName(bytesDownloaded);
   }
 
   @Test public void bytesDownloadedContainsTheMetricNameInTheCorrectPosition() {
-    String bytesDownloaded = generator.getBytesDownloadedMetricName();
+    String bytesDownloaded = generator.getBytesDownloadedMetricName(ANY_IN_IN_BACKGROUND_VALUE);
 
     String[] parts = MetricNameUtils.split(bytesDownloaded);
     assertEquals("network", parts[10]);
@@ -100,19 +101,19 @@ import static org.mockito.Mockito.when;
   }
 
   @Test public void bytesUploadedMetricShouldContainExactly11FieldsSeparatedByDots() {
-    String bytesUploaded = generator.getBytesUploadedMetricName();
+    String bytesUploaded = generator.getBytesUploadedMetricName(ANY_IN_IN_BACKGROUND_VALUE);
 
     assertEquals(12, MetricNameUtils.split(bytesUploaded).length);
   }
 
   @Test public void bytesUploadedShouldContainTheCrossMetricInfoInTheName() {
-    String bytesUploaded = generator.getBytesUploadedMetricName();
+    String bytesUploaded = generator.getBytesUploadedMetricName(ANY_IN_IN_BACKGROUND_VALUE);
 
     assertContainsCrossMetricInfoName(bytesUploaded);
   }
 
   @Test public void bytesUploadedContainsTheMetricNameInTheCorrectPosition() {
-    String bytesUploaded = generator.getBytesUploadedMetricName();
+    String bytesUploaded = generator.getBytesUploadedMetricName(ANY_IN_IN_BACKGROUND_VALUE);
 
     String[] parts = MetricNameUtils.split(bytesUploaded);
     assertEquals("network", parts[10]);
@@ -126,169 +127,169 @@ import static org.mockito.Mockito.when;
   }
 
   @Test public void identifiesABytesDownloadedMetricProperly() {
-    String bytesDownloaded = generator.getBytesDownloadedMetricName();
+    String bytesDownloaded = generator.getBytesDownloadedMetricName(ANY_IN_IN_BACKGROUND_VALUE);
 
     assertTrue(extractor.isBytesDownloadedMetric(bytesDownloaded));
   }
 
   @Test public void doesNotIdentifyABytesDownloadedMetricAsABytesUploaded() {
-    String bytesDownloaded = generator.getBytesDownloadedMetricName();
+    String bytesDownloaded = generator.getBytesDownloadedMetricName(ANY_IN_IN_BACKGROUND_VALUE);
 
     assertFalse(extractor.isBytesUploadedMetric(bytesDownloaded));
   }
 
   @Test public void identifiesABytesUploadedMetricProperly() {
-    String bytesUploaded = generator.getBytesUploadedMetricName();
+    String bytesUploaded = generator.getBytesUploadedMetricName(ANY_IN_IN_BACKGROUND_VALUE);
 
     assertTrue(extractor.isBytesUploadedMetric(bytesUploaded));
   }
 
   @Test public void doesNotIdentifyABytesUploadedMetricAsABytesDownloaded() {
-    String bytesUploaded = generator.getBytesUploadedMetricName();
+    String bytesUploaded = generator.getBytesUploadedMetricName(ANY_IN_IN_BACKGROUND_VALUE);
 
     assertFalse(extractor.isBytesDownloadedMetric(bytesUploaded));
   }
 
   @Test public void cpuUsageMetricNameShouldContainExactly10FieldsSeparatedByDots() {
-    String cpuUsage = generator.getCPUUsageMetricName();
+    String cpuUsage = generator.getCPUUsageMetricName(ANY_IN_IN_BACKGROUND_VALUE);
 
     assertEquals(11, MetricNameUtils.split(cpuUsage).length);
   }
 
   @Test public void cpuUsageMetricNameShouldContainTheCrossMetricInfoName() {
-    String cpuUsage = generator.getCPUUsageMetricName();
+    String cpuUsage = generator.getCPUUsageMetricName(ANY_IN_IN_BACKGROUND_VALUE);
 
     assertContainsCrossMetricInfoName(cpuUsage);
   }
 
   @Test public void cpuUsageContainsTheMetricNameInTheCorrectPosition() {
-    String cpuUsage = generator.getCPUUsageMetricName();
+    String cpuUsage = generator.getCPUUsageMetricName(ANY_IN_IN_BACKGROUND_VALUE);
 
     String[] parts = MetricNameUtils.split(cpuUsage);
     assertEquals("cpuUsage", parts[10]);
   }
 
   @Test public void memoryUsageMetricNameShouldContainExactly11FieldsSeparatedByDots() {
-    String memoryUsage = generator.getMemoryUsageMetricName();
+    String memoryUsage = generator.getMemoryUsageMetricName(ANY_IN_IN_BACKGROUND_VALUE);
 
     assertEquals(12, MetricNameUtils.split(memoryUsage).length);
   }
 
   @Test public void memoryUsageUsageMetricNameShouldContainTheCrossMetricInfoName() {
-    String memoryUsage = generator.getMemoryUsageMetricName();
+    String memoryUsage = generator.getMemoryUsageMetricName(ANY_IN_IN_BACKGROUND_VALUE);
 
     assertContainsCrossMetricInfoName(memoryUsage);
   }
 
   @Test public void memoryUsageContainsTheMetricNameInTheCorrectPosition() {
-    String memoryUsage = generator.getMemoryUsageMetricName();
+    String memoryUsage = generator.getMemoryUsageMetricName(ANY_IN_IN_BACKGROUND_VALUE);
 
     String[] parts = MetricNameUtils.split(memoryUsage);
     assertEquals("memoryUsage", parts[11]);
   }
 
   @Test public void identifiesAMemoryUsageMetricProperly() {
-    String memoryUsage = generator.getMemoryUsageMetricName();
+    String memoryUsage = generator.getMemoryUsageMetricName(ANY_IN_IN_BACKGROUND_VALUE);
 
     assertTrue(extractor.isMemoryUsageMetric(memoryUsage));
   }
 
   @Test public void doesNotIdentifyABytesAllocatedMetricAsMemoryUsage() {
-    String bytesAllocated = generator.getBytesAllocatedMetricName();
+    String bytesAllocated = generator.getBytesAllocatedMetricName(ANY_IN_IN_BACKGROUND_VALUE);
 
     assertFalse(extractor.isMemoryUsageMetric(bytesAllocated));
   }
 
   @Test public void bytesAllocatedMetricNameShouldContainExactly11FieldsSeparatedByDots() {
-    String bytesAllocated = generator.getBytesAllocatedMetricName();
+    String bytesAllocated = generator.getBytesAllocatedMetricName(ANY_IN_IN_BACKGROUND_VALUE);
 
     assertEquals(12, MetricNameUtils.split(bytesAllocated).length);
   }
 
   @Test public void bytesAllocatedUsageUsageMetricNameShouldContainTheCrossMetricInfoName() {
-    String bytesAllocated = generator.getBytesAllocatedMetricName();
+    String bytesAllocated = generator.getBytesAllocatedMetricName(ANY_IN_IN_BACKGROUND_VALUE);
 
     assertContainsCrossMetricInfoName(bytesAllocated);
   }
 
   @Test public void bytesAllocatedUsageContainsTheMetricNameInTheCorrectPosition() {
-    String bytesAllocated = generator.getBytesAllocatedMetricName();
+    String bytesAllocated = generator.getBytesAllocatedMetricName(ANY_IN_IN_BACKGROUND_VALUE);
 
     String[] parts = MetricNameUtils.split(bytesAllocated);
     assertEquals("bytesAllocated", parts[11]);
   }
 
   @Test public void identifiesABytesAllocatedMetricProperly() {
-    String bytesAllocated = generator.getBytesAllocatedMetricName();
+    String bytesAllocated = generator.getBytesAllocatedMetricName(ANY_IN_IN_BACKGROUND_VALUE);
 
     assertTrue(extractor.isBytesAllocatedMetric(bytesAllocated));
   }
 
   @Test public void doesNotIdentifyAMemoryUsageMetricAsBytesAllocated() {
-    String memoryUsage = generator.getMemoryUsageMetricName();
+    String memoryUsage = generator.getMemoryUsageMetricName(ANY_IN_IN_BACKGROUND_VALUE);
 
     assertFalse(extractor.isBytesAllocatedMetric(memoryUsage));
   }
 
   @Test
   public void internalStorageWrittenBytesMetricNameShouldContainExactly11FieldsSeparatedByDots() {
-    String writtenBytes = generator.getInternalStorageWrittenBytes();
+    String writtenBytes = generator.getInternalStorageWrittenBytes(ANY_IN_IN_BACKGROUND_VALUE);
 
     assertEquals(12, MetricNameUtils.split(writtenBytes).length);
   }
 
   @Test public void internalStorageWrittenBytesMetricNameShouldContainTheCrossMetricInfoName() {
-    String writtenBytes = generator.getInternalStorageWrittenBytes();
+    String writtenBytes = generator.getInternalStorageWrittenBytes(ANY_IN_IN_BACKGROUND_VALUE);
 
     assertContainsCrossMetricInfoName(writtenBytes);
   }
 
   @Test public void internalStorageWrittenBytesContainsTheMetricNameInTheCorrectPosition() {
-    String writtenBytes = generator.getInternalStorageWrittenBytes();
+    String writtenBytes = generator.getInternalStorageWrittenBytes(ANY_IN_IN_BACKGROUND_VALUE);
 
     String[] parts = MetricNameUtils.split(writtenBytes);
     assertEquals("internalStorageWrittenBytes", parts[11]);
   }
 
   @Test public void identifiesAInternalStorageWrittenBytesMetricProperly() {
-    String writtenBytes = generator.getInternalStorageWrittenBytes();
+    String writtenBytes = generator.getInternalStorageWrittenBytes(ANY_IN_IN_BACKGROUND_VALUE);
 
     assertTrue(extractor.isInternalStorageAllocatedBytesMetric(writtenBytes));
   }
 
   @Test public void doesNotIdentifyAnInternalStorageWrittenBytesMetricAsSharedPrefsWrittenBytes() {
-    String writtenBytes = generator.getSharedPreferencesWrittenBytes();
+    String writtenBytes = generator.getSharedPreferencesWrittenBytes(ANY_IN_IN_BACKGROUND_VALUE);
 
     assertFalse(extractor.isBytesAllocatedMetric(writtenBytes));
   }
 
   @Test public void sharedPrefsWrittenBytesMetricNameShouldContainExactly11FieldsSeparatedByDots() {
-    String writtenBytes = generator.getSharedPreferencesWrittenBytes();
+    String writtenBytes = generator.getSharedPreferencesWrittenBytes(ANY_IN_IN_BACKGROUND_VALUE);
 
     assertEquals(12, MetricNameUtils.split(writtenBytes).length);
   }
 
   @Test public void sharedPrefsWrittenBytesMetricNameShouldContainTheCrossMetricInfoName() {
-    String writtenBytes = generator.getSharedPreferencesWrittenBytes();
+    String writtenBytes = generator.getSharedPreferencesWrittenBytes(ANY_IN_IN_BACKGROUND_VALUE);
 
     assertContainsCrossMetricInfoName(writtenBytes);
   }
 
   @Test public void sharedPrefsWrittenBytesContainsTheMetricNameInTheCorrectPosition() {
-    String writtenBytes = generator.getSharedPreferencesWrittenBytes();
+    String writtenBytes = generator.getSharedPreferencesWrittenBytes(ANY_IN_IN_BACKGROUND_VALUE);
 
     String[] parts = MetricNameUtils.split(writtenBytes);
     assertEquals("sharedPreferencesStorageWrittenBytes", parts[11]);
   }
 
   @Test public void identifiesASharedPrefsWrittenBytesMetricProperly() {
-    String writtenBytes = generator.getSharedPreferencesWrittenBytes();
+    String writtenBytes = generator.getSharedPreferencesWrittenBytes(ANY_IN_IN_BACKGROUND_VALUE);
 
     assertTrue(extractor.isSharedPreferencesAllocatedBytesMetric(writtenBytes));
   }
 
   @Test public void doesNotIdentifyASharedPrefsWrittenBytesMetricAsInternalStorageWrittenBytes() {
-    String writtenBytes = generator.getSharedPreferencesWrittenBytes();
+    String writtenBytes = generator.getSharedPreferencesWrittenBytes(ANY_IN_IN_BACKGROUND_VALUE);
 
     assertFalse(extractor.isInternalStorageAllocatedBytesMetric(writtenBytes));
   }
@@ -568,7 +569,7 @@ import static org.mockito.Mockito.when;
     String activityPaused = generator.getOnActivityPausedMetricName(activity);
     String activityStopped = generator.getOnActivityStoppedMetricName(activity);
     String activityDestroyed = generator.getOnActivityDestroyedMetricName(activity);
-    String nonUIMetricName = generator.getBytesAllocatedMetricName();
+    String nonUIMetricName = generator.getBytesAllocatedMetricName(ANY_IN_IN_BACKGROUND_VALUE);
 
     assertTrue(extractor.isUIMetric(frameTime));
     assertTrue(extractor.isUIMetric(activityCreated));
@@ -590,7 +591,7 @@ import static org.mockito.Mockito.when;
     assertEquals(device.getOSVersion(), extractor.getOSVersion(metricName));
     assertEquals(replaceDashes(app.getVersionName()), extractor.getVersionName(metricName));
     assertEquals(device.isBatterySaverOn(), extractor.getIsBatterSaverOn(metricName));
-    assertEquals(app.isApplicationInBackground(),
+    assertEquals(ANY_IN_IN_BACKGROUND_VALUE,
         extractor.getIsApplicationInBackground(metricName));
   }
 

@@ -38,4 +38,8 @@ public class Metric {
   public boolean isBatterySaverOn() {
     return batterySaverOn;
   }
+
+  public boolean isInBackground() {
+    return isInBackground;
+  }
 }

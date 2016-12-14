@@ -5,12 +5,15 @@
 package io.flowup.android;
 
 import android.app.Activity;
-import io.flowup.logger.Logger;
 
 public class UIStateWatcher extends EmptyActivityLifecycleCallback {
 
   private final App app;
   private final Listener listener;
+
+  public UIStateWatcher(App app) {
+    this(app, null);
+  }
 
   public UIStateWatcher(App app, Listener listener) {
     this.app = app;
@@ -21,7 +24,6 @@ public class UIStateWatcher extends EmptyActivityLifecycleCallback {
     super.onActivityResumed(activity);
     app.goToForeground();
     if (listener != null) {
-      Logger.d("The app goes to foreground");
       listener.onGoToForeground();
     }
   }
@@ -29,7 +31,6 @@ public class UIStateWatcher extends EmptyActivityLifecycleCallback {
   @Override public void onActivityPaused(Activity activity) {
     super.onActivityPaused(activity);
     if (activity.isTaskRoot()) {
-      Logger.d("The app goes to background");
       app.goToBackground();
       if (listener != null) {
         listener.onGoToBackground();
