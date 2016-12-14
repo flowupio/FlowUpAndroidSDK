@@ -77,6 +77,10 @@ public final class FlowUp {
         }
         initializeMetrics();
         initializeForegroundCollectors();
+        initializeNetworkCollectors();
+        initializeCPUCollectors();
+        initializeMemoryCollectors();
+        initializeDiskCollectors();
         initializeUIStateWatcher();
         initializeFlowUpReporter();
       }
@@ -245,39 +249,8 @@ public final class FlowUp {
 
   private void initializeUIStateWatcher() {
     App app = new App(application);
-    UIStateWatcher callback = new UIStateWatcher(app, new UIStateWatcher.Listener() {
-      @Override public void onGoToForeground() {
-        initializeForeverCollectors();
-      }
-
-      @Override public void onGoToBackground() {
-        removeForeverCollectors();
-        initializeForeverCollectors();
-      }
-    });
+    UIStateWatcher callback = new UIStateWatcher(app);
     application.registerActivityLifecycleCallbacks(callback);
-  }
-
-  private void initializeForeverCollectors() {
-    initializeNetworkCollectors();
-    initializeCPUCollectors();
-    initializeMemoryCollectors();
-    initializeDiskCollectors();
-  }
-
-  private void removeForeverCollectors() {
-    registry.removeMatching(new MetricFilter() {
-      @Override public boolean matches(String name, Metric metric) {
-        MetricNamesExtractor extractor = new MetricNamesExtractor();
-        return extractor.isBytesDownloadedMetric(name)
-            || extractor.isBytesUploadedMetric(name)
-            || extractor.isCPUUsageMetric(name)
-            || extractor.isMemoryUsageMetric(name)
-            || extractor.isBytesAllocatedMetric(name)
-            || extractor.isSharedPreferencesAllocatedBytesMetric(name)
-            || extractor.isInternalStorageAllocatedBytesMetric(name);
-      }
-    });
   }
 
   public static final class Builder {

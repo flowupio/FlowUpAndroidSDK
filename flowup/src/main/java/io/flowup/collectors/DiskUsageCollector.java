@@ -29,40 +29,33 @@ class DiskUsageCollector implements Collector {
   }
 
   @Override public void initialize(MetricRegistry registry) {
-    registry.register(metricNamesGenerator.getInternalStorageWrittenBytes(false),
+    registerCachedGaugerForTheInternalStorage(registry, false);
+    registerCachedGaugeForSharedPreferences(registry, false);
+    registerCachedGaugerForTheInternalStorage(registry, true);
+    registerCachedGaugeForSharedPreferences(registry, true);
+  }
+
+  private void registerCachedGaugerForTheInternalStorage(MetricRegistry registry,
+      final boolean isInBackground) {
+    registry.register(metricNamesGenerator.getInternalStorageWrittenBytes(isInBackground),
         new CachedGauge<Long>(samplingInterval, timeUnit) {
           @Override protected Long loadValue() {
-            if (app.isApplicationInBackground()) {
+            if ((isInBackground && app.isApplicaitonInForeground()) || (!isInBackground
+                && app.isApplicationInBackground())) {
               return null;
             }
             return fileSystem.getInternalStorageWrittenBytes();
           }
         });
+  }
 
-    registry.register(metricNamesGenerator.getSharedPreferencesWrittenBytes(false),
+  private void registerCachedGaugeForSharedPreferences(MetricRegistry registry,
+      final boolean isInBackground) {
+    registry.register(metricNamesGenerator.getSharedPreferencesWrittenBytes(isInBackground),
         new CachedGauge<Long>(samplingInterval, timeUnit) {
           @Override protected Long loadValue() {
-            if (app.isApplicationInBackground()) {
-              return null;
-            }
-            return fileSystem.getSharedPreferencesWrittenBytes();
-          }
-        });
-
-    registry.register(metricNamesGenerator.getInternalStorageWrittenBytes(true),
-        new CachedGauge<Long>(samplingInterval, timeUnit) {
-          @Override protected Long loadValue() {
-            if (app.isApplicaitonInForeground()) {
-              return null;
-            }
-            return fileSystem.getInternalStorageWrittenBytes();
-          }
-        });
-
-    registry.register(metricNamesGenerator.getSharedPreferencesWrittenBytes(true),
-        new CachedGauge<Long>(samplingInterval, timeUnit) {
-          @Override protected Long loadValue() {
-            if (app.isApplicaitonInForeground()) {
+            if ((isInBackground && app.isApplicaitonInForeground()) || (!isInBackground
+                && app.isApplicationInBackground())) {
               return null;
             }
             return fileSystem.getSharedPreferencesWrittenBytes();

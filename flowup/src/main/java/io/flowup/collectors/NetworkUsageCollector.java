@@ -38,43 +38,19 @@ class NetworkUsageCollector implements Collector {
     if (!isTrafficStatsAPISupported()) {
       return;
     }
-    registry.register(metricNamesGenerator.getBytesUploadedMetricName(false),
-        new CachedGauge<Long>(samplingInterval, timeUnit) {
-          @Override public Long loadValue() {
-            if(app.isApplicationInBackground()){
-              return null;
-            }
-            long totalTxBytes = appTrafficStats.getTxBytes();
-            if (lastTxSampleInBytes == null) {
-              lastTxSampleInBytes = totalTxBytes;
-              return null;
-            }
-            long txBytes = totalTxBytes - lastTxSampleInBytes;
-            lastTxSampleInBytes = totalTxBytes;
-            return txBytes;
-          }
-        });
-    registry.register(metricNamesGenerator.getBytesDownloadedMetricName(false),
-        new CachedGauge<Long>(samplingInterval, timeUnit) {
-          @Override public Long loadValue() {
-            if(app.isApplicationInBackground()){
-              return null;
-            }
-            long totalRxBytes = appTrafficStats.getRxBytes();
-            if (lastRxSampleInBytes == null) {
-              lastRxSampleInBytes = totalRxBytes;
-              return null;
-            }
-            long rxBytes = totalRxBytes - lastRxSampleInBytes;
-            lastRxSampleInBytes = totalRxBytes;
-            return rxBytes;
-          }
-        });
+    registerCachedGaugesForUploadedBytes(registry, false);
+    registerCachedGaugeForDownloadedBytes(registry, false);
+    registerCachedGaugesForUploadedBytes(registry, true);
+    registerCachedGaugeForDownloadedBytes(registry, true);
+  }
 
-    registry.register(metricNamesGenerator.getBytesUploadedMetricName(true),
+  private void registerCachedGaugesForUploadedBytes(MetricRegistry registry,
+      final boolean isInBackground) {
+    registry.register(metricNamesGenerator.getBytesUploadedMetricName(isInBackground),
         new CachedGauge<Long>(samplingInterval, timeUnit) {
           @Override public Long loadValue() {
-            if(app.isApplicaitonInForeground()){
+            if ((isInBackground && app.isApplicaitonInForeground()) || (!isInBackground
+                && app.isApplicationInBackground())) {
               return null;
             }
             long totalTxBytes = appTrafficStats.getTxBytes();
@@ -87,10 +63,15 @@ class NetworkUsageCollector implements Collector {
             return txBytes;
           }
         });
-    registry.register(metricNamesGenerator.getBytesDownloadedMetricName(true),
+  }
+
+  private void registerCachedGaugeForDownloadedBytes(MetricRegistry registry,
+      final boolean isInBackground) {
+    registry.register(metricNamesGenerator.getBytesDownloadedMetricName(isInBackground),
         new CachedGauge<Long>(samplingInterval, timeUnit) {
           @Override public Long loadValue() {
-            if(app.isApplicaitonInForeground()){
+            if ((isInBackground && app.isApplicaitonInForeground()) || (!isInBackground
+                && app.isApplicationInBackground())) {
               return null;
             }
             long totalRxBytes = appTrafficStats.getRxBytes();

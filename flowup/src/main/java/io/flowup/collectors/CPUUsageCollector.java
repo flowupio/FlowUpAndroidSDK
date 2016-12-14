@@ -29,19 +29,16 @@ class CPUUsageCollector implements Collector {
   }
 
   @Override public void initialize(MetricRegistry registry) {
-    registry.register(metricNamesGenerator.getCPUUsageMetricName(false),
+    registerCachedGauge(registry, false);
+    registerCachedGauge(registry, true);
+  }
+
+  private void registerCachedGauge(MetricRegistry registry, final boolean isInBackground1) {
+    registry.register(metricNamesGenerator.getCPUUsageMetricName(isInBackground1),
         new CachedGauge<Long>(samplingInterval, timeUnit) {
           @Override protected Long loadValue() {
-            if(app.isApplicationInBackground()){
-              return null;
-            }
-            return Long.valueOf(cpu.getUsage());
-          }
-        });
-    registry.register(metricNamesGenerator.getCPUUsageMetricName(true),
-        new CachedGauge<Long>(samplingInterval, timeUnit) {
-          @Override protected Long loadValue() {
-            if(app.isApplicaitonInForeground()) {
+            if ((isInBackground1 && app.isApplicaitonInForeground()) || (!isInBackground1
+                && app.isApplicationInBackground())) {
               return null;
             }
             return Long.valueOf(cpu.getUsage());
