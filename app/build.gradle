@@ -1,9 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
+  signingConfigs {
+    noopcert {
+      keyAlias 'noopcert'
+      keyPassword 'noopcert'
+      storeFile file('/Users/Pedro/Development/Projects/FlowUpAndroidSdk/app/noopcert.keystore')
+      storePassword 'noopcert'
+    }
+  }
   compileSdkVersion 23
   buildToolsVersion "23.0.1"
-
   defaultConfig {
     applicationId "io.flowup.example"
     minSdkVersion 14
@@ -21,6 +28,7 @@ android {
     release {
       minifyEnabled true
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+      signingConfig signingConfigs.noopcert
     }
   }
   lintOptions {
@@ -30,7 +38,7 @@ android {
 
 dependencies {
   debugCompile project(':flowup')
-  releaseCompile project(':flowup-no-op')
+  releaseCompile project(':flowup')
   debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
   releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
   testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
@@ -50,7 +58,7 @@ dependencies {
     exclude module: 'recyclerview-v7'
     exclude module: 'support-v4'
   }
-  androidTestCompile('com.android.support.test.espresso:espresso-intents:2.2.1')
+  androidTestCompile 'com.android.support.test.espresso:espresso-intents:2.2.1'
 }
 
 configurations.all {

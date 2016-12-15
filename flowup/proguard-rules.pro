@@ -60,6 +60,8 @@
     java.lang.Object readResolve();
 }
 
+-keep class **.BuildConfig { *; }
+-keep class io.flowup.android.BuildConfigExtractor { *; }
 -keep class com.codahale.** { *; }
 -dontwarn okio.**
 -dontwarn sun.misc.**

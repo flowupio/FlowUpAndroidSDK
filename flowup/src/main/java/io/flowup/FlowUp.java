@@ -14,6 +14,7 @@ import com.codahale.metrics.Timer;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import io.flowup.android.App;
+import io.flowup.android.BuildConfigExtractor;
 import io.flowup.android.CPU;
 import io.flowup.android.Device;
 import io.flowup.android.FileSystem;
@@ -61,7 +62,6 @@ public final class FlowUp {
   void start() {
     new Thread(new Runnable() {
       @Override public void run() {
-        initializeLogger();
         if (hasBeenInitialized()) {
           return;
         }
@@ -97,10 +97,6 @@ public final class FlowUp {
       throw new IllegalArgumentException(
           "The apiKey instance used to initialize FlowUp can not be null or empty.");
     }
-  }
-
-  private void initializeLogger() {
-    Logger.setEnabled(logEnabled);
   }
 
   private void initializeMetrics() {
@@ -284,7 +280,19 @@ public final class FlowUp {
       return this;
     }
 
+    private void initializeLogger() {
+      Logger.setEnabled(logEnabled);
+    }
+
     public void start() {
+      initializeLogger();
+      try {
+        BuildConfigExtractor buildConfigExtractor = new BuildConfigExtractor();
+        forceReports = forceReports && buildConfigExtractor.isApplicationDebuggable(application);
+        Logger.e("Force reports = " + forceReports);
+      } catch (Exception e) {
+        Logger.e("Exception catch trying to know if the app is in debug mode or not", e);
+      }
       new FlowUp(application, apiKey, forceReports, logEnabled).start();
     }
   }
