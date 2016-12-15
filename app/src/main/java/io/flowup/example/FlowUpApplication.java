@@ -17,8 +17,8 @@ public class FlowUpApplication extends Application {
     enableStrictMode();
     FlowUp.Builder.with(this)
         .apiKey("0dd955ff0cdc4148ace2aa8a30f43f96")
-        .forceReports(BuildConfig.DEBUG)
-        .logEnabled(BuildConfig.DEBUG)
+        .forceReports(true)
+        .logEnabled(true)
         .start();
   }
 

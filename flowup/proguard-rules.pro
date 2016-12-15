@@ -60,6 +60,7 @@
     java.lang.Object readResolve();
 }
 
+-keep class **.BuildConfig { *; }
 -keep class com.codahale.** { *; }
 -dontwarn okio.**
 -dontwarn sun.misc.**
