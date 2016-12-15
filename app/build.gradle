@@ -5,7 +5,7 @@ android {
     noopcert {
       keyAlias 'noopcert'
       keyPassword 'noopcert'
-      storeFile file('/Users/Pedro/Development/Projects/FlowUpAndroidSdk/app/noopcert.keystore')
+      storeFile file('noopcert.keystore')
       storePassword 'noopcert'
     }
   }
