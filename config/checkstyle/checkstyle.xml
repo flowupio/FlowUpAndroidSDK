@@ -104,4 +104,8 @@
         <!-- See http://checkstyle.sf.net/config_misc.html -->
         <module name="UpperEll"/>
     </module>
+
+    <module name="SuppressionFilter">
+        <property name="file" value="config/checkstyle/suppressions.xml"/>
+    </module>
 </module>
