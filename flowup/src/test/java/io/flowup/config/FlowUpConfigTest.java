@@ -72,7 +72,7 @@ import static org.mockito.Mockito.when;
 
   private Config givenTheApiReturnsANewConfig() {
     Config config = new Config(false);
-    when(apiClient.getConfig()).thenReturn(new ApiClientResult<Config>(config));
+    when(apiClient.getConfig()).thenReturn(new ApiClientResult<>(config));
     return config;
   }
 
