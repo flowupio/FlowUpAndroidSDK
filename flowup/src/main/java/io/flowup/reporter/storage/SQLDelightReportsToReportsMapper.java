@@ -91,9 +91,9 @@ class SQLDelightReportsToReportsMapper extends Mapper<SQLDelightReports, Reports
         }
         String metricName = metric.metric_name();
         if (extractor.isBytesDownloadedMetric(metricName)) {
-          bytesDownloaded = metric.value().longValue();
+          bytesDownloaded = metric.value();
         } else if (extractor.isBytesUploadedMetric(metricName)) {
-          bytesUploaded = metric.value().longValue();
+          bytesUploaded = metric.value();
         } else {
           continue;
         }
@@ -103,7 +103,7 @@ class SQLDelightReportsToReportsMapper extends Mapper<SQLDelightReports, Reports
         boolean batterySaverOn = extractor.getIsBatterSaverOn(metricName);
         boolean isInBackground = extractor.getIsApplicationInBackground(metricName);
         if (bytesDownloaded != null && bytesUploaded != null) {
-          long reportTimestamp = Long.valueOf(report.report_timestamp());
+          long reportTimestamp = report.report_timestamp();
           networkMetricsReports.add(
               new NetworkMetric(reportTimestamp, versionName, osVersion, batterySaverOn,
                   isInBackground, bytesUploaded, bytesDownloaded));
@@ -127,15 +127,16 @@ class SQLDelightReportsToReportsMapper extends Mapper<SQLDelightReports, Reports
         }
         String metricName = metric.metric_name();
         if (extractor.isCPUUsageMetric(metricName)) {
-          long reportTimestamp = Long.valueOf(report.report_timestamp());
+          long reportTimestamp = report.report_timestamp();
           String osVersion = extractor.getOSVersion(metricName);
           String versionName = extractor.getVersionName(metricName);
           boolean batterySaverOn = extractor.getIsBatterSaverOn(metricName);
           boolean isInBackground = extractor.getIsApplicationInBackground(metricName);
-          int cpuUsage = metric.value().intValue();
-          cpuMetrics.add(
-              new CPUMetric(reportTimestamp, versionName, osVersion, batterySaverOn, isInBackground,
-                  cpuUsage));
+          Long cpuUsage = metric.value();
+          if (cpuUsage != null) {
+            cpuMetrics.add(new CPUMetric(reportTimestamp, versionName, osVersion, batterySaverOn,
+                isInBackground, cpuUsage.intValue()));
+          }
         }
       }
     }
@@ -148,7 +149,7 @@ class SQLDelightReportsToReportsMapper extends Mapper<SQLDelightReports, Reports
     List<MemoryMetric> memoryMetrics = new LinkedList<>();
     for (int i = 0; i < reports.size(); i++) {
       SQLDelightReport report = reports.get(i);
-      Integer memoryUsage = null;
+      Long memoryUsage = null;
       Long bytesAllocated = null;
       for (int j = 0; j < metrics.size(); j++) {
         SQLDelightMetric metric = metrics.get(j);
@@ -157,19 +158,19 @@ class SQLDelightReportsToReportsMapper extends Mapper<SQLDelightReports, Reports
         }
         String metricName = metric.metric_name();
         if (extractor.isMemoryUsageMetric(metricName)) {
-          memoryUsage = metric.value().intValue();
+          memoryUsage = metric.value();
         } else if (extractor.isBytesAllocatedMetric(metricName)) {
-          bytesAllocated = metric.value().longValue();
+          bytesAllocated = metric.value();
         }
         if (memoryUsage != null && bytesAllocated != null) {
-          long reportTimestamp = Long.valueOf(report.report_timestamp());
+          long reportTimestamp = report.report_timestamp();
           String osVersion = extractor.getOSVersion(metricName);
           String versionName = extractor.getVersionName(metricName);
           boolean batterySaverOn = extractor.getIsBatterSaverOn(metricName);
           boolean isInBackground = extractor.getIsApplicationInBackground(metricName);
           memoryMetrics.add(
               new MemoryMetric(reportTimestamp, versionName, osVersion, batterySaverOn,
-                  isInBackground, bytesAllocated, memoryUsage));
+                  isInBackground, bytesAllocated, memoryUsage.intValue()));
           break;
         }
       }
@@ -192,12 +193,12 @@ class SQLDelightReportsToReportsMapper extends Mapper<SQLDelightReports, Reports
         }
         String metricName = metric.metric_name();
         if (extractor.isInternalStorageAllocatedBytesMetric(metricName)) {
-          internalStorageBytes = metric.value().longValue();
+          internalStorageBytes = metric.value();
         } else if (extractor.isSharedPreferencesAllocatedBytesMetric(metricName)) {
-          sharedPrefsBytes = metric.value().longValue();
+          sharedPrefsBytes = metric.value();
         }
         if (internalStorageBytes != null && sharedPrefsBytes != null) {
-          long reportTimestamp = Long.valueOf(report.report_timestamp());
+          long reportTimestamp = report.report_timestamp();
           String osVersion = extractor.getOSVersion(metricName);
           String versionName = extractor.getVersionName(metricName);
           boolean batterySaverOn = extractor.getIsBatterSaverOn(metricName);
