@@ -5,7 +5,9 @@
 package io.flowup.storage;
 
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteDatabaseLockedException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.NonNull;
 import io.flowup.logger.Logger;
 
 public class SQLDelightStorage {
@@ -19,6 +21,10 @@ public class SQLDelightStorage {
   }
 
   protected void executeTransaction(Transaction transaction) {
+    executeTransaction(transaction, new EmptyErrorListener());
+  }
+
+  protected void executeTransaction(Transaction transaction, @NonNull ErrorListener errorListener) {
     synchronized (DB_LOCK) {
       Logger.d("Start writing a DB transaction");
       SQLiteDatabase database = null;
@@ -27,6 +33,9 @@ public class SQLDelightStorage {
         database.beginTransaction();
         transaction.execute(database);
         database.setTransactionSuccessful();
+      } catch (SQLiteDatabaseLockedException e) {
+        Logger.e(e.getMessage());
+        errorListener.onUnrecoverableError();
       } finally {
         if (database != null) {
           database.endTransaction();
@@ -38,6 +47,10 @@ public class SQLDelightStorage {
   }
 
   protected <T> T read(Read<T> read) {
+    return read(read, new EmptyErrorListener());
+  }
+
+  protected <T> T read(Read<T> read, @NonNull ErrorListener errorListener) {
     synchronized (DB_LOCK) {
       Logger.d("Start reading from DB");
       T result = null;
@@ -45,6 +58,9 @@ public class SQLDelightStorage {
       try {
         database = openHelper.getWritableDatabase();
         result = read.read(database);
+      } catch (SQLiteDatabaseLockedException e) {
+        Logger.e(e.getMessage());
+        errorListener.onUnrecoverableError();
       } finally {
         Logger.d("End reading from DB");
         if (database != null) {
@@ -61,5 +77,14 @@ public class SQLDelightStorage {
 
   public interface Transaction {
     void execute(SQLiteDatabase database);
+  }
+
+  public interface ErrorListener {
+    void onUnrecoverableError();
+  }
+
+  private static class EmptyErrorListener implements ErrorListener {
+    @Override public void onUnrecoverableError() {
+    }
   }
 }
