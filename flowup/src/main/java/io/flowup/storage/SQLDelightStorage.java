@@ -34,7 +34,7 @@ public class SQLDelightStorage {
         transaction.execute(database);
         database.setTransactionSuccessful();
       } catch (SQLiteDatabaseLockedException e) {
-        Logger.e(e.getMessage());
+        Logger.e("Exception catch trying to execute a SQLite transaction", e);
         errorListener.onUnrecoverableError();
       } finally {
         if (database != null) {
@@ -59,7 +59,7 @@ public class SQLDelightStorage {
         database = openHelper.getWritableDatabase();
         result = read.read(database);
       } catch (SQLiteDatabaseLockedException e) {
-        Logger.e(e.getMessage());
+        Logger.e("Exception catch trying to read our SQLite database", e);
         errorListener.onUnrecoverableError();
       } finally {
         Logger.d("End reading from DB");

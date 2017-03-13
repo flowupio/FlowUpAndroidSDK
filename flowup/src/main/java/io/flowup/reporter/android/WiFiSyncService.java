@@ -113,11 +113,11 @@ public class WiFiSyncService extends GcmTaskService {
         Logger.d("Api response successful");
         reportsStorage.deleteReports(reports);
       } else if (shouldDeleteReportsOnError(result)) {
-        Logger.e("Api response error: " + result.getError());
+        Logger.d("Api response error: " + result.getError());
         disableFlowUp();
         reportsStorage.deleteReports(reports);
       } else {
-        Logger.e("Api response error: " + result.getError());
+        Logger.d("Api response error: " + result.getError());
       }
       reports = reportsStorage.getReports(FlowUpReporter.NUMBER_OF_REPORTS_PER_REQUEST);
       if (reports != null) {
@@ -129,18 +129,18 @@ public class WiFiSyncService extends GcmTaskService {
       isConnectedToWifi = isConnectedToWifi();
     } while (reports != null && result.isSuccess() && isConnectedToWifi);
     if (error == ApiClientResult.Error.NETWORK_ERROR || !isConnectedToWifi) {
-      Logger.e("The last sync failed due to a network error, so let's reschedule a new task");
+      Logger.d("The last sync failed due to a network error, so let's reschedule a new task");
       return RESULT_RESCHEDULE;
     } else if (error == ApiClientResult.Error.CLIENT_DISABLED) {
-      Logger.e("The client trying to report data has been disabled");
+      Logger.d("The client trying to report data has been disabled");
       disableFlowUp();
       reportsStorage.clear();
       return RESULT_FAILURE;
     } else if (!result.isSuccess()) {
-      Logger.e("The last sync failed due to an unknown error");
+      Logger.w("The last sync failed due to an unknown error");
       return RESULT_FAILURE;
     } else {
-      Logger.e("Sync process finished with a successful result");
+      Logger.d("Sync process finished with a successful result");
       return RESULT_SUCCESS;
     }
   }
