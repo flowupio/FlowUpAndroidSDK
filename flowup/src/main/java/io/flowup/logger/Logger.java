@@ -23,6 +23,13 @@ public class Logger {
     Log.d(LOGTAG, message);
   }
 
+  public static void w(String message) {
+    if (!enabled) {
+      return;
+    }
+    Log.w(LOGTAG, message);
+  }
+
   public static void e(String message) {
     e(message, null);
   }

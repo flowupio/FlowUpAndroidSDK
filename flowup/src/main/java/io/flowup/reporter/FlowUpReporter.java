@@ -102,11 +102,11 @@ public class FlowUpReporter extends ScheduledReporter {
         Logger.d("Api response successful");
         reportsStorage.deleteReports(reports);
       } else if (shouldDeleteReportsOnError(result)) {
-        Logger.e("Api response error: " + result.getError());
+        Logger.w("Api response error: " + result.getError());
         notifyClientDisabled();
         reportsStorage.deleteReports(reports);
       } else {
-        Logger.e("Api response error: " + result.getError());
+        Logger.w("Api response error: " + result.getError());
       }
       reports = reportsStorage.getReports(NUMBER_OF_REPORTS_PER_REQUEST);
       if (reports != null && result.isSuccess()) {
@@ -117,13 +117,13 @@ public class FlowUpReporter extends ScheduledReporter {
     } while (reports != null && result.isSuccess());
     ApiClientResult.Error error = result.getError();
     if (error == ApiClientResult.Error.NETWORK_ERROR) {
-      Logger.e("The last sync failed due to a network error, so let's reschedule a new task");
+      Logger.d("The last sync failed due to a network error, so let's reschedule a new task");
     } else if (error == ApiClientResult.Error.CLIENT_DISABLED) {
-      Logger.e("The client trying to report data has been disabled");
+      Logger.d("The client trying to report data has been disabled");
       notifyClientDisabled();
       reportsStorage.clear();
     } else if (!result.isSuccess()) {
-      Logger.e("The last sync failed due to an unknown error");
+      Logger.w("The last sync failed due to an unknown error");
     } else {
       Logger.d("Sync process finished with a successful result");
     }

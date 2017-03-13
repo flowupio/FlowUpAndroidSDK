@@ -291,7 +291,7 @@ public final class FlowUp {
         forceReports = forceReports && buildConfigExtractor.isApplicationDebuggable(application);
         Logger.d("Starting FlowUp Android SDK. Force reports config = " + forceReports);
       } catch (Exception e) {
-        Logger.e("Exception catch trying to know if the app is in debug mode or not", e);
+        Logger.d("Exception catch trying to know if the app is in debug mode or not");
       }
       new FlowUp(application, apiKey, forceReports, logEnabled).start();
     }
