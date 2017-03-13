@@ -41,50 +41,51 @@ public final class FlowUp {
 
   public static final int SAMPLING_INTERVAL = 10;
   private static final TimeUnit SAMPLING_TIME_UNIT = TimeUnit.SECONDS;
+  private static final Object INITIALIZATION_LOCK = new Object();
 
   private final Application application;
   private final String apiKey;
   private final boolean forceReports;
-  private final boolean logEnabled;
 
   private static MetricRegistry registry;
   private static FlowUpReporter reporter;
   private FlowUpConfig flowUpConfig;
 
-  FlowUp(Application application, String apiKey, boolean forceReports, boolean logEnabled) {
+  FlowUp(Application application, String apiKey, boolean forceReports) {
     validateConstructionParams(application, apiKey);
     this.application = application;
     this.apiKey = apiKey;
     this.forceReports = forceReports;
-    this.logEnabled = logEnabled;
   }
 
   void start() {
-    new Thread(new Runnable() {
-      @Override public void run() {
-        if (hasBeenInitialized()) {
-          return;
+    synchronized (INITIALIZATION_LOCK) {
+      new Thread(new Runnable() {
+        @Override public void run() {
+          if (hasBeenInitialized()) {
+            return;
+          }
+          if (!doesSupportGooglePlayServices()) {
+            Logger.e(
+                "FlowUp hasn't been initialized. Google play services is not supported in this device");
+            return;
+          }
+          initializeConfigScheduler();
+          if (!isFlowUpEnabled()) {
+            Logger.d("FlowUp is disabled for this device");
+            return;
+          }
+          initializeMetrics();
+          initializeForegroundCollectors();
+          initializeNetworkCollectors();
+          initializeCPUCollectors();
+          initializeMemoryCollectors();
+          initializeDiskCollectors();
+          initializeUIStateWatcher();
+          initializeFlowUpReporter();
         }
-        if (!doesSupportGooglePlayServices()) {
-          Logger.e(
-              "FlowUp hasn't been initialized. Google play services is not supported in this device");
-          return;
-        }
-        initializeConfigScheduler();
-        if (!isFlowUpEnabled()) {
-          Logger.d("FlowUp is disabled for this device");
-          return;
-        }
-        initializeMetrics();
-        initializeForegroundCollectors();
-        initializeNetworkCollectors();
-        initializeCPUCollectors();
-        initializeMemoryCollectors();
-        initializeDiskCollectors();
-        initializeUIStateWatcher();
-        initializeFlowUpReporter();
-      }
-    }).start();
+      }).start();
+    }
     Logger.d("FlowUp initialized");
   }
 
@@ -293,7 +294,7 @@ public final class FlowUp {
       } catch (Exception e) {
         Logger.e("Exception catch trying to know if the app is in debug mode or not", e);
       }
-      new FlowUp(application, apiKey, forceReports, logEnabled).start();
+      new FlowUp(application, apiKey, forceReports).start();
     }
   }
 }
