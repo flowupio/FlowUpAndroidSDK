@@ -53,4 +53,8 @@ import java.util.List;
     SqlDelightStatement remove = SQLDelightMetric.FACTORY.delete_by_report_ids(reportIds);
     db.execSQL(remove.statement);
   }
+
+  boolean containsData() {
+    return value() != null || mean() != null;
+  }
 }

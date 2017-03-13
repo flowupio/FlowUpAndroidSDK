@@ -48,6 +48,14 @@ public class Reports {
     return getReportsIds().size();
   }
 
+  public boolean containsMetrics() {
+    return getMemoryMetrics() == null
+        && getCpuMetrics() == null
+        && getDiskMetrics() == null
+        && getNetworkMetrics() == null
+        && getUIMetrics() == null;
+  }
+
   public List<String> getReportsIds() {
     return reportsIds;
   }

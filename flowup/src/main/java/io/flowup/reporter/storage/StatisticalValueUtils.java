@@ -8,8 +8,8 @@ import io.flowup.reporter.model.StatisticalValue;
 
 class StatisticalValueUtils {
 
-  public static StatisticalValue fromSQLDelightMetric(SQLDelightMetric metric) {
-    if (metric.count() == null || metric.count() == 0) {
+  static StatisticalValue fromSQLDelightMetric(SQLDelightMetric metric) {
+    if (metric == null || !metric.containsData()) {
       return null;
     }
     return new StatisticalValue(metric.mean(), metric.p10(), metric.p90());

@@ -340,13 +340,13 @@ public class ReportsStorageTest {
     updateConfigLatch.await();
   }
 
-  @Test public void shouldNotStoreMetricsWithNullValues() throws Exception {
+  @Test public void doesNotStoreMetricsWithNullValuesEvenWhenThereIsAReport() throws Exception {
     DropwizardReport dropwizardReport = getDropwizardReportWithNullMetrics();
 
     storage.storeMetrics(dropwizardReport);
 
     Reports reports = storage.getReports(1);
-    assertEquals(0, reports.size());
+    reports.containsMetrics();
   }
 
   @NonNull private DropwizardReport getDropwizardReportWithNullMetrics() {
