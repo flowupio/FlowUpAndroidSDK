@@ -5,7 +5,6 @@
 package io.flowup.reporter.android;
 
 import android.content.Context;
-import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;
 import io.flowup.android.SafeGcmTaskService;
 import io.flowup.logger.Logger;

@@ -5,7 +5,6 @@
 package io.flowup.config.android;
 
 import android.os.Bundle;
-import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;
 import io.flowup.R;
 import io.flowup.android.Device;
