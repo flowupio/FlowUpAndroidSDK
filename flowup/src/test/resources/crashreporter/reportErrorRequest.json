@@ -1,0 +1,1 @@
+{"message":"java.lang.NullPointerException: Crash collecting data","stackTrace":"java.lang.NullPointerException: Crash collecting data\n\tat Declaring class.method name(file name:11)\n"}
