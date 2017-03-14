@@ -14,7 +14,9 @@ public abstract class SafeGcmTaskService extends GcmTaskService {
 
   @Override public int onRunTask(final TaskParams taskParams) {
     SafeNet safeNet = new SafeNet();
-    final int[] result = { RESULT_SUCCESS };
+    final int[] result = {
+        RESULT_SUCCESS
+    };
     safeNet.executeSafety(new Runnable() {
       @Override public void run() {
         result[0] = safeOnRunTask(taskParams);
