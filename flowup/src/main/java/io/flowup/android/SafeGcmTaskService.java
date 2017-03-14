@@ -8,15 +8,15 @@ import static com.google.android.gms.gcm.GcmNetworkManager.RESULT_SUCCESS;
 
 public abstract class SafeGcmTaskService extends GcmTaskService {
 
-  @Override public int onRunTask(TaskParams taskParams) {
+  @Override public int onRunTask(final TaskParams taskParams) {
     SafeNet safeNet = new SafeNet();
-    int result = RESULT_SUCCESS;
-    try {
-      result = safeOnRunTask(taskParams);
-    } catch (Throwable t) {
-      safeNet.reportException(t);
-    }
-    return result;
+    final int[] result = { RESULT_SUCCESS };
+    safeNet.executeSafety(new Runnable() {
+      @Override public void run() {
+        result[0] = safeOnRunTask(taskParams);
+      }
+    });
+    return result[0];
   }
 
   protected abstract int safeOnRunTask(TaskParams taskParams);
