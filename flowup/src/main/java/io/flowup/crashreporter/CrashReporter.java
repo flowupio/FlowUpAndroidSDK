@@ -10,5 +10,6 @@ public class CrashReporter implements Thread.UncaughtExceptionHandler {
 
   @Override public void uncaughtException(Thread thread, Throwable ex) {
     Log.e("DEPURAR", "FUCK YEAH!!!! Exception catch in thread " + thread.getName(), ex);
+    System.exit(2);
   }
 }

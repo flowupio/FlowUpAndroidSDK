@@ -3,12 +3,12 @@ apply plugin: 'android-apt'
 apply plugin: 'com.squareup.sqldelight'
 
 android {
-  compileSdkVersion 23
+  compileSdkVersion 25
   buildToolsVersion '25.0.0'
 
   defaultConfig {
     minSdkVersion 14
-    targetSdkVersion 23
+    targetSdkVersion 25
     versionCode 2008
     versionName "0.2.8-SNAPSHOT"
     testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
