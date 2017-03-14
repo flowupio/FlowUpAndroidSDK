@@ -43,7 +43,7 @@ public class WiFiSyncService extends SafeGcmTaskService {
   @Override protected boolean isScheduledTaskSupported(TaskParams taskParams) {
     String apiKey = getApiKey(taskParams);
     boolean forceReportsEnabled = isDebugEnabled(taskParams);
-    return super.isScheduledTaskSupported(taskParams) && isClientEnabled(apiKey,
+    return taskParams.getTag().equals(SYNCHRONIZE_METRICS_REPORT) && isClientEnabled(apiKey,
         forceReportsEnabled);
   }
 
@@ -69,10 +69,6 @@ public class WiFiSyncService extends SafeGcmTaskService {
     flowUpConfig = new FlowUpConfig(new ConfigStorage(dbOpenHelper),
         new ConfigApiClient(apiKey, device, scheme, host, port, forceReportsEnabled));
     return flowUpConfig.getConfig().isEnabled();
-  }
-
-  protected boolean isScheduledTaskSupported(TaskParams taskParams) {
-    return taskParams.getTag().equals(SYNCHRONIZE_METRICS_REPORT);
   }
 
   private int syncStoredReports() {
