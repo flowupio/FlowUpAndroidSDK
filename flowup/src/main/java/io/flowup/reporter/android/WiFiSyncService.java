@@ -8,10 +8,10 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;
 import io.flowup.R;
 import io.flowup.android.Device;
+import io.flowup.android.SafeGcmTaskService;
 import io.flowup.apiclient.ApiClientResult;
 import io.flowup.config.FlowUpConfig;
 import io.flowup.config.apiclient.ConfigApiClient;
@@ -29,7 +29,7 @@ import static com.google.android.gms.gcm.GcmNetworkManager.RESULT_RESCHEDULE;
 import static com.google.android.gms.gcm.GcmNetworkManager.RESULT_SUCCESS;
 import static io.flowup.reporter.android.WiFiSyncServiceScheduler.SYNCHRONIZE_METRICS_REPORT;
 
-public class WiFiSyncService extends GcmTaskService {
+public class WiFiSyncService extends SafeGcmTaskService {
 
   static final String API_KEY_EXTRA = "apiKeyExtra";
   static final String FORCE_REPORTS_EXTRA = "forceReportsExtra";
@@ -39,7 +39,7 @@ public class WiFiSyncService extends GcmTaskService {
   private FlowUpConfig flowUpConfig;
   private ConnectivityManager connectivityManager;
 
-  @Override public int onRunTask(TaskParams taskParams) {
+  @Override public int safeOnRunTask(TaskParams taskParams) {
     if (!isScheduledTaskSupported(taskParams)) {
       return RESULT_FAILURE;
     }

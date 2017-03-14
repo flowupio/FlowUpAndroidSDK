@@ -30,6 +30,7 @@ public class DeleteOldReportsServiceScheduler {
         .setPeriod(SYNC_PERIOD)
         .setFlex(FLEX_PERIOD)
         .setExtras(extras)
+        .setPersisted(false)
         .build();
     gcmNetworkManager.schedule(task);
   }

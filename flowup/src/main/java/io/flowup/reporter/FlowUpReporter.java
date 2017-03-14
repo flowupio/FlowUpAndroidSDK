@@ -11,7 +11,6 @@ import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.ScheduledReporter;
 import com.codahale.metrics.Timer;
 import io.flowup.android.Device;
 import io.flowup.apiclient.ApiClientResult;
@@ -21,12 +20,13 @@ import io.flowup.reporter.android.WiFiSyncServiceScheduler;
 import io.flowup.reporter.apiclient.ReportApiClient;
 import io.flowup.reporter.model.Reports;
 import io.flowup.reporter.storage.ReportsStorage;
+import io.flowup.reporter.storage.SafeScheduledReporter;
 import io.flowup.storage.SQLDelightfulOpenHelper;
 import io.flowup.utils.Time;
 import java.util.SortedMap;
 import java.util.concurrent.TimeUnit;
 
-public class FlowUpReporter extends ScheduledReporter {
+public class FlowUpReporter extends SafeScheduledReporter {
 
   public static final int NUMBER_OF_REPORTS_PER_REQUEST = 898;
 
@@ -62,7 +62,8 @@ public class FlowUpReporter extends ScheduledReporter {
     cleanScheduler.scheduleCleanTask();
   }
 
-  @Override public void report(SortedMap<String, Gauge> gauges, SortedMap<String, Counter> counters,
+  @Override
+  public void safeReport(SortedMap<String, Gauge> gauges, SortedMap<String, Counter> counters,
       SortedMap<String, Histogram> histograms, SortedMap<String, Meter> meters,
       SortedMap<String, Timer> timers) {
     DropwizardReport dropwizardReport =

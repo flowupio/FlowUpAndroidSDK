@@ -7,6 +7,7 @@ package io.flowup.reporter.android;
 import android.content.Context;
 import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;
+import io.flowup.android.SafeGcmTaskService;
 import io.flowup.logger.Logger;
 import io.flowup.reporter.storage.ReportsStorage;
 import io.flowup.storage.SQLDelightfulOpenHelper;
@@ -16,9 +17,9 @@ import static com.google.android.gms.gcm.GcmNetworkManager.RESULT_FAILURE;
 import static com.google.android.gms.gcm.GcmNetworkManager.RESULT_SUCCESS;
 import static io.flowup.reporter.android.DeleteOldReportsServiceScheduler.CLEAN_OLD_REPORTS;
 
-public class DeleteOldReportsService extends GcmTaskService {
+public class DeleteOldReportsService extends SafeGcmTaskService {
 
-  @Override public int onRunTask(TaskParams taskParams) {
+  @Override public int safeOnRunTask(TaskParams taskParams) {
     Logger.d("Let's start with the delete old reports process");
     if (!isTaskSupported(taskParams)) {
       return RESULT_FAILURE;
