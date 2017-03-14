@@ -4,14 +4,15 @@ jdk:
 
 android:
   components:
-    - build-tools-25.0.0
-    - android-25
-    - addon-google_apis-google-25
-    - extra-google-google_play_services
-    - extra-google-m2repository
-    - extra-google-google_play_services
-    - extra-android-m2repository
-    - extra-android-support
+    - echo y | android update sdk -u -a -t tools
+    - echo y | android update sdk -u -a -t platform-tools
+    - echo y | android update sdk -u -a -t build-tools-25.0.0
+    - echo y | android update sdk -u -a -t android-25
+    - echo y | android update sdk -u -a -t extra-google-m2repository
+    - echo y | android update sdk -u -a -t extra-android-m2repository
+    - echo y | android update sdk -u -a -t extra-android-support
+    - echo y | android update sdk -u -a -t extra-google-google_play_services
+    - echo y | android update sdk -u -a -t addon-google_apis-google-25
     - sys-img-armeabi-v7a-android-21
 
 before_script:
