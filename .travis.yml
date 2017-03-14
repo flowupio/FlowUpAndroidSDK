@@ -6,9 +6,14 @@ android:
   components:
     - build-tools-25.0.0
     - android-25
-    - extra-android-support
+    - tools
+    - platform-tools
+    - addon-google_apis-google-25
+    - extra-google-google_play_services
     - extra-google-m2repository
+    - extra-google-google_play_services
     - extra-android-m2repository
+    - extra-android-support
     - sys-img-armeabi-v7a-android-21
 
 before_script:
