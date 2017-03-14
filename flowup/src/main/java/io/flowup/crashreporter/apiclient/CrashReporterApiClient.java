@@ -7,6 +7,7 @@ package io.flowup.crashreporter.apiclient;
 import io.flowup.android.Device;
 import io.flowup.apiclient.ApiClient;
 import io.flowup.apiclient.ApiClientResult;
+import io.flowup.utils.ExceptionUtils;
 import java.io.IOException;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
@@ -40,12 +41,8 @@ public class CrashReporterApiClient extends ApiClient {
   }
 
   private ErrorReport mapExceptionToErrorReport(Throwable t) {
-    StackTraceElement[] stackTrace = t.getStackTrace();
-    StringBuilder stringBuilder = new StringBuilder();
-    for (StackTraceElement trace : stackTrace) {
-      
-    }
-    return new ErrorReport("");
+    String message = ExceptionUtils.getMessage(t);
+    String stackTrace = ExceptionUtils.getStackTrace(t);
+    return new ErrorReport(message, stackTrace);
   }
-
 }
