@@ -37,11 +37,7 @@ public abstract class SafeGcmTaskService extends GcmTaskService {
 
   protected abstract int safeOnRunTask(TaskParams taskParams);
 
-  protected abstract boolean isTaskTagSupported(TaskParams taskParams);
-
-  protected boolean isScheduledTaskSupported(TaskParams taskParams) {
-    return isTaskTagSupported(taskParams);
-  }
+  protected abstract boolean isScheduledTaskSupported(TaskParams taskParams);
 
   protected String getApiKey(TaskParams taskParams) {
     String apiKey = "";

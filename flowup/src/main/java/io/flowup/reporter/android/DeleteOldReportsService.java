@@ -31,7 +31,7 @@ public class DeleteOldReportsService extends SafeGcmTaskService {
     return storage.deleteOldReports();
   }
 
-  @Override protected boolean isTaskTagSupported(TaskParams taskParams) {
+  @Override protected boolean isScheduledTaskSupported(TaskParams taskParams) {
     return taskParams.getTag().equals(CLEAN_OLD_REPORTS);
   }
 }

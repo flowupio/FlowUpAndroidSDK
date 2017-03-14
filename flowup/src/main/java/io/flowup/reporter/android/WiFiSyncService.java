@@ -71,7 +71,7 @@ public class WiFiSyncService extends SafeGcmTaskService {
     return flowUpConfig.getConfig().isEnabled();
   }
 
-  protected boolean isTaskTagSupported(TaskParams taskParams) {
+  protected boolean isScheduledTaskSupported(TaskParams taskParams) {
     return taskParams.getTag().equals(SYNCHRONIZE_METRICS_REPORT);
   }
 

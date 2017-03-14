@@ -28,7 +28,7 @@ public class ConfigSyncService extends SafeGcmTaskService {
     return result ? RESULT_SUCCESS : RESULT_RESCHEDULE;
   }
 
-  @Override protected boolean isTaskTagSupported(TaskParams taskParams) {
+  @Override protected boolean isScheduledTaskSupported(TaskParams taskParams) {
     return taskParams.getExtras() != null && taskParams.getTag()
         .equals(ConfigSyncServiceScheduler.SYNCHRONIZE_CONFIG);
   }
