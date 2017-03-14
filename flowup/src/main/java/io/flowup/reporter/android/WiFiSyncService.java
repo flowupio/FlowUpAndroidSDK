@@ -7,7 +7,6 @@ package io.flowup.reporter.android;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Bundle;
 import com.google.android.gms.gcm.TaskParams;
 import io.flowup.R;
 import io.flowup.android.Device;
@@ -31,31 +30,26 @@ import static io.flowup.reporter.android.WiFiSyncServiceScheduler.SYNCHRONIZE_ME
 
 public class WiFiSyncService extends SafeGcmTaskService {
 
-  static final String API_KEY_EXTRA = "apiKeyExtra";
-  static final String FORCE_REPORTS_EXTRA = "forceReportsExtra";
-
   private ReportApiClient reportApiClient;
   private ReportsStorage reportsStorage;
   private FlowUpConfig flowUpConfig;
   private ConnectivityManager connectivityManager;
 
   @Override public int safeOnRunTask(TaskParams taskParams) {
-    if (!isScheduledTaskSupported(taskParams)) {
-      return RESULT_FAILURE;
-    }
     initializeDependencies(taskParams);
     return syncStoredReports();
   }
 
-  private boolean isScheduledTaskSupported(TaskParams taskParams) {
+  @Override protected boolean isScheduledTaskSupported(TaskParams taskParams) {
     String apiKey = getApiKey(taskParams);
-    boolean forceReportsEnabled = isForceReportsEnabled(taskParams);
-    return isTaskTagSupported(taskParams) && isClientEnabled(apiKey, forceReportsEnabled);
+    boolean forceReportsEnabled = isDebugEnabled(taskParams);
+    return super.isScheduledTaskSupported(taskParams) && isClientEnabled(apiKey,
+        forceReportsEnabled);
   }
 
   private void initializeDependencies(TaskParams taskParams) {
     String apiKey = getApiKey(taskParams);
-    boolean forceReportsEnabled = isForceReportsEnabled(taskParams);
+    boolean forceReportsEnabled = isDebugEnabled(taskParams);
     String scheme = getString(R.string.flowup_scheme);
     String host = getString(R.string.flowup_host);
     int port = getResources().getInteger(R.integer.flowup_port);
@@ -77,21 +71,7 @@ public class WiFiSyncService extends SafeGcmTaskService {
     return flowUpConfig.getConfig().isEnabled();
   }
 
-  private String getApiKey(TaskParams taskParams) {
-    String apiKey = "";
-    Bundle extras = taskParams.getExtras();
-    if (extras != null) {
-      return extras.getString(API_KEY_EXTRA);
-    }
-    return apiKey;
-  }
-
-  private boolean isForceReportsEnabled(TaskParams taskParams) {
-    Bundle extras = taskParams.getExtras();
-    return extras != null && extras.getBoolean(FORCE_REPORTS_EXTRA);
-  }
-
-  private boolean isTaskTagSupported(TaskParams taskParams) {
+  protected boolean isTaskTagSupported(TaskParams taskParams) {
     return taskParams.getTag().equals(SYNCHRONIZE_METRICS_REPORT);
   }
 

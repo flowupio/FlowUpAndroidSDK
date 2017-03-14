@@ -24,7 +24,7 @@ Initialize FlowUp in your ``Application`` class:
 	super.onCreate();
    FlowUp.Builder.with(this)
         .apiKey("<YOUR_FLOW_UP_API_KEY>")
-        .forceReports(BuildConfig.DEBUG)
+        .debugEnabled(BuildConfig.DEBUG)
         .logEnabled(BuildConfig.DEBUG)
         .start();
 }
