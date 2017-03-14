@@ -26,6 +26,7 @@ import io.flowup.config.FlowUpConfig;
 import io.flowup.config.android.ConfigSyncServiceScheduler;
 import io.flowup.config.apiclient.ConfigApiClient;
 import io.flowup.config.storage.ConfigStorage;
+import io.flowup.crashreporter.CrashReporter;
 import io.flowup.logger.Logger;
 import io.flowup.metricnames.MetricNamesExtractor;
 import io.flowup.reporter.DropwizardReport;
@@ -60,6 +61,7 @@ public final class FlowUp {
 
   void start() {
     synchronized (INITIALIZATION_LOCK) {
+      initializeCrashReporter();
       new Thread(new Runnable() {
         @Override public void run() {
           if (hasBeenInitialized()) {
@@ -248,6 +250,11 @@ public final class FlowUp {
     App app = new App(application);
     UIStateWatcher callback = new UIStateWatcher(app);
     application.registerActivityLifecycleCallbacks(callback);
+  }
+
+  private void initializeCrashReporter() {
+    CrashReporter crashReporter = new CrashReporter();
+    Thread.setDefaultUncaughtExceptionHandler(crashReporter);
   }
 
   public static final class Builder {

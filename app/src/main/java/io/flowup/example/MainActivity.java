@@ -42,10 +42,18 @@ public class MainActivity extends AppCompatActivity {
         }).start();
       }
     });
+
     findViewById(R.id.open_activity_button).setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {
         Intent intent = new Intent(getBaseContext(), SecondActivity.class);
         startActivity(intent);
+      }
+    });
+
+    findViewById(R.id.crash_app_button).setOnClickListener(new View.OnClickListener() {
+      @Override public void onClick(View v) {
+        Intent intent = null;
+        intent.getAction();
       }
     });
   }
