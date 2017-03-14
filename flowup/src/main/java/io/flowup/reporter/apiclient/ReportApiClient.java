@@ -19,8 +19,8 @@ public class ReportApiClient extends ApiClient {
   private HttpUrl reportUrl;
 
   public ReportApiClient(String apiKey, Device device, String scheme, String host, int port,
-      boolean forceReportsEnabled) {
-    this(apiKey, device, scheme, host, port, forceReportsEnabled, true);
+      boolean debugEnabled) {
+    this(apiKey, device, scheme, host, port, debugEnabled, true);
   }
 
   public ReportApiClient(String apiKey, Device device, String scheme, String host, int port,
