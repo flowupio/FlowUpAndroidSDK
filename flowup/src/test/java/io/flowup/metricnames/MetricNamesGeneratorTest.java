@@ -582,6 +582,14 @@ import static org.mockito.Mockito.when;
     assertFalse(extractor.isUIMetric(nonUIMetricName));
   }
 
+  @Test
+  public void cpuMetricsNameInBackgroundOrForegroundHaveToBeDifferent() {
+    String foreground = generator.getCPUUsageMetricName(false);
+    String background = generator.getCPUUsageMetricName(true);
+
+    assertFalse(foreground.equals(background));
+  }
+
   private void assertContainsCrossMetricInfoName(String metricName) {
     assertEquals(replaceDashes(app.getAppPackageName()), extractor.getAppPackage(metricName));
     assertEquals(device.getInstallationUUID(), extractor.getInstallationUUID(metricName));

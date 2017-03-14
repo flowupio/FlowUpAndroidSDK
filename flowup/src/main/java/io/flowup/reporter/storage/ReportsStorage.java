@@ -30,7 +30,6 @@ public class ReportsStorage extends SQLDelightStorage {
   }
 
   public Reports getReports(final int numberOfReports) {
-
     return read(new Read<Reports>() {
       @Override public Reports read(SQLiteDatabase database) {
         List<SQLDelightReport> reports = SQLDelightReport.getReports(database, numberOfReports);
@@ -88,8 +87,14 @@ public class ReportsStorage extends SQLDelightStorage {
     Long id = SQLDelightReport.createReport(db, report.getReportingTimestamp());
     List<SQLDelightMetric> metrics = new DropwizardReportToSQLDelightMetricMapper(id).map(report);
     for (SQLDelightMetric metric : metrics) {
-      SQLDelightMetric.createMetric(db, metric.report_id(), metric.metric_name(), metric.count(),
-          metric.value(), metric.mean(), metric.p10(), metric.p90());
+      if (isValidMetric(metric)) {
+        SQLDelightMetric.createMetric(db, metric.report_id(), metric.metric_name(), metric.count(),
+            metric.value(), metric.mean(), metric.p10(), metric.p90());
+      }
     }
+  }
+
+  private boolean isValidMetric(SQLDelightMetric metric) {
+    return metric.containsData();
   }
 }

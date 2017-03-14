@@ -280,6 +280,6 @@ public class ReportApiClientTest extends MockWebServerTestCase {
   }
 
   private StatisticalValue givenAnyStatisticalValue() {
-    return new StatisticalValue(60, 60, 60);
+    return new StatisticalValue(60d, 60d, 60d);
   }
 }

@@ -6,6 +6,7 @@ package io.flowup.storage;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Histogram;
@@ -336,6 +337,29 @@ public class ReportsStorageTest {
     writeSomeReportsLatch.await();
     readConfigLatch.await();
     updateConfigLatch.await();
+  }
+
+  @Test public void doesNotStoreMetricsWithNullValuesEvenWhenThereIsAReport() throws Exception {
+    DropwizardReport dropwizardReport = getDropwizardReportWithNullMetrics();
+
+    storage.storeMetrics(dropwizardReport);
+
+    Reports reports = storage.getReports(1);
+    reports.containsMetrics();
+  }
+
+  @NonNull private DropwizardReport getDropwizardReportWithNullMetrics() {
+    SortedMap<String, Gauge> gauges = generateGauges();
+    gauges.put(generator.getCPUUsageMetricName(true), new Gauge() {
+      @Override public Object getValue() {
+        return null;
+      }
+    });
+    SortedMap<String, Counter> counters = new TreeMap<>();
+    SortedMap<String, Histogram> histograms = generateHistograms();
+    SortedMap<String, Meter> meters = new TreeMap<>();
+    SortedMap<String, Timer> timers = generateTimers();
+    return new DropwizardReport(ANY_TIMESTAMP, gauges, counters, histograms, meters, timers);
   }
 
   private CountDownLatch createOpenDBHelperInstancesInParallel(int numberOfThreads)

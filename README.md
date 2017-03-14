@@ -99,6 +99,47 @@ The service will be invoked once per hour in the best case and to be able to kno
 * ``adb shell dumpsys activity service GcmService --endpoints``: Shows information about the tasks scheduled for every app in the connected device.
 * ``adb shell dumpsys activity service GcmService --endpoints <APP-PACKAGE-NAME>``: Shows information about the history of tasks executed for the application and the total time the service has been running in seconds since the application was installed.
 
+How to retrace obfuscated traces
+--------------------------------
+
+As this project is being distributed using an obfuscated binary, sometimes we need to review a error trace like this:
+
+```java
+Fatal Exception: java.lang.NullPointerException: Attempt to invoke virtual method 'double java.lang.Double.doubleValue()' on a null object reference
+       at io.flowup.reporter.c.k.a(Unknown Source)
+       at io.flowup.reporter.c.j.a(Unknown Source)
+       at io.flowup.reporter.c.j.a(Unknown Source)
+       at io.flowup.reporter.c.j.f(Unknown Source)
+       at io.flowup.reporter.c.j.a(Unknown Source)
+       at io.flowup.reporter.c.f$2.a(Unknown Source)
+       at io.flowup.reporter.c.f$2.b(Unknown Source)
+       at io.flowup.f.a.a(Unknown Source)
+       at io.flowup.reporter.c.f.a(Unknown Source)
+       at io.flowup.reporter.android.WiFiSyncService.a(Unknown Source)
+       at io.flowup.reporter.android.WiFiSyncService.onRunTask(Unknown Source)
+       at com.google.android.gms.gcm.GcmTaskService$zza.run(Unknown Source)
+       at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1113)
+       at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:588)
+       at java.lang.Thread.run(Thread.java:818)
+```
+
+To be able to know where is the error we need to deobfuscate this trace using ``proguard``. To do this you can follow these steps:
+
+* Execute the ``proguard`` GUI script you can find in ``$ANDROID_HOME/tools/proguard/bin/proguardgui.sh``.
+* Open the ``ReTrace`` tab.
+* Configure the mapping file you can find after every build in ``~/FlowUpAndroidSdk/flowup/build/outputs/mapping/release/mapping.txt``. Remember to generate the mapping file building the same version of the library used by the client.
+* Paste the obfuscated trace and press ``ReTrace!`` button.
+
+Here you have a screenshot with the result:
+
+![ReTraceScreenshot](./art/retraceScreenshot.png)
+
+You can also use this retrace feature from command line. The binary file you need to execute as any UNIX command can be found in ``$ANDROID_HOME/tools/proguard/bin/retrace.sh``. You can use this script as follows:
+
+```shell
+$ANDROID_HOME/tools/proguard/bin/retrace.sh [-verbose] <mapping_file> [<stacktrace_file>]
+```
+
 Copyright 2016 Karumi.
 
 [flowuplogo]: ./art/FlowUpLogo.png
