@@ -6,8 +6,6 @@ android:
   components:
     - build-tools-25.0.0
     - android-25
-    - tools
-    - platform-tools
     - addon-google_apis-google-25
     - extra-google-google_play_services
     - extra-google-m2repository
@@ -26,7 +24,4 @@ before_script:
   - adb shell input keyevent 82 &
 
 script:
-  - mkdir "$ANDROID_SDK/licenses" || true
-  - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_SDK/licenses/android-sdk-license"
-  - echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_SDK/licenses/android-sdk-preview-license"
   - ./gradlew checkstyle build connectedCheck -Pcom.android.build.threadPoolSize=1 -Dorg.gradle.parallel=false -Dorg.gradle.jvmargs="-Xms512m -Xmx512m" -Dorg.gradle.daemon=false
