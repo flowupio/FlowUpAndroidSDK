@@ -6,7 +6,7 @@ package io.flowup.crashreporter;
 
 import io.flowup.logger.Logger;
 
-public class SafeNet {
+public class SafetyNet {
 
   public void executeSafetyOnNewThread(final Runnable runnable) {
     new Thread(new Runnable() {

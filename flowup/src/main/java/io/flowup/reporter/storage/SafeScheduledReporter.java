@@ -12,7 +12,7 @@ import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.ScheduledReporter;
 import com.codahale.metrics.Timer;
-import io.flowup.crashreporter.SafeNet;
+import io.flowup.crashreporter.SafetyNet;
 import java.util.SortedMap;
 import java.util.concurrent.TimeUnit;
 
@@ -26,8 +26,8 @@ public abstract class SafeScheduledReporter extends ScheduledReporter {
   @Override public void report(final SortedMap<String, Gauge> gauges,
       final SortedMap<String, Counter> counters, final SortedMap<String, Histogram> histograms,
       final SortedMap<String, Meter> meters, final SortedMap<String, Timer> timers) {
-    SafeNet safeNet = new SafeNet();
-    safeNet.executeSafety(new Runnable() {
+    SafetyNet safetyNet = new SafetyNet();
+    safetyNet.executeSafety(new Runnable() {
       @Override public void run() {
         safeReport(gauges, counters, histograms, meters, timers);
       }

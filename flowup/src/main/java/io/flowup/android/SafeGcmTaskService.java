@@ -2,18 +2,18 @@ package io.flowup.android;
 
 import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;
-import io.flowup.crashreporter.SafeNet;
+import io.flowup.crashreporter.SafetyNet;
 
 import static com.google.android.gms.gcm.GcmNetworkManager.RESULT_SUCCESS;
 
 public abstract class SafeGcmTaskService extends GcmTaskService {
 
   @Override public int onRunTask(final TaskParams taskParams) {
-    SafeNet safeNet = new SafeNet();
+    SafetyNet safetyNet = new SafetyNet();
     final int[] result = {
         RESULT_SUCCESS
     };
-    safeNet.executeSafety(new Runnable() {
+    safetyNet.executeSafety(new Runnable() {
       @Override public void run() {
         result[0] = safeOnRunTask(taskParams);
       }
