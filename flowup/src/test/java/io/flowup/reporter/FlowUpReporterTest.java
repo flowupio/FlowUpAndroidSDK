@@ -12,6 +12,7 @@ import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import io.flowup.apiclient.ApiClientResult;
+import io.flowup.crashreporter.FakeSafetyNet;
 import io.flowup.reporter.android.DeleteOldReportsServiceScheduler;
 import io.flowup.reporter.android.WiFiSyncServiceScheduler;
 import io.flowup.reporter.apiclient.ReportApiClient;
@@ -276,6 +277,6 @@ import static org.mockito.Mockito.when;
   private FlowUpReporter givenAFlowUpReporter(boolean forceReports) {
     return new FlowUpReporter(new MetricRegistry(), "ReporterName", MetricFilter.ALL,
         TimeUnit.SECONDS, TimeUnit.MILLISECONDS, reportApiClient, storage, syncScheduler,
-        deleteOldReportsScheduler, time, forceReports, listener);
+        deleteOldReportsScheduler, time, forceReports, listener, new FakeSafetyNet());
   }
 }

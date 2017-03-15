@@ -18,8 +18,8 @@ public class ConfigApiClient extends ApiClient {
   private final HttpUrl getConfigUrl;
 
   public ConfigApiClient(String apiKey, Device device, String scheme, String host, int port,
-      boolean forceReportsEnabled) {
-    super(apiKey, device, scheme, host, port, forceReportsEnabled);
+      boolean debugEnabled) {
+    super(apiKey, device, scheme, host, port, debugEnabled);
     getConfigUrl = baseUrl.newBuilder("/config").build();
   }
 

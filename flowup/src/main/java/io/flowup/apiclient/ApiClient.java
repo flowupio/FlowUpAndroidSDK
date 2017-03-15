@@ -11,7 +11,7 @@ import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 
-public class ApiClient {
+public abstract class ApiClient {
 
   protected static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
   protected static final int FORBIDDEN_STATUS_CODE = 403;
@@ -22,18 +22,20 @@ public class ApiClient {
   protected final OkHttpClient httpClient;
   protected final Gson jsonParser;
   protected final HttpUrl baseUrl;
+  protected final Device device;
 
   public ApiClient(String apiKey, Device device, String scheme, String host, int port,
-      boolean forceReportsEnabled) {
-    this(apiKey, device, scheme, host, port, forceReportsEnabled, true);
+      boolean debugEnabled) {
+    this(apiKey, device, scheme, host, port, debugEnabled, true);
   }
 
   public ApiClient(String apiKey, Device device, String scheme, String host, int port,
-      boolean forceReportsEnabled, boolean useGzip) {
+      boolean debugEnabled, boolean useGzip) {
     this.httpClient =
-        ApiClientConfig.getHttpClient(apiKey, device, forceReportsEnabled, Logger.isLogEnabled(),
+        ApiClientConfig.getHttpClient(apiKey, device, debugEnabled, Logger.isLogEnabled(),
             useGzip);
     this.jsonParser = ApiClientConfig.getJsonParser();
     this.baseUrl = ApiClientConfig.buildURL(scheme, host, port);
+    this.device = device;
   }
 }

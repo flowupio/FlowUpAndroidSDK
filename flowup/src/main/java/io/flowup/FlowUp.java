@@ -26,6 +26,8 @@ import io.flowup.config.FlowUpConfig;
 import io.flowup.config.android.ConfigSyncServiceScheduler;
 import io.flowup.config.apiclient.ConfigApiClient;
 import io.flowup.config.storage.ConfigStorage;
+import io.flowup.crashreporter.SafetyNet;
+import io.flowup.crashreporter.SafetyNetFactory;
 import io.flowup.logger.Logger;
 import io.flowup.metricnames.MetricNamesExtractor;
 import io.flowup.reporter.DropwizardReport;
@@ -45,47 +47,52 @@ public final class FlowUp {
 
   private final Application application;
   private final String apiKey;
-  private final boolean forceReports;
+  private final boolean debugEnabled;
 
   private static MetricRegistry registry;
   private static FlowUpReporter reporter;
   private FlowUpConfig flowUpConfig;
 
-  FlowUp(Application application, String apiKey, boolean forceReports) {
+  FlowUp(Application application, String apiKey, boolean debugEnabled) {
     validateConstructionParams(application, apiKey);
     this.application = application;
     this.apiKey = apiKey;
-    this.forceReports = forceReports;
+    this.debugEnabled = debugEnabled;
   }
 
   void start() {
     synchronized (INITIALIZATION_LOCK) {
-      new Thread(new Runnable() {
+      SafetyNet safetyNet = SafetyNetFactory.getSafetyNet(application, apiKey, debugEnabled);
+      safetyNet.executeSafelyOnNewThread(new Runnable() {
         @Override public void run() {
-          if (hasBeenInitialized()) {
-            return;
-          }
-          if (!doesSupportGooglePlayServices()) {
-            Logger.e(
-                "FlowUp hasn't been initialized. Google play services is not supported in this device");
-            return;
-          }
-          initializeConfigScheduler();
-          if (!isFlowUpEnabled()) {
-            Logger.d("FlowUp is disabled for this device");
-            return;
-          }
-          initializeMetrics();
-          initializeForegroundCollectors();
-          initializeNetworkCollectors();
-          initializeCPUCollectors();
-          initializeMemoryCollectors();
-          initializeDiskCollectors();
-          initializeUIStateWatcher();
-          initializeFlowUpReporter();
+          initializeFlowUp();
         }
-      }).start();
+      });
     }
+  }
+
+  private void initializeFlowUp() {
+    if (hasBeenInitialized()) {
+      return;
+    }
+    if (!doesSupportGooglePlayServices()) {
+      Logger.e(
+          "FlowUp hasn't been initialized. Google play services is not supported in this device");
+      return;
+    }
+    initializeConfigScheduler();
+    if (!isFlowUpEnabled()) {
+      Logger.d("FlowUp is disabled for this device");
+      return;
+    }
+    initializeMetrics();
+    initializeForegroundCollectors();
+    initializeNetworkCollectors();
+    initializeCPUCollectors();
+    initializeMemoryCollectors();
+    initializeDiskCollectors();
+    initializeUIStateWatcher();
+    initializeFlowUpReporter();
     Logger.d("FlowUp initialized");
   }
 
@@ -109,7 +116,7 @@ public final class FlowUp {
   }
 
   private boolean doesSupportGooglePlayServices() {
-    if (forceReports) {
+    if (debugEnabled) {
       return true;
     }
     GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
@@ -125,7 +132,7 @@ public final class FlowUp {
     Device device = new Device(application);
     SQLDelightfulOpenHelper dbOpenHelper = SQLDelightfulOpenHelper.getInstance(application);
     flowUpConfig = new FlowUpConfig(new ConfigStorage(dbOpenHelper),
-        new ConfigApiClient(apiKey, device, scheme, host, port, forceReports));
+        new ConfigApiClient(apiKey, device, scheme, host, port, debugEnabled));
     return flowUpConfig.getConfig().isEnabled();
   }
 
@@ -135,7 +142,7 @@ public final class FlowUp {
     int port = application.getResources().getInteger(R.integer.flowup_port);
     reporter = FlowUpReporter.forRegistry(registry, application)
         .filter(MetricFilter.ALL)
-        .forceReports(forceReports)
+        .forceReports(debugEnabled)
         .listener(new FlowUpReporterListener() {
           @Override public void onReport(DropwizardReport report) {
             removeActivityTimers(report);
@@ -213,7 +220,7 @@ public final class FlowUp {
 
   private void initializeConfigScheduler() {
     ConfigSyncServiceScheduler scheduler =
-        new ConfigSyncServiceScheduler(application, apiKey, forceReports);
+        new ConfigSyncServiceScheduler(application, apiKey, debugEnabled);
     scheduler.scheduleSyncTask();
   }
 

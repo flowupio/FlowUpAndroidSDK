@@ -7,11 +7,10 @@ package io.flowup.reporter.android;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Bundle;
-import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;
 import io.flowup.R;
 import io.flowup.android.Device;
+import io.flowup.android.SafeGcmTaskService;
 import io.flowup.apiclient.ApiClientResult;
 import io.flowup.config.FlowUpConfig;
 import io.flowup.config.apiclient.ConfigApiClient;
@@ -29,33 +28,28 @@ import static com.google.android.gms.gcm.GcmNetworkManager.RESULT_RESCHEDULE;
 import static com.google.android.gms.gcm.GcmNetworkManager.RESULT_SUCCESS;
 import static io.flowup.reporter.android.WiFiSyncServiceScheduler.SYNCHRONIZE_METRICS_REPORT;
 
-public class WiFiSyncService extends GcmTaskService {
-
-  static final String API_KEY_EXTRA = "apiKeyExtra";
-  static final String FORCE_REPORTS_EXTRA = "forceReportsExtra";
+public class WiFiSyncService extends SafeGcmTaskService {
 
   private ReportApiClient reportApiClient;
   private ReportsStorage reportsStorage;
   private FlowUpConfig flowUpConfig;
   private ConnectivityManager connectivityManager;
 
-  @Override public int onRunTask(TaskParams taskParams) {
-    if (!isScheduledTaskSupported(taskParams)) {
-      return RESULT_FAILURE;
-    }
+  @Override public int safeOnRunTask(TaskParams taskParams) {
     initializeDependencies(taskParams);
     return syncStoredReports();
   }
 
-  private boolean isScheduledTaskSupported(TaskParams taskParams) {
+  @Override protected boolean isScheduledTaskSupported(TaskParams taskParams) {
     String apiKey = getApiKey(taskParams);
-    boolean forceReportsEnabled = isForceReportsEnabled(taskParams);
-    return isTaskTagSupported(taskParams) && isClientEnabled(apiKey, forceReportsEnabled);
+    boolean forceReportsEnabled = isDebugEnabled(taskParams);
+    return taskParams.getTag().equals(SYNCHRONIZE_METRICS_REPORT) && isClientEnabled(apiKey,
+        forceReportsEnabled);
   }
 
   private void initializeDependencies(TaskParams taskParams) {
     String apiKey = getApiKey(taskParams);
-    boolean forceReportsEnabled = isForceReportsEnabled(taskParams);
+    boolean forceReportsEnabled = isDebugEnabled(taskParams);
     String scheme = getString(R.string.flowup_scheme);
     String host = getString(R.string.flowup_host);
     int port = getResources().getInteger(R.integer.flowup_port);
@@ -75,24 +69,6 @@ public class WiFiSyncService extends GcmTaskService {
     flowUpConfig = new FlowUpConfig(new ConfigStorage(dbOpenHelper),
         new ConfigApiClient(apiKey, device, scheme, host, port, forceReportsEnabled));
     return flowUpConfig.getConfig().isEnabled();
-  }
-
-  private String getApiKey(TaskParams taskParams) {
-    String apiKey = "";
-    Bundle extras = taskParams.getExtras();
-    if (extras != null) {
-      return extras.getString(API_KEY_EXTRA);
-    }
-    return apiKey;
-  }
-
-  private boolean isForceReportsEnabled(TaskParams taskParams) {
-    Bundle extras = taskParams.getExtras();
-    return extras != null && extras.getBoolean(FORCE_REPORTS_EXTRA);
-  }
-
-  private boolean isTaskTagSupported(TaskParams taskParams) {
-    return taskParams.getTag().equals(SYNCHRONIZE_METRICS_REPORT);
   }
 
   private int syncStoredReports() {

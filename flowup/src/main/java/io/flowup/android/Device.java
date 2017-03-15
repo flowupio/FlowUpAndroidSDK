@@ -16,7 +16,7 @@ import static io.flowup.utils.MetricNameUtils.replaceDots;
 public class Device {
 
   private final Context context;
-  private final UUIDGenerator uuidGenerator;
+  private UUIDGenerator uuidGenerator;
 
   public Device(Context context) {
     this.context = context;

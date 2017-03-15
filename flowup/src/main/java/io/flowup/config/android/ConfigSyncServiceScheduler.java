@@ -37,6 +37,7 @@ public class ConfigSyncServiceScheduler {
         .setPeriod(SYNC_PERIOD)
         .setFlex(FLEX_PERIOD)
         .setRequiredNetwork(Task.NETWORK_STATE_CONNECTED)
+        .setPersisted(false)
         .setExtras(extras)
         .build();
     gcmNetworkManager.schedule(task);
