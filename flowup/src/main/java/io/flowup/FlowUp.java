@@ -62,7 +62,7 @@ public final class FlowUp {
   void start() {
     synchronized (INITIALIZATION_LOCK) {
       SafetyNet safetyNet = new SafetyNet(application, apiKey, debugEnabled);
-      safetyNet.executeSafetyOnNewThread(new Runnable() {
+      safetyNet.executeSafelyOnNewThread(new Runnable() {
         @Override public void run() {
           initializeFlowUp();
         }

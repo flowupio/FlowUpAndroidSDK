@@ -27,15 +27,15 @@ public class SafetyNet {
     }
   }
 
-  public void executeSafetyOnNewThread(final Runnable runnable) {
+  public void executeSafelyOnNewThread(final Runnable runnable) {
     new Thread(new Runnable() {
       @Override public void run() {
-        executeSafety(runnable);
+        executeSafely(runnable);
       }
     }).start();
   }
 
-  public void executeSafety(Runnable runnable) {
+  public void executeSafely(Runnable runnable) {
     try {
       runnable.run();
     } catch (Throwable t) {
