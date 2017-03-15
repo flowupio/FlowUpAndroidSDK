@@ -22,6 +22,7 @@ public abstract class ApiClient {
   protected final OkHttpClient httpClient;
   protected final Gson jsonParser;
   protected final HttpUrl baseUrl;
+  protected final Device device;
 
   public ApiClient(String apiKey, Device device, String scheme, String host, int port,
       boolean debugEnabled) {
@@ -35,5 +36,6 @@ public abstract class ApiClient {
             useGzip);
     this.jsonParser = ApiClientConfig.getJsonParser();
     this.baseUrl = ApiClientConfig.buildURL(scheme, host, port);
+    this.device = device;
   }
 }

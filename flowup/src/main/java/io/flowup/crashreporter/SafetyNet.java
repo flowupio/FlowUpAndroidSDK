@@ -23,11 +23,15 @@ public class SafetyNet {
   }
 
   public void executeSafelyOnNewThread(final Runnable runnable) {
-    new Thread(new Runnable() {
-      @Override public void run() {
-        executeSafely(runnable);
-      }
-    }).start();
+    if (forceMainThreadReport) {
+      executeSafely(runnable);
+    } else {
+      new Thread(new Runnable() {
+        @Override public void run() {
+          executeSafely(runnable);
+        }
+      }).start();
+    }
   }
 
   public void executeSafely(Runnable runnable) {

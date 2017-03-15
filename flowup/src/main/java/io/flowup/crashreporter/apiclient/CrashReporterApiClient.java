@@ -45,8 +45,11 @@ public class CrashReporterApiClient extends ApiClient {
   }
 
   private ErrorReport mapExceptionToErrorReport(Throwable t) {
+    String deviceModel = device.getModel();
+    String osVersion = device.getOSVersion();
+    boolean batterySaverOn = device.isBatterySaverOn();
     String message = ExceptionUtils.getMessage(t);
     String stackTrace = ExceptionUtils.getStackTrace(t);
-    return new ErrorReport(message, stackTrace);
+    return new ErrorReport(deviceModel, osVersion, batterySaverOn, message, stackTrace);
   }
 }
