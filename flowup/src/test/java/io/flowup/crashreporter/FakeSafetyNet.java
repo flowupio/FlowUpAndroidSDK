@@ -4,9 +4,9 @@
 
 package io.flowup.crashreporter;
 
-public class FakeSafeNet extends SafeNet {
+public class FakeSafetyNet extends SafetyNet {
 
-  public FakeSafeNet() {
+  public FakeSafetyNet() {
     super(null, null, false);
   }
 
