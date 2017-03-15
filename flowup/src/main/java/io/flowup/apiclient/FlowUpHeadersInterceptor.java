@@ -15,12 +15,12 @@ class FlowUpHeadersInterceptor implements Interceptor {
 
   private final String apiKey;
   private final Device device;
-  private final boolean forceReportsEnabled;
+  private final boolean debugEnabled;
 
-  public FlowUpHeadersInterceptor(String apiKey, Device device, boolean forceReportsEnabled) {
+  public FlowUpHeadersInterceptor(String apiKey, Device device, boolean debugEnabled) {
     this.apiKey = apiKey;
     this.device = device;
-    this.forceReportsEnabled = forceReportsEnabled;
+    this.debugEnabled = debugEnabled;
   }
 
   @Override public Response intercept(Chain chain) throws IOException {
@@ -30,13 +30,13 @@ class FlowUpHeadersInterceptor implements Interceptor {
         .addHeader("X-Api-Key", apiKey)
         .addHeader("X-UUID", device.getInstallationUUID())
         .addHeader("User-Agent", getUserAgent())
-        .addHeader("X-Debug-Mode", String.valueOf(forceReportsEnabled))
+        .addHeader("X-Debug-Mode", String.valueOf(debugEnabled))
         .build();
     return chain.proceed(request);
   }
 
   private String getUserAgent() {
-    String debugTag = forceReportsEnabled ? ("-DEBUG") : "";
+    String debugTag = debugEnabled ? ("-DEBUG") : "";
     return "FlowUpAndroidSDK/" + BuildConfig.VERSION_NAME + debugTag;
   }
 }

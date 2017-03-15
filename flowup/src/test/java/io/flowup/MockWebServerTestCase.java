@@ -25,6 +25,7 @@ import static junit.framework.Assert.assertTrue;
 @RunWith(MockitoJUnitRunner.class) public abstract class MockWebServerTestCase {
 
   protected static final int OK_CODE = 200;
+  protected static final int CREATED_CODE = 201;
   protected static final int SERVER_ERROR_CODE = 500;
   protected static final int UNAUTHORIZED_ERROR_CODE = 401;
   protected static final int PRECONDITION_FAILED = 412;
@@ -127,7 +128,8 @@ import static junit.framework.Assert.assertTrue;
     RecordedRequest request = server.takeRequest();
     JsonParser jsonParser = new JsonParser();
     String fileContent = jsonParser.parse(getContentFromFile(fileName)).toString();
-    assertEquals(fileContent, request.getBody().readUtf8());
+    String requestBody = request.getBody().readUtf8();
+    assertEquals(fileContent, requestBody);
   }
 
   protected void assertRequestBodyEquals(String fileName, int requestIndex)

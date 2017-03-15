@@ -18,15 +18,17 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class SafeScheduledReporter extends ScheduledReporter {
 
+  private final SafetyNet safetyNet;
+
   protected SafeScheduledReporter(MetricRegistry registry, String name, MetricFilter filter,
-      TimeUnit rateUnit, TimeUnit durationUnit) {
+      TimeUnit rateUnit, TimeUnit durationUnit, SafetyNet safetyNet) {
     super(registry, name, filter, rateUnit, durationUnit);
+    this.safetyNet = safetyNet;
   }
 
   @Override public void report(final SortedMap<String, Gauge> gauges,
       final SortedMap<String, Counter> counters, final SortedMap<String, Histogram> histograms,
       final SortedMap<String, Meter> meters, final SortedMap<String, Timer> timers) {
-    SafetyNet safetyNet = new SafetyNet();
     safetyNet.executeSafely(new Runnable() {
       @Override public void run() {
         safeReport(gauges, counters, histograms, meters, timers);

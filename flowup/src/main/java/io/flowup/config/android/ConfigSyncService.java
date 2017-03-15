@@ -15,25 +15,22 @@ import io.flowup.config.storage.ConfigStorage;
 import io.flowup.logger.Logger;
 import io.flowup.storage.SQLDelightfulOpenHelper;
 
-import static com.google.android.gms.gcm.GcmNetworkManager.RESULT_FAILURE;
 import static com.google.android.gms.gcm.GcmNetworkManager.RESULT_RESCHEDULE;
 import static com.google.android.gms.gcm.GcmNetworkManager.RESULT_SUCCESS;
 
 public class ConfigSyncService extends SafeGcmTaskService {
 
-  static final String API_KEY_EXTRA = "apiKeyExtra";
-  static final String FORCE_REPORTS_EXTRA = "forceReportsExtra";
-
   @Override public int safeOnRunTask(TaskParams taskParams) {
-    Bundle extras = taskParams.getExtras();
-    if (extras == null || extras.getString(API_KEY_EXTRA) == null || !taskParams.getTag()
-        .equals(ConfigSyncServiceScheduler.SYNCHRONIZE_CONFIG)) {
-      return RESULT_FAILURE;
-    }
     Logger.d("Let's update the config!");
+    Bundle extras = taskParams.getExtras();
     boolean result =
         updateConfig(extras.getString(API_KEY_EXTRA), extras.getBoolean(FORCE_REPORTS_EXTRA));
     return result ? RESULT_SUCCESS : RESULT_RESCHEDULE;
+  }
+
+  @Override protected boolean isScheduledTaskSupported(TaskParams taskParams) {
+    return taskParams.getExtras() != null && taskParams.getTag()
+        .equals(ConfigSyncServiceScheduler.SYNCHRONIZE_CONFIG);
   }
 
   private boolean updateConfig(String apiKey, boolean forceReportsEnabled) {
