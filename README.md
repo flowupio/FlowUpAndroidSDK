@@ -50,7 +50,7 @@ How to build this project
 
 This repository contains an Android project built on top of ``gradlew``, a binary file you can use to build this project without any additional build tool. To build this repository you should use the Gradle Wrapper following the following steps:
 
-###From command line:
+### From command line:
 
 * Clone this repository executing: ``git clone git@github.com:Karumi/FlowUpAndroidSDK.git``
 * Download and update your ``Android SDK`` configuration.
@@ -61,7 +61,7 @@ This repository contains an Android project built on top of ``gradlew``, a binar
 	* Execute Android instrumentation tests using the current connected device: ``./gradlew connectedCheck``
 	* Install the app: ``./gradlew installDebug``. Remember that this command will not start the app automatically, you need to tap on the application icon by yourself.
 
-###From Android Studio/IntelliJ:
+### From Android Studio/IntelliJ:
 
 * Clone this repository executing: ``git clone git@github.com:Karumi/FlowUpAndroidSDK.git``
 * Download ``Android Studio`` or ``Intelli J``.
