@@ -11,11 +11,11 @@ import io.flowup.android.Device;
 import io.flowup.crashreporter.apiclient.CrashReporterApiClient;
 import io.flowup.logger.Logger;
 
-public class SafeNet {
+public class SafetyNet {
 
   private final CrashReporterApiClient crashReporterApiClient;
 
-  public SafeNet(Context context, String apiKey, boolean debugEnabled) {
+  public SafetNet(Context context, String apiKey, boolean debugEnabled) {
     if (context == null) {
       crashReporterApiClient = null;
     } else {

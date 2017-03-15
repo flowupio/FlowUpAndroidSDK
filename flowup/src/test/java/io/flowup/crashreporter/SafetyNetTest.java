@@ -4,6 +4,6 @@
 
 package io.flowup.crashreporter;
 
-public class SafeNetTest {
+public class SafetyNetTest {
 
 }
