@@ -13,7 +13,7 @@ public abstract class SafeGcmTaskService extends GcmTaskService {
     final int[] result = {
         RESULT_SUCCESS
     };
-    safetyNet.executeSafety(new Runnable() {
+    safetyNet.executeSafely(new Runnable() {
       @Override public void run() {
         result[0] = safeOnRunTask(taskParams);
       }

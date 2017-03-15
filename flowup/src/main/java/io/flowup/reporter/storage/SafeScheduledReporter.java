@@ -27,7 +27,7 @@ public abstract class SafeScheduledReporter extends ScheduledReporter {
       final SortedMap<String, Counter> counters, final SortedMap<String, Histogram> histograms,
       final SortedMap<String, Meter> meters, final SortedMap<String, Timer> timers) {
     SafetyNet safetyNet = new SafetyNet();
-    safetyNet.executeSafety(new Runnable() {
+    safetyNet.executeSafely(new Runnable() {
       @Override public void run() {
         safeReport(gauges, counters, histograms, meters, timers);
       }
