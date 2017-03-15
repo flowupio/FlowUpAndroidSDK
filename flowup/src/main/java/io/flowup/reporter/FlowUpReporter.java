@@ -15,6 +15,7 @@ import com.codahale.metrics.Timer;
 import io.flowup.android.Device;
 import io.flowup.apiclient.ApiClientResult;
 import io.flowup.crashreporter.SafetyNet;
+import io.flowup.crashreporter.SafetyNetFactory;
 import io.flowup.logger.Logger;
 import io.flowup.reporter.android.DeleteOldReportsServiceScheduler;
 import io.flowup.reporter.android.WiFiSyncServiceScheduler;
@@ -177,7 +178,7 @@ public class FlowUpReporter extends SafeScheduledReporter {
           new ReportsStorage(SQLDelightfulOpenHelper.getInstance(context), time),
           new WiFiSyncServiceScheduler(context, apiKey, forceReports),
           new DeleteOldReportsServiceScheduler(context), time, forceReports, listener,
-          new SafetyNet(context, apiKey, forceReports));
+          SafetyNetFactory.getSafetyNet(context, apiKey, forceReports));
     }
 
     public Builder forceReports(boolean forceReports) {

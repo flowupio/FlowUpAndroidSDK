@@ -7,14 +7,14 @@ package io.flowup.crashreporter;
 public class FakeSafetyNet extends SafetyNet {
 
   public FakeSafetyNet() {
-    super(null, null, false);
+    super(null);
   }
 
-  @Override public void executeSafetyOnNewThread(Runnable runnable) {
+  @Override public void executeSafelyOnNewThread(Runnable runnable) {
     runnable.run();
   }
 
-  @Override public void executeSafety(Runnable runnable) {
+  @Override public void executeSafely(Runnable runnable) {
     runnable.run();
   }
 }

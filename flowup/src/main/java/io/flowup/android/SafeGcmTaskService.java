@@ -9,6 +9,7 @@ import android.os.Bundle;
 import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;
 import io.flowup.crashreporter.SafetyNet;
+import io.flowup.crashreporter.SafetyNetFactory;
 
 import static com.google.android.gms.gcm.GcmNetworkManager.RESULT_FAILURE;
 import static com.google.android.gms.gcm.GcmNetworkManager.RESULT_SUCCESS;
@@ -23,7 +24,8 @@ public abstract class SafeGcmTaskService extends GcmTaskService {
       return RESULT_FAILURE;
     }
     Context context = getApplicationContext();
-    SafetyNet safetyNet = new SafetyNet(context, getApiKey(taskParams), isDebugEnabled(taskParams));
+    SafetyNet safetyNet =
+        SafetyNetFactory.getSafetyNet(context, getApiKey(taskParams), isDebugEnabled(taskParams));
     final int[] result = {
         RESULT_SUCCESS
     };

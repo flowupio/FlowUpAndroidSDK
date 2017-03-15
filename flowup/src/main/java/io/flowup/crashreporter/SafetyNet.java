@@ -4,27 +4,22 @@
 
 package io.flowup.crashreporter;
 
-import android.content.Context;
 import android.os.Looper;
-import io.flowup.R;
-import io.flowup.android.Device;
 import io.flowup.crashreporter.apiclient.CrashReporterApiClient;
 import io.flowup.logger.Logger;
 
 public class SafetyNet {
 
   private final CrashReporterApiClient crashReporterApiClient;
+  private final boolean forceMainThreadReport;
 
-  public SafetyNet(Context context, String apiKey, boolean debugEnabled) {
-    if (context == null) {
-      crashReporterApiClient = null;
-    } else {
-      String scheme = context.getString(R.string.flowup_scheme);
-      String host = context.getString(R.string.flowup_host);
-      int port = context.getResources().getInteger(R.integer.flowup_port);
-      this.crashReporterApiClient =
-          new CrashReporterApiClient(apiKey, new Device(context), scheme, host, port, debugEnabled);
-    }
+  SafetyNet(CrashReporterApiClient crashReporterApiClient) {
+    this(crashReporterApiClient, false);
+  }
+
+  SafetyNet(CrashReporterApiClient crashReporterApiClient, boolean forceMainThreadReport) {
+    this.crashReporterApiClient = crashReporterApiClient;
+    this.forceMainThreadReport = forceMainThreadReport;
   }
 
   public void executeSafelyOnNewThread(final Runnable runnable) {
@@ -45,7 +40,7 @@ public class SafetyNet {
   }
 
   private void reportException(final Throwable t) {
-    if (Looper.getMainLooper() == Looper.myLooper()) {
+    if (!forceMainThreadReport && Looper.getMainLooper() == Looper.myLooper()) {
       new Thread(new Runnable() {
         @Override public void run() {
           sendErrorReport(t);

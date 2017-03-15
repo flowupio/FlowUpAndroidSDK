@@ -27,6 +27,7 @@ import io.flowup.config.android.ConfigSyncServiceScheduler;
 import io.flowup.config.apiclient.ConfigApiClient;
 import io.flowup.config.storage.ConfigStorage;
 import io.flowup.crashreporter.SafetyNet;
+import io.flowup.crashreporter.SafetyNetFactory;
 import io.flowup.logger.Logger;
 import io.flowup.metricnames.MetricNamesExtractor;
 import io.flowup.reporter.DropwizardReport;
@@ -61,7 +62,7 @@ public final class FlowUp {
 
   void start() {
     synchronized (INITIALIZATION_LOCK) {
-      SafetyNet safetyNet = new SafetyNet(application, apiKey, debugEnabled);
+      SafetyNet safetyNet = SafetyNetFactory.getSafetyNet(application, apiKey, debugEnabled);
       safetyNet.executeSafelyOnNewThread(new Runnable() {
         @Override public void run() {
           initializeFlowUp();
