@@ -15,7 +15,7 @@ public class SafetyNet {
 
   private final CrashReporterApiClient crashReporterApiClient;
 
-  public SafetNet(Context context, String apiKey, boolean debugEnabled) {
+  public SafetyNet(Context context, String apiKey, boolean debugEnabled) {
     if (context == null) {
       crashReporterApiClient = null;
     } else {
