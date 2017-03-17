@@ -9,8 +9,8 @@ android {
   defaultConfig {
     minSdkVersion 14
     targetSdkVersion 25
-    versionCode 2008
-    versionName "0.2.8-SNAPSHOT"
+    versionCode 3000
+    versionName "0.3.0"
     testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     consumerProguardFiles 'proguard-rules.pro'
   }
