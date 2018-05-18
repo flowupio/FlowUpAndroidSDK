@@ -143,7 +143,7 @@ $ANDROID_HOME/tools/proguard/bin/retrace.sh [-verbose] <mapping_file> [<stacktra
 License
 -------
 
-    Copyright 2018 Go Karumi SL.
+    Copyright 2018 GoKarumi SL.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
