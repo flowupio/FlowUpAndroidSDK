@@ -3,7 +3,7 @@
 
 FlowUp, mobile real time applications performance monitoring solution!
 
-FlowUp helps you to radically improve your mobile applications performance with actionable insight into real-time key reports including frame time, frames per second, bandwidth, memory consumption, CPU/GPU performance, disk usage and much more. Available for Android and iOS soon.
+FlowUp helps you to radically improve your mobile applications performance with actionable insight into real-time key reports including frame time, frames per second, bandwidth, memory consumption, CPU/GPU performance, disk usage and much more.
 
 Getting started
 ---------------
@@ -92,7 +92,7 @@ Inside this database you can find all the information persisted by FlowUp which 
 How to get info about the sync process
 --------------------------------------
 
-This library uses part of the Google Play Services API to implement the reports sync mechanism. This API is named [GcmTaskService][https://developers.google.com/cloud-messaging/network-manager] and it's being used to schedule a call to our ``WiFiSyncService`` every hour if the device is connected to an unmetered wifi network. You can review the scheduler configuration in the class ``WiFiSyncServiceScheduler``.
+This library uses part of the Google Play Services API to implement the reports sync mechanism. This API is named [GcmTaskService](https://developers.google.com/cloud-messaging/network-manager) and it's being used to schedule a call to our ``WiFiSyncService`` every hour if the device is connected to an unmetered wifi network. You can review the scheduler configuration in the class ``WiFiSyncServiceScheduler``.
 
 The service will be invoked once per hour in the best case and to be able to know what's going on we've added some log traces. If you want to review the service tasks execution historic you can execute the following commands:
 
