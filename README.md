@@ -3,7 +3,7 @@
 
 FlowUp, mobile real time applications performance monitoring solution!
 
-FlowUp helps you to radically improve your mobile applications performance with actionable insight into real-time key reports including frame time, frames per second, bandwidth, memory consumption, CPU/GPU performance, disk usage and much more. Available for Android and iOS soon.
+FlowUp helps you to radically improve your mobile applications performance with actionable insight into real-time key reports including frame time, frames per second, bandwidth, memory consumption, CPU/GPU performance, disk usage and much more.
 
 Getting started
 ---------------
@@ -92,7 +92,7 @@ Inside this database you can find all the information persisted by FlowUp which 
 How to get info about the sync process
 --------------------------------------
 
-This library uses part of the Google Play Services API to implement the reports sync mechanism. This API is named [GcmTaskService][https://developers.google.com/cloud-messaging/network-manager] and it's being used to schedule a call to our ``WiFiSyncService`` every hour if the device is connected to an unmetered wifi network. You can review the scheduler configuration in the class ``WiFiSyncServiceScheduler``.
+This library uses part of the Google Play Services API to implement the reports sync mechanism. This API is named [GcmTaskService](https://developers.google.com/cloud-messaging/network-manager) and it's being used to schedule a call to our ``WiFiSyncService`` every hour if the device is connected to an unmetered wifi network. You can review the scheduler configuration in the class ``WiFiSyncServiceScheduler``.
 
 The service will be invoked once per hour in the best case and to be able to know what's going on we've added some log traces. If you want to review the service tasks execution historic you can execute the following commands:
 
@@ -140,7 +140,22 @@ You can also use this retrace feature from command line. The binary file you nee
 $ANDROID_HOME/tools/proguard/bin/retrace.sh [-verbose] <mapping_file> [<stacktrace_file>]
 ```
 
-Copyright 2016 Karumi.
+License
+-------
+
+    Copyright 2018 GoKarumi SL.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
 [flowuplogo]: ./art/FlowUpLogo.png
 
